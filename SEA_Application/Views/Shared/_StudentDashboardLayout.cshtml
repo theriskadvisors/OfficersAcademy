@@ -1,95 +1,84 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<aside class="main-sidebar">
-    <section class="sidebar">
-        @*<div class="user-panel">
-            <div class="pull-left image">
-                <img src="~/AdminLTE/dist/img/user.svg" class="img-circle" alt="User Image">
-            </div>
-            <div class="pull-left info">
+<div class="page-sidebar navbar-collapse collapse">
+    <!-- BEGIN SIDEBAR MENU -->
+    <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+    <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+    <!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+    <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+    <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+    <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+    <ul id="layout_navbar_toogle" class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenu " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="1">
+        <li class="nav-item start active open hide">
+            <a href="@Url.Action("Dashboard", "Admin_Dashboard")" class="nav-link nav-toggle">
+                <i class="icon-home"></i>
+                <span class="title">Home</span>
+            </a>
+        </li>
 
-                <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-            </div>
-        </div>*@
+        <li class="nav-item  ">
+            <a href="@(Url.Action("View_Project", "Student_Dashboard"))">
+                <i class="fa fa-calendar"></i>
+                <span>Projects</span>
+            </a>
+        </li>
 
-        <ul class="sidebar-menu">
-            <li class="header">MAIN NAVIGATION</li>
-            @*<li id="left-sidebar-menu-calendar">
-                <a href="@(Url.Action("View_Assessment", "Student_Dashboard"))">
-                    <i class="fa fa-book"></i>
-                    <span>Assessments</span>
-                </a>
-            </li>*@
-            <li id="left-sidebar-menu-calendar">
-                <a href="@(Url.Action("View_Project", "Student_Dashboard"))">
-                    <i class="fa fa-calendar"></i>
-                    <span>Projects</span>
-                </a>
-            </li>
-            <li id="left-sidebar-menu-calendar">
-                <a href="@(Url.Action("PerformanceReports", "Student_Dashboard"))">
-                    <i class="fa fa-bar-chart"></i>
-                    <span>View Performance Report</span>
-                </a>
-            </li>
-            @*<li id="left-sidebar-menu-calendar">
-                <a href="@(Url.Action("Student_Marks", "Student_Dashboard"))">
-                    <i class="fa fa-list-ol"></i>
-                    <span>Marks</span>
-                </a>
-            </li>*@
-            <li id="left-sidebar-menu-calendar">
-                <a href="@(Url.Action("Student_Announcement", "Student_Dashboard"))">
-                    <i class="fa fa-bullhorn"></i>
-                    <span>Announcment</span>
-                </a>
-            </li>
-            <li id="left-sidebar-menu-calendar">
-                <a href="@(Url.Action("Student_Attendance", "Student_Dashboard"))">
-                    <i class="fa fa-list-ol"></i>
-                    <span>Attendance</span>
-                </a>
-            </li>
+        <li class="nav-item  ">
+            <a href="@(Url.Action("Student_Announcement", "Student_Dashboard"))">
+                <i class="fa fa-bullhorn"></i>
+                <span>Announcment</span>
+            </a>
+        </li>
 
-            <li id="left-sidebar-menu-calendar">
-                <a href="@(Url.Action("Student_Dairy", "Student_Dashboard"))">
-                    <i class="fa fa-database"></i>
-                    <span>Dairy</span>
-                </a>
-            </li>
+        <li class="nav-item  ">
+            <a href="@(Url.Action("Student_Attendance", "Student_Dashboard"))">
+                <i class="fa fa-list-ol"></i>
+                <span>Attendance</span>
+            </a>
+        </li>
 
-            @*<li id="left-sidebar-menu-calendar">
-                <a href="@(Url.Action("GenerateInvoicePDF", "Student_Dashboard"))">
-                    <i class="fa fa-print"></i>
-                    <span>Print Challan Form</span>
-                </a>
-            </li>*@
-            <li id="left-sidebar-menu-calendar">
-                <a href="@(Url.Action("StudentAssessment", "Student_Dashboard"))">
-                    <i class="fa fa-calendar"></i>
-                    <span>TermAssessment</span>
-                </a>
-            </li>
-            <li id="left-sidebar-menu-calendar">
-                <a href="@(Url.Action("Inbox", "AspNetMessages"))">
-                    <i class="fa fa-envelope"></i>
-                    <span>MailBox</span>
-                </a>
-            </li>
 
-            <li id="left-sidebar-menu-widgets">
-                <a href="https://smartereduanalytics.on.spiceworks.com/portal/tickets">
-                    <i class="fa fa-support"></i> <span style="color:#8aa4af !important">Support</span>
-                </a>
-            </li>
-            
-        </ul>
-    </section>
-</aside>
-<div class="content-wrapper">
+        <li class="nav-item  ">
+            <a href="@(Url.Action("Student_Dairy", "Student_Dashboard"))">
+                <i class="fa fa-database"></i>
+                <span>Dairy</span>
+            </a>
+        </li>
 
-    <section class="content">
+        <li class="nav-item  ">
+            <a href="@(Url.Action("StudentAssessment", "Student_Dashboard"))">
+                <i class="fa fa-calendar"></i>
+                <span>Student Term Assessment</span>
+            </a>
+        </li>
+
+        <li class="nav-item  ">
+            <a href="@(Url.Action("Inbox", "AspNetMessages"))">
+                <i class="fa fa-envelope"></i>
+                <span class="title">MailBox</span>
+            </a>
+        </li>
+
+        <li class="nav-item  ">
+            <a href="https://smartereduanalytics.on.spiceworks.com/portal/tickets">
+                <i class="fa fa-support"></i>
+                <span class="title">Support</span>
+            </a>
+        </li>
+
+    </ul>
+
+    <!-- END SIDEBAR MENU -->
+</div>
+
+<!-- END SIDEBAR -->
+<!-- BEGIN CONTENT -->
+<div class="page-content-wrapper">
+    <!-- BEGIN CONTENT BODY -->
+    <div id="page-content" class="page-content">
+
         @RenderBody()
-    </section>
+    </div>
+    <!-- END CONTENT BODY -->
 </div>
