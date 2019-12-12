@@ -71,6 +71,11 @@ namespace SEA_Application.Models
         public string Image { get; set; }
         public Nullable<System.DateTime> LastPasswordChange { get; set; }
         public Nullable<int> SessionID { get; set; }
+        public string Industry { get; set; }
+        public string Occupation { get; set; }
+        public string Highest_Degree { get; set; }
+        public string University { get; set; }
+        public string Field_Major { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetClass> AspNetClasses { get; set; }

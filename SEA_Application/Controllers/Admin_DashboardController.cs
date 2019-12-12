@@ -1597,6 +1597,12 @@ public ActionResult ConfirmAccount(string id)
                 ApplicationDbContext context = new ApplicationDbContext();
                 var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Name=model.Name, PhoneNumber=Request.Form["cellNo"]  };
                 var result = await UserManager.CreateAsync(user, model.Password);
+
+                var Field = Request.Form["Field"];
+                var Uni  =Request.Form["University"];
+                var Ocu = Request.Form["Occupation"];
+                var Deg= Request.Form["Degree"];
+                var Ind = Request.Form["Industry"];
                 ruffdata rd = new ruffdata();
                 rd.SessionID = SessionID;
                 rd.StudentName = model.Name;
@@ -1652,7 +1658,18 @@ public ActionResult ConfirmAccount(string id)
                     userManager.AddToRole(user.Id, "Teacher");
                     
                     db.AspNetEmployees.Add(emp);
-                    db.SaveChanges();
+                   if(db.SaveChanges()>0)
+                    {
+
+                        AspNetUser usr=  db.AspNetUsers.Find(emp.UserId);
+                        usr.Industry = Ind;
+                        usr.Occupation = Ocu;
+                        usr.University = Uni;
+                        usr.Highest_Degree = Deg;
+                        usr.Field_Major = Field;
+                        //db.AspNetUsers.Add(usr);
+                        db.SaveChanges();
+                    }
                   
                     AspNetUsers_Session US = new AspNetUsers_Session();
                     US.UserID = emp.UserId;
@@ -1825,6 +1842,11 @@ public ActionResult ConfirmAccount(string id)
                         student.Religion = Request.Form["Religion"];
                         student.Gender = Request.Form["Gender"];
                         student.ClassID = Convert.ToInt32(Request.Form["ClassID"]);
+                        var Field = Request.Form["Field"];
+                        var Uni = Request.Form["University"];
+                        var Ocu = Request.Form["Occupation"];
+                        var Deg = Request.Form["Degree"];
+                        var Ind = Request.Form["Industry"];
                         db.AspNetStudents.Add(student);
                         db.SaveChanges();
 
@@ -1861,6 +1883,15 @@ public ActionResult ConfirmAccount(string id)
                         var userStore = new UserStore<ApplicationUser>(context);
                         var userManager = new UserManager<ApplicationUser>(userStore);
                         userManager.AddToRole(user.Id, "Student");
+
+                        AspNetUser usr = db.AspNetUsers.Find(user.Id);
+                        usr.Industry = Ind;
+                        usr.Occupation = Ocu;
+                        usr.University = Uni;
+                        usr.Highest_Degree = Deg;
+                        usr.Field_Major = Field;
+                        //db.AspNetUsers.Add(usr);
+                        db.SaveChanges();
 
                         dbTransaction.Commit();
                         string Error = "Student successfully saved.";

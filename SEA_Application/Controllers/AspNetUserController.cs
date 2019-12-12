@@ -1474,6 +1474,7 @@ namespace SEA_Application.Controllers
             string[] date = TeacherDetail.DateAvailable.Split(' ');
             string[] join = TeacherDetail.JoiningDate.Split(' ');
 
+            ViewBag.UserDetails = aspNetUser.Highest_Degree;
             ViewBag.TeacherDetail = TeacherDetail;
 
             return View(aspNetUser);
