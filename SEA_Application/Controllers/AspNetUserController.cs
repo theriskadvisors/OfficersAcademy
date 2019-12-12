@@ -386,6 +386,7 @@ namespace SEA_Application.Controllers
 
             AspNetUser aspNetUser = db.AspNetUsers.Find(id);
             var employee = db.AspNetStudents.Where(x => x.StudentID == id).Select(x => x).FirstOrDefault();
+            ViewBag.UserDetails = aspNetUser.Highest_Degree;
             ViewBag.employee = employee;
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             if (aspNetUser == null)

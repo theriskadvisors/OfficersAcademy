@@ -51,13 +51,15 @@
 
         });
 
-
+        debugger;
         var Na = $("#NATION").val();
         var Re = $("#RELEGION").val();
         var Ge = $("#GENDER").val();
+        var De = $('#Degree').val();
         $('#Nationality option[value="' + Na + '"]').prop('selected', true);
         $('#Religion option[value="' + Re + '"]').prop('selected', true);
         $('#Gender option[value="' + Ge + '"]').prop('selected', true);
+        $('#Degree option[value="' + De + '"]').prop('selected', true);
 
         var selectedStudent = '@Model.Id';
         $.get('@Url.Action("StudentClass")',
@@ -223,6 +225,62 @@
                         <div class="col-md-6">
                             @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger", @id = "UserName-Error" })
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+
+                        <div class="box-header with-border"><h3 class="orange">Work Experience and Education</h3></div>
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label class="col-md-1 col-lg-1 control-label">Industry:</label>
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.Industry, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Industry, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-1 col-lg-1 control-label">Occupation:</label>
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.Occupation, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Occupation, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-1 col-lg-1 control-label">Highest Degree:</label>
+                                <div class="col-md-6">
+                                    <input type="hidden" value="@ViewBag.UserDetails" id="Degree" />
+
+                                    <select name="Degree" class="form-control round-border" id="Degree">
+                                        <option value="Less than high school diploma (or equivalent)">Less than high school diploma (or equivalent)</option>
+                                        <option value="High school diploma (or equivalent)">High school diploma (or equivalent)</option>
+                                        <option value="Some college but no degree">Some college but no degree</option>
+                                        <option value="Associate Degree (e.g., AA, AS)<">Associate Degree (e.g., AA, AS)</option>
+                                        <option value="Bachelor's degree (e.g., BA, AB, BS)">Bachelor's degree (e.g., BA, AB, BS)</option>
+                                        <option value="Master's degree (e.g., MA, MS, MEng, MEd, MSW, MBA)">Master's degree (e.g., MA, MS, MEng, MEd, MSW, MBA)</option>
+                                        <option value="Professional school degree (e.g., MD, DDS, DVM, LLB, JD)">Professional school degree (e.g., MD, DDS, DVM, LLB, JD)</option>
+                                        <option value="Doctorate degree (e.g., PhD, EdD)">Doctorate degree (e.g., PhD, EdD)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-1 col-lg-1 control-label">University:</label>
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.University, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.University, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-1 col-lg-1 control-label">Field or Major:</label>
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.Field_Major, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Field_Major, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+                            <br />
+                            <br />
                         </div>
                     </div>
 
@@ -500,7 +558,7 @@
 
                     <hr />
                     <div class="form-group">
-                        <div class="col-md-offset-1 col-lg-offset-1 col-md-2">
+                        <div class="col-md-offset-1 col-lg-offset-1 col-md-5">
                             <button type="submit" class="btn btn-primary" value="Register" id="FormSubmit">Update</button>
                             <button type="button" id="cancel" class="btn btn-default" onclick="redirect()">Cancel</button>
                         </div>
