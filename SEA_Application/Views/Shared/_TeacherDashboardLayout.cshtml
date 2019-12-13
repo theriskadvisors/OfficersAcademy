@@ -1,6 +1,17 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    li.nav-item.start.active.open {
+
+        border-bottom: 0px solid white !important;
+}
+    
+.page-sidebar-menu.page-sidebar-menu-hover-submenu>li:hover>.sub-menu {
+    margin-left: 170px;
+    margin-top: -77px;
+}
+</style>
 <div class="page-sidebar navbar-collapse collapse">
     <!-- BEGIN SIDEBAR MENU -->
     <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
@@ -10,7 +21,7 @@
     <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
     <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
     <ul id="layout_navbar_toogle" class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenu " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="1">
-        <li class="nav-item start active open">
+        <li class="nav-item start active open" style="/* border-bottom: 4px solid white; */">
             <a href="@Url.Action("Dashboard", "Admin_Dashboard")" class="nav-link nav-toggle">
                 <i class="icon-home"></i>
                 <span class="title">Home</span>

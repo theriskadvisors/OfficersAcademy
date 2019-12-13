@@ -1,6 +1,19 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<head>
+    <style>
+        li.nav-item.start.active.open {
+            border-bottom: 0px solid white !important;
+        }
+     
+.page-sidebar-menu.page-sidebar-menu-hover-submenu>li:hover>.sub-menu {
+    margin-left: 183px;
+    margin-top: -77px;
+}
+    </style>
+
+    </head>
 <div class="page-sidebar navbar-collapse collapse">
     <!-- BEGIN SIDEBAR MENU -->
     <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
@@ -17,7 +30,7 @@
             </a>
         </li>
 
-        <li class="nav-item  ">
+        <li class="nav-item">
             <a href="@Url.Action("StudentsIndex", "AspNetUser")" class="nav-link nav-toggle">
                 <i class="fa fa-user"></i>
                 <span class="title">Students</span>

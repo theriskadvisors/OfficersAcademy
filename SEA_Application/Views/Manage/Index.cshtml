@@ -393,7 +393,7 @@ else if(this.User.IsInRole("Teacher"))
 
                 </form>
                 <div class="col-md-8 col-lg-8 col-sm-8">
-                    <br />
+                    <br/>
                     <button  class="col-md-2 form-control" id="refresh" onclick="window.location.href = '/Account/Dashboard'" style="border-radius:45px;border-color:#e9271f;color:#e9271f;width:120px;height:38px; margin-right:10px; font-size:13px;background-color:#ffffff" ><i class="fa fa-arrow-left"></i> Return</button>
                     <input class="col-md-2 form-control color" id="btn-changepassword" type="submit" value="Save" style="border-radius: 35px; margin-bottom: 19px; color: white; border: hidden; background-color: #128edb; font-size:13px; font-size:13px; width: 120px; height: 38px; font-family: Montserrat">
 
@@ -419,10 +419,29 @@ else if(this.User.IsInRole("Teacher"))
                                             <input type="text" class="form-control" value="@ViewBag.Name" name="username" id="username">
                                         </div>
                                         <div class="col-md-5">
+                                            <label>User Name </label>
+                                            <input type="text" class="form-control" value="@ViewBag.UserName" name="username" id="username">
+                                        </div>
+                                         <div class="col-md-5">
                                             <label>PhoneNo </label>
                                             <input type="text" class="form-control" value="@ViewBag.PhoneNumber" name="phoneno" id="phoneno">
                                         </div>
-
+                                        <div class="col-md-5">
+                                            <label>University </label>
+                                            <input type="text" class="form-control" value="@ViewBag.University" name="university" id="university">
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label>Occupation </label>
+                                            <input type="text" class="form-control" value="@ViewBag.Occupation" name="Occupation" id="Occupation">
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label>Highest Degree </label>
+                                            <input type="text" class="form-control" value="@ViewBag.Highest_Degree" name="Highest_Degree" id="Highest_Degree">
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label>Industry </label>
+                                            <input type="text" class="form-control" value="@ViewBag.Industry" name="Industry" id="Industry">
+                                        </div>
                                     </div>
                                     <br>
                                     <div class="row">
@@ -436,7 +455,7 @@ else if(this.User.IsInRole("Teacher"))
                                
                                 </form>
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <button class="col-md-2 form-control" id="refresh" onclick="window.location.href = '/Account/Dashboard'" style="border-radius:45px;margin-right:10px;border-color:#e9271f;color:#e9271f;height:38px;width:120px; font-size:13px;background-color:#ffffff"><i class="fa fa-arrow-left"></i> Return</button>
 
                                         <input class="col-md-2 form-control color" id="btn-update-username"  type="submit" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:13px;width:120px;height:38px;font-family:Montserrat">
