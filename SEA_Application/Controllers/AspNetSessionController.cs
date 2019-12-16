@@ -14,6 +14,7 @@ namespace SEA_Application.Controllers
     public class AspNetSessionController : Controller
     {
         private SEA_DatabaseEntities db = new SEA_DatabaseEntities();
+        int SessionID = Int32.Parse(SessionIDStaticController.GlobalSessionID);
 
         // GET: AspNetSession
         public ActionResult Index()
@@ -68,7 +69,9 @@ namespace SEA_Application.Controllers
                         db.AspNetSessions.Add(aspNetSession);
                         db.SaveChanges();
                     }
-                    TransactionObj.Commit();
+
+                
+                TransactionObj.Commit();
                     ////////////////////////////////////////////////////////Term Add/////////////////////////////////////////////////////////////////
                     int length = 3;
                     for (int i = 0; i < length; i++)
@@ -92,10 +95,20 @@ namespace SEA_Application.Controllers
 
                     var LogControllerObj = new AspNetLogsController();
                     LogControllerObj.CreateLogSave(logMessage, UserIDLog);
-                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                AspNetClass Class = new AspNetClass();
+
+                var CurrentSession = db.AspNetSessions.OrderByDescending(x => x.Id).FirstOrDefault();
+                Class.ClassName = CurrentSession.SessionName;
+                Class.Class = CurrentSession.SessionName;
+                Class.SessionID = CurrentSession.Id;
+                db.AspNetClasses.Add(Class);
+                db.SaveChanges();
 
 
-                    return RedirectToAction("Indexs");
+
+                return RedirectToAction("Indexs");
                 
             }
             else

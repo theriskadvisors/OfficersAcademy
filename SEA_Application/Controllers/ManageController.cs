@@ -68,8 +68,15 @@ namespace SEA_Application.Controllers
             ViewBag.Name = user.Name;
             ViewBag.UserName = user.UserName;
             ViewBag.Email = user.Email;
-
-            if(user.PhoneNumber == null || user.PhoneNumber == "")
+           
+            var usr = db.AspNetUsers.Where(x => x.Id == userId).FirstOrDefault();
+            ViewBag.Industry = usr.Industry;
+            ViewBag.UserName = usr.UserName;
+            ViewBag.University = usr.University;
+            ViewBag.Occupation = usr.Occupation;
+            ViewBag.Highest_Degree = usr.Highest_Degree;
+            
+            if (user.PhoneNumber == null || user.PhoneNumber == "")
             {
                 ViewBag.PhoneNumber = "-";
             }else

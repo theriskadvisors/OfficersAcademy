@@ -241,18 +241,31 @@ namespace SEA_Application.Controllers
                     for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
                     {
                         var Subject = new AspNetSubject();
-                        string TeacherName = workSheet.Cells[rowIterator, 2].Value.ToString();
-                        var Teacher = (from users in db.AspNetUsers
-                                       where users.UserName == TeacherName
-                                       select users).First();
+                       // string TeacherName = workSheet.Cells[rowIterator, 2].Value.ToString();
+                        //var Teacher = (from users in db.AspNetUsers
+                        //               where users.UserName == TeacherName
+                        //               select users).First();
 
-                        var ClassName = workSheet.Cells[rowIterator, 3].Value.ToString();
+                        var ClassName = workSheet.Cells[rowIterator, 2].Value.ToString();
                         var Class = (from classes in db.AspNetClasses
                                      where classes.ClassName == ClassName
                                      select classes).First();
 
                         Subject.SubjectName = workSheet.Cells[rowIterator, 1].Value.ToString();
-                        Subject.TeacherID = Teacher.Id;
+                        Subject.Points = Int32.Parse(workSheet.Cells[rowIterator, 3].Value.ToString());
+                        string Manad =  workSheet.Cells[rowIterator, 4].Value.ToString();
+                        bool value;
+                        if (Manad == "Yes")
+                        {
+                            value = true;
+                        }
+                        else
+                        {
+                            value = false;
+                        }
+                        Subject.IsManadatory = value;
+                        Subject.SubjectName = workSheet.Cells[rowIterator, 1].Value.ToString();
+                        //Subject.TeacherID = Teacher.Id;
                         Subject.ClassID = Class.Id;
                         db.AspNetSubjects.Add(Subject);
                         db.SaveChanges();
