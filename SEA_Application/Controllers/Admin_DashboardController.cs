@@ -1821,6 +1821,7 @@ public ActionResult ConfirmAccount(string id)
                 {
                     ApplicationDbContext context = new ApplicationDbContext();
                     IEnumerable<string> selectedsubjects = Request.Form["subjects"].Split(',');
+                    
                     var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Name = model.Name, PhoneNumber = Request.Form["cellNo"] };
                     var result = await UserManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
@@ -1867,9 +1868,27 @@ public ActionResult ConfirmAccount(string id)
                             db.SaveChanges();
                         }
 
+                    
+
+                        var subID = selectedsubjects.First();
+                        //  var classID = db.AspNetSubjects.Where(x=> x.Id == int.Parse(subID)).Select(x=> x.ClassID).FirstOrDefault();
+                        int id = Int32.Parse(subID);
+                        var c_id = db.AspNetSubjects.Where(x => x.Id == id).FirstOrDefault().ClassID;
+                        var subjects = db.AspNetSubjects.Where(x => x.ClassID == c_id && x.IsManadatory == true).Select(x => x.Id);
+
+                        foreach (var item in subjects)
+                        {
+
+                            AspNetStudent_Subject stu_sub = new AspNetStudent_Subject();
+                            stu_sub.StudentID = user.Id;
+                            stu_sub.SubjectID = Convert.ToInt32(item);
+                            db.AspNetStudent_Subject.Add(stu_sub);
+                            db.SaveChanges();
+                        }
 
                         foreach (var item in selectedsubjects)
                         {
+                            
                             AspNetStudent_Subject stu_sub = new AspNetStudent_Subject();
                             stu_sub.StudentID = user.Id;
                             stu_sub.SubjectID = Convert.ToInt32(item);
@@ -2027,7 +2046,7 @@ public ActionResult ConfirmAccount(string id)
         public JsonResult SubjectsByClass(int id)
         {
             db.Configuration.ProxyCreationEnabled = false;
-            List<AspNetSubject> sub = db.AspNetSubjects.Where(r => r.ClassID == id).OrderByDescending(r => r.Id).ToList();
+            List<AspNetSubject> sub = db.AspNetSubjects.Where(r => r.ClassID == id &&  r.IsManadatory == false).OrderByDescending(r => r.Id).ToList();
             ViewBag.Subjects = sub;
             return Json(sub, JsonRequestBehavior.AllowGet);
 
