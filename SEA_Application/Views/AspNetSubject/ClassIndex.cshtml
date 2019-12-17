@@ -145,7 +145,7 @@
              function (data) {
                  table.fnClearTable();
                  $.each(data, function (i, item) {
-                     table.fnAddData([item.SubjectName, item.Name + "<input type='hidden' value=" + item.Id + " />", item.ClassName]);
+                     table.fnAddData([item.SubjectName, item.ClassName + "<input type='hidden' value=" + item.Id + " />", item.ClassName]);
                     //$('#submission_table').append('<tr id=' + item.Id + '><td>' + item.SubjectName + '</td><td>' + item.Name + '</td><td><a href="/AspNetSubject/Edit/' + item.Id + '">Edit</a>' + ' | <a href="/AspNetSubject/Details/' + item.Id + '">Detail</a>' + ' | <a href="/AspNetSubject/Delete/' + item.Id + '">Delete</a></td></tr>');
                  });
                  table.fnDraw();
@@ -162,7 +162,7 @@
             { id: selectedClass }, function (data) {
                 table.fnClearTable();
                 $.each(data, function (i, item) {
-                    table.fnAddData([item.SubjectName, item.Name + "<input type='hidden' value=" + item.Id + " />", item.ClassName]);
+                    table.fnAddData([item.SubjectName, item.ClassName + "<input type='hidden' value=" + item.Id + " />", item.ClassName]);
                     //$('#submission_table').append('<tr id=' + item.Id + '><td>' + item.SubjectName + '</td><td>' + item.Name + '</td><td><a href="/AspNetSubject/Edit/' + item.Id + '">Edit</a>' + ' | <a href="/AspNetSubject/Details/' + item.Id + '">Detail</a>' + ' | <a href="/AspNetSubject/Delete/' + item.Id + '">Delete</a></td></tr>');
                 });
                 table.fnDraw();
@@ -233,9 +233,7 @@ else
                     <th>
                         Subject
                     </th>
-                    <th>
-                        Teacher
-                    </th>
+                   
                     <th>
                         Class Name
                     </th>

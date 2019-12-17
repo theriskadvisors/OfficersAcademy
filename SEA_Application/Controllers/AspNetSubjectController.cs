@@ -250,7 +250,10 @@ namespace SEA_Application.Controllers
                         var Class = (from classes in db.AspNetClasses
                                      where classes.ClassName == ClassName
                                      select classes).First();
+                        if(Class == null)
+                        {
 
+                        }
                         Subject.SubjectName = workSheet.Cells[rowIterator, 1].Value.ToString();
                         Subject.Points = Int32.Parse(workSheet.Cells[rowIterator, 3].Value.ToString());
                         string Manad =  workSheet.Cells[rowIterator, 4].Value.ToString();
