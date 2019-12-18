@@ -25,6 +25,7 @@ namespace SEA_Application.Models
         public Nullable<int> SessionID { get; set; }
     
         public virtual AspNetEmployee AspNetEmployee { get; set; }
+        public virtual AspNetEmployee AspNetEmployee1 { get; set; }
         public virtual AspNetSession AspNetSession { get; set; }
     }
 }

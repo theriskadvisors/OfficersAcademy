@@ -252,6 +252,7 @@ namespace SEA_Application.Controllers
 
             return View("BlankPage");
         }
+
         public class Message
         {
             public string Name { get; set; }
