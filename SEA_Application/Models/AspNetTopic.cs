@@ -28,7 +28,6 @@ namespace SEA_Application.Models
         public Nullable<System.DateTime> EndDate { get; set; }
         public Nullable<int> ChapterID { get; set; }
         public Nullable<bool> Status { get; set; }
-        public Nullable<int> Percentage_Completion { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetAssessment_Topic> AspNetAssessment_Topic { get; set; }
