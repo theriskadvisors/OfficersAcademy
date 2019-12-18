@@ -10,16 +10,20 @@
 namespace SEA_Application.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class GetStudentSubjects_Result
+    public partial class AspNetTimeTable
     {
         public int Id { get; set; }
-        public string SubjectName { get; set; }
-        public Nullable<int> ClassID { get; set; }
+        public Nullable<int> RoomID { get; set; }
+        public Nullable<int> SlotID { get; set; }
+        public Nullable<int> SubjectID { get; set; }
         public string TeacherID { get; set; }
-        public string Status { get; set; }
-        public Nullable<bool> IsManadatory { get; set; }
-        public Nullable<int> Points { get; set; }
-        public string StudentID { get; set; }
+        public Nullable<System.DateTime> Timestamp { get; set; }
+        public string Day { get; set; }
+    
+        public virtual AspNetRoom AspNetRoom { get; set; }
+        public virtual AspNetSubject AspNetSubject { get; set; }
+        public virtual AspNetTimeslot AspNetTimeslot { get; set; }
     }
 }

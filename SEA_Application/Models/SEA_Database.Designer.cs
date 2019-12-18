@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'D:\The Risk Advisors\SEA\NGS\NGS_SEA_01_V3\NGS-Latest\SEA_Application\Models\SEA_Database.edmx'. 
+﻿// T4 code generation is enabled for model 'D:\The Risk Advisors\SEA\Officers Acadmey\OA_V2\OfficersAcademy\SEA_Application\Models\SEA_Database.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

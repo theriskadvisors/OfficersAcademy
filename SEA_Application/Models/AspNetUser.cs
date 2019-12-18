@@ -49,6 +49,7 @@ namespace SEA_Application.Models
             this.AspNetUserClaims = new HashSet<AspNetUserClaim>();
             this.AspNetUserLogins = new HashSet<AspNetUserLogin>();
             this.Events = new HashSet<Event>();
+            this.Events1 = new HashSet<Event>();
             this.AspNetUsers_Session = new HashSet<AspNetUsers_Session>();
             this.ToDoLists = new HashSet<ToDoList>();
             this.AspNetRoles = new HashSet<AspNetRole>();
@@ -141,6 +142,8 @@ namespace SEA_Application.Models
         public virtual ICollection<AspNetUserLogin> AspNetUserLogins { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Event> Events { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Event> Events1 { get; set; }
         public virtual AspNetUser AspNetUsers1 { get; set; }
         public virtual AspNetUser AspNetUser1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
