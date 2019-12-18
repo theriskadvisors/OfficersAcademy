@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Schema Namespace="NGS_DatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+<Schema Namespace="OA_DatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
   <EntityType Name="Aspnet_Employee_Session">
     <Key>
       <PropertyRef Name="Id" />
@@ -235,7 +235,8 @@
     <Property Name="Illness" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="Aspnet_Employee_Session" Relationship="Self.FK_Aspnet_Employee_Session_EMP" FromRole="AspNetEmployee" ToRole="Aspnet_Employee_Session" />
-    <NavigationProperty Name="TeacherPenaltyRecords" Relationship="Self.FK__TeacherPe__Emplo__0A338187" FromRole="AspNetEmployee" ToRole="TeacherPenaltyRecord" />
+    <NavigationProperty Name="TeacherPenaltyRecords" Relationship="Self.FK__TeacherPe__Emplo__12C8C788" FromRole="AspNetEmployee" ToRole="TeacherPenaltyRecord" />
+    <NavigationProperty Name="TeacherPenaltyRecords1" Relationship="Self.FK__TeacherPe__Emplo__1D114BD1" FromRole="AspNetEmployee" ToRole="TeacherPenaltyRecord" />
     <NavigationProperty Name="EmployeeAdvanceSalaries" Relationship="Self.FK_AdvanceSalaryUser" FromRole="AspNetEmployee" ToRole="EmployeeAdvanceSalary" />
     <NavigationProperty Name="AspNetUser" Relationship="Self.FK_AspNetEmployee_AspNetUsers" FromRole="AspNetEmployee" ToRole="AspNetUsers" />
     <NavigationProperty Name="AspNetEmployee_Attendance" Relationship="Self.FK_AspNetEmployee_Attendance_TO_AspNetEmployee" FromRole="AspNetEmployee" ToRole="AspNetEmployee_Attendance" />
@@ -650,6 +651,15 @@
     <Property Name="VirtualId" Type="Int32" />
     <NavigationProperty Name="AspNetUsers" Relationship="Self.AspNetUserRoles" FromRole="AspNetRoles" ToRole="AspNetUsers" />
   </EntityType>
+  <EntityType Name="AspNetRoom">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="Timestamp" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="AspNetTimeTables" Relationship="Self.FK_AspNetTimeTable_Room" FromRole="AspNetRoom" ToRole="AspNetTimeTable" />
+  </EntityType>
   <EntityType Name="AspNetSalary">
     <Key>
       <PropertyRef Name="Id" />
@@ -1008,6 +1018,8 @@
     <Property Name="ClassID" Type="Int32" />
     <Property Name="TeacherID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
     <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="IsManadatory" Type="Boolean" />
+    <Property Name="Points" Type="Int32" />
     <NavigationProperty Name="AspNetAnnouncement_Subject" Relationship="Self.FK_Announcement_Subject_ToSubject" FromRole="AspNetSubjects" ToRole="AspNetAnnouncement_Subject" />
     <NavigationProperty Name="AspNetAssessment_Question" Relationship="Self.FK_AspNetAssessment_Question_ToSubject" FromRole="AspNetSubjects" ToRole="AspNetAssessment_Question" />
     <NavigationProperty Name="AspNetAttendances" Relationship="Self.FK_AspNetAttendance_ToSubject" FromRole="AspNetSubjects" ToRole="AspNetAttendance" />
@@ -1022,6 +1034,7 @@
     <NavigationProperty Name="AspNetSubject_Catalog" Relationship="Self.FK_AspNetSubject_Catalog_ToSubject" FromRole="AspNetSubjects" ToRole="AspNetSubject_Catalog" />
     <NavigationProperty Name="AspNetSubject_Homework" Relationship="Self.FK_AspNetSubject_Homework_AspNetSubjects" FromRole="AspNetSubjects" ToRole="AspNetSubject_Homework" />
     <NavigationProperty Name="AspNetUser" Relationship="Self.FK_AspNetClass_ToAspNetUsersTeacher" FromRole="AspNetSubjects" ToRole="AspNetUsers" />
+    <NavigationProperty Name="AspNetTimeTables" Relationship="Self.FK_AspNetTimeTable_Subject" FromRole="AspNetSubjects" ToRole="AspNetTimeTable" />
   </EntityType>
   <EntityType Name="AspNetTeacher">
     <Key>
@@ -1083,6 +1096,32 @@
     <Property Name="AbsentTime" Type="Time" Nullable="false" Precision="7" />
     <Property Name="LateTime" Type="Time" Precision="7" />
   </EntityType>
+  <EntityType Name="AspNetTimeslot">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="Start_Time" Type="DateTime" Precision="3" />
+    <Property Name="End_Time" Type="DateTime" Precision="3" />
+    <Property Name="Minutes" Type="Int32" />
+    <NavigationProperty Name="AspNetTimeTables" Relationship="Self.FK_AspNetTimeTable_Slot" FromRole="AspNetTimeslot" ToRole="AspNetTimeTable" />
+  </EntityType>
+  <EntityType Name="AspNetTimeTable">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RoomID" Type="Int32" />
+    <Property Name="SlotID" Type="Int32" />
+    <Property Name="SubjectID" Type="Int32" />
+    <Property Name="TeacherID" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="Timestamp" Type="DateTime" Precision="3" />
+    <Property Name="Day" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="AspNetRoom" Relationship="Self.FK_AspNetTimeTable_Room" FromRole="AspNetTimeTable" ToRole="AspNetRoom" />
+    <NavigationProperty Name="AspNetSubject" Relationship="Self.FK_AspNetTimeTable_Subject" FromRole="AspNetTimeTable" ToRole="AspNetSubjects" />
+    <NavigationProperty Name="AspNetTimeslot" Relationship="Self.FK_AspNetTimeTable_Slot" FromRole="AspNetTimeTable" ToRole="AspNetTimeslot" />
+  </EntityType>
   <EntityType Name="AspNetTopic">
     <Key>
       <PropertyRef Name="Id" />
@@ -1094,6 +1133,7 @@
     <Property Name="EndDate" Type="DateTime" Precision="3" />
     <Property Name="ChapterID" Type="Int32" />
     <Property Name="Status" Type="Boolean" />
+    <Property Name="Percentage_Completion" Type="Int32" />
     <NavigationProperty Name="AspNetAssessment_Topic" Relationship="Self.FK_AspNetAssessment_Topic_ToTopic" FromRole="AspNetTopic" ToRole="AspNetAssessment_Topic" />
     <NavigationProperty Name="AspNetChapter" Relationship="Self.FK_AspNetTopic_ToSubject" FromRole="AspNetTopic" ToRole="AspNetChapter" />
     <NavigationProperty Name="AspNetLessonPlan_Topic" Relationship="Self.FK_AspNetLessonPlan_Topic_ToTopic" FromRole="AspNetTopic" ToRole="AspNetLessonPlan_Topic" />
@@ -1139,6 +1179,11 @@
     <Property Name="Image" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="LastPasswordChange" Type="DateTime" Precision="3" />
     <Property Name="SessionID" Type="Int32" />
+    <Property Name="Industry" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="Occupation" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="Highest_Degree" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="University" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="Field_Major" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="AspNetClasses" Relationship="Self.FK_AspNetClass_ToAspNetUsers" FromRole="AspNetUsers" ToRole="AspNetClass" />
     <NavigationProperty Name="AspNetEmployees" Relationship="Self.FK_AspNetEmployee_AspNetUsers" FromRole="AspNetUsers" ToRole="AspNetEmployee" />
     <NavigationProperty Name="AspNetLogs" Relationship="Self.FK_AspNetLog_ToUsers" FromRole="AspNetUsers" ToRole="AspNetLog" />
@@ -1170,7 +1215,8 @@
     <NavigationProperty Name="AspNetTeachers" Relationship="Self.FK_Teacher_ToAspNetUsers" FromRole="AspNetUsers" ToRole="AspNetTeacher" />
     <NavigationProperty Name="AspNetUserClaims" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserClaims" />
     <NavigationProperty Name="AspNetUserLogins" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
-    <NavigationProperty Name="Events" Relationship="Self.FK__Event__UserId__762C88DA" FromRole="AspNetUsers" ToRole="Event" />
+    <NavigationProperty Name="Events" Relationship="Self.FK__Event__UserId__1C1D2798" FromRole="AspNetUsers" ToRole="Event" />
+    <NavigationProperty Name="Events1" Relationship="Self.FK__Event__UserId__7EC1CEDB" FromRole="AspNetUsers" ToRole="Event" />
     <NavigationProperty Name="AspNetUsers1" Relationship="Self.FK_AspNetUsers_AspNetUsers" FromRole="AspNetUsers" ToRole="AspNetUsers1" />
     <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_AspNetUsers_AspNetUsers" FromRole="AspNetUsers1" ToRole="AspNetUsers" />
     <NavigationProperty Name="AspNetUsers_Session" Relationship="Self.FK_AspNetUsers_Session_Users" FromRole="AspNetUsers" ToRole="AspNetUsers_Session" />
@@ -1296,7 +1342,8 @@
     <Property Name="IsPublic" Type="Boolean" Nullable="false" />
     <Property Name="SessionID" Type="Int32" />
     <NavigationProperty Name="AspNetSession" Relationship="Self.FK_Event_Session" FromRole="Event" ToRole="AspNetSession" />
-    <NavigationProperty Name="AspNetUser" Relationship="Self.FK__Event__UserId__762C88DA" FromRole="Event" ToRole="AspNetUsers" />
+    <NavigationProperty Name="AspNetUser" Relationship="Self.FK__Event__UserId__1C1D2798" FromRole="Event" ToRole="AspNetUsers" />
+    <NavigationProperty Name="AspNetUser1" Relationship="Self.FK__Event__UserId__7EC1CEDB" FromRole="Event" ToRole="AspNetUsers" />
   </EntityType>
   <EntityType Name="FeeDateSetting">
     <Key>
@@ -1528,7 +1575,8 @@
     <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="Time" Type="DateTime" Precision="3" />
     <Property Name="SessionID" Type="Int32" />
-    <NavigationProperty Name="AspNetEmployee" Relationship="Self.FK__TeacherPe__Emplo__0A338187" FromRole="TeacherPenaltyRecord" ToRole="AspNetEmployee" />
+    <NavigationProperty Name="AspNetEmployee" Relationship="Self.FK__TeacherPe__Emplo__12C8C788" FromRole="TeacherPenaltyRecord" ToRole="AspNetEmployee" />
+    <NavigationProperty Name="AspNetEmployee1" Relationship="Self.FK__TeacherPe__Emplo__1D114BD1" FromRole="TeacherPenaltyRecord" ToRole="AspNetEmployee" />
     <NavigationProperty Name="AspNetSession" Relationship="Self.FK_TeacherPenaltyRecord_Session" FromRole="TeacherPenaltyRecord" ToRole="AspNetSession" />
   </EntityType>
   <EntityType Name="ToDoList">
@@ -2087,7 +2135,19 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__TeacherPe__Emplo__0A338187">
+  <Association Name="FK__TeacherPe__Emplo__12C8C788">
+    <End Role="AspNetEmployee" Type="Self.AspNetEmployee" Multiplicity="0..1" />
+    <End Role="TeacherPenaltyRecord" Type="Self.TeacherPenaltyRecord" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetEmployee">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="TeacherPenaltyRecord">
+        <PropertyRef Name="EmployeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__TeacherPe__Emplo__1D114BD1">
     <End Role="AspNetEmployee" Type="Self.AspNetEmployee" Multiplicity="0..1" />
     <End Role="TeacherPenaltyRecord" Type="Self.TeacherPenaltyRecord" Multiplicity="*" />
     <ReferentialConstraint>
@@ -2741,6 +2801,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_AspNetTimeTable_Room">
+    <End Role="AspNetRoom" Type="Self.AspNetRoom" Multiplicity="0..1" />
+    <End Role="AspNetTimeTable" Type="Self.AspNetTimeTable" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetRoom">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AspNetTimeTable">
+        <PropertyRef Name="RoomID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_AspNetSalary_Session">
     <End Role="AspNetSession" Type="Self.AspNetSession" Multiplicity="0..1" />
     <End Role="AspNetSalary" Type="Self.AspNetSalary" Multiplicity="*" />
@@ -3339,6 +3411,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_AspNetTimeTable_Subject">
+    <End Role="AspNetSubjects" Type="Self.AspNetSubject" Multiplicity="0..1" />
+    <End Role="AspNetTimeTable" Type="Self.AspNetTimeTable" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetSubjects">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AspNetTimeTable">
+        <PropertyRef Name="SubjectID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_AspNetTeacher_Session_Teacher">
     <End Role="AspNetTeacher" Type="Self.AspNetTeacher" Multiplicity="1" />
     <End Role="AspNetTeacher_Session" Type="Self.AspNetTeacher_Session" Multiplicity="0..1" />
@@ -3360,6 +3444,18 @@
       </Principal>
       <Dependent Role="AspNetTeacher">
         <PropertyRef Name="TeacherID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AspNetTimeTable_Slot">
+    <End Role="AspNetTimeslot" Type="Self.AspNetTimeslot" Multiplicity="0..1" />
+    <End Role="AspNetTimeTable" Type="Self.AspNetTimeTable" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetTimeslot">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AspNetTimeTable">
+        <PropertyRef Name="SlotID" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -3391,7 +3487,19 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Event__UserId__762C88DA">
+  <Association Name="FK__Event__UserId__1C1D2798">
+    <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="0..1" />
+    <End Role="Event" Type="Self.Event" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUsers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Event">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Event__UserId__7EC1CEDB">
     <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="0..1" />
     <End Role="Event" Type="Self.Event" Multiplicity="*" />
     <ReferentialConstraint>
@@ -3679,6 +3787,7 @@
     <EntitySet Name="AspNetPTMFormRoles" EntityType="Self.AspNetPTMFormRole" />
     <EntitySet Name="AspNetPushNotifications" EntityType="Self.AspNetPushNotification" />
     <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
+    <EntitySet Name="AspNetRooms" EntityType="Self.AspNetRoom" />
     <EntitySet Name="AspNetSalaries" EntityType="Self.AspNetSalary" />
     <EntitySet Name="AspNetSalaryDetails" EntityType="Self.AspNetSalaryDetail" />
     <EntitySet Name="AspNetSessions" EntityType="Self.AspNetSession" />
@@ -3705,6 +3814,8 @@
     <EntitySet Name="AspNetTeacher_Session" EntityType="Self.AspNetTeacher_Session" />
     <EntitySet Name="AspNetTerms" EntityType="Self.AspNetTerm" />
     <EntitySet Name="AspNetTime_Setting" EntityType="Self.AspNetTime_Setting" />
+    <EntitySet Name="AspNetTimeslots" EntityType="Self.AspNetTimeslot" />
+    <EntitySet Name="AspNetTimeTables" EntityType="Self.AspNetTimeTable" />
     <EntitySet Name="AspNetTopics" EntityType="Self.AspNetTopic" />
     <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaim" />
     <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogin" />
@@ -3883,7 +3994,11 @@
       <End Role="AspNetSession" EntitySet="AspNetSessions" />
       <End Role="AspNetEmp_Auto_Absent" EntitySet="AspNetEmp_Auto_Absent" />
     </AssociationSet>
-    <AssociationSet Name="FK__TeacherPe__Emplo__0A338187" Association="Self.FK__TeacherPe__Emplo__0A338187">
+    <AssociationSet Name="FK__TeacherPe__Emplo__12C8C788" Association="Self.FK__TeacherPe__Emplo__12C8C788">
+      <End Role="AspNetEmployee" EntitySet="AspNetEmployees" />
+      <End Role="TeacherPenaltyRecord" EntitySet="TeacherPenaltyRecords" />
+    </AssociationSet>
+    <AssociationSet Name="FK__TeacherPe__Emplo__1D114BD1" Association="Self.FK__TeacherPe__Emplo__1D114BD1">
       <End Role="AspNetEmployee" EntitySet="AspNetEmployees" />
       <End Role="TeacherPenaltyRecord" EntitySet="TeacherPenaltyRecords" />
     </AssociationSet>
@@ -4091,6 +4206,10 @@
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
       <End Role="AspNetPushNotifications" EntitySet="AspNetPushNotifications" />
     </AssociationSet>
+    <AssociationSet Name="FK_AspNetTimeTable_Room" Association="Self.FK_AspNetTimeTable_Room">
+      <End Role="AspNetRoom" EntitySet="AspNetRooms" />
+      <End Role="AspNetTimeTable" EntitySet="AspNetTimeTables" />
+    </AssociationSet>
     <AssociationSet Name="FK_AspNetSalary_Session" Association="Self.FK_AspNetSalary_Session">
       <End Role="AspNetSession" EntitySet="AspNetSessions" />
       <End Role="AspNetSalary" EntitySet="AspNetSalaries" />
@@ -4283,6 +4402,10 @@
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
       <End Role="AspNetSubjects" EntitySet="AspNetSubjects" />
     </AssociationSet>
+    <AssociationSet Name="FK_AspNetTimeTable_Subject" Association="Self.FK_AspNetTimeTable_Subject">
+      <End Role="AspNetSubjects" EntitySet="AspNetSubjects" />
+      <End Role="AspNetTimeTable" EntitySet="AspNetTimeTables" />
+    </AssociationSet>
     <AssociationSet Name="FK_AspNetTeacher_Session_Teacher" Association="Self.FK_AspNetTeacher_Session_Teacher">
       <End Role="AspNetTeacher" EntitySet="AspNetTeachers" />
       <End Role="AspNetTeacher_Session" EntitySet="AspNetTeacher_Session" />
@@ -4290,6 +4413,10 @@
     <AssociationSet Name="FK_Teacher_ToAspNetUsers" Association="Self.FK_Teacher_ToAspNetUsers">
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
       <End Role="AspNetTeacher" EntitySet="AspNetTeachers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AspNetTimeTable_Slot" Association="Self.FK_AspNetTimeTable_Slot">
+      <End Role="AspNetTimeslot" EntitySet="AspNetTimeslots" />
+      <End Role="AspNetTimeTable" EntitySet="AspNetTimeTables" />
     </AssociationSet>
     <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -4299,7 +4426,11 @@
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
       <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
     </AssociationSet>
-    <AssociationSet Name="FK__Event__UserId__762C88DA" Association="Self.FK__Event__UserId__762C88DA">
+    <AssociationSet Name="FK__Event__UserId__1C1D2798" Association="Self.FK__Event__UserId__1C1D2798">
+      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+      <End Role="Event" EntitySet="Events" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Event__UserId__7EC1CEDB" Association="Self.FK__Event__UserId__7EC1CEDB">
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
       <End Role="Event" EntitySet="Events" />
     </AssociationSet>
@@ -4379,30 +4510,30 @@
       <End Role="AspNetRoles" EntitySet="AspNetRoles" />
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
     </AssociationSet>
-    <FunctionImport Name="GetAccountantListingData" ReturnType="Collection(NGS_DatabaseModel.GetAccountantListingData_Result)">
+    <FunctionImport Name="GetAccountantListingData" ReturnType="Collection(OA_DatabaseModel.GetAccountantListingData_Result)">
       <Parameter Name="SessionId" Mode="In" Type="String" />
     </FunctionImport>
-    <FunctionImport Name="GetAllParents" ReturnType="Collection(NGS_DatabaseModel.GetAllParents_Result)">
+    <FunctionImport Name="GetAllParents" ReturnType="Collection(OA_DatabaseModel.GetAllParents_Result)">
       <Parameter Name="UserID" Mode="In" Type="String" />
       <Parameter Name="SessionID" Mode="In" Type="String" />
     </FunctionImport>
-    <FunctionImport Name="GetStudentBasicData" ReturnType="Collection(NGS_DatabaseModel.GetStudentBasicData_Result)">
+    <FunctionImport Name="GetStudentBasicData" ReturnType="Collection(OA_DatabaseModel.GetStudentBasicData_Result)">
       <Parameter Name="StudentId" Mode="In" Type="String" />
     </FunctionImport>
-    <FunctionImport Name="GetStudentSessionSubjectAssessment" ReturnType="Collection(NGS_DatabaseModel.GetStudentSessionSubjectAssessment_Result)">
+    <FunctionImport Name="GetStudentSessionSubjectAssessment" ReturnType="Collection(OA_DatabaseModel.GetStudentSessionSubjectAssessment_Result)">
       <Parameter Name="StudentId" Mode="In" Type="String" />
       <Parameter Name="SessionId" Mode="In" Type="Int32" />
       <Parameter Name="SubjectId" Mode="In" Type="Int32" />
     </FunctionImport>
-    <FunctionImport Name="GetStudentSubjects" ReturnType="Collection(NGS_DatabaseModel.GetStudentSubjects_Result)">
+    <FunctionImport Name="GetStudentSubjects" ReturnType="Collection(OA_DatabaseModel.GetStudentSubjects_Result)">
       <Parameter Name="StudentId" Mode="In" Type="String" />
     </FunctionImport>
-    <FunctionImport Name="GetStudentTermSubjectAssessment" ReturnType="Collection(NGS_DatabaseModel.GetStudentTermSubjectAssessment_Result)">
+    <FunctionImport Name="GetStudentTermSubjectAssessment" ReturnType="Collection(OA_DatabaseModel.GetStudentTermSubjectAssessment_Result)">
       <Parameter Name="StudentId" Mode="In" Type="String" />
       <Parameter Name="TermId" Mode="In" Type="Int32" />
       <Parameter Name="StudentSubjectId" Mode="In" Type="Int32" />
     </FunctionImport>
-    <FunctionImport Name="GetSubjctAssessmentQuestions" ReturnType="Collection(NGS_DatabaseModel.GetSubjctAssessmentQuestions_Result)">
+    <FunctionImport Name="GetSubjctAssessmentQuestions" ReturnType="Collection(OA_DatabaseModel.GetSubjctAssessmentQuestions_Result)">
       <Parameter Name="SubjectId" Mode="In" Type="Int32" />
     </FunctionImport>
     <FunctionImport Name="sp_MSforeach_worker">
@@ -4440,6 +4571,11 @@
     <Property Type="String" Name="Image" Nullable="true" />
     <Property Type="DateTime" Name="LastPasswordChange" Nullable="true" Precision="23" />
     <Property Type="Int32" Name="SessionID" Nullable="true" />
+    <Property Type="String" Name="Industry" Nullable="true" />
+    <Property Type="String" Name="Occupation" Nullable="true" />
+    <Property Type="String" Name="Highest_Degree" Nullable="true" />
+    <Property Type="String" Name="University" Nullable="true" />
+    <Property Type="String" Name="Field_Major" Nullable="true" />
   </ComplexType>
   <ComplexType Name="GetAllParents_Result">
     <Property Type="String" Name="Id" Nullable="false" MaxLength="128" />
@@ -4477,6 +4613,8 @@
     <Property Type="Int32" Name="ClassID" Nullable="true" />
     <Property Type="String" Name="TeacherID" Nullable="true" MaxLength="128" />
     <Property Type="String" Name="Status" Nullable="true" MaxLength="20" />
+    <Property Type="Boolean" Name="IsManadatory" Nullable="true" />
+    <Property Type="Int32" Name="Points" Nullable="true" />
     <Property Type="String" Name="StudentID" Nullable="false" MaxLength="128" />
   </ComplexType>
   <ComplexType Name="GetStudentTermSubjectAssessment_Result">

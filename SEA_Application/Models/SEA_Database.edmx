@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="NGS_DatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="OA_DatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Aspnet_Employee_Session">
           <Key>
             <PropertyRef Name="Id" />
@@ -543,6 +543,14 @@
           <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
           <Property Name="VirtualId" Type="int" />
         </EntityType>
+        <EntityType Name="AspNetRoom">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar(max)" />
+          <Property Name="Timestamp" Type="datetime" />
+        </EntityType>
         <EntityType Name="AspNetSalary">
           <Key>
             <PropertyRef Name="Id" />
@@ -816,6 +824,8 @@
           <Property Name="ClassID" Type="int" />
           <Property Name="TeacherID" Type="nvarchar" MaxLength="128" />
           <Property Name="Status" Type="varchar" MaxLength="20" />
+          <Property Name="IsManadatory" Type="bit" />
+          <Property Name="Points" Type="int" />
         </EntityType>
         <EntityType Name="AspNetTeacher">
           <Key>
@@ -871,6 +881,28 @@
           <Property Name="AbsentTime" Type="time" Precision="7" Nullable="false" />
           <Property Name="LateTime" Type="time" Precision="7" />
         </EntityType>
+        <EntityType Name="AspNetTimeslot">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar(max)" />
+          <Property Name="Start_Time" Type="datetime" />
+          <Property Name="End_Time" Type="datetime" />
+          <Property Name="Minutes" Type="int" />
+        </EntityType>
+        <EntityType Name="AspNetTimeTable">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoomID" Type="int" />
+          <Property Name="SlotID" Type="int" />
+          <Property Name="SubjectID" Type="int" />
+          <Property Name="TeacherID" Type="varchar(max)" />
+          <Property Name="Timestamp" Type="datetime" />
+          <Property Name="Day" Type="varchar(max)" />
+        </EntityType>
         <EntityType Name="AspNetTopic">
           <Key>
             <PropertyRef Name="Id" />
@@ -882,6 +914,7 @@
           <Property Name="EndDate" Type="datetime" />
           <Property Name="ChapterID" Type="int" />
           <Property Name="Status" Type="bit" />
+          <Property Name="Percentage_Completion" Type="int" />
         </EntityType>
         <EntityType Name="AspNetUserClaims">
           <Key>
@@ -930,6 +963,11 @@
           <Property Name="Image" Type="nvarchar(max)" />
           <Property Name="LastPasswordChange" Type="datetime" />
           <Property Name="SessionID" Type="int" />
+          <Property Name="Industry" Type="varchar(max)" />
+          <Property Name="Occupation" Type="varchar(max)" />
+          <Property Name="Highest_Degree" Type="varchar(max)" />
+          <Property Name="University" Type="varchar(max)" />
+          <Property Name="Field_Major" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="AspNetUsers_Session">
           <Key>
@@ -1376,7 +1414,7 @@
           <Property Name="CreatedAt" Type="datetime" Nullable="false" />
           <Property Name="Data" Type="nvarchar(max)" />
         </EntityType>
-        <Association Name="FK__Event__UserId__762C88DA">
+        <Association Name="FK__Event__UserId__1C1D2798">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
           <End Role="Event" Type="Self.Event" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1388,7 +1426,31 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TeacherPe__Emplo__0A338187">
+        <Association Name="FK__Event__UserId__7EC1CEDB">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
+          <End Role="Event" Type="Self.Event" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Event">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TeacherPe__Emplo__12C8C788">
+          <End Role="AspNetEmployee" Type="Self.AspNetEmployee" Multiplicity="0..1" />
+          <End Role="TeacherPenaltyRecord" Type="Self.TeacherPenaltyRecord" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetEmployee">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TeacherPenaltyRecord">
+              <PropertyRef Name="EmployeeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TeacherPe__Emplo__1D114BD1">
           <End Role="AspNetEmployee" Type="Self.AspNetEmployee" Multiplicity="0..1" />
           <End Role="TeacherPenaltyRecord" Type="Self.TeacherPenaltyRecord" Multiplicity="*" />
           <ReferentialConstraint>
@@ -2676,6 +2738,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_AspNetTimeTable_Room">
+          <End Role="AspNetRoom" Type="Self.AspNetRoom" Multiplicity="0..1" />
+          <End Role="AspNetTimeTable" Type="Self.AspNetTimeTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetRoom">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetTimeTable">
+              <PropertyRef Name="RoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AspNetTimeTable_Slot">
+          <End Role="AspNetTimeslot" Type="Self.AspNetTimeslot" Multiplicity="0..1" />
+          <End Role="AspNetTimeTable" Type="Self.AspNetTimeTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetTimeslot">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetTimeTable">
+              <PropertyRef Name="SlotID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AspNetTimeTable_Subject">
+          <End Role="AspNetSubjects" Type="Self.AspNetSubjects" Multiplicity="0..1" />
+          <End Role="AspNetTimeTable" Type="Self.AspNetTimeTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetSubjects">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetTimeTable">
+              <PropertyRef Name="SubjectID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_AspNetTopic_ToSubject">
           <End Role="AspNetChapter" Type="Self.AspNetChapter" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -3392,7 +3490,7 @@
           <Parameter Name="precommand" Type="nvarchar" Mode="In" />
           <Parameter Name="postcommand" Type="nvarchar" Mode="In" />
         </Function>
-        <EntityContainer Name="NGS_DatabaseModelStoreContainer">
+        <EntityContainer Name="OA_DatabaseModelStoreContainer">
           <EntitySet Name="Aspnet_Employee_Session" EntityType="Self.Aspnet_Employee_Session" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetAbsent_Student" EntityType="Self.AspNetAbsent_Student" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetAnnouncement" EntityType="Self.AspNetAnnouncement" Schema="dbo" store:Type="Tables" />
@@ -3444,6 +3542,7 @@
           <EntitySet Name="AspNetPTMFormRoles" EntityType="Self.AspNetPTMFormRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetPushNotifications" EntityType="Self.AspNetPushNotifications" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetRoom" EntityType="Self.AspNetRoom" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetSalary" EntityType="Self.AspNetSalary" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetSalaryDetail" EntityType="Self.AspNetSalaryDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetSession" EntityType="Self.AspNetSession" Schema="dbo" store:Type="Tables" />
@@ -3470,6 +3569,8 @@
           <EntitySet Name="AspNetTeacher_Session" EntityType="Self.AspNetTeacher_Session" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetTerm" EntityType="Self.AspNetTerm" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetTime_Setting" EntityType="Self.AspNetTime_Setting" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetTimeslot" EntityType="Self.AspNetTimeslot" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetTimeTable" EntityType="Self.AspNetTimeTable" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetTopic" EntityType="Self.AspNetTopic" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
@@ -3517,11 +3618,19 @@
           <EntitySet Name="Server" EntityType="Self.Server" Schema="HangFire" store:Type="Tables" />
           <EntitySet Name="Set" EntityType="Self.Set" Schema="HangFire" store:Type="Tables" />
           <EntitySet Name="State" EntityType="Self.State" Schema="HangFire" store:Type="Tables" />
-          <AssociationSet Name="FK__Event__UserId__762C88DA" Association="Self.FK__Event__UserId__762C88DA">
+          <AssociationSet Name="FK__Event__UserId__1C1D2798" Association="Self.FK__Event__UserId__1C1D2798">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Event" EntitySet="Event" />
           </AssociationSet>
-          <AssociationSet Name="FK__TeacherPe__Emplo__0A338187" Association="Self.FK__TeacherPe__Emplo__0A338187">
+          <AssociationSet Name="FK__Event__UserId__7EC1CEDB" Association="Self.FK__Event__UserId__7EC1CEDB">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Event" EntitySet="Event" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TeacherPe__Emplo__12C8C788" Association="Self.FK__TeacherPe__Emplo__12C8C788">
+            <End Role="AspNetEmployee" EntitySet="AspNetEmployee" />
+            <End Role="TeacherPenaltyRecord" EntitySet="TeacherPenaltyRecord" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TeacherPe__Emplo__1D114BD1" Association="Self.FK__TeacherPe__Emplo__1D114BD1">
             <End Role="AspNetEmployee" EntitySet="AspNetEmployee" />
             <End Role="TeacherPenaltyRecord" EntitySet="TeacherPenaltyRecord" />
           </AssociationSet>
@@ -3933,6 +4042,18 @@
             <End Role="AspNetSession" EntitySet="AspNetSession" />
             <End Role="AspNetTerm" EntitySet="AspNetTerm" />
           </AssociationSet>
+          <AssociationSet Name="FK_AspNetTimeTable_Room" Association="Self.FK_AspNetTimeTable_Room">
+            <End Role="AspNetRoom" EntitySet="AspNetRoom" />
+            <End Role="AspNetTimeTable" EntitySet="AspNetTimeTable" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AspNetTimeTable_Slot" Association="Self.FK_AspNetTimeTable_Slot">
+            <End Role="AspNetTimeslot" EntitySet="AspNetTimeslot" />
+            <End Role="AspNetTimeTable" EntitySet="AspNetTimeTable" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AspNetTimeTable_Subject" Association="Self.FK_AspNetTimeTable_Subject">
+            <End Role="AspNetSubjects" EntitySet="AspNetSubjects" />
+            <End Role="AspNetTimeTable" EntitySet="AspNetTimeTable" />
+          </AssociationSet>
           <AssociationSet Name="FK_AspNetTopic_ToSubject" Association="Self.FK_AspNetTopic_ToSubject">
             <End Role="AspNetChapter" EntitySet="AspNetChapter" />
             <End Role="AspNetTopic" EntitySet="AspNetTopic" />
@@ -4154,7 +4275,7 @@
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="NGS_DatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="OA_DatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="Aspnet_Employee_Session">
           <Key>
             <PropertyRef Name="Id" />
@@ -4390,7 +4511,8 @@
           <Property Name="Illness" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Aspnet_Employee_Session" Relationship="Self.FK_Aspnet_Employee_Session_EMP" FromRole="AspNetEmployee" ToRole="Aspnet_Employee_Session" />
-          <NavigationProperty Name="TeacherPenaltyRecords" Relationship="Self.FK__TeacherPe__Emplo__0A338187" FromRole="AspNetEmployee" ToRole="TeacherPenaltyRecord" />
+          <NavigationProperty Name="TeacherPenaltyRecords" Relationship="Self.FK__TeacherPe__Emplo__12C8C788" FromRole="AspNetEmployee" ToRole="TeacherPenaltyRecord" />
+          <NavigationProperty Name="TeacherPenaltyRecords1" Relationship="Self.FK__TeacherPe__Emplo__1D114BD1" FromRole="AspNetEmployee" ToRole="TeacherPenaltyRecord" />
           <NavigationProperty Name="EmployeeAdvanceSalaries" Relationship="Self.FK_AdvanceSalaryUser" FromRole="AspNetEmployee" ToRole="EmployeeAdvanceSalary" />
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_AspNetEmployee_AspNetUsers" FromRole="AspNetEmployee" ToRole="AspNetUsers" />
           <NavigationProperty Name="AspNetEmployee_Attendance" Relationship="Self.FK_AspNetEmployee_Attendance_TO_AspNetEmployee" FromRole="AspNetEmployee" ToRole="AspNetEmployee_Attendance" />
@@ -4805,6 +4927,15 @@
           <Property Name="VirtualId" Type="Int32" />
           <NavigationProperty Name="AspNetUsers" Relationship="Self.AspNetUserRoles" FromRole="AspNetRoles" ToRole="AspNetUsers" />
         </EntityType>
+        <EntityType Name="AspNetRoom">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Timestamp" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AspNetTimeTables" Relationship="Self.FK_AspNetTimeTable_Room" FromRole="AspNetRoom" ToRole="AspNetTimeTable" />
+        </EntityType>
         <EntityType Name="AspNetSalary">
           <Key>
             <PropertyRef Name="Id" />
@@ -5163,6 +5294,8 @@
           <Property Name="ClassID" Type="Int32" />
           <Property Name="TeacherID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IsManadatory" Type="Boolean" />
+          <Property Name="Points" Type="Int32" />
           <NavigationProperty Name="AspNetAnnouncement_Subject" Relationship="Self.FK_Announcement_Subject_ToSubject" FromRole="AspNetSubjects" ToRole="AspNetAnnouncement_Subject" />
           <NavigationProperty Name="AspNetAssessment_Question" Relationship="Self.FK_AspNetAssessment_Question_ToSubject" FromRole="AspNetSubjects" ToRole="AspNetAssessment_Question" />
           <NavigationProperty Name="AspNetAttendances" Relationship="Self.FK_AspNetAttendance_ToSubject" FromRole="AspNetSubjects" ToRole="AspNetAttendance" />
@@ -5177,6 +5310,7 @@
           <NavigationProperty Name="AspNetSubject_Catalog" Relationship="Self.FK_AspNetSubject_Catalog_ToSubject" FromRole="AspNetSubjects" ToRole="AspNetSubject_Catalog" />
           <NavigationProperty Name="AspNetSubject_Homework" Relationship="Self.FK_AspNetSubject_Homework_AspNetSubjects" FromRole="AspNetSubjects" ToRole="AspNetSubject_Homework" />
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_AspNetClass_ToAspNetUsersTeacher" FromRole="AspNetSubjects" ToRole="AspNetUsers" />
+          <NavigationProperty Name="AspNetTimeTables" Relationship="Self.FK_AspNetTimeTable_Subject" FromRole="AspNetSubjects" ToRole="AspNetTimeTable" />
         </EntityType>
         <EntityType Name="AspNetTeacher">
           <Key>
@@ -5238,6 +5372,32 @@
           <Property Name="AbsentTime" Type="Time" Nullable="false" Precision="7" />
           <Property Name="LateTime" Type="Time" Precision="7" />
         </EntityType>
+        <EntityType Name="AspNetTimeslot">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Start_Time" Type="DateTime" Precision="3" />
+          <Property Name="End_Time" Type="DateTime" Precision="3" />
+          <Property Name="Minutes" Type="Int32" />
+          <NavigationProperty Name="AspNetTimeTables" Relationship="Self.FK_AspNetTimeTable_Slot" FromRole="AspNetTimeslot" ToRole="AspNetTimeTable" />
+        </EntityType>
+        <EntityType Name="AspNetTimeTable">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoomID" Type="Int32" />
+          <Property Name="SlotID" Type="Int32" />
+          <Property Name="SubjectID" Type="Int32" />
+          <Property Name="TeacherID" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Timestamp" Type="DateTime" Precision="3" />
+          <Property Name="Day" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="AspNetRoom" Relationship="Self.FK_AspNetTimeTable_Room" FromRole="AspNetTimeTable" ToRole="AspNetRoom" />
+          <NavigationProperty Name="AspNetSubject" Relationship="Self.FK_AspNetTimeTable_Subject" FromRole="AspNetTimeTable" ToRole="AspNetSubjects" />
+          <NavigationProperty Name="AspNetTimeslot" Relationship="Self.FK_AspNetTimeTable_Slot" FromRole="AspNetTimeTable" ToRole="AspNetTimeslot" />
+        </EntityType>
         <EntityType Name="AspNetTopic">
           <Key>
             <PropertyRef Name="Id" />
@@ -5249,6 +5409,7 @@
           <Property Name="EndDate" Type="DateTime" Precision="3" />
           <Property Name="ChapterID" Type="Int32" />
           <Property Name="Status" Type="Boolean" />
+          <Property Name="Percentage_Completion" Type="Int32" />
           <NavigationProperty Name="AspNetAssessment_Topic" Relationship="Self.FK_AspNetAssessment_Topic_ToTopic" FromRole="AspNetTopic" ToRole="AspNetAssessment_Topic" />
           <NavigationProperty Name="AspNetChapter" Relationship="Self.FK_AspNetTopic_ToSubject" FromRole="AspNetTopic" ToRole="AspNetChapter" />
           <NavigationProperty Name="AspNetLessonPlan_Topic" Relationship="Self.FK_AspNetLessonPlan_Topic_ToTopic" FromRole="AspNetTopic" ToRole="AspNetLessonPlan_Topic" />
@@ -5294,6 +5455,11 @@
           <Property Name="Image" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="LastPasswordChange" Type="DateTime" Precision="3" />
           <Property Name="SessionID" Type="Int32" />
+          <Property Name="Industry" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Occupation" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Highest_Degree" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="University" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Field_Major" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="AspNetClasses" Relationship="Self.FK_AspNetClass_ToAspNetUsers" FromRole="AspNetUsers" ToRole="AspNetClass" />
           <NavigationProperty Name="AspNetEmployees" Relationship="Self.FK_AspNetEmployee_AspNetUsers" FromRole="AspNetUsers" ToRole="AspNetEmployee" />
           <NavigationProperty Name="AspNetLogs" Relationship="Self.FK_AspNetLog_ToUsers" FromRole="AspNetUsers" ToRole="AspNetLog" />
@@ -5325,7 +5491,8 @@
           <NavigationProperty Name="AspNetTeachers" Relationship="Self.FK_Teacher_ToAspNetUsers" FromRole="AspNetUsers" ToRole="AspNetTeacher" />
           <NavigationProperty Name="AspNetUserClaims" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserClaims" />
           <NavigationProperty Name="AspNetUserLogins" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
-          <NavigationProperty Name="Events" Relationship="Self.FK__Event__UserId__762C88DA" FromRole="AspNetUsers" ToRole="Event" />
+          <NavigationProperty Name="Events" Relationship="Self.FK__Event__UserId__1C1D2798" FromRole="AspNetUsers" ToRole="Event" />
+          <NavigationProperty Name="Events1" Relationship="Self.FK__Event__UserId__7EC1CEDB" FromRole="AspNetUsers" ToRole="Event" />
           <NavigationProperty Name="AspNetUsers1" Relationship="Self.FK_AspNetUsers_AspNetUsers" FromRole="AspNetUsers" ToRole="AspNetUsers1" />
           <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_AspNetUsers_AspNetUsers" FromRole="AspNetUsers1" ToRole="AspNetUsers" />
           <NavigationProperty Name="AspNetUsers_Session" Relationship="Self.FK_AspNetUsers_Session_Users" FromRole="AspNetUsers" ToRole="AspNetUsers_Session" />
@@ -5451,7 +5618,8 @@
           <Property Name="IsPublic" Type="Boolean" Nullable="false" />
           <Property Name="SessionID" Type="Int32" />
           <NavigationProperty Name="AspNetSession" Relationship="Self.FK_Event_Session" FromRole="Event" ToRole="AspNetSession" />
-          <NavigationProperty Name="AspNetUser" Relationship="Self.FK__Event__UserId__762C88DA" FromRole="Event" ToRole="AspNetUsers" />
+          <NavigationProperty Name="AspNetUser" Relationship="Self.FK__Event__UserId__1C1D2798" FromRole="Event" ToRole="AspNetUsers" />
+          <NavigationProperty Name="AspNetUser1" Relationship="Self.FK__Event__UserId__7EC1CEDB" FromRole="Event" ToRole="AspNetUsers" />
         </EntityType>
         <EntityType Name="FeeDateSetting">
           <Key>
@@ -5683,7 +5851,8 @@
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Time" Type="DateTime" Precision="3" />
           <Property Name="SessionID" Type="Int32" />
-          <NavigationProperty Name="AspNetEmployee" Relationship="Self.FK__TeacherPe__Emplo__0A338187" FromRole="TeacherPenaltyRecord" ToRole="AspNetEmployee" />
+          <NavigationProperty Name="AspNetEmployee" Relationship="Self.FK__TeacherPe__Emplo__12C8C788" FromRole="TeacherPenaltyRecord" ToRole="AspNetEmployee" />
+          <NavigationProperty Name="AspNetEmployee1" Relationship="Self.FK__TeacherPe__Emplo__1D114BD1" FromRole="TeacherPenaltyRecord" ToRole="AspNetEmployee" />
           <NavigationProperty Name="AspNetSession" Relationship="Self.FK_TeacherPenaltyRecord_Session" FromRole="TeacherPenaltyRecord" ToRole="AspNetSession" />
         </EntityType>
         <EntityType Name="ToDoList">
@@ -6242,7 +6411,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TeacherPe__Emplo__0A338187">
+        <Association Name="FK__TeacherPe__Emplo__12C8C788">
+          <End Role="AspNetEmployee" Type="Self.AspNetEmployee" Multiplicity="0..1" />
+          <End Role="TeacherPenaltyRecord" Type="Self.TeacherPenaltyRecord" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetEmployee">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TeacherPenaltyRecord">
+              <PropertyRef Name="EmployeeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TeacherPe__Emplo__1D114BD1">
           <End Role="AspNetEmployee" Type="Self.AspNetEmployee" Multiplicity="0..1" />
           <End Role="TeacherPenaltyRecord" Type="Self.TeacherPenaltyRecord" Multiplicity="*" />
           <ReferentialConstraint>
@@ -6896,6 +7077,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_AspNetTimeTable_Room">
+          <End Role="AspNetRoom" Type="Self.AspNetRoom" Multiplicity="0..1" />
+          <End Role="AspNetTimeTable" Type="Self.AspNetTimeTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetRoom">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetTimeTable">
+              <PropertyRef Name="RoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_AspNetSalary_Session">
           <End Role="AspNetSession" Type="Self.AspNetSession" Multiplicity="0..1" />
           <End Role="AspNetSalary" Type="Self.AspNetSalary" Multiplicity="*" />
@@ -7494,6 +7687,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_AspNetTimeTable_Subject">
+          <End Role="AspNetSubjects" Type="Self.AspNetSubject" Multiplicity="0..1" />
+          <End Role="AspNetTimeTable" Type="Self.AspNetTimeTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetSubjects">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetTimeTable">
+              <PropertyRef Name="SubjectID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_AspNetTeacher_Session_Teacher">
           <End Role="AspNetTeacher" Type="Self.AspNetTeacher" Multiplicity="1" />
           <End Role="AspNetTeacher_Session" Type="Self.AspNetTeacher_Session" Multiplicity="0..1" />
@@ -7515,6 +7720,18 @@
             </Principal>
             <Dependent Role="AspNetTeacher">
               <PropertyRef Name="TeacherID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AspNetTimeTable_Slot">
+          <End Role="AspNetTimeslot" Type="Self.AspNetTimeslot" Multiplicity="0..1" />
+          <End Role="AspNetTimeTable" Type="Self.AspNetTimeTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetTimeslot">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetTimeTable">
+              <PropertyRef Name="SlotID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -7546,7 +7763,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Event__UserId__762C88DA">
+        <Association Name="FK__Event__UserId__1C1D2798">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="0..1" />
+          <End Role="Event" Type="Self.Event" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Event">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Event__UserId__7EC1CEDB">
           <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="0..1" />
           <End Role="Event" Type="Self.Event" Multiplicity="*" />
           <ReferentialConstraint>
@@ -7834,6 +8063,7 @@
           <EntitySet Name="AspNetPTMFormRoles" EntityType="Self.AspNetPTMFormRole" />
           <EntitySet Name="AspNetPushNotifications" EntityType="Self.AspNetPushNotification" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
+          <EntitySet Name="AspNetRooms" EntityType="Self.AspNetRoom" />
           <EntitySet Name="AspNetSalaries" EntityType="Self.AspNetSalary" />
           <EntitySet Name="AspNetSalaryDetails" EntityType="Self.AspNetSalaryDetail" />
           <EntitySet Name="AspNetSessions" EntityType="Self.AspNetSession" />
@@ -7860,6 +8090,8 @@
           <EntitySet Name="AspNetTeacher_Session" EntityType="Self.AspNetTeacher_Session" />
           <EntitySet Name="AspNetTerms" EntityType="Self.AspNetTerm" />
           <EntitySet Name="AspNetTime_Setting" EntityType="Self.AspNetTime_Setting" />
+          <EntitySet Name="AspNetTimeslots" EntityType="Self.AspNetTimeslot" />
+          <EntitySet Name="AspNetTimeTables" EntityType="Self.AspNetTimeTable" />
           <EntitySet Name="AspNetTopics" EntityType="Self.AspNetTopic" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaim" />
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogin" />
@@ -8038,7 +8270,11 @@
             <End Role="AspNetSession" EntitySet="AspNetSessions" />
             <End Role="AspNetEmp_Auto_Absent" EntitySet="AspNetEmp_Auto_Absent" />
           </AssociationSet>
-          <AssociationSet Name="FK__TeacherPe__Emplo__0A338187" Association="Self.FK__TeacherPe__Emplo__0A338187">
+          <AssociationSet Name="FK__TeacherPe__Emplo__12C8C788" Association="Self.FK__TeacherPe__Emplo__12C8C788">
+            <End Role="AspNetEmployee" EntitySet="AspNetEmployees" />
+            <End Role="TeacherPenaltyRecord" EntitySet="TeacherPenaltyRecords" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TeacherPe__Emplo__1D114BD1" Association="Self.FK__TeacherPe__Emplo__1D114BD1">
             <End Role="AspNetEmployee" EntitySet="AspNetEmployees" />
             <End Role="TeacherPenaltyRecord" EntitySet="TeacherPenaltyRecords" />
           </AssociationSet>
@@ -8246,6 +8482,10 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetPushNotifications" EntitySet="AspNetPushNotifications" />
           </AssociationSet>
+          <AssociationSet Name="FK_AspNetTimeTable_Room" Association="Self.FK_AspNetTimeTable_Room">
+            <End Role="AspNetRoom" EntitySet="AspNetRooms" />
+            <End Role="AspNetTimeTable" EntitySet="AspNetTimeTables" />
+          </AssociationSet>
           <AssociationSet Name="FK_AspNetSalary_Session" Association="Self.FK_AspNetSalary_Session">
             <End Role="AspNetSession" EntitySet="AspNetSessions" />
             <End Role="AspNetSalary" EntitySet="AspNetSalaries" />
@@ -8438,6 +8678,10 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetSubjects" EntitySet="AspNetSubjects" />
           </AssociationSet>
+          <AssociationSet Name="FK_AspNetTimeTable_Subject" Association="Self.FK_AspNetTimeTable_Subject">
+            <End Role="AspNetSubjects" EntitySet="AspNetSubjects" />
+            <End Role="AspNetTimeTable" EntitySet="AspNetTimeTables" />
+          </AssociationSet>
           <AssociationSet Name="FK_AspNetTeacher_Session_Teacher" Association="Self.FK_AspNetTeacher_Session_Teacher">
             <End Role="AspNetTeacher" EntitySet="AspNetTeachers" />
             <End Role="AspNetTeacher_Session" EntitySet="AspNetTeacher_Session" />
@@ -8445,6 +8689,10 @@
           <AssociationSet Name="FK_Teacher_ToAspNetUsers" Association="Self.FK_Teacher_ToAspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetTeacher" EntitySet="AspNetTeachers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AspNetTimeTable_Slot" Association="Self.FK_AspNetTimeTable_Slot">
+            <End Role="AspNetTimeslot" EntitySet="AspNetTimeslots" />
+            <End Role="AspNetTimeTable" EntitySet="AspNetTimeTables" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -8454,7 +8702,11 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
           </AssociationSet>
-          <AssociationSet Name="FK__Event__UserId__762C88DA" Association="Self.FK__Event__UserId__762C88DA">
+          <AssociationSet Name="FK__Event__UserId__1C1D2798" Association="Self.FK__Event__UserId__1C1D2798">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Event" EntitySet="Events" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Event__UserId__7EC1CEDB" Association="Self.FK__Event__UserId__7EC1CEDB">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Event" EntitySet="Events" />
           </AssociationSet>
@@ -8534,30 +8786,30 @@
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
           </AssociationSet>
-          <FunctionImport Name="GetAccountantListingData" ReturnType="Collection(NGS_DatabaseModel.GetAccountantListingData_Result)">
+          <FunctionImport Name="GetAccountantListingData" ReturnType="Collection(OA_DatabaseModel.GetAccountantListingData_Result)">
             <Parameter Name="SessionId" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="GetAllParents" ReturnType="Collection(NGS_DatabaseModel.GetAllParents_Result)">
+          <FunctionImport Name="GetAllParents" ReturnType="Collection(OA_DatabaseModel.GetAllParents_Result)">
             <Parameter Name="UserID" Mode="In" Type="String" />
             <Parameter Name="SessionID" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="GetStudentBasicData" ReturnType="Collection(NGS_DatabaseModel.GetStudentBasicData_Result)">
+          <FunctionImport Name="GetStudentBasicData" ReturnType="Collection(OA_DatabaseModel.GetStudentBasicData_Result)">
             <Parameter Name="StudentId" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="GetStudentSessionSubjectAssessment" ReturnType="Collection(NGS_DatabaseModel.GetStudentSessionSubjectAssessment_Result)">
+          <FunctionImport Name="GetStudentSessionSubjectAssessment" ReturnType="Collection(OA_DatabaseModel.GetStudentSessionSubjectAssessment_Result)">
             <Parameter Name="StudentId" Mode="In" Type="String" />
             <Parameter Name="SessionId" Mode="In" Type="Int32" />
             <Parameter Name="SubjectId" Mode="In" Type="Int32" />
           </FunctionImport>
-          <FunctionImport Name="GetStudentSubjects" ReturnType="Collection(NGS_DatabaseModel.GetStudentSubjects_Result)">
+          <FunctionImport Name="GetStudentSubjects" ReturnType="Collection(OA_DatabaseModel.GetStudentSubjects_Result)">
             <Parameter Name="StudentId" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="GetStudentTermSubjectAssessment" ReturnType="Collection(NGS_DatabaseModel.GetStudentTermSubjectAssessment_Result)">
+          <FunctionImport Name="GetStudentTermSubjectAssessment" ReturnType="Collection(OA_DatabaseModel.GetStudentTermSubjectAssessment_Result)">
             <Parameter Name="StudentId" Mode="In" Type="String" />
             <Parameter Name="TermId" Mode="In" Type="Int32" />
             <Parameter Name="StudentSubjectId" Mode="In" Type="Int32" />
           </FunctionImport>
-          <FunctionImport Name="GetSubjctAssessmentQuestions" ReturnType="Collection(NGS_DatabaseModel.GetSubjctAssessmentQuestions_Result)">
+          <FunctionImport Name="GetSubjctAssessmentQuestions" ReturnType="Collection(OA_DatabaseModel.GetSubjctAssessmentQuestions_Result)">
             <Parameter Name="SubjectId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="sp_MSforeach_worker">
@@ -8595,6 +8847,11 @@
           <Property Type="String" Name="Image" Nullable="true" />
           <Property Type="DateTime" Name="LastPasswordChange" Nullable="true" Precision="23" />
           <Property Type="Int32" Name="SessionID" Nullable="true" />
+          <Property Type="String" Name="Industry" Nullable="true" />
+          <Property Type="String" Name="Occupation" Nullable="true" />
+          <Property Type="String" Name="Highest_Degree" Nullable="true" />
+          <Property Type="String" Name="University" Nullable="true" />
+          <Property Type="String" Name="Field_Major" Nullable="true" />
         </ComplexType>
         <ComplexType Name="GetAllParents_Result">
           <Property Type="String" Name="Id" Nullable="false" MaxLength="128" />
@@ -8632,6 +8889,8 @@
           <Property Type="Int32" Name="ClassID" Nullable="true" />
           <Property Type="String" Name="TeacherID" Nullable="true" MaxLength="128" />
           <Property Type="String" Name="Status" Nullable="true" MaxLength="20" />
+          <Property Type="Boolean" Name="IsManadatory" Nullable="true" />
+          <Property Type="Int32" Name="Points" Nullable="true" />
           <Property Type="String" Name="StudentID" Nullable="false" MaxLength="128" />
         </ComplexType>
         <ComplexType Name="GetStudentTermSubjectAssessment_Result">
@@ -8656,9 +8915,9 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="NGS_DatabaseModelStoreContainer" CdmEntityContainer="SEA_DatabaseEntities">
+        <EntityContainerMapping StorageEntityContainer="OA_DatabaseModelStoreContainer" CdmEntityContainer="SEA_DatabaseEntities">
           <EntitySetMapping Name="Aspnet_Employee_Session">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.Aspnet_Employee_Session">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.Aspnet_Employee_Session">
               <MappingFragment StoreEntitySet="Aspnet_Employee_Session">
                 <ScalarProperty Name="Emp_Id" ColumnName="Emp_Id" />
                 <ScalarProperty Name="Session_Id" ColumnName="Session_Id" />
@@ -8667,7 +8926,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetAbsent_Student">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetAbsent_Student">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetAbsent_Student">
               <MappingFragment StoreEntitySet="AspNetAbsent_Student">
                 <ScalarProperty Name="AbsentId" ColumnName="AbsentId" />
                 <ScalarProperty Name="Roll_Number" ColumnName="Roll_Number" />
@@ -8678,7 +8937,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetAnnouncements">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetAnnouncement">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetAnnouncement">
               <MappingFragment StoreEntitySet="AspNetAnnouncement">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
@@ -8689,7 +8948,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetAnnouncement_Subject">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetAnnouncement_Subject">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetAnnouncement_Subject">
               <MappingFragment StoreEntitySet="AspNetAnnouncement_Subject">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="SubjectID" ColumnName="SubjectID" />
@@ -8698,7 +8957,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetAssessments">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetAssessment">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetAssessment">
               <MappingFragment StoreEntitySet="AspNetAssessment">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Subject_CatalogID" ColumnName="Subject_CatalogID" />
@@ -8715,7 +8974,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetAssessment_Question">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetAssessment_Question">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetAssessment_Question">
               <MappingFragment StoreEntitySet="AspNetAssessment_Question">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Question" ColumnName="Question" />
@@ -8726,7 +8985,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetAssessment_Questions_Category">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetAssessment_Questions_Category">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetAssessment_Questions_Category">
               <MappingFragment StoreEntitySet="AspNetAssessment_Questions_Category">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
@@ -8734,7 +8993,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetAssessment_Topic">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetAssessment_Topic">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetAssessment_Topic">
               <MappingFragment StoreEntitySet="AspNetAssessment_Topic">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="AssessmentID" ColumnName="AssessmentID" />
@@ -8743,7 +9002,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetAttendances">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetAttendance">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetAttendance">
               <MappingFragment StoreEntitySet="AspNetAttendance">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="SubjectID" ColumnName="SubjectID" />
@@ -8752,7 +9011,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetCatalogs">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetCatalog">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetCatalog">
               <MappingFragment StoreEntitySet="AspNetCatalog">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="CatalogName" ColumnName="CatalogName" />
@@ -8760,7 +9019,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetChapters">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetChapter">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetChapter">
               <MappingFragment StoreEntitySet="AspNetChapter">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ChapterNo" ColumnName="ChapterNo" />
@@ -8773,7 +9032,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetClasses">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetClass">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetClass">
               <MappingFragment StoreEntitySet="AspNetClass">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ClassName" ColumnName="ClassName" />
@@ -8785,7 +9044,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetClass_FeeType">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetClass_FeeType">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetClass_FeeType">
               <MappingFragment StoreEntitySet="AspNetClass_FeeType">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ClassID" ColumnName="ClassID" />
@@ -8796,7 +9055,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetCurriculums">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetCurriculum">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetCurriculum">
               <MappingFragment StoreEntitySet="AspNetCurriculum">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="CurriculumName" ColumnName="CurriculumName" />
@@ -8804,7 +9063,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetDurationTypes">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetDurationType">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetDurationType">
               <MappingFragment StoreEntitySet="AspNetDurationType">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="TypeName" ColumnName="TypeName" />
@@ -8813,7 +9072,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetEmp_Auto_Absent">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetEmp_Auto_Absent">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetEmp_Auto_Absent">
               <MappingFragment StoreEntitySet="AspNetEmp_Auto_Absent">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
@@ -8824,7 +9083,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetEmp_Auto_Attendance">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetEmp_Auto_Attendance">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetEmp_Auto_Attendance">
               <MappingFragment StoreEntitySet="AspNetEmp_Auto_Attendance">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
@@ -8837,7 +9096,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetEmployees">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetEmployee">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetEmployee">
               <MappingFragment StoreEntitySet="AspNetEmployee">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="PositionAppliedFor" ColumnName="PositionAppliedFor" />
@@ -8873,7 +9132,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetEmployee_Attendance">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetEmployee_Attendance">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetEmployee_Attendance">
               <MappingFragment StoreEntitySet="AspNetEmployee_Attendance">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="AttendanceID" ColumnName="AttendanceID" />
@@ -8886,7 +9145,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetEmployeeAttendances">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetEmployeeAttendance">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetEmployeeAttendance">
               <MappingFragment StoreEntitySet="AspNetEmployeeAttendance">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
@@ -8894,7 +9153,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetFeeChallans">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetFeeChallan">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetFeeChallan">
               <MappingFragment StoreEntitySet="AspNetFeeChallan">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ClassID" ColumnName="ClassID" />
@@ -8911,7 +9170,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetFeedBackForms">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetFeedBackForm">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetFeedBackForm">
               <MappingFragment StoreEntitySet="AspNetFeedBackForm">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Question" ColumnName="Question" />
@@ -8921,7 +9180,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetFeeTypes">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetFeeType">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetFeeType">
               <MappingFragment StoreEntitySet="AspNetFeeType">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="LedgerID" ColumnName="LedgerID" />
@@ -8930,7 +9189,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetFinanceLedgers">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetFinanceLedger">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetFinanceLedger">
               <MappingFragment StoreEntitySet="AspNetFinanceLedgers">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
@@ -8948,7 +9207,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetFinanceLedgerTypes">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetFinanceLedgerType">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetFinanceLedgerType">
               <MappingFragment StoreEntitySet="AspNetFinanceLedgerType">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -8956,7 +9215,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetFinanceMonths">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetFinanceMonth">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetFinanceMonth">
               <MappingFragment StoreEntitySet="AspNetFinanceMonth">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Month" ColumnName="Month" />
@@ -8968,7 +9227,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetFinancePeriods">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetFinancePeriod">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetFinancePeriod">
               <MappingFragment StoreEntitySet="AspNetFinancePeriod">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Year" ColumnName="Year" />
@@ -8976,7 +9235,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetHoliday_Calendar_Notification">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetHoliday_Calendar_Notification">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetHoliday_Calendar_Notification">
               <MappingFragment StoreEntitySet="AspNetHoliday_Calendar_Notification">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
@@ -8987,7 +9246,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetHomeworks">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetHomework">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetHomework">
               <MappingFragment StoreEntitySet="AspNetHomework">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ClassId" ColumnName="ClassId" />
@@ -8997,7 +9256,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetLessonPlans">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetLessonPlan">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetLessonPlan">
               <MappingFragment StoreEntitySet="AspNetLessonPlan">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="LessonPlanNo" ColumnName="LessonPlanNo" />
@@ -9008,7 +9267,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetLessonPlan_Topic">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetLessonPlan_Topic">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetLessonPlan_Topic">
               <MappingFragment StoreEntitySet="AspNetLessonPlan_Topic">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="LessonPlanID" ColumnName="LessonPlanID" />
@@ -9017,7 +9276,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetLessonPlanBreakdowns">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetLessonPlanBreakdown">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetLessonPlanBreakdown">
               <MappingFragment StoreEntitySet="AspNetLessonPlanBreakdown">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="LessonPlanID" ColumnName="LessonPlanID" />
@@ -9030,7 +9289,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetLessonPlanBreakdownHeadings">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetLessonPlanBreakdownHeading">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetLessonPlanBreakdownHeading">
               <MappingFragment StoreEntitySet="AspNetLessonPlanBreakdownHeading">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="BreakDownHeadingName" ColumnName="BreakDownHeadingName" />
@@ -9038,7 +9297,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetLogs">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetLog">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetLog">
               <MappingFragment StoreEntitySet="AspNetLog">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Operation" ColumnName="Operation" />
@@ -9048,7 +9307,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetLoginTimes">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetLoginTime">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetLoginTime">
               <MappingFragment StoreEntitySet="AspNetLoginTime">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="StartTime" ColumnName="StartTime" />
@@ -9060,7 +9319,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetMessage_Receiver">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetMessage_Receiver">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetMessage_Receiver">
               <MappingFragment StoreEntitySet="AspNetMessage_Receiver">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="MessageID" ColumnName="MessageID" />
@@ -9071,7 +9330,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetMessages">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetMessage">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetMessage">
               <MappingFragment StoreEntitySet="AspNetMessages">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Subject" ColumnName="Subject" />
@@ -9085,7 +9344,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetNotifications">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetNotification">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetNotification">
               <MappingFragment StoreEntitySet="AspNetNotification">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Subject" ColumnName="Subject" />
@@ -9098,7 +9357,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetNotification_User">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetNotification_User">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetNotification_User">
               <MappingFragment StoreEntitySet="AspNetNotification_User">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
@@ -9108,7 +9367,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetParents">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetParent">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetParent">
               <MappingFragment StoreEntitySet="AspNetParent">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
@@ -9126,7 +9385,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetParent_Child">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetParent_Child">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetParent_Child">
               <MappingFragment StoreEntitySet="AspNetParent_Child">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ParentID" ColumnName="ParentID" />
@@ -9135,7 +9394,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetParent_Notification">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetParent_Notification">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetParent_Notification">
               <MappingFragment StoreEntitySet="AspNetParent_Notification">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ParentID" ColumnName="ParentID" />
@@ -9149,7 +9408,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetParent_Session">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetParent_Session">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetParent_Session">
               <MappingFragment StoreEntitySet="AspNetParent_Session">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ParentID" ColumnName="ParentID" />
@@ -9158,7 +9417,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetParentTeacherMeetings">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetParentTeacherMeeting">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetParentTeacherMeeting">
               <MappingFragment StoreEntitySet="AspNetParentTeacherMeeting">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
@@ -9171,7 +9430,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetProjects">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetProject">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetProject">
               <MappingFragment StoreEntitySet="AspNetProject">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
@@ -9185,7 +9444,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetPTM_ParentFeedback">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetPTM_ParentFeedback">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetPTM_ParentFeedback">
               <MappingFragment StoreEntitySet="AspNetPTM_ParentFeedback">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="PTMID" ColumnName="PTMID" />
@@ -9195,7 +9454,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetPTM_TeacherFeedback">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetPTM_TeacherFeedback">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetPTM_TeacherFeedback">
               <MappingFragment StoreEntitySet="AspNetPTM_TeacherFeedback">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="PTMID" ColumnName="PTMID" />
@@ -9205,7 +9464,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetPTMAttendances">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetPTMAttendance">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetPTMAttendance">
               <MappingFragment StoreEntitySet="AspNetPTMAttendance">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="MeetingID" ColumnName="MeetingID" />
@@ -9217,7 +9476,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetPTMFormRoles">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetPTMFormRole">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetPTMFormRole">
               <MappingFragment StoreEntitySet="AspNetPTMFormRoles">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="RoleName" ColumnName="RoleName" />
@@ -9225,7 +9484,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetPushNotifications">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetPushNotification">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetPushNotification">
               <MappingFragment StoreEntitySet="AspNetPushNotifications">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Message" ColumnName="Message" />
@@ -9238,7 +9497,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetRoles">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetRole">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetRole">
               <MappingFragment StoreEntitySet="AspNetRoles">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -9246,8 +9505,17 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="AspNetRooms">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetRoom">
+              <MappingFragment StoreEntitySet="AspNetRoom">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="AspNetSalaries">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetSalary">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetSalary">
               <MappingFragment StoreEntitySet="AspNetSalary">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Month" ColumnName="Month" />
@@ -9259,7 +9527,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetSalaryDetails">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetSalaryDetail">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetSalaryDetail">
               <MappingFragment StoreEntitySet="AspNetSalaryDetail">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="GrossSalary" ColumnName="GrossSalary" />
@@ -9287,7 +9555,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetSessions">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetSession">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetSession">
               <MappingFragment StoreEntitySet="AspNetSession">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="SessionName" ColumnName="SessionName" />
@@ -9298,7 +9566,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetStudents">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetStudent">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetStudent">
               <MappingFragment StoreEntitySet="AspNetStudent">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StudentID" ColumnName="StudentID" />
@@ -9314,7 +9582,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetStudent_Announcement">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetStudent_Announcement">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetStudent_Announcement">
               <MappingFragment StoreEntitySet="AspNetStudent_Announcement">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StudentID" ColumnName="StudentID" />
@@ -9324,7 +9592,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetStudent_Assessment">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetStudent_Assessment">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetStudent_Assessment">
               <MappingFragment StoreEntitySet="AspNetStudent_Assessment">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="AssessmentID" ColumnName="AssessmentID" />
@@ -9337,7 +9605,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetStudent_Attendance">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetStudent_Attendance">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetStudent_Attendance">
               <MappingFragment StoreEntitySet="AspNetStudent_Attendance">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="AttendanceID" ColumnName="AttendanceID" />
@@ -9348,7 +9616,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetStudent_AutoAttendance">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetStudent_AutoAttendance">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetStudent_AutoAttendance">
               <MappingFragment StoreEntitySet="AspNetStudent_AutoAttendance">
                 <ScalarProperty Name="Attendance_id" ColumnName="Attendance_id" />
                 <ScalarProperty Name="Roll_Number" ColumnName="Roll_Number" />
@@ -9361,7 +9629,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetStudent_Fine">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetStudent_Fine">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetStudent_Fine">
               <MappingFragment StoreEntitySet="AspNetStudent_Fine">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StudentID" ColumnName="StudentID" />
@@ -9374,7 +9642,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetStudent_HomeWork">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetStudent_HomeWork">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetStudent_HomeWork">
               <MappingFragment StoreEntitySet="AspNetStudent_HomeWork">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StudentID" ColumnName="StudentID" />
@@ -9387,7 +9655,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetStudent_Notification">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetStudent_Notification">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetStudent_Notification">
               <MappingFragment StoreEntitySet="AspNetStudent_Notification">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StudentID" ColumnName="StudentID" />
@@ -9402,7 +9670,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetStudent_Payment">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetStudent_Payment">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetStudent_Payment">
               <MappingFragment StoreEntitySet="AspNetStudent_Payment">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StudentID" ColumnName="StudentID" />
@@ -9416,7 +9684,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetStudent_PaymentDetail">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetStudent_PaymentDetail">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetStudent_PaymentDetail">
               <MappingFragment StoreEntitySet="AspNetStudent_PaymentDetail">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Student_PaymentID" ColumnName="Student_PaymentID" />
@@ -9427,7 +9695,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetStudent_Project">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetStudent_Project">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetStudent_Project">
               <MappingFragment StoreEntitySet="AspNetStudent_Project">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
@@ -9439,7 +9707,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetStudent_Session_class">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetStudent_Session_class">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetStudent_Session_class">
               <MappingFragment StoreEntitySet="AspNetStudent_Session_class">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StudentID" ColumnName="StudentID" />
@@ -9449,7 +9717,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetStudent_Subject">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetStudent_Subject">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetStudent_Subject">
               <MappingFragment StoreEntitySet="AspNetStudent_Subject">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StudentID" ColumnName="StudentID" />
@@ -9458,7 +9726,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetStudent_Term_Assessment">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetStudent_Term_Assessment">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetStudent_Term_Assessment">
               <MappingFragment StoreEntitySet="AspNetStudent_Term_Assessment">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StudentID" ColumnName="StudentID" />
@@ -9475,7 +9743,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetStudent_Term_Assessments_Answers">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetStudent_Term_Assessments_Answers">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetStudent_Term_Assessments_Answers">
               <MappingFragment StoreEntitySet="AspNetStudent_Term_Assessments_Answers">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="STAID" ColumnName="STAID" />
@@ -9489,7 +9757,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetStudentPerformanceReports">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetStudentPerformanceReport">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetStudentPerformanceReport">
               <MappingFragment StoreEntitySet="AspNetStudentPerformanceReport">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StudentID" ColumnName="StudentID" />
@@ -9512,7 +9780,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetSubject_Catalog">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetSubject_Catalog">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetSubject_Catalog">
               <MappingFragment StoreEntitySet="AspNetSubject_Catalog">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="SubjectID" ColumnName="SubjectID" />
@@ -9522,7 +9790,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetSubject_Homework">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetSubject_Homework">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetSubject_Homework">
               <MappingFragment StoreEntitySet="AspNetSubject_Homework">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="SubjectID" ColumnName="SubjectID" />
@@ -9532,18 +9800,20 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetSubjects">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetSubject">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetSubject">
               <MappingFragment StoreEntitySet="AspNetSubjects">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="SubjectName" ColumnName="SubjectName" />
                 <ScalarProperty Name="ClassID" ColumnName="ClassID" />
                 <ScalarProperty Name="TeacherID" ColumnName="TeacherID" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="IsManadatory" ColumnName="IsManadatory" />
+                <ScalarProperty Name="Points" ColumnName="Points" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetTeachers">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetTeacher">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetTeacher">
               <MappingFragment StoreEntitySet="AspNetTeacher">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="TeacherID" ColumnName="TeacherID" />
@@ -9570,7 +9840,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetTeacher_Session">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetTeacher_Session">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetTeacher_Session">
               <MappingFragment StoreEntitySet="AspNetTeacher_Session">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="TeacherID" ColumnName="TeacherID" />
@@ -9579,7 +9849,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetTerms">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetTerm">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetTerm">
               <MappingFragment StoreEntitySet="AspNetTerm">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="TermName" ColumnName="TermName" />
@@ -9592,7 +9862,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetTime_Setting">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetTime_Setting">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetTime_Setting">
               <MappingFragment StoreEntitySet="AspNetTime_Setting">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="AbsentTime" ColumnName="AbsentTime" />
@@ -9600,8 +9870,32 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="AspNetTimeslots">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetTimeslot">
+              <MappingFragment StoreEntitySet="AspNetTimeslot">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Start_Time" ColumnName="Start_Time" />
+                <ScalarProperty Name="End_Time" ColumnName="End_Time" />
+                <ScalarProperty Name="Minutes" ColumnName="Minutes" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetTimeTables">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetTimeTable">
+              <MappingFragment StoreEntitySet="AspNetTimeTable">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="RoomID" ColumnName="RoomID" />
+                <ScalarProperty Name="SlotID" ColumnName="SlotID" />
+                <ScalarProperty Name="SubjectID" ColumnName="SubjectID" />
+                <ScalarProperty Name="TeacherID" ColumnName="TeacherID" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+                <ScalarProperty Name="Day" ColumnName="Day" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="AspNetTopics">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetTopic">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetTopic">
               <MappingFragment StoreEntitySet="AspNetTopic">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="TopicNo" ColumnName="TopicNo" />
@@ -9610,11 +9904,12 @@
                 <ScalarProperty Name="EndDate" ColumnName="EndDate" />
                 <ScalarProperty Name="ChapterID" ColumnName="ChapterID" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Percentage_Completion" ColumnName="Percentage_Completion" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetUserClaims">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetUserClaim">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetUserClaim">
               <MappingFragment StoreEntitySet="AspNetUserClaims">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
@@ -9624,7 +9919,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetUserLogins">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetUserLogin">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetUserLogin">
               <MappingFragment StoreEntitySet="AspNetUserLogins">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
@@ -9634,7 +9929,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetUsers">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetUser">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetUser">
               <MappingFragment StoreEntitySet="AspNetUsers">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
@@ -9653,11 +9948,16 @@
                 <ScalarProperty Name="Image" ColumnName="Image" />
                 <ScalarProperty Name="LastPasswordChange" ColumnName="LastPasswordChange" />
                 <ScalarProperty Name="SessionID" ColumnName="SessionID" />
+                <ScalarProperty Name="Industry" ColumnName="Industry" />
+                <ScalarProperty Name="Occupation" ColumnName="Occupation" />
+                <ScalarProperty Name="Highest_Degree" ColumnName="Highest_Degree" />
+                <ScalarProperty Name="University" ColumnName="University" />
+                <ScalarProperty Name="Field_Major" ColumnName="Field_Major" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetUsers_Session">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetUsers_Session">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetUsers_Session">
               <MappingFragment StoreEntitySet="AspNetUsers_Session">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
@@ -9666,7 +9966,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetVirtualRoles">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AspNetVirtualRole">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AspNetVirtualRole">
               <MappingFragment StoreEntitySet="AspNetVirtualRole">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -9674,7 +9974,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Employees">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.Employee">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.Employee">
               <MappingFragment StoreEntitySet="Employee">
                 <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -9686,7 +9986,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Employee_SalaryIncrement">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.Employee_SalaryIncrement">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.Employee_SalaryIncrement">
               <MappingFragment StoreEntitySet="Employee_SalaryIncrement">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="PreviousSalary" ColumnName="PreviousSalary" />
@@ -9698,7 +9998,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Employee_SalaryRecord">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.Employee_SalaryRecord">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.Employee_SalaryRecord">
               <MappingFragment StoreEntitySet="Employee_SalaryRecord">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
@@ -9709,7 +10009,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="EmployeeAdvanceSalaries">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.EmployeeAdvanceSalary">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.EmployeeAdvanceSalary">
               <MappingFragment StoreEntitySet="EmployeeAdvanceSalary">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
@@ -9722,7 +10022,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="EmployeePenalties">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.EmployeePenalty">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.EmployeePenalty">
               <MappingFragment StoreEntitySet="EmployeePenalty">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
@@ -9734,7 +10034,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="EmployeePenaltyTypes">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.EmployeePenaltyType">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.EmployeePenaltyType">
               <MappingFragment StoreEntitySet="EmployeePenaltyType">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="PenaltyType" ColumnName="PenaltyType" />
@@ -9744,7 +10044,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="EmployeeSalaries">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.EmployeeSalary">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.EmployeeSalary">
               <MappingFragment StoreEntitySet="EmployeeSalary">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
@@ -9756,7 +10056,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Events">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.Event">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.Event">
               <MappingFragment StoreEntitySet="Event">
                 <ScalarProperty Name="EventID" ColumnName="EventID" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
@@ -9772,7 +10072,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="FeeDateSettings">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.FeeDateSetting">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.FeeDateSetting">
               <MappingFragment StoreEntitySet="FeeDateSetting">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="DueDate" ColumnName="DueDate" />
@@ -9781,7 +10081,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="FeeDiscounts">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.FeeDiscount">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.FeeDiscount">
               <MappingFragment StoreEntitySet="FeeDiscount">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -9790,7 +10090,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Ledgers">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.Ledger">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.Ledger">
               <MappingFragment StoreEntitySet="Ledger">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -9805,7 +10105,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="LedgerGroups">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.LedgerGroup">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.LedgerGroup">
               <MappingFragment StoreEntitySet="LedgerGroup">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -9815,7 +10115,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="LedgerHeads">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.LedgerHead">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.LedgerHead">
               <MappingFragment StoreEntitySet="LedgerHead">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -9823,7 +10123,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Month_Multiplier">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.Month_Multiplier">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.Month_Multiplier">
               <MappingFragment StoreEntitySet="Month_Multiplier">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="AdjustedMonth" ColumnName="AdjustedMonth" />
@@ -9834,7 +10134,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="NonRecurringCharges">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.NonRecurringCharge">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.NonRecurringCharge">
               <MappingFragment StoreEntitySet="NonRecurringCharges">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ExpenseType" ColumnName="ExpenseType" />
@@ -9842,7 +10142,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="NonRecurringFeeMultipliers">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.NonRecurringFeeMultiplier">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.NonRecurringFeeMultiplier">
               <MappingFragment StoreEntitySet="NonRecurringFeeMultiplier">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StudentId" ColumnName="StudentId" />
@@ -9863,7 +10163,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="PenaltyFees">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.PenaltyFee">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.PenaltyFee">
               <MappingFragment StoreEntitySet="PenaltyFee">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -9872,7 +10172,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ruffdatas">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.ruffdata">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.ruffdata">
               <MappingFragment StoreEntitySet="ruffdata">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="StudentName" ColumnName="StudentName" />
@@ -9887,7 +10187,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Student_ChallanForm">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.Student_ChallanForm">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.Student_ChallanForm">
               <MappingFragment StoreEntitySet="Student_ChallanForm">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ClassChallanFormId" ColumnName="ClassChallanFormId" />
@@ -9898,7 +10198,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="StudentChallanForms">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.StudentChallanForm">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.StudentChallanForm">
               <MappingFragment StoreEntitySet="StudentChallanForm">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StudentId" ColumnName="StudentId" />
@@ -9909,7 +10209,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="StudentDiscounts">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.StudentDiscount">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.StudentDiscount">
               <MappingFragment StoreEntitySet="StudentDiscount">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="FeeDiscountId" ColumnName="FeeDiscountId" />
@@ -9920,7 +10220,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="StudentFeeMonths">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.StudentFeeMonth">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.StudentFeeMonth">
               <MappingFragment StoreEntitySet="StudentFeeMonth">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StudentId" ColumnName="StudentId" />
@@ -9938,7 +10238,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="StudentPenalties">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.StudentPenalty">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.StudentPenalty">
               <MappingFragment StoreEntitySet="StudentPenalty">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StudentId" ColumnName="StudentId" />
@@ -9949,7 +10249,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="StudentPenaltyTypes">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.StudentPenaltyType">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.StudentPenaltyType">
               <MappingFragment StoreEntitySet="StudentPenaltyType">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="PenaltyType" ColumnName="PenaltyType" />
@@ -9959,7 +10259,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="StudentRecurringFees">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.StudentRecurringFee">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.StudentRecurringFee">
               <MappingFragment StoreEntitySet="StudentRecurringFee">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ClassId" ColumnName="ClassId" />
@@ -9978,7 +10278,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="TeacherPenaltyRecords">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.TeacherPenaltyRecord">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.TeacherPenaltyRecord">
               <MappingFragment StoreEntitySet="TeacherPenaltyRecord">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
@@ -9993,7 +10293,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ToDoLists">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.ToDoList">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.ToDoList">
               <MappingFragment StoreEntitySet="ToDoList">
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
@@ -10004,7 +10304,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Vouchers">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.Voucher">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.Voucher">
               <MappingFragment StoreEntitySet="Voucher">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -10017,7 +10317,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="VoucherRecords">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.VoucherRecord">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.VoucherRecord">
               <MappingFragment StoreEntitySet="VoucherRecord">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="LedgerId" ColumnName="LedgerId" />
@@ -10031,7 +10331,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AggregatedCounters">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.AggregatedCounter">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.AggregatedCounter">
               <MappingFragment StoreEntitySet="AggregatedCounter">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Key" ColumnName="Key" />
@@ -10041,7 +10341,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Counters">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.Counter">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.Counter">
               <MappingFragment StoreEntitySet="Counter">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Key" ColumnName="Key" />
@@ -10051,7 +10351,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Hashes">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.Hash">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.Hash">
               <MappingFragment StoreEntitySet="Hash">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Key" ColumnName="Key" />
@@ -10062,7 +10362,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Jobs">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.Job">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.Job">
               <MappingFragment StoreEntitySet="Job">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StateId" ColumnName="StateId" />
@@ -10075,7 +10375,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="JobParameters">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.JobParameter">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.JobParameter">
               <MappingFragment StoreEntitySet="JobParameter">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="JobId" ColumnName="JobId" />
@@ -10085,7 +10385,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="JobQueues">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.JobQueue">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.JobQueue">
               <MappingFragment StoreEntitySet="JobQueue">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="JobId" ColumnName="JobId" />
@@ -10095,7 +10395,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Lists">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.List">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.List">
               <MappingFragment StoreEntitySet="List">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Key" ColumnName="Key" />
@@ -10105,14 +10405,14 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Schemata">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.Schema">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.Schema">
               <MappingFragment StoreEntitySet="Schema">
                 <ScalarProperty Name="Version" ColumnName="Version" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Servers">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.Server">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.Server">
               <MappingFragment StoreEntitySet="Server">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Data" ColumnName="Data" />
@@ -10121,7 +10421,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Sets">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.Set">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.Set">
               <MappingFragment StoreEntitySet="Set">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Key" ColumnName="Key" />
@@ -10132,7 +10432,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="States">
-            <EntityTypeMapping TypeName="NGS_DatabaseModel.State">
+            <EntityTypeMapping TypeName="OA_DatabaseModel.State">
               <MappingFragment StoreEntitySet="State">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="JobId" ColumnName="JobId" />
@@ -10143,7 +10443,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="AspNetUserRoles" TypeName="NGS_DatabaseModel.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
+          <AssociationSetMapping Name="AspNetUserRoles" TypeName="OA_DatabaseModel.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
             <EndProperty Name="AspNetRoles">
               <ScalarProperty Name="Id" ColumnName="RoleId" />
             </EndProperty>
@@ -10151,9 +10451,9 @@
               <ScalarProperty Name="Id" ColumnName="UserId" />
             </EndProperty>
           </AssociationSetMapping>
-          <FunctionImportMapping FunctionImportName="GetAccountantListingData" FunctionName="NGS_DatabaseModel.Store.GetAccountantListingData">
+          <FunctionImportMapping FunctionImportName="GetAccountantListingData" FunctionName="OA_DatabaseModel.Store.GetAccountantListingData">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="NGS_DatabaseModel.GetAccountantListingData_Result">
+              <ComplexTypeMapping TypeName="OA_DatabaseModel.GetAccountantListingData_Result">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
@@ -10171,12 +10471,17 @@
                 <ScalarProperty Name="Image" ColumnName="Image" />
                 <ScalarProperty Name="LastPasswordChange" ColumnName="LastPasswordChange" />
                 <ScalarProperty Name="SessionID" ColumnName="SessionID" />
+                <ScalarProperty Name="Industry" ColumnName="Industry" />
+                <ScalarProperty Name="Occupation" ColumnName="Occupation" />
+                <ScalarProperty Name="Highest_Degree" ColumnName="Highest_Degree" />
+                <ScalarProperty Name="University" ColumnName="University" />
+                <ScalarProperty Name="Field_Major" ColumnName="Field_Major" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="GetAllParents" FunctionName="NGS_DatabaseModel.Store.GetAllParents">
+          <FunctionImportMapping FunctionImportName="GetAllParents" FunctionName="OA_DatabaseModel.Store.GetAllParents">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="NGS_DatabaseModel.GetAllParents_Result">
+              <ComplexTypeMapping TypeName="OA_DatabaseModel.GetAllParents_Result">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
@@ -10185,9 +10490,9 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="GetStudentBasicData" FunctionName="NGS_DatabaseModel.Store.GetStudentBasicData">
+          <FunctionImportMapping FunctionImportName="GetStudentBasicData" FunctionName="OA_DatabaseModel.Store.GetStudentBasicData">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="NGS_DatabaseModel.GetStudentBasicData_Result">
+              <ComplexTypeMapping TypeName="OA_DatabaseModel.GetStudentBasicData_Result">
                 <ScalarProperty Name="SchoolName" ColumnName="SchoolName" />
                 <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
                 <ScalarProperty Name="Nationality" ColumnName="Nationality" />
@@ -10201,9 +10506,9 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="GetStudentSessionSubjectAssessment" FunctionName="NGS_DatabaseModel.Store.GetStudentSessionSubjectAssessment">
+          <FunctionImportMapping FunctionImportName="GetStudentSessionSubjectAssessment" FunctionName="OA_DatabaseModel.Store.GetStudentSessionSubjectAssessment">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="NGS_DatabaseModel.GetStudentSessionSubjectAssessment_Result">
+              <ComplexTypeMapping TypeName="OA_DatabaseModel.GetStudentSessionSubjectAssessment_Result">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="STAID" ColumnName="STAID" />
                 <ScalarProperty Name="Question" ColumnName="Question" />
@@ -10216,21 +10521,23 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="GetStudentSubjects" FunctionName="NGS_DatabaseModel.Store.GetStudentSubjects">
+          <FunctionImportMapping FunctionImportName="GetStudentSubjects" FunctionName="OA_DatabaseModel.Store.GetStudentSubjects">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="NGS_DatabaseModel.GetStudentSubjects_Result">
+              <ComplexTypeMapping TypeName="OA_DatabaseModel.GetStudentSubjects_Result">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="SubjectName" ColumnName="SubjectName" />
                 <ScalarProperty Name="ClassID" ColumnName="ClassID" />
                 <ScalarProperty Name="TeacherID" ColumnName="TeacherID" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="IsManadatory" ColumnName="IsManadatory" />
+                <ScalarProperty Name="Points" ColumnName="Points" />
                 <ScalarProperty Name="StudentID" ColumnName="StudentID" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="GetStudentTermSubjectAssessment" FunctionName="NGS_DatabaseModel.Store.GetStudentTermSubjectAssessment">
+          <FunctionImportMapping FunctionImportName="GetStudentTermSubjectAssessment" FunctionName="OA_DatabaseModel.Store.GetStudentTermSubjectAssessment">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="NGS_DatabaseModel.GetStudentTermSubjectAssessment_Result">
+              <ComplexTypeMapping TypeName="OA_DatabaseModel.GetStudentTermSubjectAssessment_Result">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="STAID" ColumnName="STAID" />
                 <ScalarProperty Name="Answer" ColumnName="Answer" />
@@ -10242,9 +10549,9 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="GetSubjctAssessmentQuestions" FunctionName="NGS_DatabaseModel.Store.GetSubjctAssessmentQuestions">
+          <FunctionImportMapping FunctionImportName="GetSubjctAssessmentQuestions" FunctionName="OA_DatabaseModel.Store.GetSubjctAssessmentQuestions">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="NGS_DatabaseModel.GetSubjctAssessmentQuestions_Result">
+              <ComplexTypeMapping TypeName="OA_DatabaseModel.GetSubjctAssessmentQuestions_Result">
                 <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Question" ColumnName="Question" />
@@ -10253,8 +10560,8 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_MSforeach_worker" FunctionName="NGS_DatabaseModel.Store.sp_MSforeach_worker" />
-          <FunctionImportMapping FunctionImportName="sp_MSforeachtable" FunctionName="NGS_DatabaseModel.Store.sp_MSforeachtable" />
+          <FunctionImportMapping FunctionImportName="sp_MSforeach_worker" FunctionName="OA_DatabaseModel.Store.sp_MSforeach_worker" />
+          <FunctionImportMapping FunctionImportName="sp_MSforeachtable" FunctionName="OA_DatabaseModel.Store.sp_MSforeachtable" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
