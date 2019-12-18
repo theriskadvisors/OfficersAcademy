@@ -78,7 +78,6 @@ namespace SEA_Application.Models
         public virtual DbSet<AspNetPTMFormRole> AspNetPTMFormRoles { get; set; }
         public virtual DbSet<AspNetPushNotification> AspNetPushNotifications { get; set; }
         public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
-        public virtual DbSet<AspNetRoom> AspNetRooms { get; set; }
         public virtual DbSet<AspNetSalary> AspNetSalaries { get; set; }
         public virtual DbSet<AspNetSalaryDetail> AspNetSalaryDetails { get; set; }
         public virtual DbSet<AspNetSession> AspNetSessions { get; set; }
@@ -105,8 +104,6 @@ namespace SEA_Application.Models
         public virtual DbSet<AspNetTeacher_Session> AspNetTeacher_Session { get; set; }
         public virtual DbSet<AspNetTerm> AspNetTerms { get; set; }
         public virtual DbSet<AspNetTime_Setting> AspNetTime_Setting { get; set; }
-        public virtual DbSet<AspNetTimeslot> AspNetTimeslots { get; set; }
-        public virtual DbSet<AspNetTimeTable> AspNetTimeTables { get; set; }
         public virtual DbSet<AspNetTopic> AspNetTopics { get; set; }
         public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }

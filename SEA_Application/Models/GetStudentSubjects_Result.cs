@@ -18,8 +18,6 @@ namespace SEA_Application.Models
         public Nullable<int> ClassID { get; set; }
         public string TeacherID { get; set; }
         public string Status { get; set; }
-        public Nullable<bool> IsManadatory { get; set; }
-        public Nullable<int> Points { get; set; }
         public string StudentID { get; set; }
     }
 }

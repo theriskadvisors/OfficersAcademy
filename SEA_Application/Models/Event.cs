@@ -27,6 +27,5 @@ namespace SEA_Application.Models
     
         public virtual AspNetSession AspNetSession { get; set; }
         public virtual AspNetUser AspNetUser { get; set; }
-        public virtual AspNetUser AspNetUser1 { get; set; }
     }
 }
