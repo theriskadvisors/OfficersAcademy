@@ -250,10 +250,7 @@ namespace SEA_Application.Controllers
                         var Class = (from classes in db.AspNetClasses
                                      where classes.ClassName == ClassName
                                      select classes).First();
-                        if(Class == null)
-                        {
-
-                        }
+                     
                         Subject.SubjectName = workSheet.Cells[rowIterator, 1].Value.ToString();
                         Subject.Points = Int32.Parse(workSheet.Cells[rowIterator, 3].Value.ToString());
                         string Manad =  workSheet.Cells[rowIterator, 4].Value.ToString();
@@ -282,6 +279,70 @@ namespace SEA_Application.Controllers
             catch (Exception e) { dbTransaction.Dispose(); }
 
             return View("Create" , aspNetSubject);
+        }
+
+
+        public ActionResult TimeTableFromFile()
+        {
+            var dbTransaction = db.Database.BeginTransaction();
+            try
+            {
+                HttpPostedFileBase file = Request.Files["subjects"];
+                if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
+                {
+                    string fileName = file.FileName;
+                    string fileContentType = file.ContentType;
+                    byte[] fileBytes = new byte[file.ContentLength];
+                    var data = file.InputStream.Read(fileBytes, 0, Convert.ToInt32(file.ContentLength));
+                }
+                var studentList = new List<RegisterViewModel>();
+                using (var package = new ExcelPackage(file.InputStream))
+                {
+                    var currentSheet = package.Workbook.Worksheets;
+                    var workSheet = currentSheet.First();
+                    var noOfCol = workSheet.Dimension.End.Column;
+                    var noOfRow = workSheet.Dimension.End.Row;
+
+                    for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
+                    {
+                        var TimeTable = new AspNetTimeTable();
+                   
+                        var RoomName = workSheet.Cells[rowIterator, 1].Value.ToString();
+                        var RoomID = db.AspNetRooms.Where(x => x.Name == RoomName).FirstOrDefault().Id;
+
+                        var SlotName = workSheet.Cells[rowIterator, 2].Value.ToString();
+                        var SlotID = db.AspNetTimeslots.Where(x => x.Name == SlotName).FirstOrDefault().Id;
+
+                        var SubName = workSheet.Cells[rowIterator, 3].Value.ToString();
+                        var Session_id  = db.AspNetSessions.Where(x => x.Id == SessionID && x.Status == "Active").FirstOrDefault().Id;
+                        var ClassID = db.AspNetClasses.Where(x => x.SessionID == Session_id).FirstOrDefault().Id;
+                        var SubjectID =  db.AspNetSubjects.Where(x => x.ClassID == ClassID && x.SubjectName == SubName).FirstOrDefault().Id;
+
+                        var UserName = workSheet.Cells[rowIterator, 4].Value.ToString();
+                        var TeacherID = db.AspNetUsers.Where(x => x.UserName == UserName).FirstOrDefault().Id;
+
+                        DateTime Day =  Convert.ToDateTime(workSheet.Cells[rowIterator, 5].Value.ToString());
+
+                        TimeTable.RoomID = RoomID;
+                        TimeTable.SlotID = SlotID;
+                        TimeTable.SubjectID = SubjectID;
+                        TimeTable.TeacherID = TeacherID;
+                        TimeTable.Day = Day.ToString();
+
+                       db.AspNetTimeTables.Add(TimeTable);
+                       db.SaveChanges();
+
+                    }
+                }
+                dbTransaction.Commit();
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception e) { dbTransaction.Dispose(); }
+
+            return View("Create");
+
+
         }
 
 

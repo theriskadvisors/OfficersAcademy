@@ -5,53 +5,115 @@
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<h2>Delete</h2>
+<div class="row">
+    <div class="col-md-12">
+        <div class="nav-tabs-custom">
+            @*<ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab_1" data-toggle="tab">Add a New Class</a></li>
+                    <li><a href="#tab_2" data-toggle="tab">Upload Excel File</a></li>
+                </ul>*@
+            <div class="tab-content" style="background-color: #ECF0F5; padding: 10px 0px 0px 0px;">
+                <div class="tab-pane active" id="tab_1">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h4 class="orange">Time Table Details &nbsp;</h4>
+                            <input type="hidden" value="@Model.Id" id="ID" />
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>AspNetTimeslot</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
+                        </div>
+                        <div class="form-three widget-shadow">
+                            @using (Html.BeginForm())
+            {
+                                @Html.AntiForgeryToken()
+                                <div class="box-body">
+                                    <div class="forms form-horizontal">
 
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                        @Html.HiddenFor(model => model.Id)
+                                        <div class="form-group">
+                                            <label class="control-label col-md-1 col-lg-1">Name:</label>
+                                            <div class="col-md-6">
+                                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger", id = "partial" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-1 col-lg-1">Start Time:</label>
+                                            <div class="col-md-6">
+                                                @Html.EditorFor(model => model.Start_Time, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.Start_Time, "", new { @class = "text-danger", id = "partial" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-1 col-lg-1">End Time:</label>
+                                            <div class="col-md-6">
+                                                @Html.EditorFor(model => model.End_Time, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.End_Time, "", new { @class = "text-danger", id = "partial" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-1 col-lg-1">Minutes:</label>
+                                            <div class="col-md-6">
+                                                @Html.EditorFor(model => model.Minutes, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.Minutes, "", new { @class = "text-danger", id = "partial" })
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="form-group">
+                                            <div class="col-lg-offset-1 col-lg-offset-1 col-md-6">
+                                                <button type="button" id="back" class="btn btn-default" onclick="redirect()">Back</button>
+                                                @using (Html.BeginForm())
+                                                {
+                                                    @Html.AntiForgeryToken()
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Start_Time)
-        </dt>
+                                                    <div class="form-actions no-color">
+                                                        <input type="submit" value="Delete" class="btn btn-default" /> |
+                                                        @Html.ActionLink("Back to List", "Index")
+                                                    </div>
+                                                }
 
-        <dd>
-            @Html.DisplayFor(model => model.Start_Time)
-        </dd>
+                                            </div>
+                                        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.End_Time)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.End_Time)
-        </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Minutes)
-        </dt>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_2">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="orange">Upload Excel File &nbsp; <i class="fa fa-file-excel-o" aria-hidden="true"></i></h3>
+                        </div>
+                        <div class="form-three widget-shadow">
+                            @using (Html.BeginForm("ClassfromFile", "AspNetClass", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                                @Html.AntiForgeryToken()
+                                <div class="box-body">
 
-        <dd>
-            @Html.DisplayFor(model => model.Minutes)
-        </dd>
+                                    <div class="form-group">
+                                        <div class="control-label col-md-3"><b>Excel File</b></div>
+                                        <div class="col-md-4">
+                                            <input id="classes" name="classes" type="file" />
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <br />
+                                    <div class="form-group">
+                                        <div class="col-md-offset-2 col-md-1">
+                                            <button type="button" id="cancel" class="btn btn-danger" onclick="redirect()">Back</button>
+                                        </div>
 
-    </dl>
-
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                     
+                    </div>
+                </div>
+            </div>
         </div>
-    }
+    </div>
 </div>
