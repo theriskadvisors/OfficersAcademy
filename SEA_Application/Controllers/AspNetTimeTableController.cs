@@ -58,39 +58,6 @@ namespace SEA_Application.Controllers
             return View();
         }
 
-        public ActionResult CreateTimetable()
-        {
-            var timelist = db.AspNetTimeTables.ToList();
-
-            foreach (var item in timelist)
-            {
-                var subjectID = item.SubjectID;
-                var students = db.AspNetStudent_Subject.Where(x => x.SubjectID == subjectID).Select(x => x.StudentID).ToList();
-
-                string[] color = {"Red", "Blue", "Green", "Pink", "Orange" };
-
-                foreach (var items in students)
-                {
-                    Random random = new Random();
-                    int colorcode = random.Next(1, 5);
-                    var newEvent = new Event();
-                    newEvent.UserId = items;
-                    newEvent.IsFullDay = false;
-                    newEvent.IsPublic = false;
-                    newEvent.Subject = item.AspNetRoom.Name + "_" + item.AspNetSubject.SubjectName;
-                    newEvent.SessionID = db.AspNetSessions.Where(x => x.Status == "Active").FirstOrDefault().Id;
-                    newEvent.ThemeColor = color[colorcode];
-                    var starttime = ((DateTime)item.AspNetTimeslot.Start_Time).ToString("hh:mm");
-                    var Endtime = ((DateTime)item.AspNetTimeslot.End_Time).ToString("hh:mm");
-                    newEvent.Start = Convert.ToDateTime(item.Day + " " + starttime);
-                    newEvent.End = Convert.ToDateTime(item.Day + " " + Endtime);
-                    db.Events.Add(newEvent);
-                }
-            }
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
         // POST: AspNetTimeTable/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
