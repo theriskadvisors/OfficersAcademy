@@ -19,7 +19,6 @@ namespace SEA_Application.Models
         {
             this.Aspnet_Employee_Session = new HashSet<Aspnet_Employee_Session>();
             this.TeacherPenaltyRecords = new HashSet<TeacherPenaltyRecord>();
-            this.TeacherPenaltyRecords1 = new HashSet<TeacherPenaltyRecord>();
             this.EmployeeAdvanceSalaries = new HashSet<EmployeeAdvanceSalary>();
             this.AspNetEmployee_Attendance = new HashSet<AspNetEmployee_Attendance>();
             this.AspNetSalaryDetails = new HashSet<AspNetSalaryDetail>();
@@ -63,8 +62,6 @@ namespace SEA_Application.Models
         public virtual ICollection<Aspnet_Employee_Session> Aspnet_Employee_Session { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TeacherPenaltyRecord> TeacherPenaltyRecords { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TeacherPenaltyRecord> TeacherPenaltyRecords1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EmployeeAdvanceSalary> EmployeeAdvanceSalaries { get; set; }
         public virtual AspNetUser AspNetUser { get; set; }

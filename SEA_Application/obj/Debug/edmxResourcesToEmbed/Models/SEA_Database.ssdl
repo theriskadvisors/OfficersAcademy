@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Schema Namespace="OA_DatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+<Schema Namespace="NGS_DatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
   <EntityType Name="Aspnet_Employee_Session">
     <Key>
       <PropertyRef Name="Id" />
@@ -538,14 +538,6 @@
     <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
     <Property Name="VirtualId" Type="int" />
   </EntityType>
-  <EntityType Name="AspNetRoom">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Name" Type="varchar(max)" />
-    <Property Name="Timestamp" Type="datetime" />
-  </EntityType>
   <EntityType Name="AspNetSalary">
     <Key>
       <PropertyRef Name="Id" />
@@ -819,8 +811,6 @@
     <Property Name="ClassID" Type="int" />
     <Property Name="TeacherID" Type="nvarchar" MaxLength="128" />
     <Property Name="Status" Type="varchar" MaxLength="20" />
-    <Property Name="IsManadatory" Type="bit" />
-    <Property Name="Points" Type="int" />
   </EntityType>
   <EntityType Name="AspNetTeacher">
     <Key>
@@ -876,28 +866,6 @@
     <Property Name="AbsentTime" Type="time" Precision="7" Nullable="false" />
     <Property Name="LateTime" Type="time" Precision="7" />
   </EntityType>
-  <EntityType Name="AspNetTimeslot">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Name" Type="varchar(max)" />
-    <Property Name="Start_Time" Type="datetime" />
-    <Property Name="End_Time" Type="datetime" />
-    <Property Name="Minutes" Type="int" />
-  </EntityType>
-  <EntityType Name="AspNetTimeTable">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="RoomID" Type="int" />
-    <Property Name="SlotID" Type="int" />
-    <Property Name="SubjectID" Type="int" />
-    <Property Name="TeacherID" Type="varchar(max)" />
-    <Property Name="Timestamp" Type="datetime" />
-    <Property Name="Day" Type="varchar(max)" />
-  </EntityType>
   <EntityType Name="AspNetTopic">
     <Key>
       <PropertyRef Name="Id" />
@@ -909,7 +877,6 @@
     <Property Name="EndDate" Type="datetime" />
     <Property Name="ChapterID" Type="int" />
     <Property Name="Status" Type="bit" />
-    <Property Name="Percentage_Completion" Type="int" />
   </EntityType>
   <EntityType Name="AspNetUserClaims">
     <Key>
@@ -958,11 +925,6 @@
     <Property Name="Image" Type="nvarchar(max)" />
     <Property Name="LastPasswordChange" Type="datetime" />
     <Property Name="SessionID" Type="int" />
-    <Property Name="Industry" Type="varchar(max)" />
-    <Property Name="Occupation" Type="varchar(max)" />
-    <Property Name="Highest_Degree" Type="varchar(max)" />
-    <Property Name="University" Type="varchar(max)" />
-    <Property Name="Field_Major" Type="varchar(max)" />
   </EntityType>
   <EntityType Name="AspNetUsers_Session">
     <Key>
@@ -1409,7 +1371,7 @@
     <Property Name="CreatedAt" Type="datetime" Nullable="false" />
     <Property Name="Data" Type="nvarchar(max)" />
   </EntityType>
-  <Association Name="FK__Event__UserId__1C1D2798">
+  <Association Name="FK__Event__UserId__762C88DA">
     <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
     <End Role="Event" Type="Self.Event" Multiplicity="*" />
     <ReferentialConstraint>
@@ -1421,31 +1383,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Event__UserId__7EC1CEDB">
-    <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
-    <End Role="Event" Type="Self.Event" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="AspNetUsers">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Event">
-        <PropertyRef Name="UserId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK__TeacherPe__Emplo__12C8C788">
-    <End Role="AspNetEmployee" Type="Self.AspNetEmployee" Multiplicity="0..1" />
-    <End Role="TeacherPenaltyRecord" Type="Self.TeacherPenaltyRecord" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="AspNetEmployee">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="TeacherPenaltyRecord">
-        <PropertyRef Name="EmployeeId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK__TeacherPe__Emplo__1D114BD1">
+  <Association Name="FK__TeacherPe__Emplo__0A338187">
     <End Role="AspNetEmployee" Type="Self.AspNetEmployee" Multiplicity="0..1" />
     <End Role="TeacherPenaltyRecord" Type="Self.TeacherPenaltyRecord" Multiplicity="*" />
     <ReferentialConstraint>
@@ -2733,42 +2671,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_AspNetTimeTable_Room">
-    <End Role="AspNetRoom" Type="Self.AspNetRoom" Multiplicity="0..1" />
-    <End Role="AspNetTimeTable" Type="Self.AspNetTimeTable" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="AspNetRoom">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="AspNetTimeTable">
-        <PropertyRef Name="RoomID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_AspNetTimeTable_Slot">
-    <End Role="AspNetTimeslot" Type="Self.AspNetTimeslot" Multiplicity="0..1" />
-    <End Role="AspNetTimeTable" Type="Self.AspNetTimeTable" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="AspNetTimeslot">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="AspNetTimeTable">
-        <PropertyRef Name="SlotID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_AspNetTimeTable_Subject">
-    <End Role="AspNetSubjects" Type="Self.AspNetSubjects" Multiplicity="0..1" />
-    <End Role="AspNetTimeTable" Type="Self.AspNetTimeTable" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="AspNetSubjects">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="AspNetTimeTable">
-        <PropertyRef Name="SubjectID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK_AspNetTopic_ToSubject">
     <End Role="AspNetChapter" Type="Self.AspNetChapter" Multiplicity="0..1">
       <OnDelete Action="Cascade" />
@@ -3485,7 +3387,7 @@
     <Parameter Name="precommand" Type="nvarchar" Mode="In" />
     <Parameter Name="postcommand" Type="nvarchar" Mode="In" />
   </Function>
-  <EntityContainer Name="OA_DatabaseModelStoreContainer">
+  <EntityContainer Name="NGS_DatabaseModelStoreContainer">
     <EntitySet Name="Aspnet_Employee_Session" EntityType="Self.Aspnet_Employee_Session" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetAbsent_Student" EntityType="Self.AspNetAbsent_Student" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetAnnouncement" EntityType="Self.AspNetAnnouncement" Schema="dbo" store:Type="Tables" />
@@ -3537,7 +3439,6 @@
     <EntitySet Name="AspNetPTMFormRoles" EntityType="Self.AspNetPTMFormRoles" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetPushNotifications" EntityType="Self.AspNetPushNotifications" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="AspNetRoom" EntityType="Self.AspNetRoom" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetSalary" EntityType="Self.AspNetSalary" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetSalaryDetail" EntityType="Self.AspNetSalaryDetail" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetSession" EntityType="Self.AspNetSession" Schema="dbo" store:Type="Tables" />
@@ -3564,8 +3465,6 @@
     <EntitySet Name="AspNetTeacher_Session" EntityType="Self.AspNetTeacher_Session" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetTerm" EntityType="Self.AspNetTerm" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetTime_Setting" EntityType="Self.AspNetTime_Setting" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="AspNetTimeslot" EntityType="Self.AspNetTimeslot" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="AspNetTimeTable" EntityType="Self.AspNetTimeTable" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetTopic" EntityType="Self.AspNetTopic" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
@@ -3613,19 +3512,11 @@
     <EntitySet Name="Server" EntityType="Self.Server" Schema="HangFire" store:Type="Tables" />
     <EntitySet Name="Set" EntityType="Self.Set" Schema="HangFire" store:Type="Tables" />
     <EntitySet Name="State" EntityType="Self.State" Schema="HangFire" store:Type="Tables" />
-    <AssociationSet Name="FK__Event__UserId__1C1D2798" Association="Self.FK__Event__UserId__1C1D2798">
+    <AssociationSet Name="FK__Event__UserId__762C88DA" Association="Self.FK__Event__UserId__762C88DA">
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
       <End Role="Event" EntitySet="Event" />
     </AssociationSet>
-    <AssociationSet Name="FK__Event__UserId__7EC1CEDB" Association="Self.FK__Event__UserId__7EC1CEDB">
-      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-      <End Role="Event" EntitySet="Event" />
-    </AssociationSet>
-    <AssociationSet Name="FK__TeacherPe__Emplo__12C8C788" Association="Self.FK__TeacherPe__Emplo__12C8C788">
-      <End Role="AspNetEmployee" EntitySet="AspNetEmployee" />
-      <End Role="TeacherPenaltyRecord" EntitySet="TeacherPenaltyRecord" />
-    </AssociationSet>
-    <AssociationSet Name="FK__TeacherPe__Emplo__1D114BD1" Association="Self.FK__TeacherPe__Emplo__1D114BD1">
+    <AssociationSet Name="FK__TeacherPe__Emplo__0A338187" Association="Self.FK__TeacherPe__Emplo__0A338187">
       <End Role="AspNetEmployee" EntitySet="AspNetEmployee" />
       <End Role="TeacherPenaltyRecord" EntitySet="TeacherPenaltyRecord" />
     </AssociationSet>
@@ -4036,18 +3927,6 @@
     <AssociationSet Name="FK_AspNetTerm_ToSession" Association="Self.FK_AspNetTerm_ToSession">
       <End Role="AspNetSession" EntitySet="AspNetSession" />
       <End Role="AspNetTerm" EntitySet="AspNetTerm" />
-    </AssociationSet>
-    <AssociationSet Name="FK_AspNetTimeTable_Room" Association="Self.FK_AspNetTimeTable_Room">
-      <End Role="AspNetRoom" EntitySet="AspNetRoom" />
-      <End Role="AspNetTimeTable" EntitySet="AspNetTimeTable" />
-    </AssociationSet>
-    <AssociationSet Name="FK_AspNetTimeTable_Slot" Association="Self.FK_AspNetTimeTable_Slot">
-      <End Role="AspNetTimeslot" EntitySet="AspNetTimeslot" />
-      <End Role="AspNetTimeTable" EntitySet="AspNetTimeTable" />
-    </AssociationSet>
-    <AssociationSet Name="FK_AspNetTimeTable_Subject" Association="Self.FK_AspNetTimeTable_Subject">
-      <End Role="AspNetSubjects" EntitySet="AspNetSubjects" />
-      <End Role="AspNetTimeTable" EntitySet="AspNetTimeTable" />
     </AssociationSet>
     <AssociationSet Name="FK_AspNetTopic_ToSubject" Association="Self.FK_AspNetTopic_ToSubject">
       <End Role="AspNetChapter" EntitySet="AspNetChapter" />

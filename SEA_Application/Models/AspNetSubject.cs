@@ -29,7 +29,6 @@ namespace SEA_Application.Models
             this.AspNetStudentPerformanceReports = new HashSet<AspNetStudentPerformanceReport>();
             this.AspNetSubject_Catalog = new HashSet<AspNetSubject_Catalog>();
             this.AspNetSubject_Homework = new HashSet<AspNetSubject_Homework>();
-            this.AspNetTimeTables = new HashSet<AspNetTimeTable>();
         }
     
         public int Id { get; set; }
@@ -37,8 +36,6 @@ namespace SEA_Application.Models
         public Nullable<int> ClassID { get; set; }
         public string TeacherID { get; set; }
         public string Status { get; set; }
-        public Nullable<bool> IsManadatory { get; set; }
-        public Nullable<int> Points { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetAnnouncement_Subject> AspNetAnnouncement_Subject { get; set; }
@@ -66,7 +63,5 @@ namespace SEA_Application.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetSubject_Homework> AspNetSubject_Homework { get; set; }
         public virtual AspNetUser AspNetUser { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AspNetTimeTable> AspNetTimeTables { get; set; }
     }
 }
