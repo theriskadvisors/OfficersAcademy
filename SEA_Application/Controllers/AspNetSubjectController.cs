@@ -20,13 +20,13 @@ namespace SEA_Application.Controllers
         // GET: AspNetSubject
         public ActionResult Index()
         {
-            var aspNetSubjects = db.AspNetSubjects.Where(x=> x.AspNetClass.SessionID == SessionID).Include(a => a.AspNetClass).Include(a => a.AspNetUser);
+            var aspNetSubjects = db.AspNetSubjects.Where(x => x.AspNetClass.SessionID == SessionID).Include(a => a.AspNetClass).Include(a => a.AspNetUser);
             return View(aspNetSubjects.ToList());
         }
 
         public JsonResult AllSubjects()
         {
-            var subjects = db.AspNetSubjects.Where(x=>x.Status!="false" && x.AspNetClass.SessionID == SessionID).Select(x=> new { x.Id, x.AspNetUser.Name, x.SubjectName, x.AspNetClass.ClassName }).ToList();
+            var subjects = db.AspNetSubjects.Where(x => x.Status != "false" && x.AspNetClass.SessionID == SessionID).Select(x => new { x.Id, x.AspNetUser.Name, x.SubjectName, x.AspNetClass.ClassName }).ToList();
 
             return Json(subjects, JsonRequestBehavior.AllowGet);
         }
@@ -34,12 +34,13 @@ namespace SEA_Application.Controllers
 
         public JsonResult SubjectSearch(string searchdata)
         {
-            var subjects = db.AspNetSubjects.Where(x => x.SubjectName.Contains(searchdata) && x.AspNetClass.SessionID == SessionID).Select(x => new {
+            var subjects = db.AspNetSubjects.Where(x => x.SubjectName.Contains(searchdata) && x.AspNetClass.SessionID == SessionID).Select(x => new
+            {
                 x.AspNetUser.Name,
                 x.Id,
                 x.SubjectName
             }).ToList();
-            return Json(subjects, JsonRequestBehavior.AllowGet); 
+            return Json(subjects, JsonRequestBehavior.AllowGet);
         }
 
         //***************************************************************************************************************************************//
@@ -47,8 +48,8 @@ namespace SEA_Application.Controllers
 
         public ActionResult ClassIndex()
         {
-            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x=> x.SessionID == SessionID), "Id", "ClassName");
-           return View();
+            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
+            return View();
 
         }
 
@@ -63,13 +64,13 @@ namespace SEA_Application.Controllers
         {
             SEA_DatabaseEntities db = new SEA_DatabaseEntities();
             List<AspNetSubject> SubjectList;
-            if(ClassId==0)
+            if (ClassId == 0)
             {
                 SubjectList = db.AspNetSubjects.Select(x => x).Where(y => y.AspNetClass.SessionID == SessionID).ToList();
             }
             else
             {
-                SubjectList = db.AspNetSubjects.Where(x => x.ClassID == ClassId).Where(x=> x.AspNetClass.SessionID == SessionID).Select(x => x).ToList();
+                SubjectList = db.AspNetSubjects.Where(x => x.ClassID == ClassId).Where(x => x.AspNetClass.SessionID == SessionID).Select(x => x).ToList();
             }
 
             ExcelPackage pck = new ExcelPackage();
@@ -78,7 +79,7 @@ namespace SEA_Application.Controllers
             ws.Cells["A1"].Value = "Subject Name";
             ws.Cells["B1"].Value = "Teacher";
             ws.Cells["C1"].Value = "Class Name";
-           
+
 
             int rowStart = 2;
             foreach (var item in SubjectList)
@@ -100,7 +101,7 @@ namespace SEA_Application.Controllers
 
         public ActionResult Indexs()
         {
-            var aspNetClasses = db.AspNetClasses.Where(x=> x.SessionID == SessionID).Include(a => a.AspNetUser);
+            var aspNetClasses = db.AspNetClasses.Where(x => x.SessionID == SessionID).Include(a => a.AspNetUser);
             ViewBag.Error = "Class created successfully";
             return View("Index", aspNetClasses.ToList());
         }
@@ -110,10 +111,10 @@ namespace SEA_Application.Controllers
         public JsonResult SubjectByClass(int id)
         {
 
-            if(id != 0)
+            if (id != 0)
             {
                 var subjects = (from subject in db.AspNetSubjects
-                                where subject.ClassID == id && subject.Status!="false"
+                                where subject.ClassID == id && subject.Status != "false"
                                 select new { subject.Id, subject.AspNetUser.Name, subject.SubjectName, subject.AspNetClass.ClassName }).ToList();
 
 
@@ -128,10 +129,10 @@ namespace SEA_Application.Controllers
                 return Json(AllSubjects, JsonRequestBehavior.AllowGet);
             }
 
-            
+
         }
 
-        
+
 
         //***************************************************************************************************************************************//
 
@@ -145,7 +146,7 @@ namespace SEA_Application.Controllers
             {
                 return HttpNotFound();
             }
-            
+
             var teachers = (from teacher in db.AspNetUsers.Where(x => x.Status != "False")
                             join t2 in db.AspNetUsers_Session.Where(s => s.SessionID == SessionID)
                             on teacher.Id equals t2.UserID
@@ -165,8 +166,8 @@ namespace SEA_Application.Controllers
         // GET: AspNetSubject/Create
         public ActionResult Create()
         {
-            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x=> x.SessionID == SessionID), "Id", "ClassName");
-            ViewBag.TeacherID = new SelectList(db.AspNetUsers.Where(x => x.AspNetRoles.Select(y => y.Name).Contains("Teacher") && x.AspNetUsers_Session.Any(z=> z.SessionID == SessionID)), "Id", "Name");
+            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
+            ViewBag.TeacherID = new SelectList(db.AspNetUsers.Where(x => x.AspNetRoles.Select(y => y.Name).Contains("Teacher") && x.AspNetUsers_Session.Any(z => z.SessionID == SessionID)), "Id", "Name");
             return View();
         }
 
@@ -182,7 +183,7 @@ namespace SEA_Application.Controllers
             var TransactionObj = db.Database.BeginTransaction();
             try
             {
-         
+
 
                 if (ModelState.IsValid)
                 {
@@ -204,12 +205,13 @@ namespace SEA_Application.Controllers
 
                 return RedirectToAction("ClassIndexs");
             }
-            catch {
+            catch
+            {
                 TransactionObj.Dispose();
 
                 ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName", aspNetSubject.ClassID);
                 ViewBag.TeacherID = new SelectList(db.AspNetUsers.Where(x => x.AspNetRoles.Select(y => y.Name).Contains("Teacher")), "Id", "Name");
-             
+
                 return View("Create", aspNetSubject);
             }
 
@@ -241,7 +243,7 @@ namespace SEA_Application.Controllers
                     for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
                     {
                         var Subject = new AspNetSubject();
-                       // string TeacherName = workSheet.Cells[rowIterator, 2].Value.ToString();
+                        // string TeacherName = workSheet.Cells[rowIterator, 2].Value.ToString();
                         //var Teacher = (from users in db.AspNetUsers
                         //               where users.UserName == TeacherName
                         //               select users).First();
@@ -250,10 +252,10 @@ namespace SEA_Application.Controllers
                         var Class = (from classes in db.AspNetClasses
                                      where classes.ClassName == ClassName
                                      select classes).First();
-                     
+
                         Subject.SubjectName = workSheet.Cells[rowIterator, 1].Value.ToString();
                         Subject.Points = Int32.Parse(workSheet.Cells[rowIterator, 3].Value.ToString());
-                        string Manad =  workSheet.Cells[rowIterator, 4].Value.ToString();
+                        string Manad = workSheet.Cells[rowIterator, 4].Value.ToString();
                         bool value;
                         if (Manad == "Yes")
                         {
@@ -278,69 +280,198 @@ namespace SEA_Application.Controllers
             }
             catch (Exception e) { dbTransaction.Dispose(); }
 
-            return View("Create" , aspNetSubject);
+            return View("Create", aspNetSubject);
         }
 
 
         public ActionResult TimeTableFromFile()
         {
             var dbTransaction = db.Database.BeginTransaction();
-            try
+
+            HttpPostedFileBase file = Request.Files["subjects"];
+            if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
             {
-                HttpPostedFileBase file = Request.Files["subjects"];
-                if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
-                {
-                    string fileName = file.FileName;
-                    string fileContentType = file.ContentType;
-                    byte[] fileBytes = new byte[file.ContentLength];
-                    var data = file.InputStream.Read(fileBytes, 0, Convert.ToInt32(file.ContentLength));
-                }
-                var studentList = new List<RegisterViewModel>();
-                using (var package = new ExcelPackage(file.InputStream))
-                {
-                    var currentSheet = package.Workbook.Worksheets;
-                    var workSheet = currentSheet.First();
-                    var noOfCol = workSheet.Dimension.End.Column;
-                    var noOfRow = workSheet.Dimension.End.Row;
+                string fileName = file.FileName;
+                string fileContentType = file.ContentType;
+                byte[] fileBytes = new byte[file.ContentLength];
+                var data = file.InputStream.Read(fileBytes, 0, Convert.ToInt32(file.ContentLength));
+            }
+            var studentList = new List<RegisterViewModel>();
+            using (var package = new ExcelPackage(file.InputStream))
+            {
 
-                    for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
+                var currentSheet = package.Workbook.Worksheets;
+                var workSheet = currentSheet.First();
+                var noOfCol = workSheet.Dimension.End.Column;
+                var noOfRow = workSheet.Dimension.End.Row;
+
+                string ErrorMsg = null;
+                int rowIterator;
+                for (rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
+                {
+                    var TimeTable = new AspNetTimeTable();
+
+                    var RoomName = workSheet.Cells[rowIterator, 1].Value.ToString();
+                    //RoomID;
+                    int RoomID = 0;
+                    AspNetRoom room = new AspNetRoom();
+
+                    room = db.AspNetRooms.Where(x => x.Name == RoomName).FirstOrDefault();
+
+                    if (room == null)
                     {
-                        var TimeTable = new AspNetTimeTable();
-                   
-                        var RoomName = workSheet.Cells[rowIterator, 1].Value.ToString();
-                        var RoomID = db.AspNetRooms.Where(x => x.Name == RoomName).FirstOrDefault().Id;
+                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator - 1) + "Room Name is not valid";
 
-                        var SlotName = workSheet.Cells[rowIterator, 2].Value.ToString();
-                        var SlotID = db.AspNetTimeslots.Where(x => x.Name == SlotName).FirstOrDefault().Id;
+                        TempData["ErrorMsg"] = ErrorMsg;
 
-                        var SubName = workSheet.Cells[rowIterator, 3].Value.ToString();
-                        var Session_id  = db.AspNetSessions.Where(x => x.Id == SessionID && x.Status == "Active").FirstOrDefault().Id;
-                        var ClassID = db.AspNetClasses.Where(x => x.SessionID == Session_id).FirstOrDefault().Id;
-                        var SubjectID =  db.AspNetSubjects.Where(x => x.ClassID == ClassID && x.SubjectName == SubName).FirstOrDefault().Id;
-
-                        var UserName = workSheet.Cells[rowIterator, 4].Value.ToString();
-                        var TeacherID = db.AspNetUsers.Where(x => x.UserName == UserName).FirstOrDefault().Id;
-
-                        DateTime Day =  Convert.ToDateTime(workSheet.Cells[rowIterator, 5].Value.ToString());
-
-                        TimeTable.RoomID = RoomID;
-                        TimeTable.SlotID = SlotID;
-                        TimeTable.SubjectID = SubjectID;
-                        TimeTable.TeacherID = TeacherID;
-                        TimeTable.Day = Day.ToString();
-
-                       db.AspNetTimeTables.Add(TimeTable);
-                       db.SaveChanges();
+                        return RedirectToAction("Create", "AspNetTimeTable");
 
                     }
+                    else
+                    {
+                        RoomID = room.Id;
+
+                    }
+
+
+
+
+
+                    var SlotName = workSheet.Cells[rowIterator, 2].Value.ToString();
+                    //var SlotID = db.AspNetTimeslots.Where(x => x.Name == SlotName).FirstOrDefault().Id;
+
+
+
+                    int SlotID = 0;
+                    AspNetTimeslot slot = new AspNetTimeslot();
+
+                    slot = db.AspNetTimeslots.Where(x => x.Name == SlotName).FirstOrDefault();
+
+                    if (slot == null)
+                    {
+                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator - 1) + " Slot Name is not valid";
+
+                        TempData["ErrorMsg"] = ErrorMsg;
+
+                        return RedirectToAction("Create", "AspNetTimeTable");
+
+                    }
+                    else
+                    {
+                        SlotID = slot.Id;
+
+                    }
+
+
+
+                    string SubName = workSheet.Cells[rowIterator, 3].Value.ToString();
+                    // var Session_id = db.AspNetSessions.Where(x => x.Id == SessionID && x.Status == "Active").FirstOrDefault().Id;
+
+
+                    int SessionId = 0;
+                    AspNetSession session = new AspNetSession();
+
+                    session = db.AspNetSessions.Where(x => x.Id == SessionID && x.Status == "Active").FirstOrDefault();
+
+                    if (room == null)
+                    {
+                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator - 1) + " Subject Name is not valid";
+
+                        TempData["ErrorMsg"] = ErrorMsg;
+
+                        return RedirectToAction("Create", "AspNetTimeTable");
+
+                    }
+                    else
+                    {
+                        SessionId = session.Id;
+
+                    }
+
+
+
+
+
+                    var ClassID = db.AspNetClasses.Where(x => x.SessionID == SessionId).FirstOrDefault().Id;
+
+                    //var SubjectID = db.AspNetSubjects.Where(x => x.ClassID == ClassID && x.SubjectName == SubName).FirstOrDefault().Id;
+
+                    int SubjectID = 0;
+                    AspNetSubject subject = new AspNetSubject();
+
+                    subject = db.AspNetSubjects.Where(x => x.ClassID == ClassID && x.SubjectName == SubName).FirstOrDefault();
+
+                    if (subject == null)
+                    {
+                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator - 1) + " Subject Name is not valid";
+
+                        TempData["ErrorMsg"] = ErrorMsg;
+
+                        return RedirectToAction("Create", "AspNetTimeTable");
+
+                    }
+                    else
+                    {
+                        SubjectID = subject.Id;
+
+                    }
+
+
+
+
+
+                    var UserName = workSheet.Cells[rowIterator, 4].Value.ToString();
+
+
+
+                  //   var TeacherID = db.AspNetUsers.Where(x => x.UserName == UserName).FirstOrDefault().Id;
+
+                    string TeacherID;
+                    AspNetUser teacher = new AspNetUser();
+
+                    teacher = db.AspNetUsers.Where(x => x.UserName == UserName).FirstOrDefault();
+
+                    if (teacher == null)
+                    {
+                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator - 1) + " Teacher Name is not valid";
+
+                        TempData["ErrorMsg"] = ErrorMsg;
+
+                        return RedirectToAction("Create", "AspNetTimeTable");
+
+                    }
+                    else
+                    {
+                        TeacherID = teacher.Id;
+
+                    }
+
+
+
+
+                    DateTime Day = Convert.ToDateTime(workSheet.Cells[rowIterator, 5].Value.ToString());
+
+                    TimeTable.RoomID = RoomID;
+                    TimeTable.SlotID = SlotID;
+                    TimeTable.SubjectID = SubjectID;
+                    TimeTable.TeacherID =  TeacherID;
+                    TimeTable.Day = Day.ToString();
+
+                    db.AspNetTimeTables.Add(TimeTable);
+                    db.SaveChanges();
+
                 }
-                dbTransaction.Commit();
-
-                return RedirectToAction("Index");
             }
-            catch (Exception e) { dbTransaction.Dispose(); }
+            dbTransaction.Commit();
 
-            return View("Create");
+            return RedirectToAction("Index", "AspNetTimeTable");
+
+            //catch (Exception e)
+            //{
+            //    dbTransaction.Dispose();
+            //}
+
+            return View("Index");
 
 
         }
@@ -372,7 +503,7 @@ namespace SEA_Application.Controllers
         {
             try
             {
-     
+
                 if (ModelState.IsValid)
                 {
                     db.Entry(aspNetSubject).State = EntityState.Modified;
@@ -383,12 +514,12 @@ namespace SEA_Application.Controllers
                 ViewBag.TeacherID = new SelectList(db.AspNetUsers, "Id", "Email", aspNetSubject.TeacherID);
                 return View(aspNetSubject);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ViewBag.Error = e.Message;
-                return RedirectToAction("Edit",aspNetSubject);
+                return RedirectToAction("Edit", aspNetSubject);
             }
-    
+
         }
 
         // GET: AspNetSubject/Delete/5
@@ -422,7 +553,7 @@ namespace SEA_Application.Controllers
 
             try
             {
-                subject.Status = "false"; 
+                subject.Status = "false";
                 db.SaveChanges();
                 return RedirectToAction("ClassIndex");
 
