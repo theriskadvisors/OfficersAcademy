@@ -1813,6 +1813,7 @@ public ActionResult ConfirmAccount(string id)
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> StudentRegister(RegisterViewModel model)
         {
+            model.UserName = Request.Form["UserName"];
             var dbTransaction = db.Database.BeginTransaction();
             try
             {

@@ -480,7 +480,30 @@ namespace SEA_Application.Controllers
             return View(model);
         }
 
-        public JsonResult GetUserName(string userName)
+    public ActionResult GetRollNumber()
+        {
+           int Roll_Number = 0;
+
+            List<RollNumberList> rl = new List<RollNumberList>();
+           string Max = db.GetRollNumbers().FirstOrDefault().ToString();
+            if (Max != null)
+            {
+                int MAX_RollNumber = Int32.Parse(Max);
+                Roll_Number = ++MAX_RollNumber;
+            }
+            else
+            {
+                Roll_Number = 1000;
+            }
+      
+            return Content(Roll_Number.ToString());
+        }
+
+
+
+
+
+ public JsonResult GetUserName(string userName)
         {
             check Check = new check();
             Check.count = 0;
