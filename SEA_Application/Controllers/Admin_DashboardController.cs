@@ -175,7 +175,15 @@ namespace SEA_Application.Controllers
 
             return Content(status);
         }
+        public ActionResult GetTopicPercentage(int id)
+        {
 
+            var TopicPercentage = db.AspNetTopics.Where(x => x.Id == id).FirstOrDefault().Percentage_Completion;
+
+
+            return Json(new { TopicPercentage = TopicPercentage }, JsonRequestBehavior.AllowGet);
+
+        }
         public ActionResult CalendarNotification()
         {
             var id = User.Identity.GetUserId();
