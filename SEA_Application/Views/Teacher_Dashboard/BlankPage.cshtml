@@ -39,6 +39,84 @@
         border: 1px solid #ccc;
         border-top: none;
     }
+
+
+    .list-group-item.active {
+        background-color: silver;
+        border-color: silver;
+    }
+
+        .list-group-item.active:hover {
+            background-color: silver;
+            border-color: silver;
+        }
+
+
+
+
+    .list_header_style {
+        position: relative;
+        display: block;
+        padding: 10px 15px;
+        margin-bottom: -1px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+    }
+
+    .subject_list {
+        cursor: pointer;
+    }
+
+    .chapter_list {
+        cursor: pointer;
+    }
+
+    .subject_list {
+        cursor: pointer;
+    }
+
+    .topic_list {
+        cursor: pointer;
+    }
+    .topic_percentage_list
+    {
+        cursor:pointer;
+    }
+
+    .custom_Style {
+    }
+
+    #firstlist {
+        float: left;
+    }
+
+    #secondlist {
+        display: none;
+        float: left;
+        margin-left: 10px;
+    }
+
+    #thirdlist {
+        display: none;
+        float: left;
+        margin-left: 10px;
+    }
+
+    #fourthlist {
+        display: none;
+        float: left;
+        margin-left: 10px;
+    }
+    .list_header_style {
+        background: #31364A;
+        font-size: 20px;
+        color: white
+    }
+    .list_item_style:hover {
+        background: #f5f5f5;
+    }
+
+     
 </style>
 
 
@@ -142,7 +220,7 @@
 
 <div class="tab">
     <button class="tablinks active" onclick="openCity(event, 'Calendar')">Calendar</button>
-    <button class="tablinks" onclick="openCity(event, 'Summary')">Summary</button>
+    <button id="SummaryButton" class="tablinks" onclick="openCity(event, 'Summary')">Summary</button>
 
 </div>
 
@@ -153,8 +231,60 @@
 </div>
 
 <div id="Summary" class="tabcontent">
-    <h3>Summary</h3>
-    <p>Summary Content</p>
+
+    <div style="width:232px" id="firstlist">
+
+        <h2 class="list_header_style ">Subjects</h2>
+
+        <ul class="subject_list list-group">
+        </ul>
+
+
+
+    </div>
+
+
+    <div style="width:232px" id="secondlist">
+
+        <h2 class="list_header_style">Chapters</h2>
+
+        <ul class="chapter_list list-group">
+        </ul>
+
+
+    </div> <!--End of Second List-->
+
+
+
+
+    <div style=" width: 232px " id="thirdlist">
+
+        <h2 class="list_header_style">Topics</h2>
+
+        <ul class="topic_list list-group">
+        </ul>
+
+
+    </div>
+    <!--End of Third List-->
+
+
+    <div style="        width: 232px
+" id="fourthlist">
+
+        <h2 class="list_header_style">Completion %</h2>
+
+        <ul class="topic_percentage_list list-group">
+
+
+        </ul>
+
+
+    </div>
+
+    
+
+
 </div>
 
 <div id="myModal" class="modal fade" role="dialog">
@@ -300,6 +430,7 @@
                 xmlUrl: 'events.xml'
             });
         })
+
 
 
 
@@ -501,7 +632,221 @@
     })
 
 
-       function openCity(evt, dashBoardTabs) {
+
+
+    $(document).ready(function () {
+
+
+
+        $.ajax({
+            type: "POST",
+            url: "/Teacher_Dashboard/GetSubjects",
+            dataType: "json",
+
+
+
+            success: function (response) {
+                debugger
+
+
+
+
+                $.each(response, function (index) {
+
+                    //alert(response[index].Id+"  "+response[index].Name);
+
+                    // alert("subject list");
+                    $(".subject_list").append('<li  class="list-group-item list_item_style" id="' + response[index].Id + '" > ' + response[index].Name + '  </li>');
+                    //if (data.count != null) {
+                    //  //  $('#UserName').val(data)
+                    //  //  document.getElementsByName('UserName')[0].value = data;
+
+                    //}
+                    //else {
+                    //    ///       $('#UserName').val(data)
+                    //  //  document.getElementsByName('UserName')[0].value = data;
+                    //}
+
+                })
+            },
+            error: function () {
+
+                alert("error");
+            }
+        })
+
+
+        $(".subject_list").on("click", "li", function () {
+            // alert("usama");
+
+            var id = $(this).attr('id');
+            $("#secondlist").css('display', 'none');
+
+            $("#thirdlist").css('display', 'none');
+            $("#fourthlist").css('display', 'none');
+            debugger
+            $.ajax({
+                type: "POST",
+                url: "/Teacher_Dashboard/GetChapters",
+                data: { id: id },
+
+                dataType: "json",
+
+                success: function (response) {
+
+
+                    // response = JSON.parse(response);
+                    //      alert(response.Id+"  "+response.Name);
+
+
+
+                    $(".chapter_list").html('');
+
+
+                    $.each(response, function (index) {
+
+
+
+
+                        $("#secondlist").fadeIn(800);
+
+
+                        $(".chapter_list").append('<li  class="list-group-item list_item_style" id="' + response[index].Id + '" > ' + response[index].Name + '  </li>');
+
+
+
+                    });
+
+
+
+                }
+
+
+
+
+            })
+
+
+
+        })
+
+
+        $(".chapter_list").on("click", "li", function () {
+
+         
+            var id = $(this).attr('id');
+
+            $("#thirdlist").css('display', 'none');
+
+            $("#fourthlist").css('display', 'none');
+
+            debugger
+            $.ajax({
+                type: "POST",
+                url: "/Teacher_Dashboard/GetTopics",
+                data: { id: id },
+
+                dataType: "json",
+               
+                success: function (response) {
+
+
+                    // response = JSON.parse(response);
+                    //      alert(response.Id+"  "+response.Name);
+
+
+
+                    $(".topic_list").html('');
+
+
+                    $.each(response, function (index) {
+
+
+
+
+                        $("#thirdlist").fadeIn(800);
+
+
+                        $(".topic_list").append('<li  class="list-group-item list_item_style" id="' + response[index].Id + '" > ' + response[index].Name + '  </li>');
+
+
+
+                    });
+
+
+
+                }
+
+
+
+
+            })
+
+
+
+        })
+
+
+            $(".topic_list").on("click", "li", function () {
+
+
+            var id = $(this).attr('id');
+
+          
+
+              $("#fourthlist").css('display', 'none');
+
+            debugger
+            $.ajax({
+                type: "POST",
+                url: "/Teacher_Dashboard/GetTopicPercentage",
+                data: { id: id },
+
+                dataType: "json",
+
+                success: function (response) {
+
+                    debugger;
+                    //response = JSON.parse(response);
+                //      alert(response.Id+"  "+response.Name);
+
+
+
+                    $(".topic_percentage_list").html('');
+
+
+
+
+                        $("#fourthlist").fadeIn(800);
+
+
+                        $(".topic_percentage_list").append('<li  class="list-group-item list_item_style"  > ' + response.TopicPercentage + '%  </li>');
+
+
+
+               
+
+
+                }
+
+
+
+
+            })
+
+
+
+        })
+
+
+
+
+
+
+    });
+
+
+    function openCity(evt, dashBoardTabs) {
         var i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("tabcontent");
         for (i = 0; i < tabcontent.length; i++) {
@@ -514,6 +859,17 @@
         document.getElementById(dashBoardTabs).style.display = "block";
         evt.currentTarget.className += " active";
     }
+
+
+
+
+
+
+
+
+
+
+
 
 </script>
 

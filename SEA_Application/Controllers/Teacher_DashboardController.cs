@@ -161,12 +161,12 @@ namespace SEA_Application.Controllers
             var allMessages = (from a in db.AspNetMessages
                                join b in db.AspNetMessage_Receiver
                                on a.Id equals b.MessageID
-                               where b.ReceiverID == CurrentUserId && b.Seen=="Not Seen"
+                               where b.ReceiverID == CurrentUserId && b.Seen == "Not Seen"
                                join c in db.AspNetUsers
                               on a.SenderID equals c.Id
-                              select new { a.Message, a.Time, c.Name }).ToList();
+                               select new { a.Message, a.Time, c.Name }).ToList();
             List<Message> messages = new List<Message>();
-            foreach(var item in allMessages)
+            foreach (var item in allMessages)
             {
                 Message m = new Message();
                 m.Name = item.Name;
@@ -177,16 +177,16 @@ namespace SEA_Application.Controllers
 
             }
             ViewBag.Messages = messages;
-            int classid = db.AspNetClasses.Where(m => m.TeacherID == CurrentUserId).Select(a=>a.Id).FirstOrDefault();
+            int classid = db.AspNetClasses.Where(m => m.TeacherID == CurrentUserId).Select(a => a.Id).FirstOrDefault();
             ViewBag.allStudents = db.AspNetStudents.Where(m => m.ClassID == classid).Count();
             ViewBag.TotalMessages = db.AspNetMessage_Receiver.Where(m => m.ReceiverID == CurrentUserId && m.Seen == "Not Seen").Count();
-            ViewBag.TotalNotifications = db.AspNetNotification_User.Where(m => m.UserID == CurrentUserId && m.Seen==false).Count();
+            ViewBag.TotalNotifications = db.AspNetNotification_User.Where(m => m.UserID == CurrentUserId && m.Seen == false).Count();
 
             var ty = (from a in db.AspNetClasses
                       join b in db.AspNetHomeworks
                       on a.Id equals b.ClassId
-                      where a.TeacherID == CurrentUserId && b.PrincipalApproved_status=="Rejected"
-                      select new { a.ClassName, b.Date,b.Id }).ToList().OrderByDescending(a => a.Date);
+                      where a.TeacherID == CurrentUserId && b.PrincipalApproved_status == "Rejected"
+                      select new { a.ClassName, b.Date, b.Id }).ToList().OrderByDescending(a => a.Date);
 
 
 
@@ -261,7 +261,7 @@ namespace SEA_Application.Controllers
         }
         public ViewResult Teacher_Subject()
         {
-            var subjects = db.AspNetSubjects.Include(s => s.AspNetClass).Include(s => s.AspNetUser).Where(s => s.TeacherID == TeacherID && s.AspNetClass.AspNetSession.Id == SessionID );
+            var subjects = db.AspNetSubjects.Include(s => s.AspNetClass).Include(s => s.AspNetUser).Where(s => s.TeacherID == TeacherID && s.AspNetClass.AspNetSession.Id == SessionID);
             return View("_Teacher_Subject", subjects);
         }
 
@@ -271,18 +271,18 @@ namespace SEA_Application.Controllers
             string ClassHead = db.AspNetClasses.Where(x => x.Id == id).Select(x => x.TeacherID).First();
             string currentTeacher = User.Identity.GetUserId();
 
-           // if(String.Compare( ClassHead , currentTeacher) == 0)
-            
-                var students = (from student in db.AspNetUsers
-                                join student_subject in db.AspNetStudent_Subject on student.Id equals student_subject.StudentID
-                                join subject in db.AspNetSubjects on student_subject.SubjectID equals subject.Id
-                                where subject.ClassID == id
-                                select new { student.Id, student.UserName, student.Name }).Distinct().ToList();
+            // if(String.Compare( ClassHead , currentTeacher) == 0)
 
-                return Json(students, JsonRequestBehavior.AllowGet);
-            
+            var students = (from student in db.AspNetUsers
+                            join student_subject in db.AspNetStudent_Subject on student.Id equals student_subject.StudentID
+                            join subject in db.AspNetSubjects on student_subject.SubjectID equals subject.Id
+                            where subject.ClassID == id
+                            select new { student.Id, student.UserName, student.Name }).Distinct().ToList();
 
-            
+            return Json(students, JsonRequestBehavior.AllowGet);
+
+
+
         }
         public ActionResult EditStudent(string id)
         {
@@ -362,7 +362,7 @@ namespace SEA_Application.Controllers
             }
             else
             {
-                ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x=> x.SessionID == SessionID), "Id", "ClassName");
+                ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
             }
             return View("_Teacher_Announcement");
         }
@@ -370,12 +370,12 @@ namespace SEA_Application.Controllers
         public ViewResult Attendance()
         {
             ViewBag.ClassID = new SelectList(db.AspNetSubjects.Where(x => x.TeacherID == TeacherID && x.AspNetClass.SessionID == SessionID).Select(x => x.AspNetClass).Distinct(), "Id", "ClassName");
-            ViewBag.SubjectID = new SelectList(db.AspNetSubjects.Where(x=> x.AspNetClass.SessionID == SessionID), "Id", "SubjectName");
+            ViewBag.SubjectID = new SelectList(db.AspNetSubjects.Where(x => x.AspNetClass.SessionID == SessionID), "Id", "SubjectName");
             return View("_Attendance");
         }
         public ActionResult View_Attendance()
         {
-           
+
             return View();
         }
         public JsonResult AllAttendance()
@@ -385,7 +385,7 @@ namespace SEA_Application.Controllers
                               where emp_attendance.EmployeeID == teacherId
                               select new { emp_attendance.Reason, emp_attendance.Status, emp_attendance.AspNetEmployeeAttendance.Date }).ToList();
 
-            return Json(attendance,JsonRequestBehavior.AllowGet);
+            return Json(attendance, JsonRequestBehavior.AllowGet);
         }
 
         public ViewResult Topics()
@@ -396,12 +396,13 @@ namespace SEA_Application.Controllers
 
         public JsonResult Topic_status(int id)
         {
-            AspNetTopic TopicStatus = db.AspNetTopics.Where(x => x.Id == id).Select(x=> x).FirstOrDefault();
-            
-            if(TopicStatus.Status == false)
+            AspNetTopic TopicStatus = db.AspNetTopics.Where(x => x.Id == id).Select(x => x).FirstOrDefault();
+
+            if (TopicStatus.Status == false)
             {
                 TopicStatus.Status = true;
-            }else if(TopicStatus.Status == true)
+            }
+            else if (TopicStatus.Status == true)
             {
                 TopicStatus.Status = false;
             }
@@ -424,7 +425,7 @@ namespace SEA_Application.Controllers
         }
         public ViewResult ParentTeacherMeeting()
         {
-            ViewBag.ClassID = new SelectList(db.AspNetSubjects.Where(x => x.TeacherID == TeacherID && x.AspNetClass.SessionID == SessionID ).Select(x => x.AspNetClass).Distinct(), "Id", "ClassName");
+            ViewBag.ClassID = new SelectList(db.AspNetSubjects.Where(x => x.TeacherID == TeacherID && x.AspNetClass.SessionID == SessionID).Select(x => x.AspNetClass).Distinct(), "Id", "ClassName");
             return View("_ParentTeacherMeeting");
         }
 
@@ -438,7 +439,7 @@ namespace SEA_Application.Controllers
         public ViewResult Class_Assessment()
         {
             ViewBag.ClassID = new SelectList(db.AspNetSubjects.Where(x => x.TeacherID == TeacherID && x.AspNetClass.SessionID == SessionID).Select(x => x.AspNetClass).Distinct(), "Id", "ClassName");
-          
+
             //ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.TeacherID == TeacherID), "Id", "ClassName");
             //ViewBag.ClassID = new SelectList((from c in db.AspNetClasses
             //                                  join s in db.AspNetSubjects
@@ -446,7 +447,7 @@ namespace SEA_Application.Controllers
             //                                  where c.TeacherID == TeacherID
             //                                  select new { s.ClassID, c.ClassName }).Distinct(), "Id", "ClassName");
 
-            ViewBag.SubjectID = new SelectList(db.AspNetSubjects.Where(x=> x.AspNetClass.SessionID == SessionID), "Id", "SubjectName");
+            ViewBag.SubjectID = new SelectList(db.AspNetSubjects.Where(x => x.AspNetClass.SessionID == SessionID), "Id", "SubjectName");
             ViewBag.TermID = new SelectList(db.AspNetTerms.Where(x => x.SessionID == SessionID), "Id", "TermName", "TermNo");
             //ViewBag.TermId = new SelectList(db.AspNetTerms.Where(p => p.))
             return View("_ClassAssessment");
@@ -483,7 +484,7 @@ namespace SEA_Application.Controllers
         public ViewResult StudentsIndex()
         {
             string s = User.Identity.GetUserId();
-            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x=>x.TeacherID==s), "Id", "ClassName");
+            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.TeacherID == s), "Id", "ClassName");
             return View();
         }
 
@@ -595,68 +596,68 @@ namespace SEA_Application.Controllers
         public async Task<ActionResult> CreateStudent(RegisterViewModel model)
         {
             var dbTransaction = db.Database.BeginTransaction();
-          
-                string fullName = model.Name;
-                char[] upper = fullName.ToCharArray();
-                upper[0] = char.ToUpper(upper[0]);
-                string upperr =new string(upper)+ " ";        
-                string pass = upperr.Substring(0, upperr.IndexOf(" "));
-                model.Email = model.UserName + "@gmail.com";
-                model.Password = pass + "@1234";
-                model.ConfirmPassword = model.Password;
-                
-                if (ModelState.IsValid)
-                {
-                    ApplicationDbContext context = new ApplicationDbContext();
-                    IEnumerable<string> selectedsubjects = Request.Form["subjects"].Split(',');
-                    var user = new ApplicationUser { UserName = model.UserName, Email=model.Email, EmailConfirmed=false ,Name = model.Name, PhoneNumber = Request.Form["cellNo"] };
-                    var result = await UserManager.CreateAsync(user, model.Password);
+
+            string fullName = model.Name;
+            char[] upper = fullName.ToCharArray();
+            upper[0] = char.ToUpper(upper[0]);
+            string upperr = new string(upper) + " ";
+            string pass = upperr.Substring(0, upperr.IndexOf(" "));
+            model.Email = model.UserName + "@gmail.com";
+            model.Password = pass + "@1234";
+            model.ConfirmPassword = model.Password;
+
+            if (ModelState.IsValid)
+            {
+                ApplicationDbContext context = new ApplicationDbContext();
+                IEnumerable<string> selectedsubjects = Request.Form["subjects"].Split(',');
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, EmailConfirmed = false, Name = model.Name, PhoneNumber = Request.Form["cellNo"] };
+                var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     AspNetStudent student = new AspNetStudent();
-                        student.StudentID = user.Id;
-                        student.SchoolName = Request.Form["SchoolName"];
-                        student.BirthDate = Request.Form["BirthDate"];
-                        student.Nationality = Request.Form["Nationality"];
-                        student.Religion = Request.Form["Religion"];
-                        student.Gender = Request.Form["Gender"];
-                        student.ClassID = Convert.ToInt32(Request.Form["ClassID"]);
-                       
-                        db.AspNetStudents.Add(student);
+                    student.StudentID = user.Id;
+                    student.SchoolName = Request.Form["SchoolName"];
+                    student.BirthDate = Request.Form["BirthDate"];
+                    student.Nationality = Request.Form["Nationality"];
+                    student.Religion = Request.Form["Religion"];
+                    student.Gender = Request.Form["Gender"];
+                    student.ClassID = Convert.ToInt32(Request.Form["ClassID"]);
+
+                    db.AspNetStudents.Add(student);
                     var errors = ModelState.Values.SelectMany(v => v.Errors);
                     db.SaveChanges();
                     var errors1 = ModelState.Values.SelectMany(v => v.Errors);
 
                     foreach (var item in selectedsubjects)
-                        {
-                            AspNetStudent_Subject stu_sub = new AspNetStudent_Subject();
-                            stu_sub.StudentID = user.Id;
-                            stu_sub.SubjectID = Convert.ToInt32(item);
-                            db.AspNetStudent_Subject.Add(stu_sub);
-                       
-                        db.SaveChanges();
-                        
-                    }
-                 
-                        var roleStore = new RoleStore<IdentityRole>(context);
-                        var roleManager = new RoleManager<IdentityRole>(roleStore);
-
-                        var userStore = new UserStore<ApplicationUser>(context);
-                        var userManager = new UserManager<ApplicationUser>(userStore);
-                        userManager.AddToRole(user.Id, "Student");
-
-                        dbTransaction.Commit();
-                       // string Error = "Student successfully saved.";
-                        return RedirectToAction("StudentsIndex");
-                      
-                    }
-                    else
                     {
-                        dbTransaction.Dispose();
-                       // AddErrors(result);
+                        AspNetStudent_Subject stu_sub = new AspNetStudent_Subject();
+                        stu_sub.StudentID = user.Id;
+                        stu_sub.SubjectID = Convert.ToInt32(item);
+                        db.AspNetStudent_Subject.Add(stu_sub);
+
+                        db.SaveChanges();
+
                     }
+
+                    var roleStore = new RoleStore<IdentityRole>(context);
+                    var roleManager = new RoleManager<IdentityRole>(roleStore);
+
+                    var userStore = new UserStore<ApplicationUser>(context);
+                    var userManager = new UserManager<ApplicationUser>(userStore);
+                    userManager.AddToRole(user.Id, "Student");
+
+                    dbTransaction.Commit();
+                    // string Error = "Student successfully saved.";
+                    return RedirectToAction("StudentsIndex");
+
                 }
-          
+                else
+                {
+                    dbTransaction.Dispose();
+                    // AddErrors(result);
+                }
+            }
+
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             return View(model);
         }
@@ -683,7 +684,7 @@ namespace SEA_Application.Controllers
                 {
                     Check.count = 1;
                     Check.by = user.Select(x => x.AspNetRoles.Select(y => y.Name).FirstOrDefault()).FirstOrDefault();
-                   
+
                 }
                 else
                 {
@@ -747,7 +748,7 @@ namespace SEA_Application.Controllers
             public int GotMark { get; set; }
 
         }
-        
+
 
         public class NewCurriculums
         {
@@ -790,7 +791,7 @@ namespace SEA_Application.Controllers
         [HttpGet]
         public JsonResult SubjectsByClass(int id)
         {
-            
+
             if (User.IsInRole("Teacher"))
             {
                 db.Configuration.ProxyCreationEnabled = false;
@@ -813,19 +814,19 @@ namespace SEA_Application.Controllers
                     List<AspNetSubject> sub = db.AspNetSubjects.Where(r => r.ClassID == id && r.TeacherID == TeacherID).OrderByDescending(r => r.Id).ToList();
 
                     return Json(sub, JsonRequestBehavior.AllowGet);
-                }            
+                }
 
             }
             else
             {
-                var sub = db.AspNetSubjects.Where(x => x.ClassID == id).Select(x=> new { x.Id , x.SubjectName }).ToList();
+                var sub = db.AspNetSubjects.Where(x => x.ClassID == id).Select(x => new { x.Id, x.SubjectName }).ToList();
                 return Json(sub, JsonRequestBehavior.AllowGet);
             }
-            
+
 
         }
 
-       
+
         [HttpGet]
         public JsonResult StudentsBySubject(int id)
         {
@@ -853,5 +854,79 @@ namespace SEA_Application.Controllers
             return Json(Announcements, JsonRequestBehavior.AllowGet);
 
         }
+
+        public ActionResult GetSubjects()
+        {
+            var uniqueId = User.Identity.GetUserId();
+
+            AspNetEmployee aspNetEmployee = db.AspNetEmployees.Where(x => x.UserId == uniqueId).FirstOrDefault();
+
+            var result = from s in db.AspNetSubjects
+                         join ts in db.AspNetTeacherSubjects
+                         on s.Id equals ts.SubjectID
+                         where (ts.TeacherID == aspNetEmployee.Id)
+                         select new
+                         {
+                             Id = s.Id,
+
+                             Name = s.SubjectName,
+                         };
+
+
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public ActionResult GetChapters(int id)
+        {
+
+            var result = from s in db.AspNetSubjects
+                         join ts in db.AspNetChapters
+                         on s.Id equals ts.SubjectID
+                         where (ts.SubjectID == id)
+                         select new
+                         {
+                             Id = ts.Id,
+
+                             Name = ts.ChapterName,
+                             ChapterNo = ts.ChapterNo,
+                             SubjectID = ts.SubjectID
+                         };
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetTopics(int id)
+        {
+
+            var result = from s in db.AspNetChapters
+                         join ts in db.AspNetTopics
+                         on s.Id equals ts.ChapterID
+                         where (ts.ChapterID == id)
+                         select new
+                         {
+                             Id = ts.Id,
+
+                             ChapterName = ts.Id,
+                             Name = ts.TopicName,
+                             SubjectID = ts.TopicNo
+                         };
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetTopicPercentage(int id)
+        {
+
+          var TopicPercentage =   db.AspNetTopics.Where(x => x.Id == id).FirstOrDefault().Percentage_Completion;
+
+
+            return Json( new { TopicPercentage = TopicPercentage }, JsonRequestBehavior.AllowGet);
+
+        }
+
+
+
     }
 }
