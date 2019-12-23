@@ -39,6 +39,8 @@
         border: 1px solid #ccc;
         border-top: none;
     }
+
+
 </style>
 
 
@@ -231,7 +233,14 @@
         position: relative;
         padding: 0px;
     }
-
+ .list-group {
+    padding-left: 0;
+    float: left;
+    margin-right: 26px;
+    padding-right: 18px;
+  
+    width: 200px;
+}
     .fc .fc-button-group > * {
         float: left;
         margin: 0 0 0 -1px;
@@ -258,6 +267,54 @@
         padding-left: 11px;
         padding-top: 1px;
         padding-right: 10px;
+    }
+
+
+
+    .list_header_style {
+        position: relative;
+        display: block;
+        padding: 10px 15px;
+        margin-bottom: -1px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+    }
+
+    .student_list {
+        cursor: pointer;
+
+    }.student1_list {
+        cursor: pointer;
+
+    }.student3_list {
+        cursor: pointer;
+
+    }.student4_list {
+        cursor: pointer;
+
+    }
+
+    .custom_Style {
+    }
+
+    #firstlist {
+        float:left;
+    }
+    #secondlist {
+        display: none;
+        float:left;
+        margin-left:10px;
+    }
+    #thirdlist {
+        display: none;
+        float: left;
+        margin-left: 10px;
+    }
+
+    #fourthlist {
+        display: none;
+        float: left;
+        margin-left: 10px;
     }
 </style>
 
@@ -300,8 +357,91 @@
 </div>
 
 <div id="Summary" class="tabcontent">
-    <h3>Summary</h3>
-    <p>Summary Content</p>
+    <h3>Summary Content</h3>
+ 
+
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat dashboard-stat-v2 blue" href="#">
+                <div class="visual">
+                    <i class="fa fa-comments"></i>
+                </div>
+                <div class="details">
+                    <div class="number">
+                        <span data-counter="counterup" data-value="1349">70</span>
+                    </div>
+                    <div class="desc"> Total Students </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat dashboard-stat-v2 red" href="#">
+                <div class="visual">
+                    <i class="fa fa-bar-chart-o"></i>
+                </div>
+                <div class="details">
+                    <div class="number">
+                        <span data-counter="counterup" data-value="12,5">12</span>
+                    </div>
+                    <div class="desc"> Total Teachers </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat dashboard-stat-v2 green" href="#">
+                <div class="visual">
+                    <i class="fa fa-shopping-cart"></i>
+                </div>
+                <div class="details">
+                    <div class="number">
+                        <span data-counter="counterup" data-value="549">15</span>
+                    </div>
+                    <div class="desc"> Total Subjects </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat dashboard-stat-v2 purple" href="#">
+                <div class="visual">
+                    <i class="fa fa-globe"></i>
+                </div>
+                <div class="details">
+                    <div class="number">
+                        04
+                        <span data-counter="counterup" data-value="89"></span>
+                    </div>
+                    <div class="desc"> Total Sections </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+
+    <div class="container-fluid">
+       
+        <div style="width:232px" id="firstlist">
+          <ul class="student_list list-group"></ul>
+           </div>
+
+
+        <div style="width:232px;" id="secondlist" >
+            <ul class="student1_list list-group">
+            </ul>
+            </div>
+
+        <div style="width:232px;" id="thirdlist">
+            @*<h2 class="list_header_style">third</h2>*@
+            <ul class="student3_list list-group">
+            </ul>
+           </div>
+
+        <div style="width:232px" id="fourthlist">
+            <ul class="student4_list list-group">
+            </ul>
+        </div>
+
+    </div>
+ 
 </div>
 
 
@@ -456,6 +596,145 @@
         })
 
 
+        //GetAllTeachers
+        $.ajax({
+            url: "/Admin_Dashboard/GetTeachersList",
+            type: "Post",
+            dataType: "json",
+            success: function (response) {
+                // alert(response);
+              
+                $.each(response, function (index) {
+                //alert(response[index].Id+"  "+response[index].Name);
+                    $(".student_list").append('<li  class="list-group-item" id="' + response[index].teacherid + '" > ' + response[index].Name + '  </li>');
+                 });
+   },
+
+            error: function () {
+
+
+            }
+
+
+        })
+
+
+        $(".student_list").on("click", "li", function () {
+
+            debugger;
+            var id = $(this).attr('id');
+            $("#secondlist").css('display', 'none');
+
+            $("#thirdlist").css('display', 'none');
+            $("#fourthlist").css('display', 'none');
+          
+            $.ajax({
+                type: "POST",
+                url: "/Admin_Dashboard/GetSubjectsList",
+                data: { id: id },
+
+                dataType: "json",
+
+                success: function (response) {
+
+                    debugger;
+                 //   response = JSON.parse(response);
+                    //      alert(response.Id+"  "+response.Name);
+
+
+
+                    $(".student1_list").html('');
+
+
+                    $.each(response, function (index) {
+
+
+
+
+                        $("#secondlist").css('display', 'block');
+
+
+                        $(".student1_list").append('<li  class="list-group-item" id="' + response[index].SubjectID + '" > ' + response[index].SubjectName + '  </li>');
+
+
+
+                    });
+
+
+
+                }
+
+
+
+
+            })
+
+
+
+        })
+
+
+        $(".student1_list").on("click", "li", function () {
+
+            debugger;
+            var id = $(this).attr('id');
+
+            $("#thirdlist").css('display', 'none');
+
+            $("#fourthlist").css('display', 'none');
+
+            debugger
+            $.ajax({
+                type: "POST",
+                url: "/Admin_Dashboard/GetChaptersList",
+                data: { id: id },
+
+                dataType: "json",
+
+                success: function (response) {
+                    debugger;
+                    $(".student3_list").html('');
+                        $.each(response, function (index) {
+
+                        $("#thirdlist").css('display', 'block');
+                          $(".student3_list").append('<li  class="list-group-item" id="' + response[index].Id + '" > ' + response[index].ChapterName + '  </li>');
+
+                    });
+
+
+
+                }
+
+
+            })
+        })
+
+        $(".student3_list").on("click", "li", function () {
+            var id = $(this).attr('id');
+              $("#fourthlist").css('display', 'none');
+
+              debugger;
+            $.ajax({
+                type: "POST",
+                url: "/Admin_Dashboard/GetTopicsList",
+                data: { id: id },
+
+                dataType: "json",
+
+                success: function (response) {
+                    debugger;
+                    $(".student4_list").html('');
+
+                    $.each(response, function (index) {
+                        debugger;
+                        $("#fourthlist").css('display', 'block');
+
+                        $(".student4_list").append('<li  class="list-group-item" id="' + response[index].Id + '" > ' + response[index].TopicName + '  </li>');
+                   });
+
+                           } })
+
+                    })
 
 
         var events = [];

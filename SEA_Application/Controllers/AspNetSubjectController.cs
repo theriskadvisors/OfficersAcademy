@@ -371,7 +371,7 @@ namespace SEA_Application.Controllers
                     int SessionId = 0;
                     AspNetSession session = new AspNetSession();
 
-                    session = db.AspNetSessions.Where(x => x.Id == SessionID && x.Status == "Active").FirstOrDefault();
+                    session = db.AspNetSessions.Where(x => x.Id == SessionID).FirstOrDefault();
 
                     if (room == null)
                     {
@@ -454,7 +454,7 @@ namespace SEA_Application.Controllers
                     TimeTable.RoomID = RoomID;
                     TimeTable.SlotID = SlotID;
                     TimeTable.SubjectID = SubjectID;
-                    TimeTable.TeacherID =  TeacherID;
+                    TimeTable.Teacher_ID =  TeacherID;
                     TimeTable.Day = Day.ToString();
 
                     db.AspNetTimeTables.Add(TimeTable);

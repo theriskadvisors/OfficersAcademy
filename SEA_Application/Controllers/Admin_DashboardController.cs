@@ -116,6 +116,66 @@ namespace SEA_Application.Controllers
             ViewBag.TermId= TermId;
             return View();
         }
+
+        public ActionResult GetTeachersList()
+        {
+
+            List<GetAllTeachers_Result> list = new  List<GetAllTeachers_Result>();
+            list = db.GetAllTeachers().ToList();
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(list);
+           
+            return Content(status);
+        }
+
+        public ActionResult GetSubjectsList(int id)
+        {
+
+            List<GetAllSubjects_Result> list = new List<GetAllSubjects_Result>();
+            list = db.GetAllSubjects().Where(x=>x.Emp_ID == id).ToList();
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(list);
+            return Content(status);
+        }
+        public ActionResult GetChaptersList(int id)
+        {
+
+           var result = from s in db.AspNetSubjects
+                         join ts in db.AspNetChapters
+                         on s.Id equals ts.SubjectID
+                         where (ts.SubjectID == id)
+                         select new
+                         {
+                             Id = ts.Id,
+
+                             ChapterName = ts.ChapterName,
+                             ChapterNo = ts.ChapterNo,
+                             SubjectID = ts.SubjectID
+                         };
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(result);
+
+            return Content(status);
+        }
+
+        public ActionResult GetTopicsList(int id)
+        {
+
+            var result = from s in db.AspNetChapters
+                         join ts in db.AspNetTopics
+                         on s.Id equals ts.ChapterID
+                         where (ts.ChapterID == id)
+                         select new
+                         {
+                             Id = ts.Id,
+                             TopicName = ts.TopicName,
+                             TopicNo = ts.TopicNo
+                         };
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(result);
+
+            return Content(status);
+        }
+
         public ActionResult CalendarNotification()
         {
             var id = User.Identity.GetUserId();
