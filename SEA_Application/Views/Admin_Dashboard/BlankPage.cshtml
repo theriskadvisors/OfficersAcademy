@@ -361,7 +361,7 @@
 <div class="tab">
     <button class="tablinks active" onclick="openCity(event, 'Calendar')">Calendar</button>
     <button class="tablinks" onclick="openCity(event, 'Summary')">Summary</button>
-
+    <button class="tablinks" onclick="openCity(event, 'Finance')">Finance Summary</button>
 </div>
 
 <div style="display:block" id="Calendar" class="tabcontent">
@@ -424,7 +424,7 @@
                         04
                         <span data-counter="counterup" data-value="89"></span>
                     </div>
-                    <div class="desc"> Total Sections </div>
+                    <div class="desc"> Total Sessions </div>
                 </div>
             </a>
         </div>
@@ -463,7 +463,12 @@
  
 </div>
 
+<div id="Finance" class="tabcontent">
+    
 
+
+
+</div>
 
 
 
@@ -600,7 +605,7 @@
                     else if (hours >= 1 && hours < 6 && AMPM == "AM") {
                         status = "Good Night " + data.name + "!";
                     }
-                    var date = "Today is " + data.Date;
+                    var date = "" + data.Date;
 
                     $("#time").html(time);
                     $("#date").html(date);
@@ -980,6 +985,7 @@
 
 
     function openCity(evt, dashBoardTabs) {
+      
         var i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("tabcontent");
         for (i = 0; i < tabcontent.length; i++) {
