@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using SEA_Application.Models;
+using OfficeOpenXml;
 
 namespace SEA_Application.Controllers
 {
@@ -58,9 +59,202 @@ namespace SEA_Application.Controllers
             return View();
         }
 
+        public ActionResult TimeTableFromFile()
+        {
+            var dbTransaction = db.Database.BeginTransaction();
+
+            HttpPostedFileBase file = Request.Files["subjects"];
+            if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
+            {
+                string fileName = file.FileName;
+                string fileContentType = file.ContentType;
+                byte[] fileBytes = new byte[file.ContentLength];
+                var data = file.InputStream.Read(fileBytes, 0, Convert.ToInt32(file.ContentLength));
+            }
+            var studentList = new List<RegisterViewModel>();
+            using (var package = new ExcelPackage(file.InputStream))
+            {
+
+                var currentSheet = package.Workbook.Worksheets;
+                var workSheet = currentSheet.First();
+                var noOfCol = workSheet.Dimension.End.Column;
+                var noOfRow = workSheet.Dimension.End.Row;
+
+                string ErrorMsg = null;
+                int rowIterator;
+                for (rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
+                {
+                    var TimeTable = new AspNetTimeTable();
+
+                    var RoomName = workSheet.Cells[rowIterator, 1].Value.ToString();
+                    //RoomID;
+                    int RoomID = 0;
+                    AspNetRoom room = new AspNetRoom();
+
+                    room = db.AspNetRooms.Where(x => x.Name == RoomName).FirstOrDefault();
+
+                    if (room == null)
+                    {
+                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator - 1) + "Room Name is not valid";
+
+                        TempData["ErrorMsg"] = ErrorMsg;
+
+                        return RedirectToAction("Create", "AspNetTimeTable");
+
+                    }
+                    else
+                    {
+                        RoomID = room.Id;
+
+                    }
+
+
+
+
+
+                    var SlotName = workSheet.Cells[rowIterator, 2].Value.ToString();
+                    //var SlotID = db.AspNetTimeslots.Where(x => x.Name == SlotName).FirstOrDefault().Id;
+
+
+
+                    int SlotID = 0;
+                    AspNetTimeslot slot = new AspNetTimeslot();
+
+                    slot = db.AspNetTimeslots.Where(x => x.Name == SlotName).FirstOrDefault();
+
+                    if (slot == null)
+                    {
+                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator - 1) + " Slot Name is not valid";
+
+                        TempData["ErrorMsg"] = ErrorMsg;
+
+                        return RedirectToAction("Create", "AspNetTimeTable");
+
+                    }
+                    else
+                    {
+                        SlotID = slot.Id;
+
+                    }
+
+
+
+                    string SubName = workSheet.Cells[rowIterator, 3].Value.ToString();
+                    // var Session_id = db.AspNetSessions.Where(x => x.Id == SessionID && x.Status == "Active").FirstOrDefault().Id;
+
+
+                    int SessionId = 0;
+                    AspNetSession session = new AspNetSession();
+
+                    session = db.AspNetSessions.Where(x => x.Id == SessionID).FirstOrDefault();
+
+                    if (room == null)
+                    {
+                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator - 1) + " Subject Name is not valid";
+
+                        TempData["ErrorMsg"] = ErrorMsg;
+
+                        return RedirectToAction("Create", "AspNetTimeTable");
+
+                    }
+                    else
+                    {
+                        SessionId = session.Id;
+
+                    }
+
+
+
+
+
+                    var ClassID = db.AspNetClasses.Where(x => x.SessionID == SessionId).FirstOrDefault().Id;
+
+                    //var SubjectID = db.AspNetSubjects.Where(x => x.ClassID == ClassID && x.SubjectName == SubName).FirstOrDefault().Id;
+
+                    int SubjectID = 0;
+                    AspNetSubject subject = new AspNetSubject();
+
+                    subject = db.AspNetSubjects.Where(x => x.ClassID == ClassID && x.SubjectName == SubName).FirstOrDefault();
+
+                    if (subject == null)
+                    {
+                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator - 1) + " Subject Name is not valid";
+
+                        TempData["ErrorMsg"] = ErrorMsg;
+
+                        return RedirectToAction("Create", "AspNetTimeTable");
+
+                    }
+                    else
+                    {
+                        SubjectID = subject.Id;
+
+                    }
+
+
+
+
+
+                    var UserName = workSheet.Cells[rowIterator, 4].Value.ToString();
+
+
+
+                    //   var TeacherID = db.AspNetUsers.Where(x => x.UserName == UserName).FirstOrDefault().Id;
+
+                    string TeacherID;
+                    AspNetUser teacher = new AspNetUser();
+
+                    teacher = db.AspNetUsers.Where(x => x.UserName == UserName).FirstOrDefault();
+
+                    if (teacher == null)
+                    {
+                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator - 1) + " Teacher Name is not valid";
+
+                        TempData["ErrorMsg"] = ErrorMsg;
+
+                        return RedirectToAction("Create", "AspNetTimeTable");
+
+                    }
+                    else
+                    {
+                        TeacherID = teacher.Id;
+
+                    }
+
+
+
+
+                    DateTime Day = Convert.ToDateTime(workSheet.Cells[rowIterator, 5].Value.ToString());
+
+                    TimeTable.RoomID = RoomID;
+                    TimeTable.SlotID = SlotID;
+                    TimeTable.SubjectID = SubjectID;
+                    TimeTable.Teacher_ID = TeacherID;
+                    TimeTable.Day = Day.ToString();
+                    TimeTable.IsPopulated = false;
+
+                    db.AspNetTimeTables.Add(TimeTable);
+                    db.SaveChanges();
+
+                }
+            }
+            dbTransaction.Commit();
+
+         //   return RedirectToAction("Index", "AspNetTimeTable");
+
+            //catch (Exception e)
+            //{
+            //    dbTransaction.Dispose();
+            //}
+
+            return RedirectToAction("CreateTimetable");
+
+
+        }
+
         public ActionResult CreateTimetable()
         {
-            var timelist = db.AspNetTimeTables.ToList();
+            var timelist = db.AspNetTimeTables.Where(x=> x.IsPopulated==false).ToList();
 
             foreach (var item in timelist)
             {
@@ -86,6 +280,12 @@ namespace SEA_Application.Controllers
                     newEvent.End = Convert.ToDateTime(item.Day + " " + Endtime);
                     db.Events.Add(newEvent);
                 }
+            }
+
+            foreach (var item in timelist)
+            {
+                AspNetTimeTable aspNetTimeTable = db.AspNetTimeTables.Find(item.Id);
+                aspNetTimeTable.IsPopulated = true;
             }
             db.SaveChanges();
             return RedirectToAction("Index");
