@@ -48,6 +48,14 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Name,Start_Time,End_Time,Minutes")] AspNetTimeslot aspNetTimeslot)
         {
+
+
+            var StartDate = Convert.ToDateTime(Request.Form["StartDate"]);
+            var EndDate = Convert.ToDateTime(Request.Form["EndDate"]);
+            aspNetTimeslot.Start_Time = StartDate;
+            aspNetTimeslot.End_Time = EndDate;
+
+
             if (ModelState.IsValid)
             {
                 db.AspNetTimeslots.Add(aspNetTimeslot);
