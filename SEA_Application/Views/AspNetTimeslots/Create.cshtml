@@ -12,36 +12,40 @@
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>AspNetTimeslot</h4>
+        <h4>Time Slot</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <label class="control-label col-md-2">Name</label>
+            <div class="col-md-4">
                 @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Start_Time, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Start_Time, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Start_Time, "", new { @class = "text-danger" })
+
+            <label class="control-label col-md-2">Start Time</label>
+            <div class="col-md-4">
+            <input type="datetime-local" name="StartDate" class="form-control">
+                @*@Html.EditorFor(model => model.Start_Time, new { htmlAttributes = new { @class = "form-control date" } })
+                @Html.ValidationMessageFor(model => model.Start_Time, "", new { @class = "text-danger" })*@
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.End_Time, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.End_Time, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.End_Time, "", new { @class = "text-danger" })
+            <label class="control-label col-md-2">End Time</label>
+
+            <div class="col-md-4">
+                <input type="datetime-local" name="EndDate" class="form-control">
+                @*@Html.EditorFor(model => model.End_Time, new { htmlAttributes = new { @class = "form-control date" } })
+                @Html.ValidationMessageFor(model => model.End_Time, "", new { @class = "text-danger" })*@
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.Minutes, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-4">
                 @Html.EditorFor(model => model.Minutes, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Minutes, "", new { @class = "text-danger" })
             </div>

@@ -29,7 +29,7 @@
                         </div>
                        
                         <div class="form-three widget-shadow">
-              @using (Html.BeginForm("TimeTableFromFile", "AspNetSubject", FormMethod.Post, new { enctype = "multipart/form-data" }))
+              @using (Html.BeginForm("TimeTableFromFile", "AspNetTimeTable", FormMethod.Post, new { enctype = "multipart/form-data" }))
                     {
                          @Html.AntiForgeryToken()
                                 <div class="box-body">
