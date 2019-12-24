@@ -184,6 +184,17 @@ namespace SEA_Application.Controllers
             return Json(new { TopicPercentage = TopicPercentage }, JsonRequestBehavior.AllowGet);
 
         }
+        private static string GetOrdinalSuffix(int num)
+        {
+            string number = num.ToString();
+            if (number.EndsWith("11")) return "th";
+            if (number.EndsWith("12")) return "th";
+            if (number.EndsWith("13")) return "th";
+            if (number.EndsWith("1")) return "st";
+            if (number.EndsWith("2")) return "nd";
+            if (number.EndsWith("3")) return "rd";
+            return "th";
+        }
         public ActionResult CalendarNotification()
         {
             var id = User.Identity.GetUserId();
@@ -197,9 +208,11 @@ namespace SEA_Application.Controllers
             var dd = date.Day;
             var mm = date.Month;
             var yy = date.Year;
+
+            var dayInString = dd + GetOrdinalSuffix(dd);
             string[] array = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
 
-            var Date = day + ", " + dd + " " + array[mm - 1] + " " + yy;
+            var Date = day + ", " + dayInString + " " + array[mm - 1] + " " + yy;
             var result = new { checkdate, Date, name };
             return Json(result, JsonRequestBehavior.AllowGet);
 
