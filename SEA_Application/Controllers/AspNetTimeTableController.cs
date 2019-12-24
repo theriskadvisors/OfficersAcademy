@@ -82,13 +82,13 @@ namespace SEA_Application.Controllers
 
                 string ErrorMsg = null;
                 int rowIterator;
-                for (rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
+                for (rowIterator = 2; rowIterator < noOfRow; rowIterator++)
                 {
                     var TimeTable = new AspNetTimeTable();
 
                     var RoomName = workSheet.Cells[rowIterator, 1].Value.ToString();
                     //RoomID;
-                    int RoomID = 0;
+                    int RoomID = db.AspNetRooms.Where(x => x.Name == RoomName).FirstOrDefault().Id;
                     AspNetRoom room = new AspNetRoom();
 
                     room = db.AspNetRooms.Where(x => x.Name == RoomName).FirstOrDefault();
@@ -100,7 +100,6 @@ namespace SEA_Application.Controllers
                         TempData["ErrorMsg"] = ErrorMsg;
 
                         return RedirectToAction("Create", "AspNetTimeTable");
-
                     }
                     else
                     {
@@ -108,28 +107,21 @@ namespace SEA_Application.Controllers
 
                     }
 
-
-
-
-
                     var SlotName = workSheet.Cells[rowIterator, 2].Value.ToString();
                     //var SlotID = db.AspNetTimeslots.Where(x => x.Name == SlotName).FirstOrDefault().Id;
-
-
-
-                    int SlotID = 0;
+                    
+                    int SlotID = db.AspNetTimeslots.Where(x => x.Name == SlotName).FirstOrDefault().Id;
                     AspNetTimeslot slot = new AspNetTimeslot();
 
                     slot = db.AspNetTimeslots.Where(x => x.Name == SlotName).FirstOrDefault();
 
                     if (slot == null)
                     {
-                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator - 1) + " Slot Name is not valid";
+                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator) + " Slot Name is not valid";
 
                         TempData["ErrorMsg"] = ErrorMsg;
 
                         return RedirectToAction("Create", "AspNetTimeTable");
-
                     }
                     else
                     {
@@ -137,20 +129,18 @@ namespace SEA_Application.Controllers
 
                     }
 
-
-
                     string SubName = workSheet.Cells[rowIterator, 3].Value.ToString();
                     // var Session_id = db.AspNetSessions.Where(x => x.Id == SessionID && x.Status == "Active").FirstOrDefault().Id;
 
 
-                    int SessionId = 0;
+                    int SessionId = SessionID;
                     AspNetSession session = new AspNetSession();
 
                     session = db.AspNetSessions.Where(x => x.Id == SessionID).FirstOrDefault();
 
                     if (room == null)
                     {
-                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator - 1) + " Subject Name is not valid";
+                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator) + " Subject Name is not valid";
 
                         TempData["ErrorMsg"] = ErrorMsg;
 
@@ -160,47 +150,30 @@ namespace SEA_Application.Controllers
                     else
                     {
                         SessionId = session.Id;
-
                     }
-
-
-
-
-
+                    
                     var ClassID = db.AspNetClasses.Where(x => x.SessionID == SessionId).FirstOrDefault().Id;
-
-                    //var SubjectID = db.AspNetSubjects.Where(x => x.ClassID == ClassID && x.SubjectName == SubName).FirstOrDefault().Id;
-
-                    int SubjectID = 0;
+                    
+                    int SubjectID;
                     AspNetSubject subject = new AspNetSubject();
 
                     subject = db.AspNetSubjects.Where(x => x.ClassID == ClassID && x.SubjectName == SubName).FirstOrDefault();
 
                     if (subject == null)
                     {
-                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator - 1) + " Subject Name is not valid";
+                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator) + " Subject Name is not valid";
 
                         TempData["ErrorMsg"] = ErrorMsg;
 
                         return RedirectToAction("Create", "AspNetTimeTable");
-
                     }
                     else
                     {
                         SubjectID = subject.Id;
-
                     }
-
-
-
-
-
+                    
                     var UserName = workSheet.Cells[rowIterator, 4].Value.ToString();
-
-
-
-                    //   var TeacherID = db.AspNetUsers.Where(x => x.UserName == UserName).FirstOrDefault().Id;
-
+                    
                     string TeacherID;
                     AspNetUser teacher = new AspNetUser();
 
@@ -208,7 +181,7 @@ namespace SEA_Application.Controllers
 
                     if (teacher == null)
                     {
-                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator - 1) + " Teacher Name is not valid";
+                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator) + " Teacher Name is not valid";
 
                         TempData["ErrorMsg"] = ErrorMsg;
 
@@ -218,12 +191,8 @@ namespace SEA_Application.Controllers
                     else
                     {
                         TeacherID = teacher.Id;
-
                     }
-
-
-
-
+                    
                     DateTime Day = Convert.ToDateTime(workSheet.Cells[rowIterator, 5].Value.ToString());
 
                     TimeTable.RoomID = RoomID;
@@ -235,7 +204,6 @@ namespace SEA_Application.Controllers
 
                     db.AspNetTimeTables.Add(TimeTable);
                     db.SaveChanges();
-
                 }
             }
             dbTransaction.Commit();
@@ -276,8 +244,9 @@ namespace SEA_Application.Controllers
                     newEvent.ThemeColor = color[colorcode];
                     var starttime = ((DateTime)item.AspNetTimeslot.Start_Time).ToString("hh:mm");
                     var Endtime = ((DateTime)item.AspNetTimeslot.End_Time).ToString("hh:mm");
-                    newEvent.Start = Convert.ToDateTime(item.Day + " " + starttime);
-                    newEvent.End = Convert.ToDateTime(item.Day + " " + Endtime);
+                    var day = item.Day.Split(' ');
+                    newEvent.Start = Convert.ToDateTime(day[0] + " " + starttime);
+                    newEvent.End = Convert.ToDateTime(day[0] + " " + Endtime);
                     db.Events.Add(newEvent);
                 }
             }
