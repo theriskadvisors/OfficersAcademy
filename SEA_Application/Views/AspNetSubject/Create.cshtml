@@ -19,6 +19,41 @@
         $('#cancel').click(function () {
             window.location.href = '@Url.Action("ClassIndex", "AspNetSubject")';
         });
+
+        @*$.get('@Url.Action("TeachersbySession")',
+           { id: 1 }, function (data) {
+               debugger;
+               $('#subjects').html('');
+
+               $.each(data, function (i, item) {
+                   debugger;
+                   $('#subjects').append('<option value=' + item.Id + '>' + item.SubjectName + '</option>');
+               });
+
+           });*@
+
+        //$.ajax({
+        //    url: "/AspNetUser/GetTeachersList",
+        //    type: "Post",
+        //    dataType: "json",
+        //    success: function (response) {
+        //        // alert(response);
+
+        //        $.each(response, function (index) {
+        //            //alert(response[index].Id+"  "+response[index].Name);
+        //            $(".student_list").append('<li  class="list-group-item list_item_style" id="' + response[index].teacherid + '" > ' + response[index].Name + '  </li>');
+        //        });
+        //    },
+
+        //    error: function () {
+
+
+        //    }
+
+
+        //})
+
+
     });
 
 </script>
@@ -52,13 +87,14 @@
                                                 @Html.ValidationMessageFor(model => model.SubjectName, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
-                                        <div class="form-group">
+                                        @*<div class="form-group">
                                             <label class="control-label col-md-2" for="ClassID">Class Name: <span class="red-mark">*</span></label>
                                             <div class="col-md-6">
                                                 @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control" })
                                                 @Html.ValidationMessageFor(model => model.ClassID, "", new { @class = "text-danger" })
                                             </div>
-                                        </div>
+                                        </div>*@
+                                       
                                         <div class="form-group">
                                             <label class="control-label col-md-2" for="TeacherID">Teacher Name: <span class="red-mark">*</span></label>
                                             <div class="col-md-6">
@@ -66,6 +102,12 @@
                                                 @Html.ValidationMessageFor(model => model.TeacherID, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
+                                        @*<div class="form-group">
+                                            <label class="control-label col-md-2 col-lg-2">Teachers: <span class="red-mark">*</span></label>
+                                            <div class="col-md-6">
+                                                <select multiple class="form-control" id="subjects" name="subjects" required></select>
+                                            </div>
+                                        </div>*@
                                         <div class="form-group">
                                             <div class="col-md-offset-2 col-md-2">
                                                 <input type="submit" value="Create" class="btn btn-primary" />

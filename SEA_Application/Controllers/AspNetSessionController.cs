@@ -54,18 +54,17 @@ namespace SEA_Application.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,SessionName,SessionStartDate,SessionEndDate,Status")] AspNetSession aspNetSession)
+        public ActionResult Create([Bind(Include = "Id,SessionName,SessionStartDate,SessionEndDate,Status,Total_Fee")] AspNetSession aspNetSession)
         {
 
             var TransactionObj = db.Database.BeginTransaction();
-            if (db.AspNetSessions.Where(x => x.Status == "Active").Count() == 0 || aspNetSession.Status == "InActive" )
-            {
-                
+          
                     if (ModelState.IsValid)
                     {
 
                         aspNetSession.SessionEndDate = Convert.ToDateTime(Request.Form["SessionEndDate"]);
                         aspNetSession.SessionStartDate = Convert.ToDateTime(Request.Form["SessionStartDate"]);
+                       aspNetSession.Total_Fee = aspNetSession.Total_Fee;
                         db.AspNetSessions.Add(aspNetSession);
                         db.SaveChanges();
                     }
@@ -73,18 +72,18 @@ namespace SEA_Application.Controllers
                 
                 TransactionObj.Commit();
                     ////////////////////////////////////////////////////////Term Add/////////////////////////////////////////////////////////////////
-                    int length = 3;
-                    for (int i = 0; i < length; i++)
-                    {
-                        AspNetTerm aspnetTerm = new AspNetTerm();
-                        aspnetTerm.SessionID = aspNetSession.Id;
-                        aspnetTerm.TermName = "Term " + (i + 1);
-                        aspnetTerm.TermStartDate = DateTime.Now;
-                        aspnetTerm.TermEndDate = DateTime.Now;
-                        aspnetTerm.Status = "InActive";
-                        db.AspNetTerms.Add(aspnetTerm);
-                        db.SaveChanges();
-                    }
+                    //int length = 3;
+                    //for (int i = 0; i < length; i++)
+                    //{
+                    //    AspNetTerm aspnetTerm = new AspNetTerm();
+                    //    aspnetTerm.SessionID = aspNetSession.Id;
+                    //    aspnetTerm.TermName = "Term " + (i + 1);
+                    //    aspnetTerm.TermStartDate = DateTime.Now;
+                    //    aspnetTerm.TermEndDate = DateTime.Now;
+                    //    aspnetTerm.Status = "InActive";
+                    //    db.AspNetTerms.Add(aspnetTerm);
+                    //    db.SaveChanges();
+                    //}
 
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -110,11 +109,8 @@ namespace SEA_Application.Controllers
 
                 return RedirectToAction("Indexs");
                 
-            }
-            else
-            {
-                return RedirectToAction("Index");
-            }
+          
+          
         }
 
         // GET: AspNetSession/Edit/5
@@ -151,16 +147,15 @@ namespace SEA_Application.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,SessionName,SessionStartDate,SessionEndDate,Status")] AspNetSession aspNetSession)
+        public ActionResult Edit([Bind(Include = "Id,SessionName,SessionStartDate,SessionEndDate,Status,Total_Fee")] AspNetSession aspNetSession)
         {
             if (ModelState.IsValid)
             {
-                if (db.AspNetSessions.Where(x => x.Status == "Active").Count() == 0 || aspNetSession.Status == "InActive")
-                {
+               
                     db.Entry(aspNetSession).State = EntityState.Modified;
                     db.SaveChanges();
                     return RedirectToAction("Index");
-                }
+               
             }
             return View(aspNetSession);
         }
