@@ -58,7 +58,9 @@
             $('#example_length').append(
 
                  '<div class="col-md-2 pull-right !important">' +
-              '<input type="button" class="form-control" id="cre" onclick="AddMultiplier()" value="Add Multiplier" style="border-radius:45px;border-color:#128edb;color:#128edb;background-color:#ffffff" />' +
+               //  '<input type="button" class="form-control" id="cre" onclick="AddMultiplier()" value="Add Multiplier" style="border-radius:45px;border-color:#128edb;color:#128edb;background-color:#ffffff" />  ' 
+                 '<input type="button" class="form-control" id="cre" onclick="AddFee()" value="Add Fees" style="border-radius:45px;border-color:#128edb;color:#128edb;background-color:#ffffff" />  '
+                +
               '</div>' +
                  '<div class="col-md-2 pull-right !important">' +
               '<input type="button" class="form-control" id="cre" onclick="CreateStudent()" value="Student Fee" style="border-radius:45px;border-color:#128edb;color:#128edb;background-color:#ffffff" />' +
@@ -76,6 +78,9 @@
         }
         function AddMultiplier() {
             window.location.href = "/StudentRecurringFees/AddMultiplier";
+        }
+         function AddFee() {
+            window.location.href = "/StudentRecurringFees/AddFee";
         }
         function CreateStudent() {
             window.location.href = "/StudentRecurringFees/StudentRecurringFee";

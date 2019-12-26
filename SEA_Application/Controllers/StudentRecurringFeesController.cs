@@ -15,6 +15,8 @@ namespace SEA_Application.Controllers
     {
         private SEA_DatabaseEntities db = new SEA_DatabaseEntities();
 
+        int SessionID = Int32.Parse(SessionIDStaticController.GlobalSessionID);
+
         // GET: StudentRecurringFees
         public ActionResult Index()
         {
@@ -194,7 +196,7 @@ namespace SEA_Application.Controllers
             ViewBag.ClassId = new SelectList(db.AspNetClasses, "Id", "Name", studentRecurringFee.ClassId);
             return View(studentRecurringFee);
         }
-        public JsonResult SaveStudentFee(int cid, string uid)
+        public JsonResult SaveStudentFee(int cid, string uid, string type)
         {
             string status = "error";
             var student = db.AspNetStudents.Where(x => x.StudentID == uid).FirstOrDefault();
@@ -202,8 +204,20 @@ namespace SEA_Application.Controllers
             if (isstudent == null)
             {
                 var totalfee = db.StudentRecurringFees.Where(x => x.ClassId == cid).FirstOrDefault();
-                var installment = totalfee.TotalFee / 12;
+                var installment = totalfee.TotalFee;
+                if (type == "Installment")
+                {
+                    installment = totalfee.TotalFee / 2;
+                }
+                else if (type == "PerMonth")
+                {
+                    installment = totalfee.TotalFee / 4;
+                }
+
+                //var totalfee = db.StudentRecurringFees.Where(x => x.ClassId == cid).FirstOrDefault();
+
                 string[] Months = { "September", "October", "November", "December", "January", "February", "March", "April", "May", "June", "July", "August" };
+                var month = DateTime.Now.Month;
                 for (int i = 0; i < Months.Count(); i++)
                 {
                     StudentFeeMonth stdfeemonth = new StudentFeeMonth();
@@ -249,6 +263,93 @@ namespace SEA_Application.Controllers
         // POST: StudentRecurringFees/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+        public ActionResult AddData(FeesData data)
+        {
+            if (ModelState.IsValid)
+            {
+
+
+                var feetype = Request.Form["feeType"];
+                IEnumerable<string> selectedstudents = Request.Form["students"].Split(',');
+
+                StudentRecurringFee studentRecurringFees = new StudentRecurringFee();
+
+                studentRecurringFees.ClassId = data.ClassId;
+                studentRecurringFees.SessionId = SessionID;
+                studentRecurringFees.TutionFee = 12000;
+                studentRecurringFees.TotalFee = 12000;
+
+                db.StudentRecurringFees.Add(studentRecurringFees);
+                //db.SaveChanges();
+
+                foreach (var std in selectedstudents)
+                {
+
+                    AspNetStudent student = db.AspNetStudents.Where(x => x.StudentID == std).FirstOrDefault();
+
+                    var classid = db.AspNetStudents.Where(x => x.Id == student.Id).Select(x => x.ClassID).FirstOrDefault();
+
+
+                    string[] Months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+
+                    double totalFee = 12000;
+
+                    var Month = DateTime.Now.ToString("MMMM");
+
+                    int MonthIndex = Array.IndexOf(Months, Month);
+
+                    string[] MonthsToStore = { };
+
+                    int j = 0;
+
+                    for (int i = MonthIndex; i < Months.Count(); i++)
+                    {
+
+
+                        if (j <= 3)
+                        {
+
+                            MonthsToStore[j] = Months[i];
+
+
+
+                            j++;
+                        }
+
+
+                        if ((i == 11) && (j<=3))
+                        {
+                            i = 0-1;
+                        }
+                        
+
+
+
+                        }
+
+
+
+                    
+
+                }
+
+
+
+
+
+
+
+            }
+
+
+
+
+            return View();
+        }
+
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,ClassId,ComputerLabCharges,SecurityServices,LabCharges,Transportation,SportsShirt,ChineseClassFee,AdvanceTax,Other,TutionFee,TotalFee")] StudentRecurringFee studentRecurringFee)
@@ -339,5 +440,40 @@ namespace SEA_Application.Controllers
             }
             base.Dispose(disposing);
         }
+
+
+
+
+        public ActionResult AddFee()
+        {
+            //var ClassID = db.StudentRecurringFees.Include(x => x.AspNetClass).FirstOrDefault().ClassId;
+
+            //ViewBag.Class_ID = ClassID;
+            ViewBag.SessionId = new SelectList(db.AspNetSessions, "Id", "SessionName");
+            //  ViewBag.ClassId = new SelectList(db.AspNetClasses, "Id", "ClassName");
+
+            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
+
+
+            return View();
+        }
+        public ActionResult StudentByClass(int id)
+        {
+
+
+
+            var result1 = (from std in db.AspNetStudents
+                           join usr in db.AspNetUsers on std.StudentID equals usr.Id
+                           where usr.Status != "False" && std.ClassID == id
+                           select new { usr.Id, usr.Name, usr.PhoneNumber, usr.Email, usr.UserName, std.AspNetClass.ClassName }).ToList();
+            return Json(result1, JsonRequestBehavior.AllowGet);
+
+
+
+
+        }
+
+
+
     }
 }
