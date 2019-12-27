@@ -389,6 +389,8 @@ namespace SEA_Application.Controllers
 
             AspNetUser aspNetUser = db.AspNetUsers.Find(id);
             var employee = db.AspNetStudents.Where(x => x.StudentID == id).Select(x => x).FirstOrDefault();
+
+            ViewBag.StudentImage = employee.StudentIMG;
             ViewBag.UserDetails = aspNetUser.Highest_Degree;
             ViewBag.employee = employee;
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
@@ -483,8 +485,8 @@ namespace SEA_Application.Controllers
     public ActionResult GetRollNumber()
         {
            int Roll_Number = 0;
-
-            List<RollNumberList> rl = new List<RollNumberList>();
+/////
+           // List<RollNumberList> rl = new List<RollNumberList>();
            string Max = db.GetRollNumbers().FirstOrDefault().ToString();
             if (Max != null)
             {
@@ -530,7 +532,7 @@ namespace SEA_Application.Controllers
 
         public class check
         {
-            public int count { get; set; }
+            public int count {  get; set; }
             public string by { get; set; }
         }
 
@@ -623,8 +625,12 @@ namespace SEA_Application.Controllers
         public ActionResult StudentDetail(string userName)
         {
             AspNetUser aspNetUser = db.AspNetUsers.Where(x => x.UserName == userName).Select(x => x).FirstOrDefault();
+           var studentimg=  db.AspNetStudents.Where(x => x.StudentID == aspNetUser.Id).FirstOrDefault().StudentIMG;
             var employ = db.AspNetStudents.Where(x => x.StudentID == aspNetUser.Id).Select(x => x).FirstOrDefault();
 
+
+
+            ViewBag.StudentImage =  studentimg;
 
             AspNetStudent employee = new AspNetStudent();
             employee.Id = employ.Id;
@@ -632,7 +638,11 @@ namespace SEA_Application.Controllers
             employee.ClassID = employ.ClassID;
             employee.Level = employ.Level;
             employee.SchoolName = employ.SchoolName;
-            
+            employee.StudentIMG = employ.StudentIMG;
+
+           // employee = employ.StudentIMG;
+
+
             var niio = DateTime.Now;
             var noo = niio.ToString();
             var day = niio.Day;
@@ -736,6 +746,12 @@ namespace SEA_Application.Controllers
 
         public ViewResult StudentIndex(string Error)
         {
+
+
+
+
+
+         
            // ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
 
             ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");

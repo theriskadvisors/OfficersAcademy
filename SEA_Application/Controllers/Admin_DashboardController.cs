@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
@@ -25,12 +26,12 @@ namespace SEA_Application.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private SEA_DatabaseEntities db = new SEA_DatabaseEntities();
-          int SessionID = Int32.Parse(SessionIDStaticController.GlobalSessionID);
+        int SessionID = Int32.Parse(SessionIDStaticController.GlobalSessionID);
         // GET: Admin_Dashboard
         public ActionResult Index()
         {
             return View();
-            
+
         }
         public JsonResult GetEvents()
         {
@@ -99,7 +100,7 @@ namespace SEA_Application.Controllers
 
         public Admin_DashboardController()
         {
-            
+
         }
         public ActionResult Auto_Attendance()
         {
@@ -108,23 +109,23 @@ namespace SEA_Application.Controllers
         public ActionResult checkdata(string valval)
         {
 
-            return Json(valval,JsonRequestBehavior.AllowGet);
+            return Json(valval, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Student_AssessmentReport(string StudentId, string TermId)
         {
             ViewBag.StudentId = StudentId;
-            ViewBag.TermId= TermId;
+            ViewBag.TermId = TermId;
             return View();
         }
 
         public ActionResult GetTeachersList()
         {
 
-            List<GetAllTeachers_Result> list = new  List<GetAllTeachers_Result>();
+            List<GetAllTeachers_Result> list = new List<GetAllTeachers_Result>();
             list = db.GetAllTeachers().ToList();
 
             string status = Newtonsoft.Json.JsonConvert.SerializeObject(list);
-           
+
             return Content(status);
         }
 
@@ -132,14 +133,14 @@ namespace SEA_Application.Controllers
         {
 
             List<GetAllSubjects_Result> list = new List<GetAllSubjects_Result>();
-            list = db.GetAllSubjects().Where(x=>x.Emp_ID == id).ToList();
+            list = db.GetAllSubjects().Where(x => x.Emp_ID == id).ToList();
             string status = Newtonsoft.Json.JsonConvert.SerializeObject(list);
             return Content(status);
         }
         public ActionResult GetChaptersList(int id)
         {
 
-           var result = from s in db.AspNetSubjects
+            var result = from s in db.AspNetSubjects
                          join ts in db.AspNetChapters
                          on s.Id equals ts.SubjectID
                          where (ts.SubjectID == id)
@@ -159,7 +160,6 @@ namespace SEA_Application.Controllers
 
         public ActionResult GetTopicsList(int id)
         {
-
             var result = from s in db.AspNetChapters
                          join ts in db.AspNetTopics
                          on s.Id equals ts.ChapterID
@@ -177,7 +177,6 @@ namespace SEA_Application.Controllers
         }
         public ActionResult GetTopicPercentage(int id)
         {
-
             var TopicPercentage = db.AspNetTopics.Where(x => x.Id == id).FirstOrDefault().Percentage_Completion;
 
 
@@ -217,7 +216,7 @@ namespace SEA_Application.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
 
         }
-       
+
         public class event1
         {
             public int Id { set; get; }
@@ -276,7 +275,7 @@ namespace SEA_Application.Controllers
 
 
         }
-        public ActionResult Assessment_PrintPreview(string StudentId, int SID,string TermId)
+        public ActionResult Assessment_PrintPreview(string StudentId, int SID, string TermId)
         {
             var TId = int.Parse(TermId);
             var ClassId = db.AspNetStudents.Where(p => p.StudentID == StudentId).FirstOrDefault().ClassID;
@@ -401,10 +400,10 @@ namespace SEA_Application.Controllers
                       where classid.PrincipalApproved_status == "Created" || classid.PrincipalApproved_status == "Edited"
                       select new { classname.ClassName, classid.Date, classid.Id }).ToList().OrderByDescending(a => a.Date);
             ViewBag.TotalStudents = (from uid in db.AspNetUsers
-                                    join sid in db.AspNetStudents
-                                    on uid.Id equals sid.StudentID
-                                    where uid.Status != "False"
-                                    select sid.StudentID).Count();
+                                     join sid in db.AspNetStudents
+                                     on uid.Id equals sid.StudentID
+                                     where uid.Status != "False"
+                                     select sid.StudentID).Count();
 
             ViewBag.TotalMessages = db.AspNetMessage_Receiver.Where(m => m.ReceiverID == CurrentUserId && m.Seen == "Not Seen").Count();
             ViewBag.TotalNotifications = db.AspNetNotification_User.Where(m => m.UserID == CurrentUserId && m.Seen == false).Count();
@@ -529,7 +528,7 @@ namespace SEA_Application.Controllers
                 var d = DateTime.Now;
                 var currentdate = d.Date;
                 var cname = db.AspNetClasses.Where(x => x.Id == Classid).Select(x => x.ClassName).FirstOrDefault();
-                var att_list = db.AspNetStudent_AutoAttendance.Where(x => x.Class == cname && x.Date==currentdate).ToList();
+                var att_list = db.AspNetStudent_AutoAttendance.Where(x => x.Class == cname && x.Date == currentdate).ToList();
                 var nn = (from un in db.AspNetUsers
                           join r in db.AspNetStudent_AutoAttendance
                           on un.UserName equals r.Roll_Number
@@ -563,7 +562,7 @@ namespace SEA_Application.Controllers
             var currentdate = d.Date;
             if (type == "Present")
             {
-                if(Classid==0)
+                if (Classid == 0)
                 {
                     var att_list = db.AspNetStudent_AutoAttendance.Where(x => x.Date == currentdate).ToList();
                     var length = att_list.Count;
@@ -592,9 +591,9 @@ namespace SEA_Application.Controllers
                 else
                 {
                     var cname = db.AspNetClasses.Where(x => x.Id == Classid).Select(x => x.ClassName).FirstOrDefault();
-                    var att_list = db.AspNetStudent_AutoAttendance.Where(x => x.Date == currentdate && x.Class==cname).ToList();
+                    var att_list = db.AspNetStudent_AutoAttendance.Where(x => x.Date == currentdate && x.Class == cname).ToList();
                     var length = att_list.Count;
-                  
+
 
                     for (int i = 0; i < length; i++)
                     {
@@ -605,7 +604,7 @@ namespace SEA_Application.Controllers
                                   on un.UserName equals r.Roll_Number
                                   where un.UserName == at.Roll_Number && r.Date == currentdate
                                   select un.Name).FirstOrDefault();
-                       
+
                         AutoAttendance att = new AutoAttendance();
                         att.Class = at.Class;
                         att.Date = at.Date;
@@ -618,7 +617,7 @@ namespace SEA_Application.Controllers
 
                     return Json(attendance, JsonRequestBehavior.AllowGet);
                 }
-        
+
             }
             else if (type == "Absent")
             {
@@ -681,9 +680,9 @@ namespace SEA_Application.Controllers
                 //var time = timecheck.TimeOfDay;
                 var time = db.AspNetTime_Setting.Where(x => x.Id == 1).FirstOrDefault();
                 var lateTime = time.LateTime;
-                if (Classid==0)
+                if (Classid == 0)
                 {
-                    var att_list = db.AspNetStudent_AutoAttendance.Where(x => x.Date == currentdate && x.TimeIn> lateTime).ToList();
+                    var att_list = db.AspNetStudent_AutoAttendance.Where(x => x.Date == currentdate && x.TimeIn > lateTime).ToList();
                     var length = att_list.Count;
                     var nn = (from un in db.AspNetUsers
                               join r in db.AspNetStudent_AutoAttendance
@@ -733,35 +732,35 @@ namespace SEA_Application.Controllers
                     }
                     return Json(attendance, JsonRequestBehavior.AllowGet);
                 }
-                
+
             }
 
         }
         public ActionResult Att_Details(string userName)
         {
-           
-                ViewBag.username = userName;
+
+            ViewBag.username = userName;
             return View();
         }
-         public ActionResult GetAttendance_Details(string RollNumber)
+        public ActionResult GetAttendance_Details(string RollNumber)
         {
-            var std=db.AspNetStudent_AutoAttendance.Where(x => x.Roll_Number == RollNumber).ToList();
+            var std = db.AspNetStudent_AutoAttendance.Where(x => x.Roll_Number == RollNumber).ToList();
             var name = db.AspNetUsers.Where(x => x.UserName == RollNumber).Select(x => x.Name).FirstOrDefault();
             var result = new { std, name };
-            return Json(result,JsonRequestBehavior.AllowGet);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
         /////////////////////////////////////////////////////STUDENT STATUS_DETAILS////////////////////////////////////////////
 
-        public ActionResult Std_Status_Details( string RollNumber, string status)
+        public ActionResult Std_Status_Details(string RollNumber, string status)
         {
-            if(status=="Present")
+            if (status == "Present")
             {
-                var attendance=db.AspNetStudent_AutoAttendance.Where(x => x.Roll_Number == RollNumber).ToList();
+                var attendance = db.AspNetStudent_AutoAttendance.Where(x => x.Roll_Number == RollNumber).ToList();
                 var name = db.AspNetUsers.Where(x => x.UserName == RollNumber).Select(x => x.Name).FirstOrDefault();
                 var result = new { attendance, name };
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
-            else if(status=="Absent")
+            else if (status == "Absent")
             {
                 var attendance = db.AspNetAbsent_Student.Where(x => x.Roll_Number == RollNumber).ToList();
                 var name = db.AspNetUsers.Where(x => x.UserName == RollNumber).Select(x => x.Name).FirstOrDefault();
@@ -772,16 +771,16 @@ namespace SEA_Application.Controllers
             {
                 var time = db.AspNetTime_Setting.Where(x => x.Id == 1).FirstOrDefault();
                 var lateTime = time.LateTime;
-                var attendance = db.AspNetStudent_AutoAttendance.Where(x => x.Roll_Number == RollNumber && x.TimeIn>lateTime).ToList();
+                var attendance = db.AspNetStudent_AutoAttendance.Where(x => x.Roll_Number == RollNumber && x.TimeIn > lateTime).ToList();
                 var name = db.AspNetUsers.Where(x => x.UserName == RollNumber).Select(x => x.Name).FirstOrDefault();
                 var result = new { attendance, name };
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
-            
+
         }
-        public ActionResult Start_End_Date(string RollNumber,string status,DateTime start ,DateTime end)
+        public ActionResult Start_End_Date(string RollNumber, string status, DateTime start, DateTime end)
         {
-            if(status=="Present")
+            if (status == "Present")
             {
                 var attendance = db.AspNetStudent_AutoAttendance.Where(x => x.Roll_Number == RollNumber && x.Date >= start && x.Date <= end).ToList();
                 var name = db.AspNetUsers.Where(x => x.UserName == RollNumber).Select(x => x.Name).FirstOrDefault();
@@ -799,12 +798,12 @@ namespace SEA_Application.Controllers
             {
                 var time = db.AspNetTime_Setting.Where(x => x.Id == 1).FirstOrDefault();
                 var lateTime = time.LateTime;
-                var attendance = db.AspNetStudent_AutoAttendance.Where(x => x.Roll_Number == RollNumber && x.Date >= start && x.Date <= end && x.TimeIn>=lateTime ).ToList();
+                var attendance = db.AspNetStudent_AutoAttendance.Where(x => x.Roll_Number == RollNumber && x.Date >= start && x.Date <= end && x.TimeIn >= lateTime).ToList();
                 var name = db.AspNetUsers.Where(x => x.UserName == RollNumber).Select(x => x.Name).FirstOrDefault();
                 var result = new { attendance, name };
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
-           
+
         }
         ///////////////////////////////////////////ATTENDANCE DATE FILTER//////////////////////////////////////
 
@@ -825,7 +824,7 @@ namespace SEA_Application.Controllers
 
                 for (int i = 0; i < length; i++)
                 {
-                    AspNetStudent_AutoAttendance at = att_list[i];                    
+                    AspNetStudent_AutoAttendance at = att_list[i];
                     AutoAttendance att = new AutoAttendance();
                     att.Class = at.Class;
                     att.Date = at.Date;
@@ -921,7 +920,7 @@ namespace SEA_Application.Controllers
             else if (Classid != 0 && type == "Absent")
             {
                 var cname = db.AspNetClasses.Where(x => x.Id == Classid).Select(x => x.ClassName).FirstOrDefault();
-                var pstd = db.AspNetStudent_AutoAttendance.Where(x => x.Date == start && x.Class==cname).Select(x => x.Roll_Number).ToList();
+                var pstd = db.AspNetStudent_AutoAttendance.Where(x => x.Date == start && x.Class == cname).Select(x => x.Roll_Number).ToList();
                 var tstd = db.AspNetStudents.Where(x => x.AspNetUser.Status != "False" && x.ClassID == Classid).Select(x => x.AspNetUser.UserName).ToList();
                 var astd = tstd.Except(pstd).ToList();
 
@@ -942,17 +941,17 @@ namespace SEA_Application.Controllers
                     at.Name = att.Name;
                     attendance.Add(at);
                 }
-                return Json(attendance,JsonRequestBehavior.AllowGet);
+                return Json(attendance, JsonRequestBehavior.AllowGet);
             }
             else if (Classid != 0 && type == "Late")
             {
-               
+
                 //  var timecheck = Convert.ToDateTime("10:00:00");
-               // var time = timecheck.TimeOfDay;
+                // var time = timecheck.TimeOfDay;
                 var cname = db.AspNetClasses.Where(x => x.Id == Classid).Select(x => x.ClassName).FirstOrDefault();
                 var att_list = db.AspNetStudent_AutoAttendance.Where(x => x.TimeIn > lateTime && x.Date == start && x.Class == cname).ToList();
                 var length = att_list.Count;
-               
+
 
                 for (int i = 0; i < length; i++)
                 {
@@ -1014,9 +1013,9 @@ namespace SEA_Application.Controllers
         /*******************************************************************************************************************/
         public ActionResult Student_Data(string studentId)
         {
-           var name= db.AspNetUsers.Where(x => x.Id == studentId).Select(x => x.Name).FirstOrDefault();
-           var username= db.AspNetUsers.Where(x => x.Id == studentId).Select(x => x.UserName).FirstOrDefault();
-            var cid=db.AspNetStudents.Where(x => x.StudentID == studentId).Select(x => x.ClassID).FirstOrDefault();
+            var name = db.AspNetUsers.Where(x => x.Id == studentId).Select(x => x.Name).FirstOrDefault();
+            var username = db.AspNetUsers.Where(x => x.Id == studentId).Select(x => x.UserName).FirstOrDefault();
+            var cid = db.AspNetStudents.Where(x => x.StudentID == studentId).Select(x => x.ClassID).FirstOrDefault();
             var tid = db.AspNetClasses.Where(x => x.Id == cid).Select(x => x.TeacherID).FirstOrDefault();
             var tname = db.AspNetUsers.Where(x => x.Id == tid).Select(x => x.Name).FirstOrDefault();
             var resutl = new { name, username, tname };
@@ -1151,7 +1150,7 @@ namespace SEA_Application.Controllers
                     db.SaveChanges();
 
                     string Error = "Accountant Saved successfully";
-                    return RedirectToAction("AccountantsIndex", "AspNetUser" , new { Error});
+                    return RedirectToAction("AccountantsIndex", "AspNetUser", new { Error });
                 }
                 AddErrors(result);
             }
@@ -1285,7 +1284,7 @@ namespace SEA_Application.Controllers
 
         public ActionResult ParentRegister()
         {
-        //    ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+            //    ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
 
             ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
             return View();
@@ -1322,14 +1321,14 @@ namespace SEA_Application.Controllers
             }
             catch (Exception ex)
             {
-            //    logAppException(ex.ToString(), "email send");
+                //    logAppException(ex.ToString(), "email send");
             }
 
             return IsMailSent;
         }
 
-        
-public ActionResult ConfirmAccount(string id)
+
+        public ActionResult ConfirmAccount(string id)
         {
             ViewBag.res = "error";
             var user = db.AspNetUsers.Where(x => x.Id == id).FirstOrDefault();
@@ -1362,7 +1361,7 @@ public ActionResult ConfirmAccount(string id)
             {
                 string DomainName = Request.Url.GetLeftPart(UriPartial.Authority);
                 var u = db.AspNetUsers.FirstOrDefault(x => x.Id == id);
-              //  string ConfirmLink = "<a href/Security/EmailConfirmation/?ConfirmAccount={0}</a>";
+                //  string ConfirmLink = "<a href/Security/EmailConfirmation/?ConfirmAccount={0}</a>";
 
                 string ConfirmLink = "<a href='" + String.Format(DomainName + "/Parent_Dashboard/ConfirmAccount/?id={0}", u.Id.ToString() + "' target='_blank'>Click Here To Confirm Your Email </a>'");
                 SendMail(u.Email, "Account confirmation", "" + EmailDesign.SignupEmailTemplate(ConfirmLink, u.UserName));
@@ -1370,7 +1369,7 @@ public ActionResult ConfirmAccount(string id)
             }
             catch (Exception ex)
             {
-            //    logAppException(ex.StackTrace.ToString(), "Send Conformation Email");
+                //    logAppException(ex.StackTrace.ToString(), "Send Conformation Email");
             }
             return Content(status);
         }
@@ -1393,7 +1392,7 @@ public ActionResult ConfirmAccount(string id)
                     IEnumerable<string> selectedstudents = Request.Form["StudentID"].Split(',');
                     var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Name = model.Name, PhoneNumber = Request.Form["fatherCell"] };
                     //                    SendConformationEmail(user);
-                  
+
                     var result = await UserManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
                     {
@@ -1425,7 +1424,7 @@ public ActionResult ConfirmAccount(string id)
                         US.SessionID = SessionID;
                         db.AspNetUsers_Session.Add(US);
                         db.SaveChanges();
-                        
+
                         foreach (var item in selectedstudents)
                         {
                             AspNetParent_Child par_stu = new AspNetParent_Child();
@@ -1460,7 +1459,7 @@ public ActionResult ConfirmAccount(string id)
                 }
             }
             string Error = "Parent successfully saved";
-            return RedirectToAction("ParentsIndex", "AspNetUser", new { Error});
+            return RedirectToAction("ParentsIndex", "AspNetUser", new { Error });
         }
 
         [HttpPost]
@@ -1550,16 +1549,16 @@ public ActionResult ConfirmAccount(string id)
                             {
                                 AspNetParent parentDetail = new AspNetParent();
                                 parentDetail.UserID = user.Id;
-                                parentDetail.FatherName= workSheet.Cells[rowIterator, 6].Value.ToString(); 
-                                parentDetail.FatherCellNo= workSheet.Cells[rowIterator, 7].Value.ToString();
-                                parentDetail.FatherEmail= workSheet.Cells[rowIterator, 8].Value.ToString();
-                                parentDetail.FatherOccupation= workSheet.Cells[rowIterator, 9].Value.ToString();
-                                parentDetail.FatherEmployer= workSheet.Cells[rowIterator, 10].Value.ToString();
-                                parentDetail.MotherName= workSheet.Cells[rowIterator, 11].Value.ToString();
-                                parentDetail.MotherCellNo= workSheet.Cells[rowIterator, 12].Value.ToString();
-                                parentDetail.MotherEmail= workSheet.Cells[rowIterator, 13].Value.ToString();
-                                parentDetail.MotherOccupation= workSheet.Cells[rowIterator, 14].Value.ToString();
-                                parentDetail.MotherEmployer= workSheet.Cells[rowIterator, 15].Value.ToString();
+                                parentDetail.FatherName = workSheet.Cells[rowIterator, 6].Value.ToString();
+                                parentDetail.FatherCellNo = workSheet.Cells[rowIterator, 7].Value.ToString();
+                                parentDetail.FatherEmail = workSheet.Cells[rowIterator, 8].Value.ToString();
+                                parentDetail.FatherOccupation = workSheet.Cells[rowIterator, 9].Value.ToString();
+                                parentDetail.FatherEmployer = workSheet.Cells[rowIterator, 10].Value.ToString();
+                                parentDetail.MotherName = workSheet.Cells[rowIterator, 11].Value.ToString();
+                                parentDetail.MotherCellNo = workSheet.Cells[rowIterator, 12].Value.ToString();
+                                parentDetail.MotherEmail = workSheet.Cells[rowIterator, 13].Value.ToString();
+                                parentDetail.MotherOccupation = workSheet.Cells[rowIterator, 14].Value.ToString();
+                                parentDetail.MotherEmployer = workSheet.Cells[rowIterator, 15].Value.ToString();
                                 db.AspNetParents.Add(parentDetail);
                                 db.SaveChanges();
 
@@ -1600,7 +1599,7 @@ public ActionResult ConfirmAccount(string id)
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ModelState.AddModelError("", e.InnerException);
                 dbTransaction.Dispose();
@@ -1628,7 +1627,7 @@ public ActionResult ConfirmAccount(string id)
         public ActionResult TeacherEdit(string id)
         {
             var user = db.AspNetUsers.Where(x => x.Id == id).Select(x => x).FirstOrDefault();
-            
+
             user.Name = Request.Form["Name"];
             user.UserName = Request.Form["UserName"];
             user.Email = Request.Form["Email"];
@@ -1673,16 +1672,16 @@ public ActionResult ConfirmAccount(string id)
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> TeacherRegister(RegisterViewModel model)
         {
-            if (1==1)
+            if (1 == 1)
             {
                 ApplicationDbContext context = new ApplicationDbContext();
-                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Name=model.Name, PhoneNumber=Request.Form["cellNo"]  };
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Name = model.Name, PhoneNumber = Request.Form["cellNo"] };
                 var result = await UserManager.CreateAsync(user, model.Password);
 
                 var Field = Request.Form["Field"];
-                var Uni  =Request.Form["University"];
+                var Uni = Request.Form["University"];
                 var Ocu = Request.Form["Occupation"];
-                var Deg= Request.Form["Degree"];
+                var Deg = Request.Form["Degree"];
                 var Ind = Request.Form["Industry"];
                 ruffdata rd = new ruffdata();
                 rd.SessionID = SessionID;
@@ -1706,7 +1705,7 @@ public ActionResult ConfirmAccount(string id)
                 emp.Email = Teacher.Email;
                 emp.PositionAppliedFor = Request.Form["appliedFor"];
                 emp.DateAvailable = Request.Form["dateAvailable"];
-                emp.JoiningDate =Request.Form["JoiningDate"];
+                emp.JoiningDate = Request.Form["JoiningDate"];
                 emp.BirthDate = Request.Form["birthDate"];
                 emp.Nationality = Request.Form["nationality"];
                 emp.Religion = Request.Form["religion"];
@@ -1718,7 +1717,7 @@ public ActionResult ConfirmAccount(string id)
                 emp.SpouseHighestDegree = Request.Form["spouseHighestDegree"];
                 emp.SpouseOccupation = Request.Form["spouseOccupation"];
                 emp.SpouseBusinessAddress = Request.Form["spouseBusinessAddress"];
-                
+
                 //emp.GrossSalary = Convert.ToInt32(Request.Form["GrossSalary"]);
                 //emp.BasicSalary = Convert.ToInt32(Request.Form["BasicSalary"]);
                 //emp.MedicalAllowance = Convert.ToInt32(Request.Form["MedicalAllowance"]);
@@ -1726,7 +1725,7 @@ public ActionResult ConfirmAccount(string id)
                 //emp.ProvidedFund = Convert.ToInt32(Request.Form["ProvidedFund"]);
                 //emp.Tax = Convert.ToInt32(Request.Form["Tax"]);
                 //emp.EOP = Convert.ToInt32(Request.Form["EOP"]);
-                
+
                 emp.VirtualRoleId = db.AspNetVirtualRoles.Where(x => x.Name == "Teaching Staff").Select(x => x.Id).FirstOrDefault();
                 emp.UserId = user.Id;
                 if (result.Succeeded)
@@ -1737,12 +1736,12 @@ public ActionResult ConfirmAccount(string id)
                     var userStore = new UserStore<ApplicationUser>(context);
                     var userManager = new UserManager<ApplicationUser>(userStore);
                     userManager.AddToRole(user.Id, "Teacher");
-                    
+
                     db.AspNetEmployees.Add(emp);
-                   if(db.SaveChanges()>0)
+                    if (db.SaveChanges() > 0)
                     {
 
-                        AspNetUser usr=  db.AspNetUsers.Find(emp.UserId);
+                        AspNetUser usr = db.AspNetUsers.Find(emp.UserId);
                         usr.Industry = Ind;
                         usr.Occupation = Ocu;
                         usr.University = Uni;
@@ -1751,13 +1750,13 @@ public ActionResult ConfirmAccount(string id)
                         //db.AspNetUsers.Add(usr);
                         db.SaveChanges();
                     }
-                  
+
                     AspNetUsers_Session US = new AspNetUsers_Session();
                     US.UserID = emp.UserId;
                     int sessionid = db.AspNetSessions.Where(x => x.Status == "Active").FirstOrDefault().Id;
                     US.SessionID = sessionid;
                     db.AspNetUsers_Session.Add(US);
-                    if(db.SaveChanges()>0)
+                    if (db.SaveChanges() > 0)
                     {
                         Aspnet_Employee_Session aes = new Aspnet_Employee_Session();
                         aes.Emp_Id = emp.Id;
@@ -1866,10 +1865,10 @@ public ActionResult ConfirmAccount(string id)
             }
             catch (Exception e)
             {
-             //   ModelState.AddModelError("Error", e.InnerException);
+                //   ModelState.AddModelError("Error", e.InnerException);
                 dbTransaction.Dispose();
                 return View("TeacherRegister", model);
-               
+
             }
             return RedirectToAction("TeachersIndex", "AspNetUser");
         }
@@ -1884,26 +1883,36 @@ public ActionResult ConfirmAccount(string id)
         public ActionResult StudentRegister()
         {
             //var data = db.AspNetClasses 
-           // ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
-           ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
+            // ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
             return View();
         }
 
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> StudentRegister(RegisterViewModel model)
+        public async Task<ActionResult> StudentRegister(RegisterViewModel model, HttpPostedFileBase image)
         {
             model.UserName = Request.Form["UserName"];
             var dbTransaction = db.Database.BeginTransaction();
             try
             {
-               
+
                 if (ModelState.IsValid)
                 {
+
+                    if (image != null)
+                    {
+                        var fileName = Path.GetFileName(image.FileName);
+                        var extension = Path.GetExtension(image.FileName);
+                        image.SaveAs(Server.MapPath("~/Content/Images/StudentImages/") + image.FileName);
+                    //    file.SaveAs(Server.MapPath("/Upload/") + file.FileName);
+                    }
+
+
                     ApplicationDbContext context = new ApplicationDbContext();
                     IEnumerable<string> selectedsubjects = Request.Form["subjects"].Split(',');
-                    
+
                     var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Name = model.Name, PhoneNumber = Request.Form["cellNo"] };
                     var result = await UserManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
@@ -1924,6 +1933,8 @@ public ActionResult ConfirmAccount(string id)
                         student.Nationality = Request.Form["Nationality"];
                         student.Religion = Request.Form["Religion"];
                         student.Gender = Request.Form["Gender"];
+                        student.StudentIMG = image.FileName;
+
                         student.ClassID = Convert.ToInt32(Request.Form["ClassID"]);
                         var Field = Request.Form["Field"];
                         var Uni = Request.Form["University"];
@@ -1938,7 +1949,7 @@ public ActionResult ConfirmAccount(string id)
                         Aspnet_Employee_Session ES = new Aspnet_Employee_Session();
                         int sessionid = db.AspNetSessions.Where(x => x.Status == "Active").FirstOrDefault().Id;
                         asc.SessionID = sessionid;
-                        asc.StudentID =   student.Id;
+                        asc.StudentID = student.Id;
                         db.AspNetStudent_Session_class.Add(asc);
                         if (db.SaveChanges() > 0)
                         {
@@ -1950,7 +1961,7 @@ public ActionResult ConfirmAccount(string id)
                             db.SaveChanges();
                         }
 
-                    
+
 
                         var subID = selectedsubjects.First();
                         //  var classID = db.AspNetSubjects.Where(x=> x.Id == int.Parse(subID)).Select(x=> x.ClassID).FirstOrDefault();
@@ -1970,7 +1981,7 @@ public ActionResult ConfirmAccount(string id)
 
                         foreach (var item in selectedsubjects)
                         {
-                            
+
                             AspNetStudent_Subject stu_sub = new AspNetStudent_Subject();
                             stu_sub.StudentID = user.Id;
                             stu_sub.SubjectID = Convert.ToInt32(item);
@@ -1996,7 +2007,7 @@ public ActionResult ConfirmAccount(string id)
 
                         dbTransaction.Commit();
                         string Error = "Student successfully saved.";
-                        return RedirectToAction("StudentIndex", "AspNetUser", new { Error } );
+                        return RedirectToAction("StudentIndex", "AspNetUser", new { Error });
                     }
                     else
                     {
@@ -2010,12 +2021,12 @@ public ActionResult ConfirmAccount(string id)
                 dbTransaction.Dispose();
                 ModelState.AddModelError("", e.Message);
             }
-             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             return View(model);
         }
 
 
-          
+
 
         [HttpPost]
         [AllowAnonymous]
@@ -2071,9 +2082,9 @@ public ActionResult ConfirmAccount(string id)
                             subjects.Add(workSheet.Cells[rowIterator, 16].Value.ToString());
 
                             var subjectIDs = (from subject in db.AspNetSubjects
-                                     join Classes in db.AspNetClasses on subject.ClassID equals Classes.Id
-                                     where Classes.ClassName == Class && subjects.Contains(subject.SubjectName)
-                                     select subject).ToList();
+                                              join Classes in db.AspNetClasses on subject.ClassID equals Classes.Id
+                                              where Classes.ClassName == Class && subjects.Contains(subject.SubjectName)
+                                              select subject).ToList();
 
                             foreach (var subjectid in subjectIDs)
                             {
@@ -2086,11 +2097,11 @@ public ActionResult ConfirmAccount(string id)
 
                             AspNetStudent studentDetail = new AspNetStudent();
                             studentDetail.StudentID = user.Id;
-                            studentDetail.SchoolName= workSheet.Cells[rowIterator, 17].Value.ToString();
-                            studentDetail.BirthDate= workSheet.Cells[rowIterator, 18].Value.ToString();
-                            studentDetail.Nationality= workSheet.Cells[rowIterator, 19].Value.ToString();
-                            studentDetail.Religion= workSheet.Cells[rowIterator, 20].Value.ToString();
-                            studentDetail.Gender= workSheet.Cells[rowIterator, 21].Value.ToString();
+                            studentDetail.SchoolName = workSheet.Cells[rowIterator, 17].Value.ToString();
+                            studentDetail.BirthDate = workSheet.Cells[rowIterator, 18].Value.ToString();
+                            studentDetail.Nationality = workSheet.Cells[rowIterator, 19].Value.ToString();
+                            studentDetail.Religion = workSheet.Cells[rowIterator, 20].Value.ToString();
+                            studentDetail.Gender = workSheet.Cells[rowIterator, 21].Value.ToString();
                             studentDetail.ClassID = db.AspNetClasses.Where(x => x.ClassName == Class).Select(x => x.Id).FirstOrDefault();
                             db.AspNetStudents.Add(studentDetail);
                             db.SaveChanges();
@@ -2110,7 +2121,7 @@ public ActionResult ConfirmAccount(string id)
                         }
                     }
                     dbTransaction.Commit();
-                }  
+                }
             }
             catch (Exception e)
             {
@@ -2128,7 +2139,7 @@ public ActionResult ConfirmAccount(string id)
         public JsonResult SubjectsByClass(int id)
         {
             db.Configuration.ProxyCreationEnabled = false;
-            List<AspNetSubject> sub = db.AspNetSubjects.Where(r => r.ClassID == id &&  r.IsManadatory == false).OrderByDescending(r => r.Id).ToList();
+            List<AspNetSubject> sub = db.AspNetSubjects.Where(r => r.ClassID == id && r.IsManadatory == false).OrderByDescending(r => r.Id).ToList();
             ViewBag.Subjects = sub;
             return Json(sub, JsonRequestBehavior.AllowGet);
 
@@ -2173,10 +2184,10 @@ public ActionResult ConfirmAccount(string id)
                                 join subject in db.AspNetSubjects on student_subject.SubjectID equals subject.Id
                                 where ids.Contains(subject.ClassID)
                                 orderby subject.ClassID ascending
-                                select new { student.Id, student.Name, student.UserName } ).Distinct().OrderBy(x=> x.Name).ToList();
+                                select new { student.Id, student.Name, student.UserName }).Distinct().OrderBy(x => x.Name).ToList();
 
-               // var diff = aIDs.Except(students);
-               
+                // var diff = aIDs.Except(students);
+
 
                 return Json(students, JsonRequestBehavior.AllowGet);
             }
@@ -2184,7 +2195,7 @@ public ActionResult ConfirmAccount(string id)
             {
                 return Json("", JsonRequestBehavior.AllowGet);
             }
-            
+
         }
 
 
@@ -2231,7 +2242,7 @@ public ActionResult ConfirmAccount(string id)
             }
         }
 
-       
+
 
         private ActionResult RedirectToLocal(string returnUrl)
         {
