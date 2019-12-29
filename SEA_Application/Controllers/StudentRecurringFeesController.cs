@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using SEA_Application.Models;
 using System.Threading.Tasks;
+using SEA_Application.Models.StudentAssessments;
 
 namespace SEA_Application.Controllers
 {
@@ -205,15 +206,8 @@ namespace SEA_Application.Controllers
             {
                 var totalfee = db.StudentRecurringFees.Where(x => x.ClassId == cid).FirstOrDefault();
                 var installment = totalfee.TotalFee;
-                if (type == "Installment")
-                {
                     installment = totalfee.TotalFee / 2;
-                }
-                else if (type == "PerMonth")
-                {
-                    installment = totalfee.TotalFee / 4;
-                }
-
+              
                 //var totalfee = db.StudentRecurringFees.Where(x => x.ClassId == cid).FirstOrDefault();
 
                 string[] Months = { "September", "October", "November", "December", "January", "February", "March", "April", "May", "June", "July", "August" };
@@ -268,6 +262,7 @@ namespace SEA_Application.Controllers
         {
             if (ModelState.IsValid)
             {
+               var TotalFee = db.AspNetSessions.Where(x => x.Id == SessionID).FirstOrDefault().Total_Fee;
 
 
                 var feetype = Request.Form["feeType"];
@@ -277,75 +272,169 @@ namespace SEA_Application.Controllers
 
                 studentRecurringFees.ClassId = data.ClassId;
                 studentRecurringFees.SessionId = SessionID;
-                studentRecurringFees.TutionFee = 12000;
-                studentRecurringFees.TotalFee = 12000;
-
+                studentRecurringFees.TutionFee = TotalFee ;
+                studentRecurringFees.TotalFee = TotalFee;
                 db.StudentRecurringFees.Add(studentRecurringFees);
-                //db.SaveChanges();
+                //  db.SaveChanges();
 
-                foreach (var std in selectedstudents)
+                var Total_Fees = studentRecurringFees.TotalFee;
+              
+                if(feetype == "Installment")
                 {
-
-                    AspNetStudent student = db.AspNetStudents.Where(x => x.StudentID == std).FirstOrDefault();
-
-                    var classid = db.AspNetStudents.Where(x => x.Id == student.Id).Select(x => x.ClassID).FirstOrDefault();
-
-
-                    string[] Months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
-
-                    double totalFee = 12000;
-
-                    var Month = DateTime.Now.ToString("MMMM");
-
-                    int MonthIndex = Array.IndexOf(Months, Month);
-
-                    string[] MonthsToStore = { };
-
-                    int j = 0;
-
-                    for (int i = MonthIndex; i < Months.Count(); i++)
+                    var CalculatedFee = Total_Fees / 2;
+                    foreach (var std in selectedstudents)
                     {
 
+                        AspNetStudent student = db.AspNetStudents.Where(x => x.StudentID == std).FirstOrDefault();
 
-                        if (j <= 3)
-                        {
-
-                            MonthsToStore[j] = Months[i];
-
-
-
-                            j++;
-                        }
-
-
-                        if ((i == 11) && (j<=3))
-                        {
-                            i = 0-1;
-                        }
+                        var classid = db.AspNetStudents.Where(x => x.Id == student.Id).Select(x => x.ClassID).FirstOrDefault();
+                        var Month = DateTime.Now.ToString("MMMM");
                         
+                        for(int i=0;i<=3; i++)
+                        {
+                            var FirstMonth = DateTime.Now.ToString("MMMM");
+                            StudentFeeMonth stdfeemonth = new StudentFeeMonth();
+                            stdfeemonth.StudentId = student.Id;
+                            stdfeemonth.Multiplier = 2;
+                            stdfeemonth.SessionId = SessionID;
+                            stdfeemonth.Status = "Pending";
+                           
+                            var dddd = DateTime.Now;
+                            var d = dddd.ToString("yyyy-MM-dd");
+                            stdfeemonth.IssueDate = d;
 
+                            if (i == 0)
+                            {
+                                stdfeemonth.Months = DateTime.Now.ToString("MMMM");
+                                stdfeemonth.InstalmentAmount = CalculatedFee;
+                                stdfeemonth.FeePayable = CalculatedFee;
+                            }
+                            else if (i == 1)
+                            {
+                                stdfeemonth.InstalmentAmount = 0;
+                                stdfeemonth.FeePayable = 0;
+                                stdfeemonth.Months = DateTime.Now.Date.AddMonths(1).ToString("MMMM");
+                            }
+                            else if(i == 2)
+                            {
+                                stdfeemonth.Months = DateTime.Now.Date.AddMonths(2).ToString("MMMM");
+                                stdfeemonth.InstalmentAmount = CalculatedFee;
+                                stdfeemonth.FeePayable = CalculatedFee;
+                            }
+                            else if (i == 3)
+                            {
+                                stdfeemonth.InstalmentAmount = 0;
+                                stdfeemonth.FeePayable = 0;
+                                stdfeemonth.Months = DateTime.Now.Date.AddMonths(3).ToString("MMMM");
+                            }
+                            else
+                            {
+                                //do nothing
+                            }
 
-
+                            stdfeemonth.FeeType = "Installment";
+                            db.StudentFeeMonths.Add(stdfeemonth);
+                            db.SaveChanges();
+                     
                         }
 
-
-
-                    
-
+                    }
                 }
 
 
+                else if(feetype == "PerMonth")
+                {
+                    foreach (var std in selectedstudents)
+                    {
+                        var CalculatedFee = Total_Fees / 4;
+                        AspNetStudent student = db.AspNetStudents.Where(x => x.StudentID == std).FirstOrDefault();
 
+                        var classid = db.AspNetStudents.Where(x => x.Id == student.Id).Select(x => x.ClassID).FirstOrDefault();
+                        var Month = DateTime.Now.ToString("MMMM");
 
+                        for (int i = 0; i <= 3; i++)
+                        {
+                            var FirstMonth = DateTime.Now.ToString("MMMM");
+                            StudentFeeMonth stdfeemonth = new StudentFeeMonth();
+                            stdfeemonth.StudentId = student.Id;
+                            stdfeemonth.Multiplier = 1;
+                            stdfeemonth.SessionId = SessionID;
+                            stdfeemonth.Status = "Pending";
 
+                            var dddd = DateTime.Now;
+                            var d = dddd.ToString("yyyy-MM-dd");
+                            stdfeemonth.IssueDate = d;
 
+                            if (i == 0)
+                            {
+                                stdfeemonth.Months = DateTime.Now.ToString("MMMM");
+                                stdfeemonth.InstalmentAmount = CalculatedFee;
+                                stdfeemonth.FeePayable = CalculatedFee;
+                            }
+                            else 
+                            {
+                                stdfeemonth.InstalmentAmount = CalculatedFee;
+                                stdfeemonth.FeePayable = CalculatedFee;
+                                stdfeemonth.Months = DateTime.Now.Date.AddMonths(i).ToString("MMMM");
+                            }
+                           
+                            stdfeemonth.FeeType = "PerMonth";
+                            db.StudentFeeMonths.Add(stdfeemonth);
+                            db.SaveChanges();
+
+                        }
+
+                    }
+
+                 }
+                else
+                {
+                    foreach (var std in selectedstudents)
+                    {
+                    
+                        AspNetStudent student = db.AspNetStudents.Where(x => x.StudentID == std).FirstOrDefault();
+
+                        var classid = db.AspNetStudents.Where(x => x.Id == student.Id).Select(x => x.ClassID).FirstOrDefault();
+                        var Month = DateTime.Now.ToString("MMMM");
+
+                        for (int i = 0; i <= 3; i++)
+                        {
+                            var FirstMonth = DateTime.Now.ToString("MMMM");
+                            StudentFeeMonth stdfeemonth = new StudentFeeMonth();
+                            stdfeemonth.StudentId = student.Id;
+                            stdfeemonth.Multiplier = 4;
+                            stdfeemonth.SessionId = SessionID;
+                            stdfeemonth.Status = "Pending";
+
+                            var dddd = DateTime.Now;
+                            var d = dddd.ToString("yyyy-MM-dd");
+                            stdfeemonth.IssueDate = d;
+
+                            if (i == 0)
+                            {
+                                stdfeemonth.Months = DateTime.Now.ToString("MMMM");
+                                stdfeemonth.InstalmentAmount = Total_Fees;
+                                stdfeemonth.FeePayable = Total_Fees;
+                            }
+                            else
+                            {
+                                stdfeemonth.InstalmentAmount = 0;
+                                stdfeemonth.FeePayable = 0;
+                                stdfeemonth.Months = DateTime.Now.Date.AddMonths(i).ToString("MMMM");
+                            }
+
+                            stdfeemonth.FeeType = "Lumsum";
+                            db.StudentFeeMonths.Add(stdfeemonth);
+                            db.SaveChanges();
+
+                        }
+
+                    }
+               }
 
             }
 
-
-
-
-            return View();
+            return RedirectToAction("Index");
         }
 
 

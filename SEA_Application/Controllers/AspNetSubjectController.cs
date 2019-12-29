@@ -199,6 +199,16 @@ namespace SEA_Application.Controllers
                 string user = db.AspNetUsers.Where(x => x.Id == aspNetSubject.TeacherID).Select(x => x.Name).FirstOrDefault();
                 var logMessage = "New Subject Added, SubjectName: " + aspNetSubject.SubjectName + ", ClassID: " + aspNetSubject.ClassID + ", TeacherName: " + user;
 
+
+                AspNetTeacherSubject ts = new AspNetTeacherSubject();
+                var class_id = db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault().Id;
+                 var sub_id = db.AspNetSubjects.Where(x => x.SubjectName == aspNetSubject.SubjectName && x.ClassID == class_id).FirstOrDefault().Id;
+
+                ts.TeacherID = Int32.Parse(aspNetSubject.TeacherID);
+                ts.SubjectID = sub_id;
+                db.AspNetTeacherSubjects.Add(ts);
+                db.SaveChanges();
+                
                 var LogControllerObj = new AspNetLogsController();
                 LogControllerObj.CreateLogSave(logMessage, UserIDLog);
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -221,6 +231,7 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult SubjectfromFile(AspNetSubject aspNetSubject)
         {
+            string ErrorMsg = null;
             var dbTransaction = db.Database.BeginTransaction();
             try
             {
@@ -270,13 +281,54 @@ namespace SEA_Application.Controllers
                         //Subject.TeacherID = Teacher.Id;
                         Subject.ClassID = Class.Id;
                         db.AspNetSubjects.Add(Subject);
-                        db.SaveChanges();
+                        if (db.SaveChanges() > 0)
+                        {
+                            AspNetTeacherSubject teacher = new AspNetTeacherSubject();
+                            string Teacher1 = workSheet.Cells[rowIterator, 5].Value.ToString();
+                            var u_id = db.AspNetUsers.Where(x => x.UserName == Teacher1).FirstOrDefault().Id;
+                            int teacher1_id = db.AspNetEmployees.Where(x => x.UserId == u_id).FirstOrDefault().Id;
+                            int s_id = db.AspNetSubjects.Where(x => x.SubjectName == Subject.SubjectName).FirstOrDefault().Id;
 
+                            teacher.TeacherID = teacher1_id;
+                            teacher.SubjectID = s_id;
+                            db.AspNetTeacherSubjects.Add(teacher);
+                            if (db.SaveChanges() > 0)
+                            {
+                                AspNetTeacherSubject teacher2 = new AspNetTeacherSubject();
+                                if (workSheet.Cells[rowIterator, 6].Value != null)
+                                {
+                                    string Teacher2 = workSheet.Cells[rowIterator, 6].Value.ToString();
+                                    var u_id2 = db.AspNetUsers.Where(x => x.UserName == Teacher2).FirstOrDefault().Id;
+                                    int teacher2_id = db.AspNetEmployees.Where(x => x.UserId == u_id2).FirstOrDefault().Id;
+                                    int s_id2 = db.AspNetSubjects.Where(x => x.SubjectName == Subject.SubjectName).FirstOrDefault().Id;
+                                    teacher2.TeacherID = teacher2_id;
+                                    teacher2.SubjectID = s_id2;
+                                    db.AspNetTeacherSubjects.Add(teacher2);
+
+                                    if (db.SaveChanges() > 0)
+                                    {
+                                        AspNetTeacherSubject teacher3 = new AspNetTeacherSubject();
+                                        if (workSheet.Cells[rowIterator, 7].Value != null)
+                                        {
+                                            string Teacher3 = workSheet.Cells[rowIterator, 7].Value.ToString();
+                                            var u_id3 = db.AspNetUsers.Where(x => x.UserName == Teacher3).FirstOrDefault().Id;
+                                            int teacher3_id = db.AspNetEmployees.Where(x => x.UserId == u_id3).FirstOrDefault().Id;
+                                            int s_id3 = db.AspNetSubjects.Where(x => x.SubjectName == Subject.SubjectName).FirstOrDefault().Id;
+                                            teacher3.TeacherID = teacher3_id;
+                                            teacher3.SubjectID = s_id3;
+                                            db.AspNetTeacherSubjects.Add(teacher3);
+                                            db.SaveChanges();
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
                     }
-                }
-                dbTransaction.Commit();
+                    dbTransaction.Commit();
 
-                return RedirectToAction("Index");
+                    return RedirectToAction("Index");
+                }
             }
             catch (Exception e) { dbTransaction.Dispose(); }
 

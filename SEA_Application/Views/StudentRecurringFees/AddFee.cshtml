@@ -1,3 +1,4 @@
+﻿@@ -0,0 +1,170 @@
 ﻿@model SEA_Application.Models.FeesData
 @{
     ViewBag.Title = "Create";
@@ -8,7 +9,6 @@
         color: red;
     }
 </style>
-
 @{
 
     List<SelectListItem> listItems = new List<SelectListItem>();
@@ -32,7 +32,6 @@
 
 }
 
-
 <h2>Add Recurring Fee</h2>
 <script>
     $(document).ready(function () {
@@ -48,7 +47,7 @@
         }
 
 
-          $("#ClassId").change(function () {
+          $("#ClassId").click(function () {
                                  debugger
             var selectedClass = $("#ClassId").val();
             $.get('@Url.Action("StudentByClass")',
@@ -57,6 +56,7 @@
                     $('#students').html('');
 
                     $.each(data, function (i, item) {
+
                         $('#students').append('<option value=' + item.Id + '>' + item.Name + '</option>');
                     });
 
@@ -105,12 +105,10 @@
 <div class="box box-primary">
     <div class="box-body">
         <h4>Class Recurring Fee</h4>
-
         @if (ViewBag.ErrorMessage != null)
         {
             <div style="margin-top:10px">
                 <span class="text-danger">@ViewBag.ErrorMessage</span>
-
             </div>
         }
         @using (Html.BeginForm("AddData", "StudentRecurringFees", FormMethod.Post, new { @class = "forms form-horizontal", role = "form" }))
@@ -128,14 +126,12 @@
                         <div class="error" id="error-tag">Class Already Exists !</div>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label class="control-label col-md-2 col-lg-2">Students: <span class="red-mark">*</span></label>
                     <div class="col-md-6">
                         <select multiple class="form-control" id="students" name="students" required></select>
                     </div>
                 </div>
-
 
                 <div class="form-group">
                     <label class="control-label col-md-2 col-lg-2"> Fee Type: <span class="red-mark">*</span></label>
@@ -145,26 +141,20 @@
                             <option value="Installment">Installment</option>
                             <option value="PerMonth">PerMonth</option>
                         </select>*@
-
                     @Html.DropDownListFor(model => model.FeeType, listItems, "-- Select Status --")
 
-             
+                </div>
             </div>
 
-        </div>
+            <div class="col-md-offset-2 col-md-5">
+                <br />
+                <button class="col-md-2 form-control" onclick="window.location.href = '/StudentRecurringFees/Index'" style="border-radius:35px;border:hidden;background-color:red;margin-right:10px;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
+                <input class="col-md-2 form-control" id="submit" type="submit" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />
+                <br />
+                <br /><br />
+            </div>
 
-        <div class="col-md-offset-2 col-md-5">
-            <br />
-            <button class="col-md-2 form-control" onclick="window.location.href = '/StudentRecurringFees/Index'" style="border-radius:35px;border:hidden;background-color:red;margin-right:10px;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
-            <input class="col-md-2 form-control" id="submit" type="submit" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />
-            <br />
-            <br /><br />
-        </div>
-
-    }
-
+        }
     </div>
-    </div>
-
-
+</div>
 
