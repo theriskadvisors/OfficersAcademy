@@ -8,6 +8,9 @@
 
 
 
+
+
+
 <script src="~/AdminLTE/selectone.js"></script>
 <script src="~/Content/JqueryMultiselect/jquery.multiselect.js"></script>
 <link href="~/Content/JqueryMultiselect/jquery.multiselect.css" rel="stylesheet" />
@@ -265,79 +268,68 @@
                 <div class="tab-pane active" id="tab_1">
 
                     <div class="form-three widget-shadow">
-                        @using (Html.BeginForm("StudentRegister", "Admin_Dashboard", FormMethod.Post, new { enctype = "multipart/form-data",@class = "forms form-horizontal", role = "form" }))
+                        @using (Html.BeginForm("StudentRegister", "Admin_Dashboard", FormMethod.Post, new { enctype = "multipart/form-data", @class = "forms form-horizontal", role = "form" }))
                         {
                             @Html.AntiForgeryToken()
-
-
-
+                            
                             <div class="box box-primary">
                                 <div class="box-header with-border"><h3 class="orange">User Information<span class="red-mark">*</span></h3></div>
-                                <div class="box-body">
+                                <div class="box-body row">
 
+                                    <div class="col-md-5">
 
-                                    <div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label" for="Name">Student Image: <span class="red-mark">*</span></label>
-                                        <div class="col-md-6">
-                                                <img id="imgPreview" height="200" width="200" />
-                                            
-                                        </div>
-                                    </div>
-                                   
-
-                                    <div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label" for="Name">Name: <span class="red-mark">*</span></label>
-                                        <div class="col-md-6">
-                                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
-                                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label" for="Email">Email: <span class="red-mark">*</span></label>
-                                        <div class="col-md-6">
-                                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-                                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger", @id = "Email-Error" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label" for="UserName">Roll Number: <span class="red-mark">*</span></label>
-                                        <div class="col-md-6">
-                                            @*@Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger", @id = "UserName-Error" })*@
-                                            <input type="text" id="UserName" class="form-control round-border" name="UserName" readonly />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label" for="Password">Password: <span class="red-mark">*</span></label>
-                                        <div class="col-md-6">
-                                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger", @id = "Password-Error" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label" for="Confirm Password">Confirm Password: <span class="red-mark">*</span></label>
-                                        <div class="col-md-6">
-                                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-                                            @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-
-                                        <label for="inputEmail3" class="col-md-1 col-lg-1 control-label">Student Image <span class="red-mark">*</span></label>
-                                        <div class="col-md-6">
-                                            <input title="Upload a product image"
-                                                   id="UploadImg" type="file" name="image" />
+                                        <div class="form-group">
+                                            <label class="col-md-2 col-lg-2 control-label" for="Name">Name: <span class="red-mark">*</span></label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                            </div>
                                         </div>
 
+                                        <div class="form-group">
+                                            <label class="col-md-2 col-lg-2 control-label" for="Email">Email: <span class="red-mark">*</span></label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger", @id = "Email-Error" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-2 col-lg-2 control-label" for="UserName">Roll Number: <span class="red-mark">*</span></label>
+                                            <div class="col-md-10">
+                                                @*@Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger", @id = "UserName-Error" })*@
+                                                <input type="text" id="UserName" class="form-control round-border" name="UserName" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-2 col-lg-2 control-label" for="Password">Password: <span class="red-mark">*</span></label>
+                                            <div class="col-md-10">
+                                                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger", @id = "Password-Error" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-2 col-lg-2 control-label" for="Confirm Password">Confirm Password: <span class="red-mark">*</span></label>
+                                            <div class="col-md-10">
+                                                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-md-2 col-lg-2 control-label">Cell No.: <span class="red-mark">*</span></label>
+                                            <div class="col-md-10">
+                                                <input type="text" class="form-control round-border" id="inputEmail3" name="cellNo" placeholder="03*********" onblur="checkPhone(this)" required>
+                                                <span id="Phone-Error" class="text-danger"></span>
+                                            </div>
+                                        </div>
                                     </div>
 
-
-                                    <div class="form-group">
-                                        <label for="inputEmail3" class="col-md-1 col-lg-1 control-label">Cell No.: <span class="red-mark">*</span></label>
-                                        <div class="col-md-6">
-                                            <input type="text" class="form-control round-border" id="inputEmail3" name="cellNo" placeholder="03*********" onblur="checkPhone(this)" required>
-                                            <span id="Phone-Error" class="text-danger"></span>
-                                        </div>
+                                    <div class="col-md-7">
+                                        <img id="imgPreview" height="200" width="200" />
+                                        <input title="Upload a product image" id="UploadImg" type="file" name="image" />
                                     </div>
                                 </div>
                             </div>
@@ -348,20 +340,20 @@
                                 <div class="box-body">
                                     <div class="form-group">
                                         <label class="col-md-1 col-lg-1 control-label">Industry:</label>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <input type="text" id="Industry" class="form-control round-border" name="Industry" />
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-1 col-lg-1 control-label">Occupation:</label>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <input type="text" class="form-control round-border" name="Occupation" id="Occupation" />
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label class="col-md-1 col-lg-1 control-label">Highest Degree:</label>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <select name="Degree" class="form-control round-border">
                                                 <option value="Less than high school diploma (or equivalent)">Less than high school diploma (or equivalent)</option>
                                                 <option value="High school diploma (or equivalent)">High school diploma (or equivalent)</option>
@@ -376,13 +368,13 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-1 col-lg-1 control-label">University:</label>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <input type="text" class="form-control round-border" name="University" id="University" />
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-1 col-lg-1 control-label">Field or Major:</label>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <input type="text" class="form-control round-border" name="Field" id="Field" />
                                         </div>
                                     </div>
@@ -412,14 +404,14 @@
                                 <div class="box-body">
 
                                     <div class="row">
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <div class="">
                                                 <label class="control-label">Birth Date (M/D/Y): <span class="red-mark">*</span></label>
                                                 <input type="date" id="birthDate" name="BirthDate" class="form-control" required>
                                                 <span id="DOB-Error" class="text-danger"></span>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <div class="">
                                                 <label class="control-label">Nationality: <span class="red-mark">*</span></label>
                                                 <select name="Nationality" class="form-control" required>
@@ -629,7 +621,7 @@
                                                     </select>
                                                 </div>
                                             </div>*@
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <div class="">
                                                 <label>Gender: <span class="red-mark">*</span></label>
                                                 <select name="Gender" class="form-control" required>
@@ -648,7 +640,7 @@
 
                                     <div class="form-group">
                                         <label class="col-md-1 col-lg-1 control-label">Class: <span class="red-mark">*</span></label>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
 
 
                                             @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control", name = "ClassID", @required = true })
