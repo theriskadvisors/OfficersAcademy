@@ -307,9 +307,9 @@ namespace SEA_Application.Controllers
         {
             var TeacherDetail = db.AspNetEmployees.Where(x => x.AspNetUser.UserName == UserName).Select(x => x).FirstOrDefault();
             AspNetUser aspNetUser = db.AspNetUsers.Where(x => x.UserName == UserName).Select(x => x).FirstOrDefault();
-            ViewBag.date = Convert.ToDateTime(TeacherDetail.DateAvailable);
-            string[] date = TeacherDetail.DateAvailable.Split(' ');
-            string[] join = TeacherDetail.JoiningDate.Split(' ');
+       //     ViewBag.date = Convert.ToDateTime(TeacherDetail.DateAvailable);
+         //   string[] date = TeacherDetail.DateAvailable.Split(' ');
+           // string[] join = TeacherDetail.JoiningDate.Split(' ');
 
 
             ViewBag.TeacherDetail = TeacherDetail;
@@ -1513,9 +1513,9 @@ namespace SEA_Application.Controllers
         {
             var TeacherDetail = db.AspNetEmployees.Where(x => x.UserId == id).Select(x => x).FirstOrDefault();
             AspNetUser aspNetUser = db.AspNetUsers.Find(id);
-            ViewBag.date = Convert.ToDateTime(TeacherDetail.DateAvailable);
-            string[] date = TeacherDetail.DateAvailable.Split(' ');
-            string[] join = TeacherDetail.JoiningDate.Split(' ');
+            //ViewBag.date = Convert.ToDateTime(TeacherDetail.DateAvailable);
+            //string[] date = TeacherDetail.DateAvailable.Split(' ');
+            //string[] join = TeacherDetail.JoiningDate.Split(' ');
 
             ViewBag.UserDetails = aspNetUser.Highest_Degree;
             ViewBag.TeacherDetail = TeacherDetail;
