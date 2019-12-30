@@ -19,6 +19,7 @@ using Microsoft.Owin.Security;
 using System.Threading.Tasks;
 using System.Globalization;
 using Newtonsoft.Json;
+using System.IO;
 
 namespace SEA_Application.Controllers
 {
@@ -561,13 +562,24 @@ namespace SEA_Application.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditStudent([Bind(Include = "Id,Email,PasswordHash,SecurityStamp,PhoneNumber,UserName,Name")] AspNetUser aspNetUser)
+        public ActionResult EditStudent([Bind(Include = "Id,Email,PasswordHash,SecurityStamp,PhoneNumber,UserName,Name")] AspNetUser aspNetUser, HttpPostedFileBase image)
         {
             var dbTransaction = db.Database.BeginTransaction();
             try
             {
                 if (ModelState.IsValid)
                 {
+
+                    if (image != null)
+                    {
+                        var fileName = Path.GetFileName(image.FileName);
+                        var extension = Path.GetExtension(image.FileName);
+                        image.SaveAs(Server.MapPath("~/Content/Images/StudentImages/") + image.FileName);
+                        //    file.SaveAs(Server.MapPath("/Upload/") + file.FileName);
+                    }
+
+
+
                     ApplicationDbContext context = new ApplicationDbContext();
                     IEnumerable<string> selectedsubjects = Request.Form["subjects"].Split(',');
                     if(selectedsubjects==null)
@@ -591,6 +603,13 @@ namespace SEA_Application.Controllers
                             student.Religion = Request.Form["Religion"];
                             student.Gender = Request.Form["Gender"];
                             student.SchoolName = Request.Form["SchoolName"];
+
+                            if(image !=null)
+                            {
+
+
+                            student.StudentIMG = image.FileName;
+                            }
 
                             db.SaveChanges();
                         }

@@ -1915,7 +1915,7 @@ namespace SEA_Application.Controllers
 
                     var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Name = model.Name, PhoneNumber = Request.Form["cellNo"] };
                     var result = await UserManager.CreateAsync(user, model.Password);
-                    if (result.Succeeded)
+                        if (result.Succeeded)
                     {
                         ruffdata rd = new ruffdata();
                         rd.SessionID = SessionID;
@@ -1933,8 +1933,11 @@ namespace SEA_Application.Controllers
                         student.Nationality = Request.Form["Nationality"];
                         student.Religion = Request.Form["Religion"];
                         student.Gender = Request.Form["Gender"];
-                        student.StudentIMG = image.FileName;
+                        if (image != null)
+                        {
+                            student.StudentIMG = image.FileName;
 
+                        }
                         student.ClassID = Convert.ToInt32(Request.Form["ClassID"]);
                         var Field = Request.Form["Field"];
                         var Uni = Request.Form["University"];
