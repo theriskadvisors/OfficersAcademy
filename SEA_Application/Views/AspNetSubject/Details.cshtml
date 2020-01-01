@@ -81,8 +81,9 @@
                 <div class="form-group">
                     <label class="control-label col-md-1 col-lg-1">Teacher Name:<span class="red-mark">*</span></label>
                     <div class="col-md-6">
-                        @Html.DropDownList("TeacherID", null, htmlAttributes: new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.TeacherID, "", new { @class = "text-danger" })
+
+                        @Html.EditorFor(model => model.AspNetUser.AspNetEmployees.FirstOrDefault().Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.SubjectName, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <hr />
@@ -92,7 +93,7 @@
                     @if (this.User.IsInRole("Admin"))
                     {
                        <button type="button" id="edit" class="btn btn-primary" onclick="redirectToEdit()">Edit</button>
-                       <button type="button" id="delete" class="btn btn-default pull-right" onclick="Delete()">Disable</button>
+                       @*<button type="button" id="delete" class="btn btn-default pull-right" onclick="Delete()">Disable</button>*@
                     }
                     </div>
                 </div>

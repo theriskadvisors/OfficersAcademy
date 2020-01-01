@@ -225,6 +225,13 @@
                                                         @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger", @id = "UserName-Error" })
                                                     </div>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-2 col-lg-2 control-label">Course Type:</label>
+                                                    <div class="col-md-10">
+                                                        @Html.EditorFor(model => model.AspNetStudents.FirstOrDefault().CourseType, new { htmlAttributes = new { @class = "form-control" } })
+                                                        @Html.ValidationMessageFor(model => model.Field_Major, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
 
                                             </div>
                                             <div class="col-md-7">

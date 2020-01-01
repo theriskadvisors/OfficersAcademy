@@ -1929,6 +1929,7 @@ namespace SEA_Application.Controllers
                         AspNetStudent student = new AspNetStudent();
                         student.StudentID = user.Id;
                         student.SchoolName = Request.Form["SchoolName"];
+                        student.CourseType = Request.Form["CourseType"];
                         student.BirthDate = Request.Form["BirthDate"];
                         student.Nationality = Request.Form["Nationality"];
                         student.Religion = Request.Form["Religion"];

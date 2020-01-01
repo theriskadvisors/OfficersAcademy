@@ -178,6 +178,11 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,SubjectName,ClassID,TeacherID")] AspNetSubject aspNetSubject)
         {
+            var class_id = db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault().Id;
+            aspNetSubject.ClassID = class_id;
+            aspNetSubject.CourseType = Request.Form["CourseType"];
+          //  aspNetSubject.IsManadatory =  Request.Form["IsMandatory"];
+        //    aspNetSubject.Points = Request.Form["Points"];
 
 
             var TransactionObj = db.Database.BeginTransaction();
@@ -201,10 +206,12 @@ namespace SEA_Application.Controllers
 
 
                 AspNetTeacherSubject ts = new AspNetTeacherSubject();
-                var class_id = db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault().Id;
+            //    var class_id = db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault().Id;
                  var sub_id = db.AspNetSubjects.Where(x => x.SubjectName == aspNetSubject.SubjectName && x.ClassID == class_id).FirstOrDefault().Id;
 
-                ts.TeacherID = Int32.Parse(aspNetSubject.TeacherID);
+                var teacherid =  db.AspNetEmployees.Where(x => x.UserId == aspNetSubject.TeacherID).FirstOrDefault().Id;
+
+                ts.TeacherID = teacherid;
                 ts.SubjectID = sub_id;
                 db.AspNetTeacherSubjects.Add(ts);
                 db.SaveChanges();
@@ -276,6 +283,7 @@ namespace SEA_Application.Controllers
                         {
                             value = false;
                         }
+                       Subject.CourseType = workSheet.Cells[rowIterator, 8].Value.ToString();
                         Subject.IsManadatory = value;
                         Subject.SubjectName = workSheet.Cells[rowIterator, 1].Value.ToString();
                         //Subject.TeacherID = Teacher.Id;
@@ -352,7 +360,9 @@ namespace SEA_Application.Controllers
                 return HttpNotFound();
             }
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName", aspNetSubject.ClassID);
-            ViewBag.TeacherID = new SelectList(db.AspNetUsers, "Id", "Name", aspNetSubject.TeacherID);
+            ViewBag.TeacherID = new SelectList(db.AspNetUsers.Where(x => x.AspNetRoles.Select(y => y.Name).Contains("Teacher") && x.AspNetUsers_Session.Any(z => z.SessionID == SessionID)), "Id", "Name");
+
+           // ViewBag.TeacherID = new SelectList(db.AspNetUsers, "Id", "Name", aspNetSubject.TeacherID);
             return View(aspNetSubject);
         }
 
@@ -365,7 +375,7 @@ namespace SEA_Application.Controllers
         {
             try
             {
-
+                aspNetSubject.CourseType = Request.Form["CourseType"];
                 if (ModelState.IsValid)
                 {
                     db.Entry(aspNetSubject).State = EntityState.Modified;
