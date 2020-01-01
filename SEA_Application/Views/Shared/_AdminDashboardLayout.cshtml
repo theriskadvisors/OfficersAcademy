@@ -17,6 +17,8 @@
 .page-container-bg-solid .page-content {
      background: #d0cfcf2e; 
 }
+
+
     </style>
 
     </head>
@@ -96,14 +98,9 @@
             </a>
         </li>
 
-        @*<li class="nav-item  ">
-            <a href="@Url.Action("Index", "AspNetTerm")" class="nav-link nav-toggle">
-                <i class="fa fa-sitemap"></i>
-                <span class="title">Term</span>
-            </a>
-        </li>*@
+  
 
-        <li class="nav-item  ">
+        @*<li class="nav-item  ">
             <a href="@Url.Action("Calendar_Notify", "AspNetPushNotifications")" class="nav-link nav-toggle">
                 <i class="fa fa-calendar"></i>
                 <span class="title">Calendar Notification</span>
@@ -115,7 +112,7 @@
                 <i class="fa fa-pie-chart"></i>
                 <span class="title">Student Term Assessment</span>
             </a>
-        </li>
+        </li>*@
 
         @*<li class="nav-item  ">
             <a href="@(Url.Action("Index", "AspNetParentTeacherMeetings"))" class="nav-link nav-toggle">
@@ -148,40 +145,46 @@
             </ul>
         </li>*@
 
-        <li class="nav-item  ">
+        @*<li class="nav-item  ">
             <a href="@Url.Action("Index", "AspNetClass")" class="nav-link nav-toggle">
                 <i class="fa fa-list-ol"></i>
                 <span class="title">Classes</span>
             </a>
-        </li>
+        </li>*@
 
-        <li class="nav-item  ">
+        <li class="nav-item">
             <a href="@Url.Action("ClassIndex", "AspNetSubject")" class="nav-link nav-toggle">
                 <i class="fa fa-list-ul"></i>
                 <span class="title">Subject</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a href="@Url.Action("Index", "AspNetNotes")" class="nav-link nav-toggle">
+                <i class="fa fa-sticky-note"></i>
+                <span class="title">Notes</span>
+            </a>
+        </li>
 
-        <li class="nav-item  ">
+        @*<li class="nav-item  ">
             <a href="@Url.Action("ViewLogs", "AspNetLogs")" class="nav-link nav-toggle">
                 <i class="fa fa-eye"></i>
                 <span class="title">View Log</span>
             </a>
-        </li>
+        </li>*@
 
         <li class="nav-item  ">
             <a href="@Url.Action("View_Attendance", "Admin_Dashboard")" class="nav-link nav-toggle">
                 <i class="fa fa-eye"></i>
-                <span class="title">Student Attendance</span>
+                <span class="title">Student Attendance Module</span>
             </a>
         </li>
 
-        <li class="nav-item  ">
+        @*<li class="nav-item  ">
             <a href="@Url.Action("LogDuration", "Account")" class="nav-link nav-toggle">
                 <i class="fa fa-eye"></i>
                 <span class="title">user Login Report</span>
             </a>
-        </li>
+        </li>*@
 
         <li class="nav-item  ">
             <a href="@(Url.Action("Inbox", "AspNetMessages"))" class="nav-link nav-toggle">

@@ -308,9 +308,9 @@ namespace SEA_Application.Controllers
         {
             var TeacherDetail = db.AspNetEmployees.Where(x => x.AspNetUser.UserName == UserName).Select(x => x).FirstOrDefault();
             AspNetUser aspNetUser = db.AspNetUsers.Where(x => x.UserName == UserName).Select(x => x).FirstOrDefault();
-            ViewBag.date = Convert.ToDateTime(TeacherDetail.DateAvailable);
-            string[] date = TeacherDetail.DateAvailable.Split(' ');
-            string[] join = TeacherDetail.JoiningDate.Split(' ');
+       //     ViewBag.date = Convert.ToDateTime(TeacherDetail.DateAvailable);
+         //   string[] date = TeacherDetail.DateAvailable.Split(' ');
+           // string[] join = TeacherDetail.JoiningDate.Split(' ');
 
 
             ViewBag.TeacherDetail = TeacherDetail;
@@ -393,6 +393,7 @@ namespace SEA_Application.Controllers
 
             ViewBag.StudentImage = employee.StudentIMG;
             ViewBag.UserDetails = aspNetUser.Highest_Degree;
+            ViewBag.CourseType = employee.CourseType;
             ViewBag.employee = employee;
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             if (aspNetUser == null)
@@ -599,6 +600,7 @@ namespace SEA_Application.Controllers
                             var student = db.AspNetStudents.Where(x => x.StudentID == aspNetUser.Id).Select(x => x).FirstOrDefault();
                             student.ClassID = Convert.ToInt32(selectedClass);
                             student.Nationality = Request.Form["Nationality"];
+                            student.CourseType = Request.Form["CourseType"];
                             student.BirthDate = Request.Form["BirthDate"];
                             student.Religion = Request.Form["Religion"];
                             student.Gender = Request.Form["Gender"];
@@ -657,9 +659,10 @@ namespace SEA_Application.Controllers
             employee.ClassID = employ.ClassID;
             employee.Level = employ.Level;
             employee.SchoolName = employ.SchoolName;
+            employee.CourseType = employ.CourseType;
             employee.StudentIMG = employ.StudentIMG;
 
-           // employee = employ.StudentIMG;
+          
 
 
             var niio = DateTime.Now;
@@ -1532,9 +1535,9 @@ namespace SEA_Application.Controllers
         {
             var TeacherDetail = db.AspNetEmployees.Where(x => x.UserId == id).Select(x => x).FirstOrDefault();
             AspNetUser aspNetUser = db.AspNetUsers.Find(id);
-            ViewBag.date = Convert.ToDateTime(TeacherDetail.DateAvailable);
-            string[] date = TeacherDetail.DateAvailable.Split(' ');
-            string[] join = TeacherDetail.JoiningDate.Split(' ');
+            //ViewBag.date = Convert.ToDateTime(TeacherDetail.DateAvailable);
+            //string[] date = TeacherDetail.DateAvailable.Split(' ');
+            //string[] join = TeacherDetail.JoiningDate.Split(' ');
 
             ViewBag.UserDetails = aspNetUser.Highest_Degree;
             ViewBag.TeacherDetail = TeacherDetail;

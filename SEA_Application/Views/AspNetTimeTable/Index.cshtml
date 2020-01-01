@@ -5,7 +5,6 @@
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<h2>Index</h2>
 
 <script>
     $(document).ready(function () {
@@ -116,8 +115,8 @@ else
 <style>
    
 </style>
-<label>@Html.ActionLink("Home", "Dashboard", "Account") > <a href="#"><b>Time Table</b></a></label>
-<h4 class="orange">View TimeTable &nbsp;</h4>
+<label>&nbsp;&nbsp;@Html.ActionLink("Home", "Dashboard", "Account") > <a href="#"><b>Time Table</b></a></label>
+<h4 class="orange">&nbsp;&nbsp;View TimeTable &nbsp;</h4>
 
 
 @if (ViewBag.Error != null)

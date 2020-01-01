@@ -1,4 +1,4 @@
-﻿
+﻿    
 @{
     ViewBag.Title = "TeachersIndex";
 }
@@ -12,9 +12,8 @@
     </div>
 }
 
-<label> @Html.ActionLink("Home", "Dashboard", "Account")  >  <b><a href="#">Teachers</a></b></label>
-<h4>Teachers</h4>
-<label id="View">View Default</label>
+<label>&nbsp;&nbsp; @Html.ActionLink("Home", "Dashboard", "Account")  >  <b><a href="#">Teachers</a></b></label>
+<h4>&nbsp;&nbsp;Teachers</h4>
 <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 <script src="//cdn.datatables.net/tabletools/2.2.4/js/dataTables.tableTools.min.js"></script>
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.js" />
@@ -272,9 +271,9 @@ else
                     <th>
                         Phone Number
                     </th>
-                    <th>
+                    @*<th>
                         Class
-                    </th>
+                    </th>*@
                 </tr>
             </thead>
             <tbody id="submission_table"></tbody>
