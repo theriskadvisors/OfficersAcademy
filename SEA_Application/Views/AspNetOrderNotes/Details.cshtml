@@ -1,0 +1,164 @@
+﻿    @model SEA_Application.Models.AspNetNote
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_StudentDashboardLayout.cshtml";
+
+    
+}
+
+<h2>Order Detail</h2>
+
+@Html.HiddenFor(model=>model.Id)
+<div>
+    <h4>AspNetNote</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Id, new { @disabled = "disabled" })
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title, new { @disabled = "disabled" })
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description, new { @disabled = "disabled" })
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CourseType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CourseType, new { @disabled = "disabled" })
+        </dd>
+
+        <dt>
+
+            @Html.DisplayNameFor(model => model.Price)
+
+        </dt>
+
+        <dd>
+            <span id="price"> @Html.DisplayFor(model => model.Price)</span>
+
+        </dd>
+
+        <dt>
+
+            Quantity
+        </dt>
+
+        <dd>
+            <input id="QuantityBtn" type="number" name="name" value="1" min="1" max="5" />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AspNetSubject.SubjectName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AspNetSubject.SubjectName)
+        </dd>
+
+
+
+
+    </dl>
+
+    <button id="confirmOrder" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Confirm Order</button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to place this order?</p>
+
+                </div>
+                <div class="modal-footer">
+                    <button id="Order" type="button" class="btn btn-default" data-dismiss="modal">Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+<script>
+
+    $(document).ready(function () {
+        var ActualPrice = parseInt($("#price").text());
+
+       
+
+        $("#QuantityBtn").change(function () {
+
+            var Quantiy = $(this).val();
+            
+            updatePrice = Quantiy * ActualPrice;
+
+            $("#price").text(updatePrice);
+
+          
+
+        }) //end of QuantityBtn Change
+
+
+
+
+        $("#Order").click(function () {
+
+            var NotesId = $("#Id").val();
+            var Quantity = $("#QuantityBtn").val();
+            debugger
+            $.ajax({
+
+                type: "POST",
+
+               
+                url: "/AspNetOrderNotes/ConfirmOrder",
+                data: {
+                    "NotesId" : NotesId,
+                    "Quantity" :Quantity,
+                },
+                success: function (data) {
+
+                    $("#confirmOrder").prop('disabled', true);
+                    window.location.href = '/AspNetOrderNotes/Index/';
+                                
+                }
+
+
+            })
+            
+        })
+
+
+    })
+
+
+</script>

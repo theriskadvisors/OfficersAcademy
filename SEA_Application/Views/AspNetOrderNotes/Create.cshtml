@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Create";
-    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+    Layout = "~/Views/Shared/_StudentDashboardLayout.cshtml";
 }
 
 <h2>Create</h2>
@@ -42,14 +42,8 @@
         <div class="form-group">
             @Html.LabelFor(model => model.CourseType, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <div>
-                    <select name="CourseType" class="form-control" required>
-                        <option value="CSS">CSS</option>
-                        <option value="PMS">PMS</option>
-                    </select>
-                    <span id="Phone-Error" class="text-danger"></span>
-                </div>
-
+                @Html.EditorFor(model => model.CourseType, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CourseType, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -61,6 +55,13 @@
             </div>
         </div>
 
+        <div class="form-group">
+            @Html.LabelFor(model => model.CreationDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CreationDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CreationDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
