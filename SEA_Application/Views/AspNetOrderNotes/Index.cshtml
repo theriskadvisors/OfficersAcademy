@@ -6,9 +6,6 @@
 }
 
 <style>
-    
-
-
 </style>
 
 <!-- Modal -->
@@ -37,7 +34,8 @@
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#tab_1" data-toggle="tab">Notes</a></li>
-        <li><a href="#tab_2" data-toggle="tab">Recent Order</a></li>
+        <li><a href="#tab_2" data-toggle="tab">Cart</a></li>
+        <li><a href="#tab_3" data-toggle="tab">Recent Order</a></li>
     </ul>
 </div>
 
@@ -48,7 +46,7 @@
     <p>
     </p>
     <div class="tab-pane active" id="tab_1">
-       
+
 
         <table class="table">
             <tr>
@@ -105,22 +103,63 @@
                     </td>
                     <td>
 
-                       
+
                         <a href="/AspNetOrderNotes/Details/@item.Id">  <button type="button" class="btn btn-success" id="@item.Id">Add to Cart</button> </a>
 
-</td>
+                    </td>
                 </tr>
             }
 
         </table>
     </div>
 
+
     <div class="tab-pane" id="tab_2">
+
         <table class="table">
             <tr>
                 <th>
-                    Id
+                    <input style="display:none" type="checkbox" id="checkBoxToAllChek" name="name" value="" />
+                    Orders
                 </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Discription
+                </th>
+                <th>
+                    CourseType
+                </th>
+                <th>
+                    Price
+                </th>
+                <th>
+                    Quantity
+                </th>
+                <th>
+                    Total
+                </th>
+                <th>
+                    Status
+                </th>
+
+            </tr>
+            <tbody id="CartOrders">
+            </tbody>
+
+        </table>
+
+        <label style="font-size:15px;color:black">Total  <span id="TotalAmount"> 0.00</span> </label>
+
+        <br />
+        <button id="ConfirmOrder" class="btn btn-success">Confirm Order</button>
+        <button id="DeleteOrders" class="btn btn-danger">Delete</button>
+    </div>
+    <div class="tab-pane" id="tab_3">
+        <table class="table">
+            <tr>
+
                 <th>
                     Title
                 </th>
@@ -139,9 +178,7 @@
                 <th>
                     Status
                 </th>
-                <th>
-                    Order
-                </th>
+
             </tr>
 
             <tbody id="RecentOrderTableBody">
@@ -157,7 +194,7 @@
 @*<button id="confirmOrder" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Confirm Order</button>*@
 <script>
     $(document).ready(function () {
-        
+
 
         $.ajax({
 
@@ -169,7 +206,7 @@
 
                 $.each(data, function (index) {
 
-                    
+
                     //var tablerow = '<tr>'
                     //    +'<td>' + data[index].Title + '</td> ' +
                     //    +'<td>' + data[index].Discription + '</td> ' +
@@ -180,15 +217,14 @@
 
                     //'</tr > ';
 
-                    if (data[index].Status == "Draft" ) {
+                   
 
-                        var TableRow = "<tr><td>" + data[index].Id + "</td> <td>" + data[index].Title + "</td> <td>" + data[index].Discription + "</td>  <td>" + data[index].CourseType + "</td> <td>" + data[index].Price + "</td>  <td>" + data[index].Quantity + "</td><td>" + data[index].Status + "</td> <td id='btnid'><button data-toggle='modal' data-target='#myModal'  class='CancelOrderBtn btn btn-danger' id='" + data[index].Id + "' >Cancel Order</button></td>    </tr> "
-                    }
-                    else {
-                        var TableRow = "<tr><td>" + data[index].Id + "</td> <td>" + data[index].Title + "</td> <td>" + data[index].Discription + "</td>  <td>" + data[index].CourseType + "</td> <td>" + data[index].Price + "</td>  <td>" + data[index].Quantity + "</td><td>" + data[index].Status + "</td> <td id='btnid'><button data-toggle='modal' data-target='#myModal'  class='CancelOrderBtn btn btn-danger' id='" + data[index].Id + "' disabled >Cancel Order</button></td>    </tr> "
+                        var TableRow = "<tr><td>" + data[index].Title + "</td> <td>" + data[index].Discription + "</td>  <td>" + data[index].CourseType + "</td> <td>" + data[index].Price + "</td>  <td>" + data[index].Quantity + "</td><td>" + data[index].Status + "</td> <td id='btnid'><button data-toggle='modal' data-target='#myModal' style='display:none'  class='CancelOrderBtn btn btn-danger' id='" + data[index].Id + "' >Cancel Order</button></td>    </tr> "
+                    
+                  
+                       // var TableRow = "<tr><td>" + data[index].Id + "</td> <td>" + data[index].Title + "</td> <td>" + data[index].Discription + "</td>  <td>" + data[index].CourseType + "</td> <td>" + data[index].Price + "</td>  <td>" + data[index].Quantity + "</td><td>" + data[index].Status + "</td> <td id='btnid'><button data-toggle='modal' data-target='#myModal'  class='CancelOrderBtn btn btn-danger' id='" + data[index].Id + "' disabled >Cancel Order</button></td>    </tr> "
 
-                    }
-
+                   
 
 
                     //alert(data[index].Discription);
@@ -203,8 +239,113 @@
 
         })
 
+        $.ajax({
+
+            type: "POST",
+            url: "/AspNetOrderNotes/CartOrders",
+            data: {},
+            success: function (data) {
+
+
+                $.each(data, function (index) {
+
+
+                    //var tablerow = '<tr>'
+                    //    +'<td>' + data[index].Title + '</td> ' +
+                    //    +'<td>' + data[index].Discription + '</td> ' +
+                    //    +'<td>' + data[index].CourseType + '</td> ' +
+                    //    +'<td>' + data[index].Price + '</td> ' +
+                    //    +'<td>' + data[index].Quantity + '</td> '+
+                    //    +'<td>' + data[index].Status + '</td> '+
+
+                    //'</tr > ';
+
+                    if (data[index].Status == "Draft") {
+
+                        var TableRow = "<tr>  <td> <input class='checkboxes' id=" + data[index].Id + "  type='checkbox' value=" + data[index].Total + "> </td>  <td>" + data[index].Title + "</td> <td>" + data[index].Discription + "</td>  <td>" + data[index].CourseType + "</td> <td>" + data[index].Price + "</td>  <td>" + data[index].Quantity + "</td> <td class='TotalPrice'>" + data[index].Total + "</td>  <td>" + data[index].Status + "</td>    </tr> "
+                    }
+
+
+                    //alert(data[index].Discription);
+                    $('#CartOrders').append(TableRow);
+                });
+
+
+
+
+            }
+
+
+        })
+        var Total = 0;
+        var arr = [];
+
+        $("#CartOrders").on("click", "input[type='checkbox']", function () {
+            debugger
+            if ($(this).prop("checked") == true) {
+
+                Total = Total + parseInt($(this).val());
+
+                arr.push(parseInt($(this).attr('id')));
+            }
+            else {
+
+                Total = Total - parseInt($(this).val());
+                var itemtoRemove = $(this).attr('id');
+
+                arr.splice($.inArray(itemtoRemove, arr), 1);
+
+
+
+            }
+
+            $("#TotalAmount").text(Total);
+          //  alert(arr);
+        });
+
+        $("#DeleteOrders").click(function () {
+
+            $.ajax({
+
+                type: "POST",
+                url: "/AspNetOrderNotes/DeleteOrders",
+                data: { "DeleteOrders": arr },
+                success: function (data) {
+
+                    window.location.href = '/AspNetOrderNotes/Index/';
+
+                }
+
+            })
+
+        })
+
+
+        $("#ConfirmOrder").click(function () {
+
+            var TotalAmount = Total;
+
+            $.ajax({
+
+                type: "POST",
+                url: "/AspNetOrderNotes/ConfirmOdr",
+                data: { "TotalAmount": TotalAmount, "IDs":arr },
+                success: function (data) {
+
+
+
+
+                    window.location.href = '/AspNetOrderNotes/Index/';
+
+                }
+
+            })
+
+
+        })
+
         $("#RecentOrderTableBody").on("click", "button", function () {
-            
+
             //alert( $(this).attr('id'));
 
             var OdrId = $(this).attr('id');
@@ -228,13 +369,20 @@
 
         });
 
+        $("#checkBoxToAllChek").click(function () {
+
+           $('#CartOrders input[type="checkbox"]').prop('checked', this.checked);
+
+        });
+
+
         $("#yesBtn").click(function () {
 
             //  alert( $("#yesBtn").attr('name'));
 
             var OdrId = $("#yesBtn").attr('name')
 
-           
+
 
             $.ajax({
 
@@ -245,7 +393,7 @@
 
 
 
-                   // $('button[id="'+OdrId+'"]').prop('disabled', true);
+                    // $('button[id="'+OdrId+'"]').prop('disabled', true);
 
 
                     window.location.href = '/AspNetOrderNotes/Index/';
