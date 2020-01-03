@@ -280,7 +280,7 @@ namespace SEA_Application.Controllers
             var TId = int.Parse(TermId);
             var ClassId = db.AspNetStudents.Where(p => p.StudentID == StudentId).FirstOrDefault().ClassID;
 
-            var sessionid = db.AspNetSessions.Where(p => p.Status == "Active").FirstOrDefault().Id;
+            var sessionid = SessionID;
             var category = (from sub in db.AspNetSubjects
                             join aq in db.AspNetAssessment_Question on sub.Id equals aq.SubjectID
                             join cat in db.AspNetAssessment_Questions_Category on aq.QuestionCategory equals cat.Id
@@ -335,7 +335,7 @@ namespace SEA_Application.Controllers
         {
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             ViewBag.SubjectID = new SelectList(db.AspNetSubjects, "Id", "SubjectName");
-            var sessiionid = db.AspNetSessions.Where(p => p.Status == "Active").FirstOrDefault().Id;
+            var sessiionid = SessionID;
             ViewBag.TermID = new SelectList(db.AspNetTerms.Where(x => x.SessionID == sessiionid), "Id", "TermName", "TermNo");
             return View("_ClassAssessment");
         }
@@ -1717,7 +1717,7 @@ namespace SEA_Application.Controllers
                 emp.SpouseHighestDegree = Request.Form["spouseHighestDegree"];
                 emp.SpouseOccupation = Request.Form["spouseOccupation"];
                 emp.SpouseBusinessAddress = Request.Form["spouseBusinessAddress"];
-
+                
                 //emp.GrossSalary = Convert.ToInt32(Request.Form["GrossSalary"]);
                 //emp.BasicSalary = Convert.ToInt32(Request.Form["BasicSalary"]);
                 //emp.MedicalAllowance = Convert.ToInt32(Request.Form["MedicalAllowance"]);
@@ -1753,14 +1753,14 @@ namespace SEA_Application.Controllers
 
                     AspNetUsers_Session US = new AspNetUsers_Session();
                     US.UserID = emp.UserId;
-                    int sessionid = db.AspNetSessions.Where(x => x.Status == "Active").FirstOrDefault().Id;
-                    US.SessionID = sessionid;
+                  //  int sessionid = db.AspNetSessions.Where(x => x.Status == "Active").FirstOrDefault().Id;
+                    US.SessionID = SessionID;
                     db.AspNetUsers_Session.Add(US);
                     if (db.SaveChanges() > 0)
                     {
                         Aspnet_Employee_Session aes = new Aspnet_Employee_Session();
                         aes.Emp_Id = emp.Id;
-                        aes.Session_Id = sessionid;
+                        aes.Session_Id = SessionID;
                         db.Aspnet_Employee_Session.Add(aes);
                         db.SaveChanges();
                     }
@@ -1893,6 +1893,7 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> StudentRegister(RegisterViewModel model, HttpPostedFileBase image)
         {
+          var age  = Convert.ToInt32(Request.Form["Age"]);
             model.UserName = Request.Form["UserName"];
             var dbTransaction = db.Database.BeginTransaction();
             try
@@ -1928,12 +1929,22 @@ namespace SEA_Application.Controllers
 
                         AspNetStudent student = new AspNetStudent();
                         student.StudentID = user.Id;
+
+                    
+                        student.Address = Request.Form["Address"];
+                        student.ClassTimings = Request.Form["ClassTimings"];
+                        student.Fathers_Name = Request.Form["Father_Name"];
+                        
+                        student.Age = age;
+
+
                         student.SchoolName = Request.Form["SchoolName"];
                         student.CourseType = Request.Form["CourseType"];
                         student.BirthDate = Request.Form["BirthDate"];
                         student.Nationality = Request.Form["Nationality"];
                         student.Religion = Request.Form["Religion"];
                         student.Gender = Request.Form["Gender"];
+                        student.CreationDate = DateTime.Now;
                         if (image != null)
                         {
                             student.StudentIMG = image.FileName;
@@ -1951,8 +1962,8 @@ namespace SEA_Application.Controllers
                         AspNetStudent_Session_class asc = new AspNetStudent_Session_class();
                         asc.ClassID = student.ClassID;
                         Aspnet_Employee_Session ES = new Aspnet_Employee_Session();
-                        int sessionid = db.AspNetSessions.Where(x => x.Status == "Active").FirstOrDefault().Id;
-                        asc.SessionID = sessionid;
+                      //  int sessionid = db.AspNetSessions.Where(x => x.Status == "Active").FirstOrDefault().Id;
+                        asc.SessionID = SessionID;
                         asc.StudentID = student.Id;
                         db.AspNetStudent_Session_class.Add(asc);
                         if (db.SaveChanges() > 0)
@@ -1960,7 +1971,7 @@ namespace SEA_Application.Controllers
 
                             AspNetUsers_Session AS = new AspNetUsers_Session();
                             AS.UserID = student.StudentID;
-                            AS.SessionID = sessionid;
+                            AS.SessionID = SessionID;
                             db.AspNetUsers_Session.Add(AS);
                             db.SaveChanges();
                         }

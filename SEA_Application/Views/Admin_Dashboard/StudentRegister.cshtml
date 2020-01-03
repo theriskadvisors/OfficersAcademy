@@ -8,9 +8,6 @@
 
 
 
-
-
-
 <script src="~/AdminLTE/selectone.js"></script>
 <script src="~/Content/JqueryMultiselect/jquery.multiselect.js"></script>
 <link href="~/Content/JqueryMultiselect/jquery.multiselect.css" rel="stylesheet" />
@@ -31,7 +28,7 @@
             url: "/AspNetUser/GetRollNumber",
             data: { "userName": 't' },
             success: function (data) {
-                debugger;
+                
                 if (data.count != null) {
                   //  $('#UserName').val(data)
                     document.getElementsByName('UserName')[0].value = data;
@@ -57,7 +54,7 @@
 
 
         $("#subjects").change(function () {
-            debugger;
+            
             var selectedClass = $("#subjects").val();
             var total_size = selectedClass.length;
             if(total_size == 3)
@@ -285,39 +282,26 @@
                                                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
-
                                         <div class="form-group">
-                                            <label class="col-md-2 col-lg-2 control-label" for="Email">Email: <span class="red-mark">*</span></label>
+                                            <label class="col-md-2 col-lg-2 control-label" for="Father_Name">Father's Name: <span class="red-mark">*</span></label>
                                             <div class="col-md-10">
-                                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-                                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger", @id = "Email-Error" })
+                                                <input type="text" class="form-control round-border" id="Father_Name" name="Father_Name">
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-md-2 col-lg-2 control-label" for="UserName">Roll Number: <span class="red-mark">*</span></label>
+                                            <label class="col-md-2 col-lg-2 control-label" for="Address">Address: <span class="red-mark"></span></label>
                                             <div class="col-md-10">
-                                                @*@Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger", @id = "UserName-Error" })*@
-                                                <input type="text" id="UserName" class="form-control round-border" name="UserName" readonly />
+                                                    <input type="text" class="form-control round-border" id="Address" name="Address">
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-md-2 col-lg-2 control-label" for="Password">Password: <span class="red-mark">*</span></label>
+                                            <label class="col-md-2 col-lg-2 control-label" for="Name">Age: <span class="red-mark"></span></label>
                                             <div class="col-md-10">
-                                                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger", @id = "Password-Error" })
+                                                <input type="number" class="form-control round-border" id="Age" name="Age" min="15" max="60" onkeydown="return false" required>
+
                                             </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label class="col-md-2 col-lg-2 control-label" for="Confirm Password">Confirm Password: <span class="red-mark">*</span></label>
-                                            <div class="col-md-10">
-                                                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-                                                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-
-
-
+                               
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-md-2 col-lg-2 control-label">Cell No.: <span class="red-mark">*</span></label>
                                             <div class="col-md-10">
@@ -326,6 +310,18 @@
                                             </div>
                                         </div>
 
+                                        <div class="form-group">
+                                            <label for="ClassTimings" class="col-md-2 col-lg-2 control-label">Class Timings: <span class="red-mark">*</span></label>
+                                            <div class="col-md-10">
+                                                <select name="ClassTimings" class="form-control" required>
+                                                    <option value="Morning">Morning</option>
+                                                    <option value="Evening">Evening</option>
+                                                </select>
+                                                <span id="Phone-Error" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                      
+                                
 
                                         <div class="form-group">
                                             <label for="CourseType" class="col-md-2 col-lg-2 control-label">Course Type: <span class="red-mark">*</span></label>
@@ -348,16 +344,61 @@
                                 </div>
                             </div>
 
+
+                            <div class="box box-primary">
+
+                                <div class="box-header with-border"><h3 class="orange">Account Information</h3></div>
+                                <div class="box-body">
+                           
+                                    <div class="form-group">
+                                        <label class="col-md-2 col-lg-2 control-label" for="Email">Email: <span class="red-mark">*</span></label>
+                                        <div class="col-md-4">
+                                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger", @id = "Email-Error" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 col-lg-2 control-label" for="UserName">Roll Number: <span class="red-mark">*</span></label>
+                                        <div class="col-md-4">
+                                            @*@Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger", @id = "UserName-Error" })*@
+                                            <input type="text" id="UserName" class="form-control round-border" name="UserName" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 col-lg-2 control-label" for="Password">Password: <span class="red-mark">*</span></label>
+                                        <div class="col-md-4">
+                                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger", @id = "Password-Error" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 col-lg-2 control-label" for="Confirm Password">Confirm Password: <span class="red-mark">*</span></label>
+                                        <div class="col-md-4">
+                                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+
+
+
+                                    <br />
+                                    <br />
+                                </div>
+                            </div>
+
+
                             <div class="box box-primary">
 
                                 <div class="box-header with-border"><h3 class="orange">Work Experience and Education</h3></div>
                                 <div class="box-body">
-                                    <div class="form-group">
+                                    @*<div class="form-group">
                                         <label class="col-md-1 col-lg-1 control-label">Industry:</label>
                                         <div class="col-md-4">
                                             <input type="text" id="Industry" class="form-control round-border" name="Industry" />
                                         </div>
-                                    </div>
+                                    </div>*@
                                     <div class="form-group">
                                         <label class="col-md-1 col-lg-1 control-label">Occupation:</label>
                                         <div class="col-md-4">
