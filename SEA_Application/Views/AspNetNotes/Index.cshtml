@@ -2,63 +2,285 @@
 
 @{
     ViewBag.Title = "Index";
-  Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<h2>Index</h2>
+<script src="~/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/script.js"></script>
+<style>
+    .modal.in .modal-dialog {
+        -webkit-transform: translate(0,0);
+        -ms-transform: translate(0,0);
+        -o-transform: translate(0,0);
+        transform: translate(0,0);
+        padding-top: 57px;
+    }
+</style>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CourseType)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Price)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CreationDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.AspNetSubject.SubjectName)
-        </th>
-        <th></th>
-    </tr>
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Summary Details</h4>
+            </div>
+            <div class="modal-body" id="modal0">
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CourseType)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Price)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CreationDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AspNetSubject.SubjectName)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-</table>
+
+
+
+
+
+<div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab_1" data-toggle="tab">Notes</a></li>
+        <li><a href="#tab_2" data-toggle="tab">Recent Order</a></li>
+    </ul>
+</div>
+
+<div class="tab-content" style="        background-color: #ECF0F5;
+        padding: 10px 0px 0px 0px;
+">
+
+    <div class="tab-pane active" id="tab_1">
+
+        <p>
+            @Html.ActionLink("Create New", "Create")
+        </p>
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CourseType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreationDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AspNetSubject.SubjectName)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CourseType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreationDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AspNetSubject.SubjectName)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+
+
+    <div class="tab-pane" id="tab_2">
+
+        <table class="table">
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    StudentName
+                </th>
+                <th>
+                    ClassName
+                </th>
+                <th>
+                    Total Amount
+                </th>
+                <th>
+                    Status
+                </th>
+
+                <th>
+                    Status
+                </th>
+            </tr>
+
+            <tbody id="RecentOrderTableBody">
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<div id="bill" >
+
+    <div class="ticket" style="border:1px solid black">
+        <br>
+        @*<img src="./logo.png" alt="Logo">*@
+    <img src="~/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/logo.PNG" />
+        <p class="centered">
+            Officer's Academy
+            <br>Order#01344822
+            <br>2-Jan-2020 12:00 PM
+        </p>
+        <br><b>Cashier:</b> SeaAdmin
+
+        <table>
+            <thead>
+                <tr>
+
+                    <th class="quantity">Q.</th>
+                    <th class="description">Title</th>
+                    <th class="price">Rs.</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="quantity">1.00</td>
+                    <td class="description">English</td>
+                    <td class="price">25.00</td>
+                </tr>
+                <tr>
+                    <td class="quantity">2.00</td>
+                    <td class="description">Mathematics</td>
+                    <td class="price">10.00</td>
+                </tr>
+                <tr>
+                    <td class="quantity">1.00</td>
+                    <td class="description">Islamiat</td>
+                    <td class="price">10.00</td>
+                </tr>
+                <tr>
+                    <td class="quantity">1.00</td>
+                    <td class="description">Pak-Studies</td>
+                    <td class="price">10.00</td>
+                </tr>
+                <tr>
+                    <td class="quantity"></td>
+                    <td class="description">TOTAL</td>
+                    <td class="price">55.00</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="centered">
+            Thanks for your purchase!
+            <br>Developed by : TheRiskAdvisors
+        </p>
+    </div>
+    <button id="btnPrint" class="hidden-print">Print</button>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: "/AspNetNotes/RecentOrders",
+            data: {},
+            success: function (data) {
+                $.each(data, function (index) {
+                    //var tablerow = '<tr>'
+                    //    +'<td>' + data[index].Title + '</td> ' +
+                    //    +'<td>' + data[index].Discription + '</td> ' +
+                    //    +'<td>' + data[index].CourseType + '</td> ' +
+                    //    +'<td>' + data[index].Price + '</td> ' +
+                    //    +'<td>' + data[index].Quantity + '</td> '+
+                    //    +'<td>' + data[index].Status + '</td> '+
+
+                    //'</tr > ';
+                    if (data[index].OrderStatus == "Approved") {
+                        var TableRow = "<tr id='" + data[index].OrderID + "' data-toggle='modal' data-target='#myModal' >  <td>" + data[index].OrderID + "</td> <td >" + data[index].StudentName + "</td> <td >" + data[index].ClassName + "</td>  <td >" + data[index].TotalAmount + "</td>  <td >" + data[index].OrderStatus + "</td> <td><button  id='" + data[index].OrderID + "' class='btn btn-success btn-sm approveBtn' disabled>Approve</button></td></tr> "
+                    }
+                    else {
+                        var TableRow = "<tr id='" + data[index].OrderID + "' data-toggle='modal' data-target='#myModal' > <td>" + data[index].OrderID + "</td> <td >" + data[index].StudentName + "</td> <td >" + data[index].ClassName + "</td>  <td >" + data[index].TotalAmount + "</td>  <td >" + data[index].OrderStatus + "</td> <td><button  id='" + data[index].OrderID + "' class='btn btn-success btn-sm approveBtn'>Approve</button></td></tr> "
+                    }
+
+                    //alert(data[index].Discription);
+                    $('#RecentOrderTableBody').append(TableRow);
+                });
+
+            }
+        });
+
+        $("#RecentOrderTableBody").on("click", "tr", function () {
+
+            var OrderId = $(this).attr('id');
+            // alert(OrderId);
+
+            $.ajax({
+                type: "POST",
+                url: "/AspNetNotes/RecentOrdersDetails",
+                data: { "OrderId": OrderId },
+
+                success: function (data) {
+
+                    $('#modal0').html("");
+
+                    $.each(data, function (index) {
+                        $('#modal0').append('<div> Title Name : ' + data[index].Title + ' </div>  <div> Price : ' + data[index].Price + ' </div> <div> Quantity : ' + data[index].Quantity + ' </div> <div> Total : ' + data[index].Total + ' </div> <br>  ');
+                    });
+                }
+            })
+
+        });
+
+
+
+        $("#RecentOrderTableBody").on("click", ".approveBtn", function () {
+
+            event.stopPropagation();
+
+
+
+            //var OrderId = $(this).attr('id');
+            //$.ajax({
+
+            //    type: "POST",
+            //    url: "/AspNetNotes/ApproveOrders",
+            //    data: { "OrderId": OrderId },
+            //    success: function (data) {
+
+            //        window.location.href = '/AspNetNotes/Index/';
+            //    }
+
+            //})
+
+
+        })
+
+
+    })
+
+
+
+</script>

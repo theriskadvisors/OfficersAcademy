@@ -57,8 +57,125 @@ namespace SEA_Application.Controllers
                              Status = OrderNotes.Status,
 
                          };
-                
-      
+            
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ConfirmOdr(int TotalAmount, int[] IDs)
+        {
+
+            AspNetOrder order = new AspNetOrder();
+            order.TotalAmount=TotalAmount;
+            order.Status = "Publish";
+
+            order.PublishDate = DateTime.Now;
+
+
+            db.AspNetOrders.Add(order);
+
+            db.SaveChanges();
+
+
+            int OrderId = order.Id;
+
+            List<AspNetNotesOrder> AllNotesOrder = db.AspNetNotesOrders.ToList();
+
+            List<AspNetNotesOrder> OrdersToModify = new List<AspNetNotesOrder>();
+
+            foreach (var OrderIds in IDs)
+            {
+
+                foreach (var findOrder in AllNotesOrder)
+                {
+
+                    if (OrderIds == findOrder.Id)
+
+                    {
+                        OrdersToModify.Add(findOrder);
+
+
+                    }
+                }
+
+
+            }
+
+            foreach(var OrderModify in OrdersToModify)
+            {
+
+                OrderModify.OrderId = OrderId;
+                OrderModify.Status = "Publish";
+
+                db.Entry(OrderModify).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+                                    
+            return Json("", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult DeleteOrders( int[] DeleteOrders)
+        {
+            
+           List<AspNetNotesOrder> AllNotesOrder= db.AspNetNotesOrders.ToList();
+           
+            List<AspNetNotesOrder> OrdersToDelete = new List<AspNetNotesOrder>() ;
+
+            foreach (var deleteOrderIds in DeleteOrders)
+            {
+
+                foreach(var order in AllNotesOrder)
+                {
+
+                    if(deleteOrderIds == order.Id)
+
+                    {
+                        OrdersToDelete.Add(order);
+
+                    
+                    }
+                }
+               
+
+            }
+
+
+            db.AspNetNotesOrders.RemoveRange(OrdersToDelete);
+            db.SaveChanges();
+            
+
+
+
+
+            return Json("", JsonRequestBehavior.AllowGet);
+        }
+
+
+
+
+            public ActionResult CartOrders()
+        {
+            var CurrentUserId = User.Identity.GetUserId();
+
+            int StudentId = db.AspNetStudents.Where(x => x.StudentID == CurrentUserId).FirstOrDefault().Id;
+
+            var result = from Notes in db.AspNetNotes
+                         join OrderNotes in db.AspNetNotesOrders on Notes.Id equals OrderNotes.NotesID
+                         where OrderNotes.StudentID == StudentId
+
+                         select new
+                         {
+                             Id = OrderNotes.Id,
+                             Title = Notes.Title,
+                             Discription = Notes.Description,
+                             CourseType = Notes.CourseType,
+                             Price = Notes.Price,
+                             Quantity = OrderNotes.Quantity,
+                             Total = Notes.Price * OrderNotes.Quantity,
+                             Status = OrderNotes.Status,
+
+                         };
+
+
 
 
             return Json(result, JsonRequestBehavior.AllowGet);
@@ -67,7 +184,7 @@ namespace SEA_Application.Controllers
         public ActionResult CancelOrder(int OrderId)
         {
 
-          AspNetNotesOrder NotesOrder=   db.AspNetNotesOrders.Where(x => x.Id == OrderId).FirstOrDefault();
+            AspNetNotesOrder NotesOrder = db.AspNetNotesOrders.Where(x => x.Id == OrderId).FirstOrDefault();
             NotesOrder.Status = "Cancelled";
 
             db.Entry(NotesOrder).State = EntityState.Modified;
@@ -79,7 +196,7 @@ namespace SEA_Application.Controllers
 
 
 
-            public ActionResult ConfirmOrder(int NotesId, int Quantity)
+        public ActionResult ConfirmOrder(int NotesId, int Quantity)
         {
 
             var CurrentUserId = User.Identity.GetUserId();
@@ -102,6 +219,9 @@ namespace SEA_Application.Controllers
 
             return Json("", JsonRequestBehavior.AllowGet);
         }
+
+
+
 
         // GET: AspNetOrderNotes/Create
         public ActionResult Create()
