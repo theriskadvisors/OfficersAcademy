@@ -117,6 +117,7 @@ namespace SEA_Application.Controllers
                              Quantity = OrderNotes.Quantity,
                              Status = OrderNotes.Status,
                              Total = Notes.Price * OrderNotes.Quantity,
+
                          };
 
 

@@ -5,16 +5,76 @@
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<script src="~/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/script.js"></script>
+
+
+    <link href="~/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/style.css" media="screen" rel="stylesheet" />
+    <link href="~/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/style1.css" media="print" rel="stylesheet" />
+
 <style>
-    .modal.in .modal-dialog {
-        -webkit-transform: translate(0,0);
-        -ms-transform: translate(0,0);
-        -o-transform: translate(0,0);
-        transform: translate(0,0);
-        padding-top: 57px;
+    @@media print {
+
+    td,
+    th,
+    tr,
+    table {
+        border-top: 1px solid black;
+        border-collapse: collapse;
     }
+
+        td.description,
+        th.description {
+            width: 75px;
+            max-width: 75px;
+        }
+
+        td.quantity,
+        th.quantity {
+            width: 40px;
+            max-width: 40px;
+            word-break: break-all;
+        }
+
+        td.Amount,
+        th.Amount {
+            width: 40px;
+            max-width: 40px;
+            word-break: break-all;
+        }
+
+
+        td.price,
+        th.price {
+            width: 40px;
+            max-width: 40px;
+            word-break: break-all;
+        }
+
+    .centered {
+        text-align: center;
+        align-content: center;
+    }
+
+    .ticket {
+        width: 175px;
+        max-width: 175px;
+        font-size: 12px;
+        font-family: 'Times New Roman';
+    }
+
+    img {
+        max-width: inherit;
+        width: inherit;
+    }
+
+    #bill {
+        display: none;
+    }
+}
+
+
+
 </style>
+
 
 <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
@@ -35,9 +95,6 @@
 
 
 
-
-
-
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#tab_1" data-toggle="tab">Notes</a></li>
@@ -45,9 +102,7 @@
     </ul>
 </div>
 
-<div class="tab-content" style="        background-color: #ECF0F5;
-        padding: 10px 0px 0px 0px;
-">
+<div class="tab-content" style=" background-color: #ECF0F5; padding: 10px 0px 0px 0px; ">
 
     <div class="tab-pane active" id="tab_1">
 
@@ -107,7 +162,7 @@
             }
 
         </table>
-    </div>
+    </div><!--End of Tab 1-->
 
 
     <div class="tab-pane" id="tab_2">
@@ -138,71 +193,65 @@
             <tbody id="RecentOrderTableBody">
             </tbody>
         </table>
-    </div>
+
+        <div id="bill">
+
+            <div class="ticket" id="ticket" style="border:1px solid">
+                <br>
+
+                <img src="~/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/logo.PNG" />
+
+
+                <p class="centered">
+                    Officer's Academy
+                    <br><span id="OrderNo"></span>
+                    <br><span id="DateTime"></span>
+                </p>
+
+
+                <br><b>Cashier:</b> SeaAdmin
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="description">Title</th>
+
+                            <th class="quantity">Qty</th>
+                            <th class="price">Rate</th>
+                            <th class="Amount">Amount</th>
+
+                        </tr>
+
+
+                    </thead>
+                    <tbody id="billbody" style="border:1px solid black">
+                    </tbody>
+                </table>
+                <p class="centered">
+                    Thanks for your purchase!
+                    <br>Developed by : TheRiskAdvisors
+                </p>
+            </div>
+
+
+
+
+            <button id="btnPrint" class="hidden-print">Print</button>
+        </div>
+
+    </div> <!--End of Tab 2-->
+
+
 
 </div>
-<div id="bill" >
 
-    <div class="ticket" style="border:1px solid black">
-        <br>
-        @*<img src="./logo.png" alt="Logo">*@
-    <img src="~/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/logo.PNG" />
-        <p class="centered">
-            Officer's Academy
-            <br>Order#01344822
-            <br>2-Jan-2020 12:00 PM
-        </p>
-        <br><b>Cashier:</b> SeaAdmin
-
-        <table>
-            <thead>
-                <tr>
-
-                    <th class="quantity">Q.</th>
-                    <th class="description">Title</th>
-                    <th class="price">Rs.</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="quantity">1.00</td>
-                    <td class="description">English</td>
-                    <td class="price">25.00</td>
-                </tr>
-                <tr>
-                    <td class="quantity">2.00</td>
-                    <td class="description">Mathematics</td>
-                    <td class="price">10.00</td>
-                </tr>
-                <tr>
-                    <td class="quantity">1.00</td>
-                    <td class="description">Islamiat</td>
-                    <td class="price">10.00</td>
-                </tr>
-                <tr>
-                    <td class="quantity">1.00</td>
-                    <td class="description">Pak-Studies</td>
-                    <td class="price">10.00</td>
-                </tr>
-                <tr>
-                    <td class="quantity"></td>
-                    <td class="description">TOTAL</td>
-                    <td class="price">55.00</td>
-                </tr>
-            </tbody>
-        </table>
-        <p class="centered">
-            Thanks for your purchase!
-            <br>Developed by : TheRiskAdvisors
-        </p>
-    </div>
-    <button id="btnPrint" class="hidden-print">Print</button>
-</div>
 
 
 <script>
 
     $(document).ready(function () {
+
+        var clickedOrderId;
         $.ajax({
             type: "POST",
             url: "/AspNetNotes/RecentOrders",
@@ -256,31 +305,95 @@
 
 
 
+
         $("#RecentOrderTableBody").on("click", ".approveBtn", function () {
 
+
+
             event.stopPropagation();
+            var Total = 0.0;
+            var OrderId = $(this).attr('id');
+            //clickedOrderId = OrderId;
+
+            $('#btnPrint').attr('name', OrderId);
 
 
 
-            //var OrderId = $(this).attr('id');
-            //$.ajax({
+            $("#btnPrint").attr('class', OrderId);
 
-            //    type: "POST",
-            //    url: "/AspNetNotes/ApproveOrders",
-            //    data: { "OrderId": OrderId },
-            //    success: function (data) {
+            $.ajax({
+                type: "POST",
+                url: "/AspNetNotes/RecentOrdersDetails",
+                data: { "OrderId": OrderId },
 
-            //        window.location.href = '/AspNetNotes/Index/';
-            //    }
+                success: function (data) {
+                    $('#billbody').html("");
+                    $.each(data, function (index) {
+                        var TableRow = "<tr>  <td class='description'>" + data[index].Title + "</td> <td class='quantity' >" + data[index].Quantity + "</td> <td  class='price'>" + data[index].Price + "</td>  <td class='Amount' >" + data[index].Total + "</td>"
+                        $('#billbody').append(TableRow);
 
-            //})
+                        Total = Total + data[index].Total;
+                    });
+                    var d = new Date($.now());
 
+                    $("#DateTime").html(d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+                    $("#OrderNo").html('Order#' + OrderId);
+                    $('#billbody').append("<tr>  <td class='description'>Total</td>  <td class='quantity'></td> <td class='price'></td> <td class='Amount'>" + Total + "</td> </tr>");
+                    $("#bill").css('display', 'block');
+
+
+                }//end of success function
+            })
 
         })
 
 
     })
 
+    $("#btnPrint").click(function () {
 
+
+
+       
+        var OrderId = $('#btnPrint').attr('name');
+
+        var mywindow = window.open('', '', '');
+       
+
+        mywindow.document.write('<html><head><title>' + document.title + '</title>  ');
+
+        mywindow.document.write('<style>  td,th,tr,table{border-top: 1px solid black;} td.description,th.description {width: 75px;max-width: 75px;}  td.quantity,th.quantity{ width: 40px;max-width: 40px;word-break: break-all;} td.Amount,th.Amount {  width: 60px;max-width: 60px;word-break: break-all;} td.Amount,th.Amount {  width: 60px;max-width: 60px;word-break: break-all;} .centered {text-align: center;align-content: center;} .ticket{width: 210px;max-width: 210px;font-size: 12px}  img {  max-width: inherit;  width: inherit;} </style>');
+        mywindow.document.write('</head><body >');
+       // mywindow.document.write('<h1>' + document.title + '</h1>');
+        mywindow.document.write(document.getElementById('bill').innerHTML);
+
+
+       
+
+        mywindow.document.write('</body></html>');
+        mywindow.document.close(); // necessary for IE >= 10
+        mywindow.focus(); // necessary for IE >= 10*/
+
+        mywindow.print();
+        mywindow.close();
+
+
+        $.ajax({
+
+            type: "POST",
+            url: "/AspNetNotes/ApproveOrders",
+            data: { "OrderId": OrderId },
+            success: function (data) {
+
+                window.location.href = '/AspNetNotes/Index/';
+            }
+
+        })
+
+
+
+
+
+    })
 
 </script>
