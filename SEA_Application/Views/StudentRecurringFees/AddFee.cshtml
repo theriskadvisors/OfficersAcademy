@@ -1,4 +1,4 @@
-﻿@@ -0,0 +1,170 @@
+﻿
 ﻿@model SEA_Application.Models.FeesData
 @{
     ViewBag.Title = "Create";
@@ -140,9 +140,10 @@
                             <option value="Full Fee">Full Fee</option>
                             <option value="Installment">Installment</option>
                             <option value="PerMonth">PerMonth</option>
-                        </select>*@
-                    @Html.DropDownListFor(model => model.FeeType, listItems, "-- Select Status --")
-
+                      </select>*@
+                    <div class="col-md-6">
+                    @Html.DropDownListFor(model => model.FeeType, listItems, "-- Select Status --", new { @class = "form-control", required = "required" })
+</div>
                 </div>
             </div>
 

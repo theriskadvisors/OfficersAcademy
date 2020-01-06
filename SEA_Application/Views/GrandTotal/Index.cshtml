@@ -170,7 +170,7 @@
             success: function (data) {
                 $.each(data, function (i, item) {
 
-
+                    debugger;
                    
                     var checkbox = '<input type="checkbox"   value="' + item.Id + '"class="check_class"  name="printcheck" id="test' + item.Id + '" /><label for="test' + item.Id + '"></label>';
                    //  var checkbox = '<input type="checkbox" class="check_class"  value="' + item.Id + '" name="printcheck">';
@@ -328,10 +328,11 @@
          }
 
          function GetChallanForm() {
+             debugger;
              var _Mnh = $("#counter").val();
              var _Mnth = $("#MonthID").val();
 
-             debugger;
+         
              $('.eeniart0017').css("display", "block");
              $.get('@Url.Action("GetChallanForm")',
                { month: _Mnth, Idlist: _Mnh }, function (data) {
@@ -343,12 +344,14 @@
              
                    $('#ChallanForm').html(' ');
                    $('.eeniart0017').css("display", "none");
-                   debugger;
+                
                    $.each(data, function (i, item_1) {
-                       debugger;
+                     
                      
                        $.each(item_1.ChallanCopy, function (j, item) {
-
+                           debugger;
+                             if (item == "Parent Copy")
+                             {
                            var due = item_1.DueDate.split('/');
                            var mm = due[0];
                            var dd = parseInt(due[1]);
@@ -362,115 +365,115 @@
                            var yy = parseInt(valid[2]);
                            var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                            var validdate = dd + ' ' + months[mm - 1] + ', ' + yy;
-                           debugger;
-                  
-                           html += '<div id="firstdiv" style="margin-top:0px" class="col-xs-4">';
-                           html += '<img style="width:40px;height:40px" src="/Content/Images/NGS-Pre-School-Logo.png" />';
-                           html += '<div class="col-xs-8 col-xs-offset-1"><img style="width:40px;height:40px" src="/Content/Images/International-pree.png" /></div>';
-                           html += '<center>';
-                           html += ' <div style="border:1px solid black; margin-bottom:4px"><font size="2"><b>' + item_1.SchoolName + '</b></font></div>';
-                       html += '</center>';
-                       html += '<center>';
-                       html += '<div style="border:1px solid black"><font size="2"><b>Fee Voucher</font></div>';
-                       html += '</center>';
-                       html += '<center>';
-                       html += '<font size="2">Payable at any MBL Branch</font>';
-                       html += '</center>';
-                       html += '<center>';
-                       html += '<div style="border:1px solid black"><font size="2"><b>Customer Code: NGS</b></font></div>';
-                       html += '</center>';
-                       html += '<section id="fee" class="section" style="margin-bottom:5px; padding:4px; height:150px">';
-                       html += '<div><font size="2">Challan#:&nbsp;&nbsp;&nbsp;<spam style="border-bottom:1px solid black">' + item_1.ChallanID + '</spam></font>';
-                       html += '<font size="2" class="pull-right">Due Date:&nbsp;&nbsp;&nbsp;<spam style="border-bottom:1px solid black">' + duedate + '</spam></font></div>';
-                       html += '<div><font size="2">Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<spam style="border-bottom:1px solid black">' + item_1.StudentName + '</spam></font>';
-                       html += '<font size="2" class="pull-right">Validity date:&nbsp;&nbsp;&nbsp;&nbsp;<spam style="border-bottom:1px solid black">' + validdate + '</spam></font></div>';
-                       html += '<div><font size="2">Class:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<spam style="border-bottom:1px solid black">' + item_1.StudentClass + '</spam></font>';
-                       html += '<font size="2" class="pull-right">Roll No.&nbsp;&nbsp;&nbsp;<spam style="border-bottom:1px solid black">' + item_1.StudentUserName + '</spam></font></div>';
-                       html += '<div></br><i>Fee for the term</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<spam style="border-bottom:1px solid black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + item_1.FeeMonth + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<spam></div>';
-                       html += '</section>';
-                       html += '<section id="fee" class="section" ; margin-bottom:0px; padding:4px; height:150px">';
-                       html += '<table class="table">';
-                       html += '<tr>';
-                       html += '<th style="border:1px solid black">';
-                       html += '<font size="3"><b><i>PARTICULARS</i></b></font>';
-                       html += '</th style="border:1px solid black">';
-                       html += '<th style="border:1px solid black;text-align:center">';
-                       html += '<font size="3"><b><i>AMOUNT</i></b></font>';
-                       html += '</th>';
-                       html += '</tr>';
-                       html += '<tbody>';
-
-                       if(item_1.TripCharges!=0)
-                       {
-                           debugger;
-                           html += '<tr style="padding:4px">';
-                           html += '<td style="border:1px solid black ;padding:4px"><font size="2">Trip Charges</font></td>';
-                           html += '<td style="border:1px solid black ;padding:4px" align="center"><font size="2" pull-right><b>Rs.&nbsp;&nbsp;' + numberWithCommas(item_1.TripCharges) + '</b></font></td>';
-                           html += '</tr>';
-                       }
-
-                       html += '<tr>';
-                       html += '<td style="border:1px solid black ;padding:4px">';
-                       html += '<font size="2">  <b>Payable Fee</b></font>';
-                       html += '</td>';
-                       html += '<td align="center" style="border:1px solid black;padding:4px">';
-                       html += '<font size="2" pull-right><b>Rs.&nbsp;&nbsp;' + numberWithCommas(item_1.PayableFee) + '</b></font>';
-                       html += '</tr>';
-                       html += '<tr>';
-                       html += '<td style="border:1px solid black;padding:4px">';
-                       html += '<font size="2">  <b>Others</b></font>';
-                       html += '</td>';
-                       html += '<td align="center" style="border:1px solid black;padding:4px">';
-                       html += '<font size="2" pull-right><b>&nbsp;&nbsp;</b></font>';
-                       html += '</tr>';
-                       html += '<tr>';
-
-                       html += '<tr>';
-                       html += '<td style="border:1px solid black;;padding:4px">';
-                       html += '<font size="2">  <b>Arrears</b></font>';
-                       html += '</td>';
-                       html += '<td align="center" style="border:1px solid black;padding:4px">';
-                       html += '<font size="2" pull-right><b>Rs.&nbsp;&nbsp;' + numberWithCommas(item_1.Arrears) + '</b></font>';
-                       html += '</tr>';
-                       html += '<tr>';
-                       html += '<td style="border:1px solid black">';
-                       html += '<font size="2"><b> Payable before due date</b></font>';
-                       html += '</td>';
-                       html += '<td align="center" style="border:1px solid black;padding:4px">';
-                       html += '<font size="2" pull-right><b>Rs.&nbsp;&nbsp;' + numberWithCommas(item_1.TotalAmount) + '</b></font>';
-                       html += '</tr>';
-                       html += '<tr>';
-                       html += '<td style="border:1px solid black ;padding:4px">';
-                       html += '<font size="2">  <b>Payable After Due Date</b></font>';
-                       html += '</td>';
-                       html += '<td align="center" style="border:1px solid black ;padding:4px">';
-                       html += '<font size="2"><b>Rs.&nbsp;&nbsp;' + numberWithCommas(item_1.TotalAmount) + '</b></font>';
-                       html += '</td>';
-                       html += '</tr>';
-                       html += '</tbody>';
-                       html += '</table>';
-                       html += '</section>';
                        
-                       html += '<font size="2">*Payment Terms:</font>';
-                       html += '<br />';
-                       html += '<font size="1">1. After due date student will pay PKR 100/-per day as a charity on </font>';
-                       html += '<br />';
-                       html += '<font size="1">2. Only Cash and MBL Cheque/Payorder will be accepted</font>';
-                       html += '<br />';
-                       html += '<font size="1">3. The additional amount collected after due date will be donated for charitable purpose.</font>';
-                       html += '<br />';
-                       html += '<font size="1" style="font-family:"Times New Roman", Georgia, Serif"><b>*Other Charges*</b> Includes: Stationery, Energy, Science & Computer Supplies, Sports and Swimming.</font>';
-                       html += '<center></br>' + item + '</center>';
-                       html += '</div>';                   
-                       });
-                       $('#ChallanForm').html(html);
-                       //html += '<br>';
-                       //html += '<br>';
-                       //html += '<br>';
-                       //html += '<br>';
-                       //html += '<br>';
-                       //html += '<br>';
-                       //html += '<br>';
+                           html += '<div id="firstdiv" style="margin-top:0px" class="col-xs-4">';
+                           //   html += '<img style="width:40px;height:40px" src="/Content/Images/NGS-Pre-School-Logo.png" />';
+                           //  html += '<div class="col-xs-8 col-xs-offset-1"><img style="width:40px;height:40px" src="/Content/Images/International-pree.png" /></div>';
+                           html += '<center>';
+                           html += ' <div style="border:1px solid black; margin-bottom:4px"><font size="2"><b> Officers Academy</b></font></div>';
+                           html += '</center>';
+                           html += '<center>';
+                           html += '<div style="border:1px solid black"><font size="2"><b>Fee Receipt</font></div>';
+                           html += '</center>';
+                       
+                           html += '<center>';
+                           html += '<div style="border:1px solid black"><font size="2"><b>Customer Code: NGS</b></font></div>';
+                           html += '</center>';
+                           html += '<section id="fee" class="section" style="margin-bottom:5px; padding:4px; height:150px">';
+                           html += '<div><font size="2">Challan#:&nbsp;&nbsp;&nbsp;<spam style="border-bottom:1px solid black">' + item_1.ChallanID + '</spam></font>';
+                           html += '<font size="2" class="pull-right">Due Date:&nbsp;&nbsp;&nbsp;<spam style="border-bottom:1px solid black">' + duedate + '</spam></font></div>';
+                           html += '<div><font size="2">Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<spam style="border-bottom:1px solid black">' + item_1.StudentName + '</spam></font>';
+                           html += '<font size="2" class="pull-right">Validity date:&nbsp;&nbsp;&nbsp;&nbsp;<spam style="border-bottom:1px solid black">' + validdate + '</spam></font></div>';
+                           html += '<div><font size="2">Class:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<spam style="border-bottom:1px solid black">' + item_1.StudentClass + '</spam></font>';
+                           html += '<font size="2" class="pull-right">Roll No.&nbsp;&nbsp;&nbsp;<spam style="border-bottom:1px solid black">' + item_1.StudentUserName + '</spam></font></div>';
+                           html += '<div></br><i>Fee for the term</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<spam style="border-bottom:1px solid black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + item_1.FeeMonth + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<spam></div>';
+                           html += '</section>';
+                           html += '<section id="fee" class="section" ; margin-bottom:0px; padding:4px; height:150px">';
+                           html += '<table class="table">';
+                           html += '<tr>';
+                           html += '<th style="border:1px solid black">';
+                           html += '<font size="3"><b><i>PARTICULARS</i></b></font>';
+                           html += '</th style="border:1px solid black">';
+                           html += '<th style="border:1px solid black;text-align:center">';
+                           html += '<font size="3"><b><i>AMOUNT</i></b></font>';
+                           html += '</th>';
+                           html += '</tr>';
+                           html += '<tbody>';
+
+                           if(item_1.TripCharges!=0)
+                           {
+                               debugger;
+                               html += '<tr style="padding:4px">';
+                               html += '<td style="border:1px solid black ;padding:4px"><font size="2">Trip Charges</font></td>';
+                               html += '<td style="border:1px solid black ;padding:4px" align="center"><font size="2" pull-right><b>Rs.&nbsp;&nbsp;' + numberWithCommas(item_1.TripCharges) + '</b></font></td>';
+                               html += '</tr>';
+                           }
+
+                           html += '<tr>';
+                           html += '<td style="border:1px solid black ;padding:4px">';
+                           html += '<font size="2">  <b>Payable Fee</b></font>';
+                           html += '</td>';
+                           html += '<td align="center" style="border:1px solid black;padding:4px">';
+                           html += '<font size="2" pull-right><b>Rs.&nbsp;&nbsp;' + numberWithCommas(item_1.PayableFee) + '</b></font>';
+                           html += '</tr>';
+                           html += '<tr>';
+                           html += '<td style="border:1px solid black;padding:4px">';
+                           html += '<font size="2">  <b>Others</b></font>';
+                           html += '</td>';
+                           html += '<td align="center" style="border:1px solid black;padding:4px">';
+                           html += '<font size="2" pull-right><b>&nbsp;&nbsp;</b></font>';
+                           html += '</tr>';
+                           html += '<tr>';
+
+                           html += '<tr>';
+                           html += '<td style="border:1px solid black;;padding:4px">';
+                           html += '<font size="2">  <b>Arrears</b></font>';
+                           html += '</td>';
+                           html += '<td align="center" style="border:1px solid black;padding:4px">';
+                           html += '<font size="2" pull-right><b>Rs.&nbsp;&nbsp;' + numberWithCommas(item_1.Arrears) + '</b></font>';
+                           html += '</tr>';
+                           html += '<tr>';
+                           html += '<td style="border:1px solid black">';
+                           html += '<font size="2"><b> Payable before due date</b></font>';
+                           html += '</td>';
+                           html += '<td align="center" style="border:1px solid black;padding:4px">';
+                           html += '<font size="2" pull-right><b>Rs.&nbsp;&nbsp;' + numberWithCommas(item_1.TotalAmount) + '</b></font>';
+                           html += '</tr>';
+                           html += '<tr>';
+                           html += '<td style="border:1px solid black ;padding:4px">';
+                           html += '<font size="2">  <b>Payable After Due Date</b></font>';
+                           html += '</td>';
+                           html += '<td align="center" style="border:1px solid black ;padding:4px">';
+                           html += '<font size="2"><b>Rs.&nbsp;&nbsp;' + numberWithCommas(item_1.TotalAmount) + '</b></font>';
+                           html += '</td>';
+                           html += '</tr>';
+                           html += '</tbody>';
+                           html += '</table>';
+                           html += '</section>';
+                       
+                           html += '<font size="2">*Payment Terms:</font>';
+                           html += '<br />';
+                           html += '<font size="1">1. After due date student will pay PKR 100/-per day as a charity on </font>';
+                           html += '<br />';
+                           html += '<font size="1">2. Only Cash and MBL Cheque/Payorder will be accepted</font>';
+                           html += '<br />';
+                           html += '<font size="1">3. The additional amount collected after due date will be donated for charitable purpose.</font>';
+                           html += '<br />';
+                           html += '<font size="1" style="font-family:"Times New Roman", Georgia, Serif"><b>*Other Charges*</b> Includes: Stationery, Energy, Science & Computer Supplies, Sports and Swimming.</font>';
+                           html += '<center></br>' + item + '</center>';
+                           html += '</div>';
+                       }
+                           });
+                           $('#ChallanForm').html(html);
+                       
+                           //html += '<br>';
+                           //html += '<br>';
+                           //html += '<br>';
+                           //html += '<br>';
+                           //html += '<br>';
+                           //html += '<br>';
+                           //html += '<br>';
+                       
                    })
 
 

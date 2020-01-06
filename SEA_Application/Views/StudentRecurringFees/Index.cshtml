@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SEA_Application.Models.StudentRecurringFee>
+﻿@model IEnumerable<SEA_Application.Models.AspNetSession>
 
     @{
         ViewBag.Title = "Index";
@@ -30,7 +30,8 @@
                 var td = $(this).children("td");
 
                 if ($(td).html() != "No data available in table");
-                window.location.href = "/StudentRecurringFees/Edit?id=" + $(td[0]).html();
+               // window.location.href = "/StudentRecurringFees/Edit?id=" + $(td[0]).html();
+                window.location.href = "#";
             });
             drawTable();
 
@@ -62,12 +63,7 @@
                  '<input type="button" class="form-control" id="cre" onclick="AddFee()" value="Add Fees" style="border-radius:45px;border-color:#128edb;color:#128edb;background-color:#ffffff" />  '
                 +
               '</div>' +
-                 '<div class="col-md-2 pull-right !important">' +
-              '<input type="button" class="form-control" id="cre" onclick="CreateStudent()" value="Student Fee" style="border-radius:45px;border-color:#128edb;color:#128edb;background-color:#ffffff" />' +
-              '</div>' +
-               '<div class="col-md-2 pull-right !important">' +
-              '<input type="button" class="form-control" id="cre" onclick="Create()" value="Class Fee" style="border-radius:45px;border-color:#128edb;color:#128edb;background-color:#ffffff" />' +
-              '</div>' +
+              
                 '<div class="col-md-2 pull-right !important">' +
               '<input type="button" value="Refresh"  class="form-control" id="refresh" onclick="Refresh()" style="border-radius:45px;border-color:#21cd54;color:#21cd54;background-color:#ffffff" />' +
               '</div>');
@@ -99,9 +95,9 @@
                             @Html.DisplayNameFor(model => model.Id)
                         </th>
                         <th>
-                            <span>Class</span>
+                            <span>Section</span>
                         </th>
-                        <th>
+                        @*<th>
                             <span>Computer Lab</span>
                         </th>
                         <th>
@@ -124,7 +120,7 @@
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.Other)
-                        </th>
+                        </th>*@
                         <th>
                             <span>Tution Fee</span>
                         </th>
@@ -144,10 +140,10 @@
                                 @Html.DisplayFor(modelItem => item.Id)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.AspNetClass.ClassName)
+                                @Html.DisplayFor(modelItem => item.SessionName)
 
                             </td>
-                            <td>
+                            @*<td>
                                 @Html.DisplayFor(modelItem => item.ComputerLabCharges)
                             </td>
                             <td>
@@ -170,12 +166,12 @@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Other)
+                            </td>*@
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Total_Fee)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.TutionFee)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.TotalFee)
+                                @Html.DisplayFor(modelItem => item.Total_Fee)
                             </td>
 
                             @*<td>

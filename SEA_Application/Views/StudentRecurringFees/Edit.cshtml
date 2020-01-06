@@ -57,7 +57,7 @@
                 @Html.HiddenFor(model => model.Id)
 
                 <div class="form-group">
-                    <span class="col-md-2">Class</span>
+                    <span class="col-md-2">Section</span>
                     <div class="col-md-6">
                         @Html.DropDownList("ClassId", null, htmlAttributes: new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.ClassId, "", new { @class = "text-danger" })
