@@ -21,8 +21,8 @@ namespace SEA_Application.Controllers
         // GET: StudentRecurringFees
         public ActionResult Index()
         {
-            var studentRecurringFees = db.StudentRecurringFees.Include(s => s.AspNetClass);
-            return View(studentRecurringFees.ToList());
+            var studentRecurringFees = db.AspNetSessions.ToList();
+            return View(db.AspNetSessions.ToList());
         }
 
         // GET: StudentRecurringFees/Details/5
@@ -275,7 +275,7 @@ namespace SEA_Application.Controllers
                 studentRecurringFees.TutionFee = TotalFee ;
                 studentRecurringFees.TotalFee = TotalFee;
                 db.StudentRecurringFees.Add(studentRecurringFees);
-                //  db.SaveChanges();
+                  db.SaveChanges();
 
                 var Total_Fees = studentRecurringFees.TotalFee;
               
@@ -541,7 +541,7 @@ namespace SEA_Application.Controllers
             ViewBag.SessionId = new SelectList(db.AspNetSessions, "Id", "SessionName");
             //  ViewBag.ClassId = new SelectList(db.AspNetClasses, "Id", "ClassName");
 
-            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
 
 
             return View();
@@ -553,6 +553,7 @@ namespace SEA_Application.Controllers
 
             var result1 = (from std in db.AspNetStudents
                            join usr in db.AspNetUsers on std.StudentID equals usr.Id
+
                            where usr.Status != "False" && std.ClassID == id
                            select new { usr.Id, usr.Name, usr.PhoneNumber, usr.Email, usr.UserName, std.AspNetClass.ClassName }).ToList();
             return Json(result1, JsonRequestBehavior.AllowGet);
