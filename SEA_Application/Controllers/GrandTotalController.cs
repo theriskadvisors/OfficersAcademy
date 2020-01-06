@@ -55,7 +55,7 @@ namespace SEA_Application.Controllers
                          join std in db.AspNetStudents on feemonth.StudentId equals std.Id
                          join challan in db.StudentChallanForms on std.Id equals challan.StudentId
                          where feemonth.Status == "Pending" && feemonth.Months == month && feemonth.Id== challan.StudentFeeMonthId
-                         select new { challan.ChallanNo, feemonth.FeePayable, feemonth.IssueDate, std.AspNetUser.Name, std.AspNetClass.ClassName, feemonth.DueDate, feemonth.ValildityDate }).ToList();
+                         select new { challan.ChallanNo,feemonth.Months,feemonth.FeePayable, feemonth.IssueDate, std.AspNetUser.Name, std.AspNetClass.ClassName, feemonth.DueDate, feemonth.ValildityDate }).ToList();
 
           
             ExcelPackage pck = new ExcelPackage();
@@ -251,225 +251,32 @@ namespace SEA_Application.Controllers
         {
            
             var userid = idlist.Split(',');
-            var Nextmonth = "";
-            var dates = db.FeeDateSettings.FirstOrDefault();
-            List<challanform> ChallanList = new List<challanform>();
-            try
-            {
-                foreach (var item in userid)
-                {
-                  int feemonthid=   Int32.Parse(item);
+           var dates = db.FeeDateSettings.FirstOrDefault();
+            challanform ChallanList = new challanform();
+         
+                    int feemonthid = Int32.Parse(idlist);
+                    var mnth = db.StudentFeeMonths.Where(x => x.Id == feemonthid).FirstOrDefault().Months;
+                    month = mnth;
                     var S_ID = db.StudentFeeMonths.Where(x => x.Id == feemonthid).FirstOrDefault().StudentId;
                     var student = db.AspNetStudents.Where(x => x.Id == S_ID).FirstOrDefault();
                     StudentFeeMonth Student_FeeMonth = db.StudentFeeMonths.Where(x => x.StudentId == student.Id && x.Months == month).FirstOrDefault();
                     Student_FeeMonth.ValildityDate = dates.ValidityDate;
                     Student_FeeMonth.DueDate = dates.DueDate;
-                    Student_FeeMonth.Status = "Printed";
+                    Student_FeeMonth.Status = "Paid";
                     db.SaveChanges();
 
-                    int recordid = Student_FeeMonth.Id;
-                    recordid++;
-                   var Studentdata =  db.StudentFeeMonths.Where(x => x.Id == recordid).FirstOrDefault();
-                    if(Studentdata.Multiplier == 0)
-                    {
-                         Nextmonth =   month+ '-'+ Studentdata.Months;
+            var FeeMonth = db.StudentFeeMonths.Where(x => x.Id == feemonthid).FirstOrDefault();
 
-                    }
-                    double? trip = 0;
-                    NonRecurringFeeMultiplier nonrecurringfee = db.NonRecurringFeeMultipliers.Where(x => x.StudentId == student.Id && x.Month == Student_FeeMonth.Months).FirstOrDefault();
-                    if(nonrecurringfee!=null)
-                    {
-                         trip = nonrecurringfee.TutionFee;
-                    }
+            ChallanList.FeeMonth = FeeMonth.Months;
+            ChallanList.StudentName = FeeMonth.AspNetStudent.AspNetUser.Name;
+            ChallanList.StudentUserName = FeeMonth.AspNetStudent.AspNetUser.UserName;
+            ChallanList.PayableFee = FeeMonth.FeePayable;
+            ChallanList.StudentClass = FeeMonth.AspNetStudent.AspNetClass.ClassName;
 
-                   
-
-                    AspNetSession Session = db.AspNetSessions.OrderByDescending(x => x.Id).Select(x => x).FirstOrDefault();
-                    decimal? No = 0;
-                    var Student_Penalty = db.StudentPenalties.Where(x => x.StudentId == student.Id && x.Status == "Pending").Select(x => x.PenaltyFee.Amount).FirstOrDefault();
-
-                    if (Student_Penalty == null)
-                    {
-
-                        Student_Penalty = 0;
-                    }
-                    var Student_discount = db.StudentDiscounts.Where(x => x.StudentId == student.Id).Select(x => x.FeeDiscount.Amount).FirstOrDefault();
-
-                    if (Student_discount == null)
-                    {
-                        Student_discount = 0;
-                    }
-
-                    ///////////////arrears////////////
-                    var _SessionId = Student_FeeMonth.SessionId;
-                    int _Id = Student_FeeMonth.Id - 1;
-                    bool Flag = true;
-                    double? Arrear = 0;
-                    while (Flag)
-                    {
-                        try
-                        {
-                            double? payableamount = db.StudentFeeMonths.Where(x => x.StudentId == student.Id && x.SessionId == _SessionId && x.Status == "Pending" && x.Id == _Id).FirstOrDefault().FeePayable;
-
-                            Arrear += payableamount;
-                            _Id--;
-                        }
-                        catch (Exception ex)
-                        {
-                            Flag = false;
-                        }
-                    }
-                    /////////End/////////
-
-                    challanform Challan = new challanform();
-                    Challan.AcademicSessionStart = Session.SessionStartDate;
-                    Challan.AcademicSessionEnd = Session.SessionEndDate;
-                    Challan.StudentName = student.AspNetUser.Name;
-                    Challan.StudentUserName = student.AspNetUser.UserName;
-                    Challan.StudentClass = student.AspNetClass.ClassName;
-                    Challan.SchoolName = "IPC Aziz Avenue Campus";
-                    Challan.BranchName = "Canal Branch";
-                    Challan.ChallanCopy = new List<string>();
-                    Challan.ChallanCopy.Add("Parent Copy");
-                    Challan.ChallanCopy.Add("Bank Copy");
-                    Challan.ChallanCopy.Add("School Copy");
-
-
-                    if (Nextmonth == "")
-                    {
-                        Challan.FeeMonth = Student_FeeMonth.Months;
-                    }
-                    else
-                    {
-                        Challan.FeeMonth = Nextmonth;
-                    }
-                    var duedate = Student_FeeMonth.DueDate.ToString().Split(' ');
-                    Challan.DueDate = duedate[0];
-                    var validdate = Student_FeeMonth.ValildityDate.ToString().Split(' ');
-                    Challan.ValidDate = validdate[0];
-
-                    Challan.PayableFee = Student_FeeMonth.FeePayable - Convert.ToDouble(Student_discount);
-                    Challan.Arrears = Arrear;
-                    var totalpayable = Arrear + Convert.ToDouble(Student_Penalty) + Student_FeeMonth.FeePayable;
-                    Challan.TripCharges = trip;
-                    Challan.TotalAmount = totalpayable+trip;
-
-                    /////////////Challan No/////////////
-                    var challan = db.StudentChallanForms.Where(x => x.StudentId == student.Id && x.StudentFeeMonthId == Student_FeeMonth.Id).FirstOrDefault();
-                    if (challan == null)
-                    {
-                        try
-                        {
-                            No = (int)db.StudentChallanForms.Select(x => x.ChallanNo).Max();
-                            No++;
-                            StudentChallanForm stdchallan = new StudentChallanForm();
-                            stdchallan.StudentId = student.Id;
-                            stdchallan.ChallanNo = No;
-                            stdchallan.StudentFeeMonthId = Student_FeeMonth.Id;
-                            stdchallan.Status = "Created";
-                            db.StudentChallanForms.Add(stdchallan);
-                            db.SaveChanges();
-                            ////////////// Accounting System///////////////
-                            Ledger ledger_Assets = db.Ledgers.Where(x => x.Name == "Student Receivables").FirstOrDefault();
-                            ledger_Assets.CurrentBalance += Convert.ToDecimal(Challan.TotalAmount);
-                            db.SaveChanges();
-
-                            Ledger ledger_Income = db.Ledgers.Where(x => x.Name == "Student Fee").FirstOrDefault();
-                            ledger_Income.CurrentBalance += Convert.ToDecimal(Challan.TotalAmount);
-                            db.SaveChanges();
-                            ///////////////Send Text Message//////////////////
-
-                            //AspNetParent_Child parentChild = db.AspNetParent_Child.Where(x => x.ChildID == student.AspNetUser.Id).FirstOrDefault();
-                            //var number = db.AspNetUsers.Where(x => x.Id == parentChild.ParentID).Select(x => x.PhoneNumber).FirstOrDefault();
-                            //var message = "Fee Challan of " + student.AspNetUser.Name + "is generated. Its due date is :" + Challan.DueDate + "and validity date:" + Challan.ValidDate;
-                            //var url = "http://www.outreach.pk/api/sendsms.php/sendsms/url";
-                            //String result = "";
-                            //var newnum = "";
-                            //if (number != null)
-                            //{
-                            //    var num = number.Substring(1);
-                            //    newnum = "92" + num;
-                            //}
-
-                            //String messageer = HttpUtility.UrlEncode(message);
-
-                            //String strPost = "id=ipcngsch&pass=ipc_ngs123&msg=" + messageer + "&to=" + newnum + "&mask=IPC-NGS&type=xml&lang=English";
-                            //StreamWriter myWriter = null;
-                            //HttpWebRequest objRequest = (HttpWebRequest)WebRequest.Create(url);
-                            //objRequest.Method = "POST";
-                            //objRequest.ContentLength = Encoding.UTF8.GetByteCount(strPost);
-                            //objRequest.ContentType = "application/x-www-form-urlencoded";
-                            //try
-                            //{
-                            //    myWriter = new StreamWriter(objRequest.GetRequestStream());
-                            //    myWriter.Write(strPost);
-                            //}
-                            //catch (Exception e)
-                            //{
-
-                            //}
-                            //finally
-                            //{
-                            //    myWriter.Close();
-                            //}
-                            //HttpWebResponse objResponse = (HttpWebResponse)objRequest.GetResponse();
-                            //using (StreamReader sr = new StreamReader(objResponse.GetResponseStream()))
-                            //{
-                            //    result = sr.ReadToEnd();
-                            //    // Close and clean up the StreamReader
-                            //    sr.Close();
-                            //}
-                            //var messge = result;
-
-                            //////////////end text message///////////
-
-                        }
-                        catch
-                        {
-                            No = 5050100;
-                            StudentChallanForm stdchallan = new StudentChallanForm();
-                            stdchallan.StudentId = student.Id;
-                            stdchallan.ChallanNo = No;
-                            stdchallan.StudentFeeMonthId = Student_FeeMonth.Id;
-                            stdchallan.Status = "Created";
-                            db.StudentChallanForms.Add(stdchallan);
-                            db.SaveChanges();
-                            /////////// Accounting System///////////
-                            Ledger ledger_Assets = db.Ledgers.Where(x => x.Name == "Student Receivables").FirstOrDefault();
-                            ledger_Assets.CurrentBalance += Convert.ToDecimal(Challan.TotalAmount);
-                            db.SaveChanges();
-
-                            Ledger ledger_Income = db.Ledgers.Where(x => x.Name == "Student Fee").FirstOrDefault();
-                            ledger_Income.CurrentBalance += Convert.ToDecimal(Challan.TotalAmount);
-                            db.SaveChanges();
-                            ////////////////End///////////////
-                        }
-                    }
-                    else
-                    {
-                        No = challan.ChallanNo;
-                    }
-                    Challan.ChallanID = No;
-                 
-
-                    ChallanList.Add(Challan);
-
-
-
-              
-
-                }
-
-
-                return Json(ChallanList, JsonRequestBehavior.AllowGet);
+            return Json(ChallanList, JsonRequestBehavior.AllowGet);
             }
-            catch
-            {
-                var Error = "Error";
-                return Json(Error, JsonRequestBehavior.AllowGet);
-            }
-        }
-
+         
+        
         public ActionResult AllResults(string Month, int StudentID)
         {
 
