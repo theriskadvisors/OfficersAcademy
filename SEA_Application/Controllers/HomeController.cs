@@ -11,7 +11,7 @@ namespace SEA_Application.Controllers
         [AllowAnonymous]
         public ActionResult Index()
         {
-            //hi
+          
             return View();
         }
 
@@ -24,9 +24,7 @@ namespace SEA_Application.Controllers
 
         public ActionResult Contact()
         {
-            
             ViewBag.Message = "Your contact page.";
-
             return View();
         }
     }

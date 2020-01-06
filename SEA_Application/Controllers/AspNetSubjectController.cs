@@ -26,7 +26,7 @@ namespace SEA_Application.Controllers
 
         public JsonResult AllSubjects()
         {
-            var subjects = db.AspNetSubjects.Where(x => x.Status != "false" && x.AspNetClass.SessionID == SessionID).Select(x => new { x.Id, x.AspNetUser.Name, x.SubjectName, x.AspNetClass.ClassName }).ToList();
+            var subjects = db.AspNetSubjects.Where(x => x.Status != "false" && x.AspNetClass.SessionID == SessionID).Select(x => new { x.Id, x.AspNetUser.Name, x.SubjectName, x.AspNetClass.ClassName,x.CourseType }).ToList();
 
             return Json(subjects, JsonRequestBehavior.AllowGet);
         }
@@ -115,7 +115,7 @@ namespace SEA_Application.Controllers
             {
                 var subjects = (from subject in db.AspNetSubjects
                                 where subject.ClassID == id && subject.Status != "false"
-                                select new { subject.Id, subject.AspNetUser.Name, subject.SubjectName, subject.AspNetClass.ClassName }).ToList();
+                                select new { subject.Id, subject.AspNetUser.Name, subject.SubjectName, subject.AspNetClass.ClassName, subject.CourseType }).ToList();
 
 
                 return Json(subjects, JsonRequestBehavior.AllowGet);
@@ -124,7 +124,7 @@ namespace SEA_Application.Controllers
             {
                 var AllSubjects = (from subject in db.AspNetSubjects
                                    where subject.Status != "false" && subject.AspNetClass.SessionID == SessionID
-                                   select new { subject.Id, subject.AspNetUser.Name, subject.SubjectName }).ToList();
+                                   select new { subject.Id, subject.AspNetUser.Name, subject.SubjectName,subject.CourseType }).ToList();
 
                 return Json(AllSubjects, JsonRequestBehavior.AllowGet);
             }
@@ -157,6 +157,9 @@ namespace SEA_Application.Controllers
                                 teacher.Name,
                             }).ToList();
 
+            ViewBag.IsMand = aspNetSubject.IsManadatory;
+            ViewBag.Points = aspNetSubject.Points;
+
             ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName", aspNetSubject.ClassID);
             ViewBag.TeacherID = new SelectList(teachers, aspNetSubject.TeacherID);
 
@@ -181,8 +184,16 @@ namespace SEA_Application.Controllers
             var class_id = db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault().Id;
             aspNetSubject.ClassID = class_id;
             aspNetSubject.CourseType = Request.Form["CourseType"];
-          //  aspNetSubject.IsManadatory =  Request.Form["IsMandatory"];
-        //    aspNetSubject.Points = Request.Form["Points"];
+            string IsMandatory  =  Request.Form["IsMandatory"];
+            aspNetSubject.Points = Int32.Parse(Request.Form["Points"]);
+            if(IsMandatory == "on")
+            {
+                aspNetSubject.IsManadatory = true;
+            }
+            else
+            {
+                aspNetSubject.IsManadatory = false;
+            }
 
 
             var TransactionObj = db.Database.BeginTransaction();
@@ -371,10 +382,23 @@ namespace SEA_Application.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,SubjectName,ClassID,TeacherID")] AspNetSubject aspNetSubject)
+        public ActionResult Edit([Bind(Include = "Id,SubjectName,ClassID,TeacherID,IsMandatory,Points")] AspNetSubject aspNetSubject)
         {
+
+            var class_id = db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault().Id;
+            aspNetSubject.ClassID = class_id;
             try
             {
+               var  IsMan = Request.Form["IsMandatory"];
+                if (IsMan == null)
+                {
+                    aspNetSubject.IsManadatory = false;
+                }
+                else
+                {
+                    aspNetSubject.IsManadatory = true;
+                }
+                
                 aspNetSubject.CourseType = Request.Form["CourseType"];
                 if (ModelState.IsValid)
                 {
