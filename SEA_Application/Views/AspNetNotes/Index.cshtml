@@ -8,68 +8,26 @@
 
 
     <link href="~/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/style.css" media="screen" rel="stylesheet" />
-    <link href="~/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/style1.css" media="print" rel="stylesheet" />
+  
 
 <style>
-    @@media print {
+.page-header.navbar.navbar-fixed-top {
 
-    td,
-    th,
-    tr,
-    table {
-        border-top: 1px solid black;
-        border-collapse: collapse;
-    }
-
-        td.description,
-        th.description {
-            width: 75px;
-            max-width: 75px;
-        }
-
-        td.quantity,
-        th.quantity {
-            width: 40px;
-            max-width: 40px;
-            word-break: break-all;
-        }
-
-        td.Amount,
-        th.Amount {
-            width: 40px;
-            max-width: 40px;
-            word-break: break-all;
-        }
-
-
-        td.price,
-        th.price {
-            width: 40px;
-            max-width: 40px;
-            word-break: break-all;
-        }
-
-    .centered {
-        text-align: center;
-        align-content: center;
-    }
-
-    .ticket {
-        width: 175px;
-        max-width: 175px;
-        font-size: 12px;
-        font-family: 'Times New Roman';
-    }
-
-    img {
-        max-width: inherit;
-        width: inherit;
-    }
-
-    #bill {
-        display: none;
-    }
+padding-right: 0px;
 }
+
+    .modal-content {
+        position: relative;
+        background-color: #fff;
+        margin-top: 102px;
+        background-clip: padding-box;
+        border: 1px solid #999;
+        border: 1px solid rgba(0,0,0,.2);
+        border-radius: 6px;
+        -webkit-box-shadow: 0 3px 9px rgba(0,0,0,.5);
+        box-shadow: 0 3px 9px rgba(0,0,0,.5);
+        outline: 0;
+    }
 
 
 
@@ -87,7 +45,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -194,12 +152,14 @@
             </tbody>
         </table>
 
-        <div id="bill">
+        <div id="bill" style="margin-left:30px">
 
             <div class="ticket" id="ticket" style="border:1px solid">
                 <br>
+                <center>
 
-                <img src="~/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/logo.PNG" />
+                    <img  src="~/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/logo.PNG" />
+                </center>
 
 
                 <p class="centered">
@@ -217,14 +177,14 @@
                             <th class="description">Title</th>
 
                             <th class="quantity">Qty</th>
-                            <th class="price">Rate</th>
-                            <th class="Amount">Amount</th>
+                            <th class="price">Price</th>
+                            <th class="Amount">Total</th>
 
                         </tr>
 
 
                     </thead>
-                    <tbody id="billbody" style="border:1px solid black">
+                    <tbody id="billbody" style="border: 1px solid black">
                     </tbody>
                 </table>
                 <p class="centered">
@@ -236,8 +196,8 @@
 
 
 
-            <button id="btnPrint" class="hidden-print">Print</button>
         </div>
+        <button id="btnPrint" style="display:none;margin-left:30px;" class="hidden-print">Print</button>
 
     </div> <!--End of Tab 2-->
 
@@ -296,7 +256,7 @@
                     $('#modal0').html("");
 
                     $.each(data, function (index) {
-                        $('#modal0').append('<div> Title Name : ' + data[index].Title + ' </div>  <div> Price : ' + data[index].Price + ' </div> <div> Quantity : ' + data[index].Quantity + ' </div> <div> Total : ' + data[index].Total + ' </div> <br>  ');
+                        $('#modal0').append('<div > Title Name : ' + data[index].Title + ' </div>  <div> Price : ' + data[index].Price + ' </div> <div> Quantity : ' + data[index].Quantity + ' </div> <div> Total : ' + data[index].Total + ' </div> <br>  ');
                     });
                 }
             })
@@ -329,7 +289,7 @@
                 success: function (data) {
                     $('#billbody').html("");
                     $.each(data, function (index) {
-                        var TableRow = "<tr>  <td class='description'>" + data[index].Title + "</td> <td class='quantity' >" + data[index].Quantity + "</td> <td  class='price'>" + data[index].Price + "</td>  <td class='Amount' >" + data[index].Total + "</td>"
+                        var TableRow = "<tr>  <td class='description'>" + data[index].Title + "</td> <td class='quantity' > &nbsp;&nbsp;&nbsp;&nbsp; " + data[index].Quantity + "</td> <td  class='price'>" + data[index].Price + "</td>  <td class='Amount' >&nbsp; " + data[index].Total + "</td>"
                         $('#billbody').append(TableRow);
 
                         Total = Total + data[index].Total;
@@ -338,9 +298,9 @@
 
                     $("#DateTime").html(d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
                     $("#OrderNo").html('Order#' + OrderId);
-                    $('#billbody').append("<tr>  <td class='description'>Total</td>  <td class='quantity'></td> <td class='price'></td> <td class='Amount'>" + Total + "</td> </tr>");
+                    $('#billbody').append("<tr>  <td style='word-break:break-all;' class='description'>Total</td>  <td class='quantity'>&nbsp; </td> <td class='price'></td> <td class='Amount'>&nbsp;&nbsp;" + Total + "</td> </tr>");
                     $("#bill").css('display', 'block');
-
+                      $("#btnPrint").css('display', 'block');
 
                 }//end of success function
             })
@@ -362,7 +322,7 @@
 
         mywindow.document.write('<html><head><title>' + document.title + '</title>  ');
 
-        mywindow.document.write('<style>  td,th,tr,table{border-top: 1px solid black;} td.description,th.description {width: 75px;max-width: 75px;}  td.quantity,th.quantity{ width: 40px;max-width: 40px;word-break: break-all;} td.Amount,th.Amount {  width: 60px;max-width: 60px;word-break: break-all;} td.Amount,th.Amount {  width: 60px;max-width: 60px;word-break: break-all;} .centered {text-align: center;align-content: center;} .ticket{width: 210px;max-width: 210px;font-size: 12px}  img {  max-width: inherit;  width: inherit;} </style>');
+        mywindow.document.write('<style>td,th,tr,table{border-top: 1px solid black;} td.description,th.description {width: 90px; max-width: 90px;word-break: break-word;}  td.quantity,th.quantity{ width: 40px;max-width: 40px;word-break: break-all;} td.Amount,th.Amount {  width: 60px;max-width: 60px;word-break: break-all;} td.Amount,th.Amount {  width: 60px;max-width: 60px;word-break: break-all;} .centered {text-align: center;align-content: center;} .ticket{width: 230px;max-width:230px;font-size: 12px}  img {  max-width: inherit;  width: inherit;} </style>');
         mywindow.document.write('</head><body >');
        // mywindow.document.write('<h1>' + document.title + '</h1>');
         mywindow.document.write(document.getElementById('bill').innerHTML);
