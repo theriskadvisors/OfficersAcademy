@@ -49,7 +49,6 @@
         .list-group-item.active:hover {
             background-color: silver;
             border-color: silver;
-            
         }
 
 
@@ -79,9 +78,9 @@
     .topic_list {
         cursor: pointer;
     }
-    .topic_percentage_list
-    {
-        cursor:pointer;
+
+    .topic_percentage_list {
+        cursor: pointer;
     }
 
     .custom_Style {
@@ -108,17 +107,17 @@
         float: left;
         margin-left: 10px;
     }
+
     .list_header_style {
         background: #31364A;
         font-size: 20px;
         color: white
     }
+
     .list_item_style:hover {
         background: #f5f5f5;
         text-decoration: underline;
     }
-
-     
 </style>
 
 
@@ -277,14 +276,12 @@
         <h2 class="list_header_style">Completion %</h2>
 
         <ul class="topic_percentage_list list-group">
-
-
         </ul>
 
 
     </div>
 
-    
+
 
 
 </div>
@@ -297,12 +294,19 @@
                 <h4 class="modal-title"><span id="eventTitle"></span></h4>
             </div>
             <div class="modal-body">
-                <button id="btnDelete" class="btn btn-default btn-sm pull-right">
-                    <span class="glyphicon glyphicon-remove"></span> Remove
-                </button>
-                <button id="btnEdit" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
-                    <span class="glyphicon glyphicon-pencil"></span> Edit
-                </button>
+
+                @if (User.IsInRole("Admin"))
+                {
+
+                    <button id="btnDelete" class="btn btn-default btn-sm pull-right">
+                        <span class="glyphicon glyphicon-remove"></span> Remove
+                    </button>
+                    <button id="btnEdit" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
+                        <span class="glyphicon glyphicon-pencil"></span> Edit
+                    </button>
+
+                }
+
                 <p id="pDetails"></p>
             </div>
             <div class="modal-footer">
@@ -311,234 +315,321 @@
         </div>
     </div>
 </div>
+@if (User.IsInRole("Admin"))
+{
 
-<div id="myModalSave" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Save Event</h4>
-            </div>
-            <div class="modal-body">
-                <form class="col-md-12 form-horizontal">
-                    <input type="hidden" id="hdEventID" value="0" />
-                    <div class="form-group">
-                        <label>Subject</label>
-                        <input type="text" id="txtSubject" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label>Start</label>
-                        <div class="input-group date" id="dtp1">
-                            <input type="text" id="txtStart" class="form-control" />
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
+    <div id="myModalSave" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Save Event</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="col-md-12 form-horizontal">
+                        <input type="hidden" id="hdEventID" value="0" />
+                        <div class="form-group">
+                            <label>Subject</label>
+                            <input type="text" id="txtSubject" class="form-control" />
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label><input type="checkbox" id="chkIsFullDay" checked="checked" />  Is Full Day</label>
+                        <div class="form-group">
+                            <label>Start</label>
+                            <div class="input-group date" id="dtp1">
+                                <input type="text" id="txtStart" class="form-control" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group" id="divEndDate" style="display:none">
-                        <label>End</label>
-                        <div class="input-group date" id="dtp2">
-                            <input type="text" id="txtEnd" class="form-control" />
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label><input type="checkbox" id="chkIsFullDay" checked="checked" />  Is Full Day</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Description</label>
-                        <textarea id="txtDescription" rows="3" class="form-control"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Theme Color</label>
-                        <select id="ddThemeColor" class="form-control">
-                            <option value="">Default</option>
-                            <option value="red">Red</option>
-                            <option value="blue">Blue</option>
-                            <option value="Pink">Pink</option>
-                            <option value="green">Green</option>
-                            <option value="orange">Orange</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label><input type="checkbox" id="IsPublic" checked="checked" />  Is Public</label>
+                        <div class="form-group" id="divEndDate" style="display:none">
+                            <label>End</label>
+                            <div class="input-group date" id="dtp2">
+                                <input type="text" id="txtEnd" class="form-control" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                    <button type="button" id="btnSave" class="btn btn-success">Save</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </form>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="txtDescription" rows="3" class="form-control"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Theme Color</label>
+                            <select id="ddThemeColor" class="form-control">
+                                <option value="">Default</option>
+                                <option value="red">Red</option>
+                                <option value="blue">Blue</option>
+                                <option value="Pink">Pink</option>
+                                <option value="green">Green</option>
+                                <option value="orange">Orange</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label><input type="checkbox" id="IsPublic" checked="checked" />  Is Public</label>
+                            </div>
+                        </div>
+                        <button type="button" id="btnSave" class="btn btn-success">Save</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<script>
-    $(document).ready(function () {
-
+}
+    <script>
         $(document).ready(function () {
 
-
-            $.ajax({
-                type: "POST",
-                url: "/Teacher_Dashboard/CalendarNotification",
-                success: function (data) {
-
-                    var status = "";
-                    var ck = data.checkdate;
-                    var starttimesplit = ck.split('(')[1];
-                    var endtimesplit = starttimesplit.split(')')[0];
-                    var etsplit = parseInt(endtimesplit);
-                    var e = new Date(etsplit);
-                    var tt = e.toLocaleTimeString();
-                    var onlytime = tt.split(' ');
-                    var AMPM = onlytime[1];
-                    var timepart = onlytime[0].split(':');
-                    var hours = timepart[0];
-                    var min = timepart[1];
-                    var time = hours + ' : ' + min + ' ' + AMPM;
-                    if (hours >= 6 && AMPM == "AM") {
-                        status = "Good Morning " + data.name + "!";
-                    }
-                    else if (hours >= 12 && AMPM == "PM") {
-                        status = "Good Afternoon " + data.name + "!";
-                    }
-                    else if (hours >= 1 && AMPM == "PM") {
-                        status = "Good Afternoon " + data.name + "!";
-                    }
-                    else if (hours >= 6 && AMPM == "PM") {
-                        status = "Good Evening " + data.name + "!";
-                    }
-                    else if (hours >= 12 && AMPM == "AM") {
-                        status = "Good Night " + data.name + "!";
-                    }
-                    else if (hours >= 1 && hours < 6 && AMPM == "AM") {
-                        status = "Good Night " + data.name + "!";
-                    }
-                    var date = data.Date;
-
-                    $("#time").html(time);
-                    $("#date").html(date);
-                    $("#name").html(status);
-                }
-            })
-
-            $('#mycalendar').monthly({
-                mode: 'event',
-                xmlUrl: 'events.xml'
-            });
-        })
+            $(document).ready(function () {
 
 
-
-
-
-        var events = [];
-        var selectedEvent = null;
-        FetchEventAndRenderCalendar();
-        function FetchEventAndRenderCalendar() {
-            events = [];
-            $.ajax({
-                type: "GET",
-                url: "/Teacher_Dashboard/GetEvents",
-                success: function (data) {
-                    $.each(data, function (i, v) {
-
-                        events.push({
-                            eventID: v.EventID,
-                            title: v.Subject,
-                            description: v.Description,
-                            start: moment(v.Start),
-                            end: v.End != null ? moment(v.End) : null,
-                            color: v.ThemeColor,
-                            allDay: v.IsFullDay
-                        });
-                    })
-
-                    GenerateCalender(events);
-                },
-                error: function (error) {
-                    alert('failed');
-                }
-            })
-        }
-
-        function GenerateCalender(events) {
-            $('#calender').fullCalendar('destroy');
-            $('#calender').fullCalendar({
-                contentHeight: 400,
-                defaultDate: new Date(),
-                timeFormat: 'h(:mm)a',
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'month,basicWeek,basicDay,agenda'
-                },
-                eventLimit: true,
-                eventColor: '#378006',
-                events: events,
-                eventClick: function (calEvent, jsEvent, view) {
-                    selectedEvent = calEvent;
-                    $('#myModal #eventTitle').text(calEvent.title);
-                    var $description = $('<div/>');
-                    $description.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("MMM-DD-YYYY HH:mm a")));
-                    if (calEvent.end != null) {
-                        $description.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("MMM-DD-YYYY HH:mm a")));
-                    }
-                    $description.append($('<p/>').html('<b>Description:</b>' + calEvent.description));
-                    $('#myModal #pDetails').empty().html($description);
-
-                    $('#myModal').modal();
-                },
-                selectable: true,
-                select: function (start, end) {
-                    selectedEvent = {
-                        eventID: 0,
-                        title: '',
-                        description: '',
-                        start: start,
-                        end: end,
-                        allDay: false,
-                        color: ''
-                    };
-                    openAddEditForm();
-                    $('#calendar').fullCalendar('unselect');
-                },
-                editable: true,
-                eventDrop: function (event) {
-                    var data = {
-                        EventID: event.eventID,
-                        Subject: event.title,
-                        Start: event.start.format('MM/DD/YYYY HH:mm A'),
-                        End: event.end != null ? event.end.format('MM/DD/YYYY HH:mm A') : null,
-                        Description: event.description,
-                        ThemeColor: event.color,
-                        IsFullDay: event.allDay
-                    };
-                    SaveEvent(data);
-                }
-            })
-        }
-
-        $('#btnEdit').click(function () {
-            //Open modal dialog for edit event
-            openAddEditForm();
-        })
-        $('#btnDelete').click(function () {
-            if (selectedEvent != null && confirm('Are you sure?')) {
                 $.ajax({
                     type: "POST",
-                    url: '/Teacher_Dashboard/DeleteEvent',
-                    data: { 'eventID': selectedEvent.eventID },
+                    url: "/Teacher_Dashboard/CalendarNotification",
+                    success: function (data) {
+
+                        var status = "";
+                        var ck = data.checkdate;
+                        var starttimesplit = ck.split('(')[1];
+                        var endtimesplit = starttimesplit.split(')')[0];
+                        var etsplit = parseInt(endtimesplit);
+                        var e = new Date(etsplit);
+                        var tt = e.toLocaleTimeString();
+                        var onlytime = tt.split(' ');
+                        var AMPM = onlytime[1];
+                        var timepart = onlytime[0].split(':');
+                        var hours = timepart[0];
+                        var min = timepart[1];
+                        var time = hours + ' : ' + min + ' ' + AMPM;
+                        if (hours >= 6 && AMPM == "AM") {
+                            status = "Good Morning " + data.name + "!";
+                        }
+                        else if (hours >= 12 && AMPM == "PM") {
+                            status = "Good Afternoon " + data.name + "!";
+                        }
+                        else if (hours >= 1 && AMPM == "PM") {
+                            status = "Good Afternoon " + data.name + "!";
+                        }
+                        else if (hours >= 6 && AMPM == "PM") {
+                            status = "Good Evening " + data.name + "!";
+                        }
+                        else if (hours >= 12 && AMPM == "AM") {
+                            status = "Good Night " + data.name + "!";
+                        }
+                        else if (hours >= 1 && hours < 6 && AMPM == "AM") {
+                            status = "Good Night " + data.name + "!";
+                        }
+                        var date = data.Date;
+
+                        $("#time").html(time);
+                        $("#date").html(date);
+                        $("#name").html(status);
+                    }
+                })
+
+                $('#mycalendar').monthly({
+                    mode: 'event',
+                    xmlUrl: 'events.xml'
+                });
+            })
+
+
+
+
+
+            var events = [];
+            var selectedEvent = null;
+            FetchEventAndRenderCalendar();
+            function FetchEventAndRenderCalendar() {
+                events = [];
+                $.ajax({
+                    type: "GET",
+                    url: "/Teacher_Dashboard/GetEvents",
+                    success: function (data) {
+                        $.each(data, function (i, v) {
+
+                            events.push({
+                                eventID: v.EventID,
+                                title: v.Subject,
+                                description: v.Description,
+                                start: moment(v.Start),
+                                end: v.End != null ? moment(v.End) : null,
+                                color: v.ThemeColor,
+                                allDay: v.IsFullDay
+                            });
+                        })
+
+                        GenerateCalender(events);
+                    },
+                    error: function (error) {
+                        alert('failed');
+                    }
+                })
+            }
+
+            function GenerateCalender(events) {
+                $('#calender').fullCalendar('destroy');
+                $('#calender').fullCalendar({
+                    contentHeight: 400,
+                    defaultDate: new Date(),
+                    timeFormat: 'h(:mm)a',
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,basicWeek,basicDay,agenda'
+                    },
+                    eventLimit: true,
+                    eventColor: '#378006',
+                    events: events,
+                    eventClick: function (calEvent, jsEvent, view) {
+                        selectedEvent = calEvent;
+                        $('#myModal #eventTitle').text(calEvent.title);
+                        var $description = $('<div/>');
+                        $description.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("MMM-DD-YYYY HH:mm a")));
+                        if (calEvent.end != null) {
+                            $description.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("MMM-DD-YYYY HH:mm a")));
+                        }
+                        $description.append($('<p/>').html('<b>Description:</b>' + calEvent.description));
+                        $('#myModal #pDetails').empty().html($description);
+
+                        $('#myModal').modal();
+                    },
+                    selectable: true,
+                    select: function (start, end) {
+                        selectedEvent = {
+                            eventID: 0,
+                            title: '',
+                            description: '',
+                            start: start,
+                            end: end,
+                            allDay: false,
+                            color: ''
+                        };
+                        openAddEditForm();
+                        $('#calendar').fullCalendar('unselect');
+                    },
+                    editable: true,
+                    eventDrop: function (event) {
+                        var data = {
+                            EventID: event.eventID,
+                            Subject: event.title,
+                            Start: event.start.format('MM/DD/YYYY HH:mm A'),
+                            End: event.end != null ? event.end.format('MM/DD/YYYY HH:mm A') : null,
+                            Description: event.description,
+                            ThemeColor: event.color,
+                            IsFullDay: event.allDay
+                        };
+                        SaveEvent(data);
+                    }
+                })
+            }
+
+            $('#btnEdit').click(function () {
+                //Open modal dialog for edit event
+                openAddEditForm();
+            })
+            $('#btnDelete').click(function () {
+                if (selectedEvent != null && confirm('Are you sure?')) {
+                    $.ajax({
+                        type: "POST",
+                        url: '/Teacher_Dashboard/DeleteEvent',
+                        data: { 'eventID': selectedEvent.eventID },
+                        success: function (data) {
+                            if (data.status) {
+                                //Refresh the calender
+                                FetchEventAndRenderCalendar();
+                                $('#myModal').modal('hide');
+                            }
+                        },
+                        error: function () {
+                            alert('Failed');
+                        }
+                    })
+                }
+            })
+
+            $('#dtp1,#dtp2').datetimepicker({
+                format: 'MM/DD/YYYY HH:mm A'
+            });
+
+            $('#chkIsFullDay').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#divEndDate').hide();
+                }
+                else {
+                    $('#divEndDate').show();
+                }
+            });
+
+            function openAddEditForm() {
+
+                if (selectedEvent != null) {
+                    $('#hdEventID').val(selectedEvent.eventID);
+                    $('#txtSubject').val(selectedEvent.title);
+                    $('#txtStart').val(selectedEvent.start.format('MM/DD/YYYY HH:mm A'));
+                    $('#chkIsFullDay').prop("checked", selectedEvent.allDay || false);
+                    $('#chkIsFullDay').change();
+                    $('#txtEnd').val(selectedEvent.end != null ? selectedEvent.end.format('MM/DD/YYYY HH:mm A') : '');
+                    $('#txtDescription').val(selectedEvent.description);
+                    $('#ddThemeColor').val(selectedEvent.color);
+                }
+                $('#myModal').modal('hide');
+                $('#myModalSave').modal();
+            }
+
+            $('#btnSave').click(function () {
+                //Validation/
+                if ($('#txtSubject').val().trim() == "") {
+                    alert('Subject required');
+                    return;
+                }
+                if ($('#txtStart').val().trim() == "") {
+                    alert('Start date required');
+                    return;
+                }
+                if ($('#chkIsFullDay').is(':checked') == false && $('#txtEnd').val().trim() == "") {
+                    alert('End date required');
+                    return;
+                }
+                else {
+                    var startDate = moment($('#txtStart').val(), "MM/DD/YYYY HH:mm A").toDate();
+                    var endDate = moment($('#txtEnd').val(), "MM/DD/YYYY HH:mm A").toDate();
+                    if (startDate > endDate) {
+                        alert('Invalid end date');
+                        return;
+                    }
+                }
+
+                var data = {
+                    EventID: $('#hdEventID').val(),
+                    Subject: $('#txtSubject').val().trim(),
+                    Start: $('#txtStart').val().trim(),
+                    End: $('#chkIsFullDay').is(':checked') ? null : $('#txtEnd').val().trim(),
+                    IsPublic: $('#IsPublic').is(':checked'),
+                    Description: $('#txtDescription').val(),
+                    ThemeColor: $('#ddThemeColor').val(),
+                    IsFullDay: $('#chkIsFullDay').is(':checked')
+                }
+                SaveEvent(data);
+                // call function for submit data to the server
+            })
+
+            function SaveEvent(data) {
+                $.ajax({
+                    type: "POST",
+                    url: '/Teacher_Dashboard/SaveEvent',
+                    data: data,
                     success: function (data) {
                         if (data.status) {
                             //Refresh the calender
                             FetchEventAndRenderCalendar();
-                            $('#myModal').modal('hide');
+                            $('#myModalSave').modal('hide');
                         }
                     },
                     error: function () {
@@ -548,273 +639,178 @@
             }
         })
 
-        $('#dtp1,#dtp2').datetimepicker({
-            format: 'MM/DD/YYYY HH:mm A'
-        });
 
-        $('#chkIsFullDay').change(function () {
-            if ($(this).is(':checked')) {
-                $('#divEndDate').hide();
-            }
-            else {
-                $('#divEndDate').show();
-            }
-        });
 
-        function openAddEditForm() {
 
-            if (selectedEvent != null) {
-                $('#hdEventID').val(selectedEvent.eventID);
-                $('#txtSubject').val(selectedEvent.title);
-                $('#txtStart').val(selectedEvent.start.format('MM/DD/YYYY HH:mm A'));
-                $('#chkIsFullDay').prop("checked", selectedEvent.allDay || false);
-                $('#chkIsFullDay').change();
-                $('#txtEnd').val(selectedEvent.end != null ? selectedEvent.end.format('MM/DD/YYYY HH:mm A') : '');
-                $('#txtDescription').val(selectedEvent.description);
-                $('#ddThemeColor').val(selectedEvent.color);
-            }
-            $('#myModal').modal('hide');
-            $('#myModalSave').modal();
-        }
+        $(document).ready(function () {
 
-        $('#btnSave').click(function () {
-            //Validation/
-            if ($('#txtSubject').val().trim() == "") {
-                alert('Subject required');
-                return;
-            }
-            if ($('#txtStart').val().trim() == "") {
-                alert('Start date required');
-                return;
-            }
-            if ($('#chkIsFullDay').is(':checked') == false && $('#txtEnd').val().trim() == "") {
-                alert('End date required');
-                return;
-            }
-            else {
-                var startDate = moment($('#txtStart').val(), "MM/DD/YYYY HH:mm A").toDate();
-                var endDate = moment($('#txtEnd').val(), "MM/DD/YYYY HH:mm A").toDate();
-                if (startDate > endDate) {
-                    alert('Invalid end date');
-                    return;
-                }
-            }
 
-            var data = {
-                EventID: $('#hdEventID').val(),
-                Subject: $('#txtSubject').val().trim(),
-                Start: $('#txtStart').val().trim(),
-                End: $('#chkIsFullDay').is(':checked') ? null : $('#txtEnd').val().trim(),
-                IsPublic: $('#IsPublic').is(':checked'),
-                Description: $('#txtDescription').val(),
-                ThemeColor: $('#ddThemeColor').val(),
-                IsFullDay: $('#chkIsFullDay').is(':checked')
-            }
-            SaveEvent(data);
-            // call function for submit data to the server
-        })
 
-        function SaveEvent(data) {
             $.ajax({
                 type: "POST",
-                url: '/Teacher_Dashboard/SaveEvent',
-                data: data,
-                success: function (data) {
-                    if (data.status) {
-                        //Refresh the calender
-                        FetchEventAndRenderCalendar();
-                        $('#myModalSave').modal('hide');
-                    }
+                url: "/Teacher_Dashboard/GetSubjects",
+                dataType: "json",
+
+
+
+                success: function (response) {
+                    debugger
+                      $.each(response, function (index) {
+
+                        //alert(response[index].Id+"  "+response[index].Name);
+
+                        // alert("subject list");
+                        $(".subject_list").append('<li  class="list-group-item list_item_style" id="' + response[index].Id + '" > ' + response[index].Name + '  </li>');
+                        //if (data.count != null) {
+                        //  //  $('#UserName').val(data)
+                        //  //  document.getElementsByName('UserName')[0].value = data;
+
+                        //}
+                        //else {
+                        //    ///       $('#UserName').val(data)
+                        //  //  document.getElementsByName('UserName')[0].value = data;
+                        //}
+
+                    })
                 },
                 error: function () {
-                    alert('Failed');
+
+                    alert("error");
                 }
             })
-        }
-    })
 
 
+            $(".subject_list").on("click", "li", function () {
+                // alert("usama");
 
+                var id = $(this).attr('id');
+                $("#secondlist").css('display', 'none');
 
-    $(document).ready(function () {
-
-
-
-        $.ajax({
-            type: "POST",
-            url: "/Teacher_Dashboard/GetSubjects",
-            dataType: "json",
-
-
-
-            success: function (response) {
+                $("#thirdlist").css('display', 'none');
+                $("#fourthlist").css('display', 'none');
                 debugger
+                $.ajax({
+                    type: "POST",
+                    url: "/Teacher_Dashboard/GetChapters",
+                    data: { id: id },
+
+                    dataType: "json",
+
+                    success: function (response) {
+
+
+                        // response = JSON.parse(response);
+                        //      alert(response.Id+"  "+response.Name);
 
 
 
+                        $(".chapter_list").html('');
 
-                $.each(response, function (index) {
 
-                    //alert(response[index].Id+"  "+response[index].Name);
+                        $.each(response, function (index) {
+                            $("#secondlist").fadeIn(800);
+                            $(".chapter_list").append('<li  class="list-group-item list_item_style" id="' + response[index].Id + '" > ' + response[index].Name + '  </li>');
 
-                    // alert("subject list");
-                    $(".subject_list").append('<li  class="list-group-item list_item_style" id="' + response[index].Id + '" > ' + response[index].Name + '  </li>');
-                    //if (data.count != null) {
-                    //  //  $('#UserName').val(data)
-                    //  //  document.getElementsByName('UserName')[0].value = data;
 
-                    //}
-                    //else {
-                    //    ///       $('#UserName').val(data)
-                    //  //  document.getElementsByName('UserName')[0].value = data;
-                    //}
+
+                        });
+
+
+
+                    }
+
+
+
 
                 })
-            },
-            error: function () {
-
-                alert("error");
-            }
-        })
-
-
-        $(".subject_list").on("click", "li", function () {
-            // alert("usama");
-
-            var id = $(this).attr('id');
-            $("#secondlist").css('display', 'none');
-
-            $("#thirdlist").css('display', 'none');
-            $("#fourthlist").css('display', 'none');
-            debugger
-            $.ajax({
-                type: "POST",
-                url: "/Teacher_Dashboard/GetChapters",
-                data: { id: id },
-
-                dataType: "json",
-
-                success: function (response) {
-
-
-                    // response = JSON.parse(response);
-                    //      alert(response.Id+"  "+response.Name);
-
-
-
-                    $(".chapter_list").html('');
-
-
-                    $.each(response, function (index) {
-
-
-
-
-                        $("#secondlist").fadeIn(800);
-
-
-                        $(".chapter_list").append('<li  class="list-group-item list_item_style" id="' + response[index].Id + '" > ' + response[index].Name + '  </li>');
-
-
-
-                    });
-
-
-
-                }
-
 
 
 
             })
 
 
-
-        })
-
-
-        $(".chapter_list").on("click", "li", function () {
-
-         
-            var id = $(this).attr('id');
-
-            $("#thirdlist").css('display', 'none');
-
-            $("#fourthlist").css('display', 'none');
-
-            debugger
-            $.ajax({
-                type: "POST",
-                url: "/Teacher_Dashboard/GetTopics",
-                data: { id: id },
-
-                dataType: "json",
-               
-                success: function (response) {
+            $(".chapter_list").on("click", "li", function () {
 
 
-                    // response = JSON.parse(response);
-                    //      alert(response.Id+"  "+response.Name);
+                var id = $(this).attr('id');
+
+                $("#thirdlist").css('display', 'none');
+
+                $("#fourthlist").css('display', 'none');
+
+                debugger
+                $.ajax({
+                    type: "POST",
+                    url: "/Teacher_Dashboard/GetTopics",
+                    data: { id: id },
+
+                    dataType: "json",
+
+                    success: function (response) {
+
+
+                        // response = JSON.parse(response);
+                        //      alert(response.Id+"  "+response.Name);
 
 
 
-                    $(".topic_list").html('');
+                        $(".topic_list").html('');
 
 
-                    $.each(response, function (index) {
+                        $.each(response, function (index) {
 
 
 
 
-                        $("#thirdlist").fadeIn(800);
+                            $("#thirdlist").fadeIn(800);
 
 
-                        $(".topic_list").append('<li  class="list-group-item list_item_style" id="' + response[index].Id + '" > ' + response[index].Name + '  </li>');
-
-
-
-                    });
+                            $(".topic_list").append('<li  class="list-group-item list_item_style" id="' + response[index].Id + '" > ' + response[index].Name + '  </li>');
 
 
 
-                }
+                        });
 
+
+
+                    }
+
+
+
+
+                })
 
 
 
             })
-
-
-
-        })
 
 
             $(".topic_list").on("click", "li", function () {
 
 
-            var id = $(this).attr('id');
-
-          
-
-              $("#fourthlist").css('display', 'none');
-
-            debugger
-            $.ajax({
-                type: "POST",
-                url: "/Teacher_Dashboard/GetTopicPercentage",
-                data: { id: id },
-
-                dataType: "json",
-
-                success: function (response) {
-
-                    debugger;
-                    //response = JSON.parse(response);
-                //      alert(response.Id+"  "+response.Name);
+                var id = $(this).attr('id');
 
 
 
-                    $(".topic_percentage_list").html('');
+                $("#fourthlist").css('display', 'none');
+
+                debugger
+                $.ajax({
+                    type: "POST",
+                    url: "/Teacher_Dashboard/GetTopicPercentage",
+                    data: { id: id },
+
+                    dataType: "json",
+
+                    success: function (response) {
+
+                        debugger;
+                        //response = JSON.parse(response);
+                        //      alert(response.Id+"  "+response.Name);
+
+
+
+                        $(".topic_percentage_list").html('');
 
 
 
@@ -826,11 +822,15 @@
 
 
 
-               
 
 
-                }
 
+                    }
+
+
+
+
+                })
 
 
 
@@ -838,29 +838,25 @@
 
 
 
-        })
 
 
 
+        });
 
 
-
-    });
-
-
-    function openCity(evt, dashBoardTabs) {
-        var i, tabcontent, tablinks;
-        tabcontent = document.getElementsByClassName("tabcontent");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
+        function openCity(evt, dashBoardTabs) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(dashBoardTabs).style.display = "block";
+            evt.currentTarget.className += " active";
         }
-        tablinks = document.getElementsByClassName("tablinks");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
-        }
-        document.getElementById(dashBoardTabs).style.display = "block";
-        evt.currentTarget.className += " active";
-    }
 
 
 
@@ -873,7 +869,7 @@
 
 
 
-</script>
+    </script>
 
 
 
@@ -881,76 +877,76 @@
 
 
 
-@*<div class="lowerdiv">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="box box-primary">
-                    <div class="box-header">
-                        <i class="fa fa-envelope"></i><h3 class="box-title"> Message</h3>
-                        <hr />
+    @*<div class="lowerdiv">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <i class="fa fa-envelope"></i><h3 class="box-title"> Message</h3>
+                            <hr />
 
-                    </div>
-                    <div class="box-body" style="overflow:auto; width:100%;height:260px;">
-                        <div class="tab-pane" id="timeline">
-                            <ul class="timeline timeline-inverse">
-                                @foreach (var item in ViewBag.Messages)
-                                {
-                                    <li class="time-label">
-                                        <span class="bg-red">
-                                            @item.date
-                                        </span>
-                                    </li>
+                        </div>
+                        <div class="box-body" style="overflow:auto; width:100%;height:260px;">
+                            <div class="tab-pane" id="timeline">
+                                <ul class="timeline timeline-inverse">
+                                    @foreach (var item in ViewBag.Messages)
+                                    {
+                                        <li class="time-label">
+                                            <span class="bg-red">
+                                                @item.date
+                                            </span>
+                                        </li>
+
+                                        <li>
+                                            <i class="fa fa-comments bg-yellow"></i>
+                                            <div class="timeline-item">
+                                                <h3 class="timeline-header"><a href="#">@item.Name</a> sent you a message</h3>
+                                                <div class="timeline-body">
+                                                    @Html.Raw(@item.message)
+                                                </div>
+                                                <div class="timeline-footer">
+                                                    <a href="~/AspNetMessages/Inbox" class="btn btn-warning btn-flat btn-xs">Reply</a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    }
 
                                     <li>
-                                        <i class="fa fa-comments bg-yellow"></i>
-                                        <div class="timeline-item">
-                                            <h3 class="timeline-header"><a href="#">@item.Name</a> sent you a message</h3>
-                                            <div class="timeline-body">
-                                                @Html.Raw(@item.message)
-                                            </div>
-                                            <div class="timeline-footer">
-                                                <a href="~/AspNetMessages/Inbox" class="btn btn-warning btn-flat btn-xs">Reply</a>
-                                            </div>
-                                        </div>
+                                        <i class="fa fa-clock-o bg-gray"></i>
                                     </li>
-                                }
-
-                                <li>
-                                    <i class="fa fa-clock-o bg-gray"></i>
-                                </li>
-                            </ul>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <i class="fa fa-envelope"></i>
+                            <h3 class="box-title">Quick Email</h3>
+                            <hr />
+                        </div>
+                        <div class="box-body" style="margin-top:-7%">
+                            <form action="#" method="post">
+                                <div class="form-group">
+                                    <input type="email" class="form-control" name="emailto" placeholder="Email to:">
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" name="subject" placeholder="Subject">
+                                </div>
+                                <div>
+                                    <textarea class="textarea" name="message" placeholder="Message" required style="width: 100%; height: 115px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="box-footer clearfix">
+                            <button class="pull-right btn btn-default" id="sendEmail">
+                                Send
+                                <i class="fa fa-arrow-circle-right"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="box box-primary">
-                    <div class="box-header">
-                        <i class="fa fa-envelope"></i>
-                        <h3 class="box-title">Quick Email</h3>
-                        <hr />
-                    </div>
-                    <div class="box-body" style="margin-top:-7%">
-                        <form action="#" method="post">
-                            <div class="form-group">
-                                <input type="email" class="form-control" name="emailto" placeholder="Email to:">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="subject" placeholder="Subject">
-                            </div>
-                            <div>
-                                <textarea class="textarea" name="message" placeholder="Message" required style="width: 100%; height: 115px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="box-footer clearfix">
-                        <button class="pull-right btn btn-default" id="sendEmail">
-                            Send
-                            <i class="fa fa-arrow-circle-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>*@
+        </div>*@
 

@@ -27,15 +27,37 @@ namespace SEA_Application.Controllers
 
         public ActionResult ListofStudents(int id)
         {
-            //if (id == 0)
-            //{
+            
+
+
+            if (id == 0)
+            {
                 var result1 = (from std in db.AspNetStudents
                                join usr in db.AspNetUsers on std.StudentID equals usr.Id
                                join fee_mon in db.StudentFeeMonths on std.Id equals fee_mon.StudentId
 
-                               where usr.Status != "False"
-                               select new { usr.Id, usr.Name, usr.PhoneNumber, usr.Email, usr.UserName, std.AspNetClass.ClassName }).ToList();
+                               where usr.Status != "False" && fee_mon.Status == "Pending"
+                               select new { fee_mon.Id, usr.Name, usr.PhoneNumber, usr.Email, usr.UserName, std.AspNetClass.ClassName, fee_mon.Months, fee_mon.Status, fee_mon.FeePayable }).ToList();
                 return Json(result1, JsonRequestBehavior.AllowGet);
+
+
+            }
+            else
+            {
+                var SessionId = db.AspNetClasses.Where(x => x.Id == id).FirstOrDefault().SessionID;
+
+                //{
+                var result1 = (from std in db.AspNetStudents
+                               join usr in db.AspNetUsers on std.StudentID equals usr.Id
+                               join fee_mon in db.StudentFeeMonths on std.Id equals fee_mon.StudentId
+
+                               where usr.Status != "False" && fee_mon.SessionId == SessionId && fee_mon.Status == "Pending"
+                               select new { fee_mon.Id, usr.Name, usr.PhoneNumber, usr.Email, usr.UserName, std.AspNetClass.ClassName, fee_mon.Months, fee_mon.Status, fee_mon.FeePayable }).ToList();
+                return Json(result1, JsonRequestBehavior.AllowGet);
+
+            }
+
+
             //}
             //else
             //{
@@ -51,13 +73,13 @@ namespace SEA_Application.Controllers
         {
             SEA_DatabaseEntities db = new SEA_DatabaseEntities();
 
-                 var challanlist = (from feemonth in db.StudentFeeMonths
-                         join std in db.AspNetStudents on feemonth.StudentId equals std.Id
-                         join challan in db.StudentChallanForms on std.Id equals challan.StudentId
-                         where feemonth.Status == "Pending" && feemonth.Months == month && feemonth.Id== challan.StudentFeeMonthId
-                         select new { challan.ChallanNo,feemonth.Months,feemonth.FeePayable, feemonth.IssueDate, std.AspNetUser.Name, std.AspNetClass.ClassName, feemonth.DueDate, feemonth.ValildityDate }).ToList();
+            var challanlist = (from feemonth in db.StudentFeeMonths
+                               join std in db.AspNetStudents on feemonth.StudentId equals std.Id
+                               join challan in db.StudentChallanForms on std.Id equals challan.StudentId
+                               where feemonth.Status == "Pending" && feemonth.Months == month && feemonth.Id == challan.StudentFeeMonthId
+                               select new { challan.ChallanNo, feemonth.Months, feemonth.FeePayable, feemonth.IssueDate, std.AspNetUser.Name, std.AspNetClass.ClassName, feemonth.DueDate, feemonth.ValildityDate, }).ToList();
 
-          
+
             ExcelPackage pck = new ExcelPackage();
             ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Report");
 
@@ -104,14 +126,14 @@ namespace SEA_Application.Controllers
             //               join usr in db.AspNetUsers on std.StudentID equals usr.Id
             //               where usr.Status != "False"
             //               select new { usr.Id, usr.Name, usr.PhoneNumber, usr.Email, usr.UserName, std.AspNetClass.ClassName }).ToList();
-    ///        Er--rorEventArgs--
+            ///        Er--rorEventArgs--
 
             var result1 = (from std in db.AspNetStudents
                            join usr in db.AspNetUsers on std.StudentID equals usr.Id
                            join fee_mon in db.StudentFeeMonths on std.Id equals fee_mon.StudentId
 
                            where usr.Status != "False" && fee_mon.Status == "Pending"
-                           select new { fee_mon.Id, usr.Name, usr.PhoneNumber, usr.Email, usr.UserName, std.AspNetClass.ClassName }).ToList();
+                           select new { fee_mon.Id, usr.Name, usr.PhoneNumber, usr.Email, usr.UserName, std.AspNetClass.ClassName, fee_mon.Months, fee_mon.Status, fee_mon.FeePayable }).ToList();
             return Json(result1, JsonRequestBehavior.AllowGet);
 
         }
@@ -249,21 +271,21 @@ namespace SEA_Application.Controllers
         }
         public JsonResult GetChallanForm(string month, string idlist)
         {
-           
+
             var userid = idlist.Split(',');
-           var dates = db.FeeDateSettings.FirstOrDefault();
+            var dates = db.FeeDateSettings.FirstOrDefault();
             challanform ChallanList = new challanform();
-         
-                    int feemonthid = Int32.Parse(idlist);
-                    var mnth = db.StudentFeeMonths.Where(x => x.Id == feemonthid).FirstOrDefault().Months;
-                    month = mnth;
-                    var S_ID = db.StudentFeeMonths.Where(x => x.Id == feemonthid).FirstOrDefault().StudentId;
-                    var student = db.AspNetStudents.Where(x => x.Id == S_ID).FirstOrDefault();
-                    StudentFeeMonth Student_FeeMonth = db.StudentFeeMonths.Where(x => x.StudentId == student.Id && x.Months == month).FirstOrDefault();
-                    Student_FeeMonth.ValildityDate = dates.ValidityDate;
-                    Student_FeeMonth.DueDate = dates.DueDate;
-                    Student_FeeMonth.Status = "Paid";
-                    db.SaveChanges();
+
+            int feemonthid = Int32.Parse(idlist);
+            var mnth = db.StudentFeeMonths.Where(x => x.Id == feemonthid).FirstOrDefault().Months;
+            month = mnth;
+            var S_ID = db.StudentFeeMonths.Where(x => x.Id == feemonthid).FirstOrDefault().StudentId;
+            var student = db.AspNetStudents.Where(x => x.Id == S_ID).FirstOrDefault();
+            StudentFeeMonth Student_FeeMonth = db.StudentFeeMonths.Where(x => x.StudentId == student.Id && x.Months == month).FirstOrDefault();
+            Student_FeeMonth.ValildityDate = dates.ValidityDate;
+            Student_FeeMonth.DueDate = dates.DueDate;
+            Student_FeeMonth.Status = "Paid";
+            db.SaveChanges();
 
             var FeeMonth = db.StudentFeeMonths.Where(x => x.Id == feemonthid).FirstOrDefault();
 
@@ -274,9 +296,9 @@ namespace SEA_Application.Controllers
             ChallanList.StudentClass = FeeMonth.AspNetStudent.AspNetClass.ClassName;
 
             return Json(ChallanList, JsonRequestBehavior.AllowGet);
-            }
-         
-        
+        }
+
+
         public ActionResult AllResults(string Month, int StudentID)
         {
 

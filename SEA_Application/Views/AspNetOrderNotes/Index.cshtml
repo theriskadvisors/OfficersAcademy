@@ -153,8 +153,8 @@
         <label style="font-size:15px;color:black">Total  <span id="TotalAmount"> 0.00</span> </label>
 
         <br />
-        <button id="ConfirmOrder" class="btn btn-success">Confirm Order</button>
-        <button id="DeleteOrders" class="btn btn-danger">Delete</button>
+        <button id="ConfirmOrder" disabled class="btn btn-success">Confirm Order</button>
+        <button id="DeleteOrders" disabled class="btn btn-danger">Delete</button>
     </div>
     <div class="tab-pane" id="tab_3">
         <table class="table">
@@ -217,16 +217,10 @@
 
                     //'</tr > ';
 
-                   
-
-                        var TableRow = "<tr><td>" + data[index].Title + "</td> <td>" + data[index].Discription + "</td>  <td>" + data[index].CourseType + "</td> <td>" + data[index].Price + "</td>  <td>" + data[index].Quantity + "</td><td>" + data[index].Status + "</td> <td id='btnid'><button data-toggle='modal' data-target='#myModal' style='display:none'  class='CancelOrderBtn btn btn-danger' id='" + data[index].Id + "' >Cancel Order</button></td>    </tr> "
-                    
-                  
-                       // var TableRow = "<tr><td>" + data[index].Id + "</td> <td>" + data[index].Title + "</td> <td>" + data[index].Discription + "</td>  <td>" + data[index].CourseType + "</td> <td>" + data[index].Price + "</td>  <td>" + data[index].Quantity + "</td><td>" + data[index].Status + "</td> <td id='btnid'><button data-toggle='modal' data-target='#myModal'  class='CancelOrderBtn btn btn-danger' id='" + data[index].Id + "' disabled >Cancel Order</button></td>    </tr> "
-
-                   
 
 
+                    var TableRow = "<tr><td>" + data[index].Title + "</td> <td>" + data[index].Discription + "</td>  <td>" + data[index].CourseType + "</td> <td>" + data[index].Price + "</td>  <td>" + data[index].Quantity + "</td><td>" + data[index].Status + "</td> <td id='btnid'><button data-toggle='modal' data-target='#myModal' style='display:none'  class='CancelOrderBtn btn btn-danger' id='" + data[index].Id + "' >Cancel Order</button></td>    </tr> "
+                    // var TableRow = "<tr><td>" + data[index].Id + "</td> <td>" + data[index].Title + "</td> <td>" + data[index].Discription + "</td>  <td>" + data[index].CourseType + "</td> <td>" + data[index].Price + "</td>  <td>" + data[index].Quantity + "</td><td>" + data[index].Status + "</td> <td id='btnid'><button data-toggle='modal' data-target='#myModal'  class='CancelOrderBtn btn btn-danger' id='" + data[index].Id + "' disabled >Cancel Order</button></td>    </tr> "
                     //alert(data[index].Discription);
                     $('#RecentOrderTableBody').append(TableRow);
                 });
@@ -279,14 +273,20 @@
         })
         var Total = 0;
         var arr = [];
-
+        var CheckAllCheckBoxes=0;
         $("#CartOrders").on("click", "input[type='checkbox']", function () {
             debugger
+
+
             if ($(this).prop("checked") == true) {
 
                 Total = Total + parseInt($(this).val());
 
                 arr.push(parseInt($(this).attr('id')));
+
+                CheckAllCheckBoxes = CheckAllCheckBoxes + 1;
+                checkCheckBoxes();
+
             }
             else {
 
@@ -296,12 +296,29 @@
                 arr.splice($.inArray(itemtoRemove, arr), 1);
 
 
+                CheckAllCheckBoxes = CheckAllCheckBoxes - 1;
+
+                checkCheckBoxes();
 
             }
 
             $("#TotalAmount").text(Total);
-          //  alert(arr);
+            //  alert(arr);
         });
+
+              function checkCheckBoxes() {
+                  if (CheckAllCheckBoxes == 0) {
+
+                    $("#ConfirmOrder").attr("disabled", true);
+                    $("#DeleteOrders").attr("disabled", true);
+                }
+                else {
+                    $("#ConfirmOrder").attr("disabled", false);
+                    $("#DeleteOrders").attr("disabled", false);
+
+                }
+        }
+
 
         $("#DeleteOrders").click(function () {
 
@@ -329,7 +346,7 @@
 
                 type: "POST",
                 url: "/AspNetOrderNotes/ConfirmOdr",
-                data: { "TotalAmount": TotalAmount, "IDs":arr },
+                data: { "TotalAmount": TotalAmount, "IDs": arr },
                 success: function (data) {
 
 
@@ -371,7 +388,7 @@
 
         $("#checkBoxToAllChek").click(function () {
 
-           $('#CartOrders input[type="checkbox"]').prop('checked', this.checked);
+            $('#CartOrders input[type="checkbox"]').prop('checked', this.checked);
 
         });
 
@@ -408,6 +425,10 @@
 
 
         })
+
+
+
+
 
     })
 

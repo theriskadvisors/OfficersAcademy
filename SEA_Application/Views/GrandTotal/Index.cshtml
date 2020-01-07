@@ -185,7 +185,7 @@
     $(document).ready(function () {
        // $('.check_class').click(function () {
         $(document).on("click", ".check_class", function () {
-            
+
             var ischecked = $(this).is(':checked');
             if (!ischecked) {
                 var selectedvalue = $(this).val();
@@ -215,6 +215,7 @@
 
         table = $("#example").dataTable();
         $.ajax({
+
             type: "POST",
             cache: false,
             url: "/GrandTotal/ListAllStudents",
@@ -222,12 +223,13 @@
             contentType: false,
             success: function (data) {
                 $.each(data, function (i, item) {
+            debugger
 
-                    
+
                     //Shahzad
-                    var checkbox = '<input type="button" class="btn btn-primary getinfo" onclick="GetChallanForm(' + item.Id + ')"     value="Print Challan"  class="check_class"  name="printcheck" id="test' + item.Id + '" /><label for="test' + item.Id + '"></label>';
+                    var checkbox = '<input type="button" class="btn btn-primary getinfo" onclick="GetChallanForm(' + item.Id + ')"  value="Print Challan"  class="check_class"  name="printcheck" id="test' + item.Id + '" /><label for="test' + item.Id + '"></label>';
                    //  var checkbox = '<input type="checkbox" class="check_class"  value="' + item.Id + '" name="printcheck">';
-                    table.fnAddData([item.Id, item.Name, item.ClassName, item.Email, item.PhoneNumber, item.UserName,checkbox]);
+                    table.fnAddData([item.Id, item.Name, item.ClassName, item.Email, item.PhoneNumber, item.UserName, item.Months, item.Status, item.FeePayable,checkbox]);
                 })
 
             }
@@ -238,26 +240,36 @@
 
 
     function class_click(item) {
-        
+        debugger
         SelectedMonths.length = 0;
-       var select = item.value;
+        var select = item.value;
+       // alert(select);
+        $("#bill").css('display', 'none');
+      $("#btnPrint").css('display', 'none');
+
+
         subFun(item.value);
     }
     function subFun(selectedClass) {
+
+      //  alert(selectedClass);
         if (selectedClass != null) {
             $('.eeniart0017').css("display", "block");
-            }
+        }
+
         $.get('@Url.Action("ListofStudents", "GrandTotal")',
+
+
             { id: selectedClass }, function (data) {
                 $('.eeniart0017').css("display", "none");
 
                 table.fnClearTable();
                 $.each(data, function (i, item) {
-                    
-                   var checkbox = '<input type="checkbox" class="check_class"  value="' + item.Id + '" name="printcheck">';
-                   var checkbox = '<input type="checkbox"   value="' + item.Id + '"   name="printcheck" id="test' + item.Id + '" /><label for="test' + item.Id + '"></label>';
 
-                    table.fnAddData([item.Id, item.Name, item.ClassName, item.Email, item.PhoneNumber, item.UserName, checkbox]);
+                  // var checkbox = '<input type="checkbox" class="check_class"  value="' + item.Id + '" name="printcheck">';
+                  // var checkbox = '<input type="checkbox"   value="' + item.Id + '"   name="printcheck" id="test' + item.Id + '" /><label for="test' + item.Id + '"></label>';
+                     var checkbox = '<input type="button" class="btn btn-primary getinfo" onclick="GetChallanForm(' + item.Id + ')"     value="Print Challan"  class="check_class"  name="printcheck" id="test' + item.Id + '" /><label for="test' + item.Id + '"></label>';
+                    table.fnAddData([item.Id, item.Name, item.ClassName, item.Email, item.PhoneNumber, item.UserName, item.Months, item.Status, item.FeePayable, checkbox]);
                 });
             });
     }
@@ -265,7 +277,7 @@
         $("#myModal1").modal('show');
     }
     $(document).on('click', '.btn-edit', function () {
-        
+
         var sid = $(this).attr("id");
         if (sid != "" && sid != undefined) {
             window.location.href = "/GrandTotal/ChallanPrintDetails?S_UID=" + sid;
@@ -301,34 +313,21 @@
                    +
                 '<div class="col-md-3 col-lg-3">' +
                 '<div class="col-md-6" style="padding:0px; margin-top:0px">' +
-                '<lable class="control-label"  style="margin-top:0px">Select Class</lable>' +
+                '<lable class="control-label"  style="margin-top:0px">Select Section</lable>' +
                 '</div>' +
-                '<div class="col-md-6">' +
-                '<select class="form-control  input-sm" id="ClassID" style="margin-top:0px" name="Position" onclick="class_click(this)">' + list +
+                 '<div class="col-md-6">' +
+
+                 '<select class="form-control  input-sm" id="ClassID" style="margin-top:0px" name="Position" onChange="class_click(this)">' + 
+                 '<option value="0" selected>All</option>'+list +
                 '</select>' +
                 '</div>' +
                 '</div>'
-                + '<div class="col-md-2">' +
-                        '<select class="form-control  input-sm" id="MonthID" style="margin-top:0px" name="Month">' +
-                          '<option value="January">January</option>' +
-                          '<option value="February">February</option>' +
-                            '<option value="March">March</option>' +
-                          '<option value="April">April</option>' +
-                            '<option value="May">May</option>' +
-                          '<option value="June">June</option>' +
-                            '<option value="July">July</option>' +
-                          '<option value="August">August</option>' +
-                            '<option value="September">September</option>' +
-                          '<option value="October">October</option>' +
-                            '<option value="November">November</option>' +
-                          '<option value="December">December</option>' +
-                        '</select>' +
-                        '</div>' +
+                +
                 '<div class="col-md-1">' +
-                '<button onclick="GetChallanForm()" class="btn btn-primary"><i class="fa fa-print"></i> Print Challan</button>' +
+
                 '</div>'+
                 '<div class="col-md-1 col-md-offset-1">' +
-                '<button  onclick="download()" class="btn btn-success"><i class="fa fa-download"></i> Download Report</button>' +
+
                 '</div>');
              $("#ClassID").prepend("<option value='0' selected>All</option>");
          }
@@ -346,7 +345,7 @@
                     "/GrandTotal/AddChallanDate",
                     $(".dateform").serialize(),
                     function (value) {
-                        
+
                         if (value != 'error') {
 
                             $('.eeniart0017').css("display", "none");
@@ -370,7 +369,7 @@
 
          }
          function parseJsonDate(jsonDateString) {
-             
+
              var month_names_short = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
              var currentdate = new Date(parseInt(jsonDateString.replace('/Date(', '')));
@@ -396,18 +395,11 @@
                    }
                    $('#billbody').html("");
 
-
-
-
-                  
                        debugger
                        var TableRow = "<tr>  <td class='description'>Student Name</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + data.StudentName + "</td></tr><tr>  <td class='description'>Student Class</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + data.StudentClass + "</td></tr> <tr>  <td class='description'>Student RollNo</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + data.StudentUserName + "</td></tr><tr>  <td class='description'>Fee Month</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + data.FeeMonth + "</td></tr><tr>  <td class='description'>Payable Fee</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + data.PayableFee + "</td></tr><tr>  <td class='description'>Status</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;Paid</td></tr>    "
                         $('#billbody').append(TableRow);
 
 
-
-
-                 
                     var d = new Date($.now());
 
                     $("#DateTime").html(d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
@@ -426,7 +418,7 @@
 
            // var OrderId = $('#btnPrint').attr('name');
             var mywindow = window.open('', '', '');
-       
+
 
         mywindow.document.write('<html><head><title>' + document.title + '</title>  ');
 
@@ -441,8 +433,9 @@
         mywindow.print();
         mywindow.close();
 
+       window.location.href = '/GrandTotal/Index/';
 
-        
+
    })
   })
 
@@ -463,7 +456,7 @@
         <span style="color:darkred;font-weight:700" id="ErrorMessage"></span>
     </div>
     <div class="inc-btn">
-        <button value="Challan Date" class="btn btn-default" id="challan-date" onclick="ChallandDate()"><i class="fa fa-calendar"> </i>  Challan Date</button>
+        @*<button value="Challan Date" class="btn btn-default" id="challan-date" onclick="ChallandDate()"><i class="fa fa-calendar"> </i>  Challan Date</button>*@
     </div>
 </div>
 <div class="box box-primary">
@@ -499,8 +492,11 @@
                             <th>
                                 Username
                             </th>
+                            <th>Month</th>
+                            <th>Status</th>
+                            <th>Payable Fee</th>
                             <th>
-                                Check box
+                                Checkbox
                             </th>
                         </tr>
                     </thead>
@@ -572,7 +568,7 @@
         </div>
         @*<div id="ChallanForm">
 
-        </div>*@
+            </div>*@
 
 
         <div id="bill" style="margin-left:30px">
