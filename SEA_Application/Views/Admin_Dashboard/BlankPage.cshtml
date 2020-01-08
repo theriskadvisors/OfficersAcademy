@@ -361,7 +361,7 @@
 <div class="tab">
     <button class="tablinks active" onclick="openCity(event, 'Calendar')">Calendar</button>
     <button class="tablinks" onclick="openCity(event, 'Summary')">Summary</button>
-    <button class="tablinks" onclick="openCity(event, 'Finance')">Finance Summary</button>
+    @*<button class="tablinks" onclick="openCity(event, 'Finance')">Finance Summary</button>*@
 </div>
 
 <div style="display:block" id="Calendar" class="tabcontent">
@@ -382,7 +382,7 @@
                 </div>
                 <div class="details">
                     <div class="number">
-                        <span data-counter="counterup" data-value="1349">70</span>
+                        <span data-counter="counterup" data-value="1349">@ViewBag.TotalStudents</span>
                     </div>
                     <div class="desc"> Total Students </div>
                 </div>
@@ -395,7 +395,7 @@
                 </div>
                 <div class="details">
                     <div class="number">
-                        <span data-counter="counterup" data-value="12,5">12</span>
+                        <span data-counter="counterup" data-value="12,5">@ViewBag.TotalTeachers</span>
                     </div>
                     <div class="desc"> Total Teachers </div>
                 </div>
@@ -408,7 +408,7 @@
                 </div>
                 <div class="details">
                     <div class="number">
-                        <span data-counter="counterup" data-value="549">15</span>
+                        <span data-counter="counterup" data-value="549">@ViewBag.TotalSubjects</span>
                     </div>
                     <div class="desc"> Total Subjects </div>
                 </div>
@@ -421,7 +421,7 @@
                 </div>
                 <div class="details">
                     <div class="number">
-                        04
+                        @ViewBag.TotalSessions
                         <span data-counter="counterup" data-value="89"></span>
                     </div>
                     <div class="desc"> Total Sessions </div>

@@ -405,6 +405,14 @@ namespace SEA_Application.Controllers
                                      where uid.Status != "False"
                                      select sid.StudentID).Count();
 
+
+            ViewBag.TotalSubjects = db.AspNetSubjects.Count();
+            ViewBag.TotalSessions = db.AspNetSessions.Count();
+            ViewBag.TotalTeachers = db.AspNetEmployees.Where(x => x.PositionAppliedFor == "TEACHER" && x.PositionAppliedFor == "Teacher").Count();
+
+                                    
+
+
             ViewBag.TotalMessages = db.AspNetMessage_Receiver.Where(m => m.ReceiverID == CurrentUserId && m.Seen == "Not Seen").Count();
             ViewBag.TotalNotifications = db.AspNetNotification_User.Where(m => m.UserID == CurrentUserId && m.Seen == false).Count();
 
