@@ -11,7 +11,15 @@
 <script src="~/AdminLTE/selectone.js"></script>
 <script src="~/Content/JqueryMultiselect/jquery.multiselect.js"></script>
 <link href="~/Content/JqueryMultiselect/jquery.multiselect.css" rel="stylesheet" />
+<style>
 
+    .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 1897px !important;
+    }
+</style>
 
 <label>@Html.ActionLink("Home", "Dashboard", "Account") > @Html.ActionLink("Student", "StudentsIndex", "AspNetUser") > <span class="text-primary">Create</span></label>
 
@@ -28,7 +36,7 @@
             url: "/AspNetUser/GetRollNumber",
             data: { "userName": 't' },
             success: function (data) {
-                
+
                 if (data.count != null) {
                   //  $('#UserName').val(data)
                     document.getElementsByName('UserName')[0].value = data;
@@ -54,7 +62,7 @@
 
 
         $("#subjects").change(function () {
-            
+
             var selectedClass = $("#subjects").val();
             var total_size = selectedClass.length;
             if(total_size == 3)
@@ -68,12 +76,7 @@
 
             }
 
-
-
         });
-
-
-
 
         $("#birthDate").bind('blur', function () {
             var dob = $("#birthDate").val();
@@ -173,11 +176,29 @@
 
         });
 
-        $("#ClassID").change(function () {
+        $('input[name="CourseType"]').click(function () {
 
+             $('#subjects').html('');
+
+
+        })
+
+
+        $("#ClassID").click(function () {
+           //  alert($("#ClassID").val());
             var selectedClass = $("#ClassID").val();
-            $.get('@Url.Action("SubjectsByClass")',
-                { id: selectedClass }, function (data) {
+            var CourseType = $("input[name='CourseType']:checked").val();
+
+            if (selectedClass == "") {
+            //    alert("Please select a Class");
+            }
+
+
+
+            else {
+                debugger
+                   $.get('@Url.Action("SubjectsByClass")',
+                { id: selectedClass,coursetype :CourseType }, function (data) {
 
                     $('#subjects').html('');
 
@@ -185,7 +206,11 @@
                         $('#subjects').append('<option value=' + item.Id + '>' + item.SubjectName + '</option>');
                     });
 
-                });
+            });
+
+            }
+
+
         });
 
 
@@ -268,7 +293,7 @@
                         @using (Html.BeginForm("StudentRegister", "Admin_Dashboard", FormMethod.Post, new { enctype = "multipart/form-data", @class = "forms form-horizontal", role = "form" }))
                         {
                             @Html.AntiForgeryToken()
-                            
+
                             <div class="box box-primary">
                                 <div class="box-header with-border"><h3 class="orange">User Information<span class="red-mark">*</span></h3></div>
                                 <div class="box-body row">
@@ -291,7 +316,7 @@
                                         <div class="form-group">
                                             <label class="col-md-2 col-lg-2 control-label" for="Address">Address: <span class="red-mark"></span></label>
                                             <div class="col-md-10">
-                                                    <input type="text" class="form-control round-border" id="Address" name="Address">
+                                                <input type="text" class="form-control round-border" id="Address" name="Address">
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -301,7 +326,7 @@
 
                                             </div>
                                         </div>
-                               
+
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-md-2 col-lg-2 control-label">Cell No.: <span class="red-mark">*</span></label>
                                             <div class="col-md-10">
@@ -320,19 +345,27 @@
                                                 <span id="Phone-Error" class="text-danger"></span>
                                             </div>
                                         </div>
-                                      
-                                
+
+
 
                                         <div class="form-group">
                                             <label for="CourseType" class="col-md-2 col-lg-2 control-label">Course Type: <span class="red-mark">*</span></label>
                                             <div class="col-md-10">
-                                                <select name="CourseType" class="form-control" required>
-                                                    <option value="CSS">CSS</option>
-                                                    <option value="PMS">PMS</option>
-                                                </select>
-                                                <span id="Phone-Error" class="text-danger"></span>
+
+                                                <div class="form-group">
+                                                    <div class="checkbox">
+
+                                                        <label><input type="radio" name="CourseType" value="CSS" checked> CSS</label>
+                                                    </div>
+                                                    <div class="checkbox">
+
+                                                        <label><input type="radio" name="CourseType" value="PMS"> PMS </label>
+                                                    </div>
+
+                                                </div>
+                                                    <span id="Phone-Error" class="text-danger"></span>
+                                                </div>
                                             </div>
-                                        </div>
 
 
                                     </div>
@@ -349,7 +382,7 @@
 
                                 <div class="box-header with-border"><h3 class="orange">Account Information</h3></div>
                                 <div class="box-body">
-                           
+
                                     <div class="form-group">
                                         <label class="col-md-2 col-lg-2 control-label" for="Email">Email: <span class="red-mark">*</span></label>
                                         <div class="col-md-4">
@@ -361,7 +394,7 @@
                                         <label class="col-md-2 col-lg-2 control-label" for="UserName">Roll Number: <span class="red-mark">*</span></label>
                                         <div class="col-md-4">
                                             @*@Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger", @id = "UserName-Error" })*@
+                                                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger", @id = "UserName-Error" })*@
                                             <input type="text" id="UserName" class="form-control round-border" name="UserName" readonly />
                                         </div>
                                     </div>
@@ -394,11 +427,11 @@
                                 <div class="box-header with-border"><h3 class="orange">Work Experience and Education</h3></div>
                                 <div class="box-body">
                                     @*<div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label">Industry:</label>
-                                        <div class="col-md-4">
-                                            <input type="text" id="Industry" class="form-control round-border" name="Industry" />
-                                        </div>
-                                    </div>*@
+                                            <label class="col-md-1 col-lg-1 control-label">Industry:</label>
+                                            <div class="col-md-4">
+                                                <input type="text" id="Industry" class="form-control round-border" name="Industry" />
+                                            </div>
+                                        </div>*@
                                     <div class="form-group">
                                         <label class="col-md-1 col-lg-1 control-label">Occupation:</label>
                                         <div class="col-md-4">
@@ -696,8 +729,6 @@
                                     <div class="form-group">
                                         <label class="col-md-1 col-lg-1 control-label">Class: <span class="red-mark">*</span></label>
                                         <div class="col-md-4">
-
-
                                             @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control", name = "ClassID", @required = true })
 
                                         </div>

@@ -1884,7 +1884,8 @@ namespace SEA_Application.Controllers
         {
             //var data = db.AspNetClasses 
             // ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
-            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
+           ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
+            ViewBag.ClassID2 = db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault();
             return View();
         }
 
@@ -1982,7 +1983,7 @@ namespace SEA_Application.Controllers
                         //  var classID = db.AspNetSubjects.Where(x=> x.Id == int.Parse(subID)).Select(x=> x.ClassID).FirstOrDefault();
                         int id = Int32.Parse(subID);
                         var c_id = db.AspNetSubjects.Where(x => x.Id == id).FirstOrDefault().ClassID;
-                        var subjects = db.AspNetSubjects.Where(x => x.ClassID == c_id && x.IsManadatory == true).Select(x => x.Id);
+                        var subjects = db.AspNetSubjects.Where(x => x.ClassID == c_id && x.IsManadatory == true && x.CourseType == student.CourseType ).Select(x => x.Id);
 
                         foreach (var item in subjects)
                         {

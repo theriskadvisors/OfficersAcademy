@@ -70,7 +70,8 @@
         $('#Gender option[value="' + Ge + '"]').prop('selected', true);
         $('#Degree option[value="' + De + '"]').prop('selected', true);
 
-        $('#CourseType option[value="' + CourseType + '"]').prop('selected', true);
+      //  $('#CourseType option[value="' + CourseType + '"]').prop('selected', true);
+        $("input[value ='" + CourseType + "' ]").prop('checked', true);
 
         var selectedStudent = '@Model.Id';
         $.get('@Url.Action("StudentClass")',
@@ -93,23 +94,44 @@
                             });
                         });
                  });
-            });
+        });
+
+
+           $('input[name="CourseType"]').click(function () {
+
+             $('#subjects').html('');
+
+
+        })
 
 
         $("#ClassID").click(function () {
             var selectedClasss = $("#ClassID").val();
-            $.get('@Url.Action("SubjectsByClass")',
-                { id: selectedClasss }, function (data) {
+
+            var CourseType = $("input[name='CourseType']:checked").val();
+
+            
+            if (selectedClass == "") {
+                alert("Please select a Class");
+            }
+
+            else {
 
 
-                    $('#subjects').html('');
-                    $('#subjects').prop('disabled', false);
-                    $.each(data, function (i, item) {
+                $.get('@Url.Action("SubjectsByClass")',
+                    { id: selectedClasss }, function (data) {
 
-                        $('#subjects').append('<option value=' + item.Id + '>' + item.SubjectName + '</option>');
+
+                        $('#subjects').html('');
+                        $('#subjects').prop('disabled', false);
+                        $.each(data, function (i, item) {
+
+                            $('#subjects').append('<option value=' + item.Id + '>' + item.SubjectName + '</option>');
+                        });
+
                     });
 
-                });
+            }
         });
 
         $("#BirthDate").bind('blur', function () {
@@ -260,10 +282,12 @@
                             <label class="col-md-2 col-lg-2 control-label">Course Type:</label>
                             <div class="col-md-10">
                                 <input type="hidden" value="@ViewBag.CourseType" id="CourseType" />
-                                <select name="CourseType" class="form-control" id="CourseType">
-                                    <option value="CSS">CSS</option>
-                                    <option value="PMS">PMS</option>
-                                </select>
+                              
+                                    <input type="radio" name="CourseType" value="CSS" > CSS
+                                    <br>
+                                    <input type="radio" name="CourseType" value="PMS"> PMS
+                                    <br>
+
                             </div>
                         </div>
                     </div>
