@@ -6,7 +6,14 @@
 <script src="~/AdminLTE/selectone.js"></script>
 
 <label>@Html.ActionLink("Home", "Dashboard", "Account") >  @Html.ActionLink("Teacher", "TeachersIndex", "AspNetUser") > <a href="#">Create</a></label>
-
+<style>
+    .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 1505px !important;
+    }
+</style>    
 <script>
     $(document).ready(function () {
         $('#GrossSalary').blur(function () {

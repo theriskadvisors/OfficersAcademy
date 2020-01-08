@@ -2148,13 +2148,18 @@ namespace SEA_Application.Controllers
         }
 
         /**********************************************************************************************************************************/
+        public ActionResult GetSessionName()
+        {
+            int classid = db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault().Id;
 
+           return Content(classid.ToString());
+        }
 
         [HttpGet]
-        public JsonResult SubjectsByClass(int id)
+        public JsonResult SubjectsByClass(int id, string coursetype)
         {
             db.Configuration.ProxyCreationEnabled = false;
-            List<AspNetSubject> sub = db.AspNetSubjects.Where(r => r.ClassID == id && r.IsManadatory == false).OrderByDescending(r => r.Id).ToList();
+            List<AspNetSubject> sub = db.AspNetSubjects.Where(r => r.ClassID == id && r.IsManadatory == false && r.CourseType == coursetype).OrderByDescending(r => r.Id).ToList();
             ViewBag.Subjects = sub;
             return Json(sub, JsonRequestBehavior.AllowGet);
 
