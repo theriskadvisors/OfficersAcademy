@@ -87,8 +87,11 @@ namespace SEA_Application.Controllers
                 if (file.ContentLength > 0)
                 {
                     var fileName = Path.GetFileName(file.FileName);
-                    var path = Path.Combine(Server.MapPath("~/App_Data/Projects"), fileName);
-                    file.SaveAs(path);
+                    //var path = Path.Combine(Server.MapPath("/App_Data/Projects/"), fileName);
+                    
+                    file.SaveAs(Server.MapPath("~/Content/StudentProjects/") + fileName);
+
+                   // file.SaveAs(path);
                     aspNetProject.FileName = fileName;
                 }
                 else
@@ -121,100 +124,100 @@ namespace SEA_Application.Controllers
                 db.AspNetNotifications.Add(NotificationObj);
                 db.SaveChanges();
 
-                var NotificationID = db.AspNetNotifications.Max(x => x.Id);
-                var students = db.AspNetStudent_Project.Where(sp => sp.ProjectID == aspNetProject.Id).Select(x => x.StudentID).ToList();
+                //var NotificationID = db.AspNetNotifications.Max(x => x.Id);
+                //var students = db.AspNetStudent_Project.Where(sp => sp.ProjectID == aspNetProject.Id).Select(x => x.StudentID).ToList();
 
-                var users = new List<String>();
+                //var users = new List<String>();
 
-                foreach (var item in students)
-                {
-                    var parentID = db.AspNetParent_Child.Where(x => x.ChildID == item).Select(x => x.ParentID).FirstOrDefault();
-                    users.Add(parentID);
-                }
+                //foreach (var item in students)
+                //{
+                //    var parentID = db.AspNetParent_Child.Where(x => x.ChildID == item).Select(x => x.ParentID).FirstOrDefault();
+                //    users.Add(parentID);
+                //}
 
-                var allusers = users.Union(students);
+                //var allusers = users.Union(students);
 
-                foreach (var receiver in allusers)
-                {
-                    var notificationRecieve = new AspNetNotification_User();
-                    notificationRecieve.NotificationID = NotificationID;
-                    notificationRecieve.UserID = Convert.ToString(receiver);
-                    notificationRecieve.Seen = false;
-                    db.AspNetNotification_User.Add(notificationRecieve);
-                    db.SaveChanges();
-                }
+                //foreach (var receiver in allusers)
+                //{
+                //    var notificationRecieve = new AspNetNotification_User();
+                //    notificationRecieve.NotificationID = NotificationID;
+                //    notificationRecieve.UserID = Convert.ToString(receiver);
+                //    notificationRecieve.Seen = false;
+                //    db.AspNetNotification_User.Add(notificationRecieve);
+                //    db.SaveChanges();
+                //}
 
-                /////////////////////////////////////Email/////////////////////////////////////////
+                ///////////////////////////////////////Email/////////////////////////////////////////
 
-                var subject = db.AspNetSubjects.Where(x => x.Id == aspNetProject.SubjectID).Select(x => x.SubjectName).FirstOrDefault();
-                var StudentEmail = db.AspNetStudent_Project.Where(sp => sp.ProjectID == aspNetProject.Id).Select(x => x.StudentID).ToList();
-                var StudentRoll = db.AspNetStudent_Project.Where(sp => sp.ProjectID == aspNetProject.Id).Select(x => x.AspNetUser.UserName).ToList();
-                string[] studentRollList = new string[StudentRoll.Count];
-                int c = 0;
-                foreach (var item in StudentRoll)
-                {
-                    studentRollList[c] = item;
-                    c++;
-                }
-                var StudentName = db.AspNetStudent_Project.Where(sp => sp.ProjectID == aspNetProject.Id).Select(x => x.AspNetUser.Name).ToList();
+                //var subject = db.AspNetSubjects.Where(x => x.Id == aspNetProject.SubjectID).Select(x => x.SubjectName).FirstOrDefault();
+                //var StudentEmail = db.AspNetStudent_Project.Where(sp => sp.ProjectID == aspNetProject.Id).Select(x => x.StudentID).ToList();
+                //var StudentRoll = db.AspNetStudent_Project.Where(sp => sp.ProjectID == aspNetProject.Id).Select(x => x.AspNetUser.UserName).ToList();
+                //string[] studentRollList = new string[StudentRoll.Count];
+                //int c = 0;
+                //foreach (var item in StudentRoll)
+                //{
+                //    studentRollList[c] = item;
+                //    c++;
+                //}
+                //var StudentName = db.AspNetStudent_Project.Where(sp => sp.ProjectID == aspNetProject.Id).Select(x => x.AspNetUser.Name).ToList();
 
-                string[] studentNamelist = new string[StudentName.Count];
-                int i = 0;
-                foreach(var item in StudentName)
-                {
-                    studentNamelist[i] = item;
-                    i++;
-                }
+                //string[] studentNamelist = new string[StudentName.Count];
+                //int i = 0;
+                //foreach (var item in StudentName)
+                //{
+                //    studentNamelist[i] = item;
+                //    i++;
+                //}
 
-                var Users = new List<String>();
-                foreach (var item in StudentEmail)
-                {
-                    Users.Add(db.AspNetParent_Child.Where(x => x.ChildID == item).Select(x => x.ParentID).FirstOrDefault());                  
-                }
+                //var Users = new List<String>();
+                //foreach (var item in StudentEmail)
+                //{
+                //    Users.Add(db.AspNetParent_Child.Where(x => x.ChildID == item).Select(x => x.ParentID).FirstOrDefault());
+                //}
 
-                //Message start
-                //var classe = db.AspNetClasses.Where(p => p.Id == aspNetHomework.ClassId).FirstOrDefault();
-                Utility obj = new Utility();
-                obj.SMSToOffitialsp("Dear Principal, Project has been assigned. IPC NGS Preschool, Aziz Avenue, Lahore.");
-                obj.SMSToOffitialsa("Dear Admin, Project has been assigned. IPC NGS Preschool, Aziz Avenue, Lahore.");
-                AspNetMessage oob = new AspNetMessage();
-                oob.Message = "Dear Parents, The thematic project has been assigned to your child on portal. IPC NGS Preschool, Aziz Avenue, Lahore.";// Title : " + aspNetProject.Title + ", For discription login to Portal please  -
-                obj.SendSMS(oob, Users);
-                //Message end
+                ////Message start
+                ////var classe = db.AspNetClasses.Where(p => p.Id == aspNetHomework.ClassId).FirstOrDefault();
+                //Utility obj = new Utility();
+                //obj.SMSToOffitialsp("Dear Principal, Project has been assigned. IPC NGS Preschool, Aziz Avenue, Lahore.");
+                //obj.SMSToOffitialsa("Dear Admin, Project has been assigned. IPC NGS Preschool, Aziz Avenue, Lahore.");
+                //AspNetMessage oob = new AspNetMessage();
+                //oob.Message = "Dear Parents, The thematic project has been assigned to your child on portal. IPC NGS Preschool, Aziz Avenue, Lahore.";// Title : " + aspNetProject.Title + ", For discription login to Portal please  -
+                //obj.SendSMS(oob, Users);
+                ////Message end
 
 
-                List<string> EmailList = new List<string>();
-                foreach (var sender in Users)
-                {
-                    EmailList.Add(db.AspNetUsers.Where(x => x.Id == sender).Select(x => x.Email).FirstOrDefault());
-                }
-                var j = 0;
-                foreach (var toEmail in EmailList)
-                {
-                    try
-                    {
-                        NotificationObj.Subject = studentNamelist[j]+"("+studentRollList[j]+") "+" Subject:"+ subject+" Title:"+aspNetProject.Title;
-                        j++;
-                        string senderEmail = System.Configuration.ConfigurationManager.AppSettings["SenderEmail"].ToString();
-                        string senderPassword = System.Configuration.ConfigurationManager.AppSettings["SenderPassword"].ToString();
+                //List<string> EmailList = new List<string>();
+                //foreach (var sender in Users)
+                //{
+                //    EmailList.Add(db.AspNetUsers.Where(x => x.Id == sender).Select(x => x.Email).FirstOrDefault());
+                //}
+                //var j = 0;
+                //foreach (var toEmail in EmailList)
+                //{
+                //    try
+                //    {
+                //        NotificationObj.Subject = studentNamelist[j] + "(" + studentRollList[j] + ") " + " Subject:" + subject + " Title:" + aspNetProject.Title;
+                //        j++;
+                //        string senderEmail = System.Configuration.ConfigurationManager.AppSettings["SenderEmail"].ToString();
+                //        string senderPassword = System.Configuration.ConfigurationManager.AppSettings["SenderPassword"].ToString();
 
-                        SmtpClient client = new SmtpClient("smtpout.secureserver.net", 25);
-                        client.EnableSsl = false;
-                        client.Timeout = 100000;
-                        client.DeliveryMethod = SmtpDeliveryMethod.Network;
-                        client.UseDefaultCredentials = false;
-                        client.Credentials = new NetworkCredential(senderEmail, senderPassword);
-                        MailMessage mailMessage = new MailMessage(senderEmail, toEmail, NotificationObj.Subject, NotificationObj.Description);
-                        mailMessage.CC.Add(new MailAddress(senderEmail));
-                        mailMessage.IsBodyHtml = true;
-                        mailMessage.BodyEncoding = UTF8Encoding.UTF8;
-                        client.Send(mailMessage);
-                    }
-                    catch (Exception ex)
-                    {
+                //        SmtpClient client = new SmtpClient("smtpout.secureserver.net", 25);
+                //        client.EnableSsl = false;
+                //        client.Timeout = 100000;
+                //        client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                //        client.UseDefaultCredentials = false;
+                //        client.Credentials = new NetworkCredential(senderEmail, senderPassword);
+                //        MailMessage mailMessage = new MailMessage(senderEmail, toEmail, NotificationObj.Subject, NotificationObj.Description);
+                //        mailMessage.CC.Add(new MailAddress(senderEmail));
+                //        mailMessage.IsBodyHtml = true;
+                //        mailMessage.BodyEncoding = UTF8Encoding.UTF8;
+                //        client.Send(mailMessage);
+                //    }
+                //    catch (Exception ex)
+                //    {
 
-                    }
-                }
+                //    }
+                //}
 
                 return RedirectToAction("Index");
             }

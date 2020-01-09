@@ -368,7 +368,7 @@ namespace SEA_Application.Controllers
         {
             AspNetProject Project = db.AspNetProjects.Find(id);
 
-            var filepath = System.IO.Path.Combine(Server.MapPath("~/App_Data/Projects/"), Project.FileName);
+            var filepath = System.IO.Path.Combine(Server.MapPath("~/Content/StudentProjects/"), Project.FileName);
             return File(filepath, MimeMapping.GetMimeMapping(filepath), Project.FileName);
 
         }

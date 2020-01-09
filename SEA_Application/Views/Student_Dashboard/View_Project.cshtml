@@ -81,8 +81,8 @@
 </style>
 <script>
     $(document).ready(function () {
-       
-        $("#SubjectID").click(function () {
+
+        $("#SubjectID").change(function () {
             var selectedSubject = $("#SubjectID").val();
             $.get('@Url.Action("ProjectBySubject", "AspNetProject")',
                 { subjectID: selectedSubject }, function (data) {
