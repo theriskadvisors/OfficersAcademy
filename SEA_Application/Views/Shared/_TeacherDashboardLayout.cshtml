@@ -12,6 +12,12 @@
     margin-top: -77px;
 }
 
+.page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 750px !important;
+    }
 .box.box-primary {
     border-top-color: #5170a3;
 }
@@ -28,33 +34,34 @@
     <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
     <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
     <ul id="layout_navbar_toogle" class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenu " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="1">
-        <li class="nav-item start active open" style="/* border-bottom: 4px solid white; */">
-            <a href="@Url.Action("Dashboard", "Admin_Dashboard")" class="nav-link nav-toggle">
+        <li class="nav-item" style="/* border-bottom: 4px solid white; */">
+            @*start active open*@
+            <a href="@Url.Action("Dashboard", "Teacher_Dashboard")" class="nav-link nav-toggle">
                 <i class="icon-home"></i>
                 <span class="title">Home</span>
             </a>
         </li>
 
-        <li class="nav-item  ">
+        @*<li class="nav-item  ">
             <a href="@(Url.Action("View_LessonPlan", "AspNetLessonPlan"))">
                 <i class="fa fa-graduation-cap"></i>
                 <span class="title">LessonPlan</span>
             </a>
-        </li>
+        </li>*@
 
         <li class="nav-item  ">
             <a href="@(Url.Action("Index", "AspNetProject"))">
                 <i class="fa fa-product-hunt"></i>
-                <span class="title">Project</span>
+                <span class="title">Topics Course Study Material</span>
             </a>
         </li>
 
-        <li class="nav-item  ">
+        @*<li class="nav-item  ">
             <a href="@(Url.Action("Index", "AspNetStudentPerformanceReport"))">
                 <i class="fa fa-bullhorn"></i>
                 <span class="title">Progress Report</span>
             </a>
-        </li>
+        </li>*@
 
 
         <li class="nav-item">
@@ -94,7 +101,7 @@
             </a>
         </li>
 
-        <li class="nav-item  ">
+        @*<li class="nav-item  ">
             <a href="@(Url.Action("Teacher_Announcement", "Teacher_Dashboard"))">
                 <i class="fa fa-bullhorn"></i>
                 <span class="title">Announcement</span>
@@ -137,7 +144,7 @@
                     </a>
                 </li>
             </ul>
-        </li>
+        </li>*@
 
         <li class="nav-item  ">
             <a href="@(Url.Action("Inbox", "AspNetMessages"))">
