@@ -395,9 +395,14 @@
                    }
                    $('#billbody').html("");
 
+
+
                        debugger
                        var TableRow = "<tr>  <td class='description'>Student Name</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + data.StudentName + "</td></tr><tr>  <td class='description'>Student Class</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + data.StudentClass + "</td></tr> <tr>  <td class='description'>Student RollNo</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + data.StudentUserName + "</td></tr><tr>  <td class='description'>Fee Month</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + data.FeeMonth + "</td></tr><tr>  <td class='description'>Payable Fee</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + data.PayableFee + "</td></tr><tr>  <td class='description'>Status</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;Paid</td></tr>    "
                         $('#billbody').append(TableRow);
+
+
+                   $("#challanNo").html(data.ChallanID);
 
 
                     var d = new Date($.now());
@@ -583,7 +588,7 @@
 
                 <p class="centered">
                     Officer's Academy
-                    <br><span id="Recipt">Recipt No</span>
+                    <br><span id="Recipt">Recipt#<span id="challanNo"></span> </span>
                     <br><span id="DateTime"></span>
                 </p>
 
