@@ -1,130 +1,157 @@
-﻿    @model SEA_Application.Models.AspNetNote
+﻿@model SEA_Application.Models.AspNetNote
 
 @{
     ViewBag.Title = "Details";
     Layout = "~/Views/Shared/_StudentDashboardLayout.cshtml";
 
-    
+
 }
+    <style>
 
-<h2>Order Detail</h2>
+            .modal-content {
+        position: relative;
+        background-color: #fff;
+        margin-top: 102px;
+        background-clip: padding-box;
+        border: 1px solid #999;
+        border: 1px solid rgba(0,0,0,.2);
+        border-radius: 6px;
+        -webkit-box-shadow: 0 3px 9px rgba(0,0,0,.5);
+        box-shadow: 0 3px 9px rgba(0,0,0,.5);
+        outline: 0;
+    }
+    </style>
 
-@Html.HiddenFor(model=>model.Id)
-<div>
-    <h4>AspNetNote</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Id, new { @disabled = "disabled" })
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Title, new { @disabled = "disabled" })
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Description, new { @disabled = "disabled" })
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CourseType)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CourseType, new { @disabled = "disabled" })
-        </dd>
-
-        <dt>
-
-            @Html.DisplayNameFor(model => model.Price)
-
-        </dt>
-
-        <dd>
-            <span id="price"> @Html.DisplayFor(model => model.Price)</span>
-
-        </dd>
-
-        <dt>
-
-            Quantity
-        </dt>
-
-        <dd>
-            <input id="QuantityBtn" type="number" name="name" value="1" min="1" max="5" onkeydown="return false"/>
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AspNetSubject.SubjectName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AspNetSubject.SubjectName)
-        </dd>
+<label>@Html.ActionLink("Home", "Dashboard", "Account") > @Html.ActionLink("Order Notes", "Index", "AspNetOrderNotes") > <a href="#"><b>Details</b></a> </label>
+<h4 class="orange"> Order Notes Details </h4>
+<div class="box box-primary">
+    <div class="box-body">
 
 
+        @Html.HiddenFor(model => model.Id)
 
+        <div class="form-horizontal">
+            <h4>Order Notes</h4>
 
-    </dl>
-    @*<button class="btn btn-success">Proceed</button>*@
+            <script>
+                $(document).ready(function () {
+                    // $('input').prop('disabled', true);
+                    $('select').prop('disabled', true);
+                    $("#QuantityBtn").prop('readonly', false);
+                })
+            </script>
 
-    <button id="confirmOrder" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Proceed</button>
+            <hr />
 
-    <!-- Modal -->
-    <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
-
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Modal Header</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to place this order?</p>
-
-                </div>
-                <div class="modal-footer">
-                    <button id="Order" type="button" class="btn btn-default" data-dismiss="modal">Yes</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+            <div class="form-group">
+                <label class="control-label col-md-2"> @Html.DisplayNameFor(model => model.Title):</label>
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
                 </div>
             </div>
 
+
+            <div class="form-group">
+                <label class="control-label col-md-2"> @Html.DisplayNameFor(model => model.Description):</label>
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">model.CourseType)</label>
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.CourseType, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.CourseType, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2"> @Html.DisplayNameFor(model => model.Price)</label>
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2"> Quantity</label>
+                <div class="col-md-4">
+                    <input id="QuantityBtn" class="form-control" type="number" name="name" value="1" min="1" max="5" onkeydown="return false" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2"> @Html.DisplayNameFor(model => model.AspNetSubject.SubjectName)</label>
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.AspNetSubject.SubjectName, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.AspNetSubject.SubjectName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button id="confirmOrder" type="button" class="btn btn-info btn-primary" data-toggle="modal" data-target="#myModal">Proceed</button>
+                    <button type="button" id="cancel" class="btn btn-default">Back</button>
+
+                </div>
+            </div>
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Modal Header</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to add this order to Cart?</p>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button id="Order" type="button" class="btn btn-default" data-dismiss="modal">Yes</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
+
+        </div>
+
     </div>
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+    </div>
 <script>
 
     $(document).ready(function () {
+
+          $("#cancel").click(function () {
+
+            window.location.href = '/AspNetOrderNotes/index';
+
+        });
+
         var ActualPrice = parseInt($("#price").text());
 
-       
+
 
         $("#QuantityBtn").change(function () {
 
             var Quantiy = $(this).val();
-            
+
             updatePrice = Quantiy * ActualPrice;
 
             $("#price").text(updatePrice);
 
-          
+
 
         }) //end of QuantityBtn Change
 
@@ -140,22 +167,22 @@
 
                 type: "POST",
 
-               
+
                 url: "/AspNetOrderNotes/ConfirmOrder",
                 data: {
-                    "NotesId" : NotesId,
-                    "Quantity" :Quantity,
+                    "NotesId": NotesId,
+                    "Quantity": Quantity,
                 },
                 success: function (data) {
 
                     $("#confirmOrder").prop('disabled', true);
                     window.location.href = '/AspNetOrderNotes/Index/';
-                                
+
                 }
 
 
             })
-            
+
         })
 
 

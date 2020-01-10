@@ -13,11 +13,19 @@
 
         $('.table').on('click', 'tbody tr', function () {
             var td = $(this).children("td");
-            var userName = $(td[0]).children("input").val();
-            userName = userName.trim();
+            //var userName = $(td[0]).children("input").val();
+            //userName = userName.trim();
 
             window.location.href = "/AspNetSession/Details?id=" + userName;
         });
+
+        $(".deletebtn").click(function () {
+
+          var val =   $(this).attr('id');
+             window.location.href = "/AspNetTimeslots/Delete?id=" + val;
+           
+        })
+
 
     });
 
@@ -90,6 +98,8 @@
           '</div>');
         $("#Class").prepend("<option value='0'>All</option>");
     }
+
+
 
 
 </script>
@@ -167,9 +177,13 @@ else
                             @Html.DisplayFor(modelItem => item.Minutes)
                         </td>
                         <td>
-                          
-                            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                            
+
+                            @*@Html.ActionLink("Delete", "Delete", new { id = item.Id },new { htmlAttributes = new { @class = "btn btn-default", } } )*@
+                            <center>
+
+                                <input class="btn btn-danger btn-sm deletebtn" value="Delete" type="button" id="@item.Id" name="name" />
+                            </center>
+
                         </td>
                     </tr>
                 }

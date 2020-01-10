@@ -6,6 +6,16 @@
 }
 
 <style>
+
+    input[type=search] {
+        border: 1px solid rgb(221, 221, 221);
+        border-radius: 40px;
+        height: 30px;
+        outline: none;
+        padding-left: 10px;
+        color: rgb(221, 221, 221);
+        margin-top: 0px;
+    }
 </style>
 
 <!-- Modal -->
@@ -16,7 +26,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Modal Header</h4>
+                <h4 class="modal-title">Order to Cart</h4>
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to place this order?</p>
@@ -31,6 +41,9 @@
     </div>
 </div>
 
+
+
+
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#tab_1" data-toggle="tab">Notes</a></li>
@@ -39,162 +52,195 @@
     </ul>
 </div>
 
-<div class="tab-content" style="        background-color: #ECF0F5;
+<div class="tab-content" style="    background-color: #f7f6f6;
         padding: 10px 0px 0px 0px;
-">
+    ">
 
     <p>
     </p>
     <div class="tab-pane active" id="tab_1">
+        <div class="box box-primary">
+            <div class="box-title"></div>
+            <div class="box-body">
+                <table class="table" id="example">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Id)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Title)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Description)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.CourseType)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Price)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.CreationDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.AspNetSubject.SubjectName)
+                            </th>
+                            <th></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CourseType)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Price)
+                                </td>
 
 
-        <table class="table">
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Id)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Title)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Description)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.CourseType)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Price)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.CreationDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AspNetSubject.SubjectName)
-                </th>
-                <th></th>
-            </tr>
 
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Title)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CourseType)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Price)
-                    </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CreationDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AspNetSubject.SubjectName)
+                                </td>
+                                <td>
 
 
+                                    <a href="/AspNetOrderNotes/Details/@item.Id">  <button type="button" class="btn btn-success" id="@item.Id">Add to Cart</button> </a>
 
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CreationDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AspNetSubject.SubjectName)
-                    </td>
-                    <td>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
 
-
-                        <a href="/AspNetOrderNotes/Details/@item.Id">  <button type="button" class="btn btn-success" id="@item.Id">Add to Cart</button> </a>
-
-                    </td>
-                </tr>
-            }
-
-        </table>
+                </table>
+            </div>
+        </div>
     </div>
 
 
     <div class="tab-pane" id="tab_2">
+        <div class="box box-primary">
+            <div class="box-title"></div>
+            <div class="box-body">
+                <table class="table" id="datatable">
+                    <thead>
+                        <tr>
 
-        <table class="table">
-            <tr>
-                <th>
-                    <input style="display:none" type="checkbox" id="checkBoxToAllChek" name="name" value="" />
-                    Orders
-                </th>
-                <th>
-                    Title
-                </th>
-                <th>
-                    Discription
-                </th>
-                <th>
-                    CourseType
-                </th>
-                <th>
-                    Price
-                </th>
-                <th>
-                    Quantity
-                </th>
-                <th>
-                    Total
-                </th>
-                <th>
-                    Status
-                </th>
+                            <th>
+                                Title
+                            </th>
+                            <th>
+                                Description
+                            </th>
+                            <th>
+                                Course Type
+                            </th>
+                            <th>
+                                Price
+                            </th>
+                            <th>
+                                Quantity
+                            </th>
+                            <th>
+                                Total
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                <input style="display:none" type="checkbox" id="checkBoxToAllChek" name="name" value="" />
+                                Select
+                            </th>
 
-            </tr>
-            <tbody id="CartOrders">
-            </tbody>
+                        </tr>
+                    </thead>
 
-        </table>
 
+
+                    <tbody id="CartOrders">
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
         <label style="font-size:15px;color:black">Total  <span id="TotalAmount"> 0.00</span> </label>
 
         <br />
         <button id="ConfirmOrder" disabled class="btn btn-success">Confirm Order</button>
         <button id="DeleteOrders" disabled class="btn btn-danger">Delete</button>
     </div>
+
+
     <div class="tab-pane" id="tab_3">
-        <table class="table">
-            <tr>
+        <div class="box box-primary">
+            <div class="box-title"></div>
+            <div class="box-body">
 
-                <th>
-                    Title
-                </th>
-                <th>
-                    Discription
-                </th>
-                <th>
-                    CourseType
-                </th>
-                <th>
-                    Price
-                </th>
-                <th>
-                    Quantity
-                </th>
-                <th>
-                    Status
-                </th>
+                <table class="table" id="datatable1">
+                    <thead>
+                        <tr>
 
-            </tr>
+                            <th>
+                                Title
+                            </th>
+                            <th>
+                                Description
+                            </th>
+                            <th>
+                                Course Type
+                            </th>
+                            <th>
+                                Price
+                            </th>
+                            <th>
+                                Quantity
+                            </th>
+                            <th>
+                                Status
+                            </th>
 
-            <tbody id="RecentOrderTableBody">
-            </tbody>
+                        </tr>
+
+                    </thead>
+                    <tbody id="RecentOrderTableBody">
+                    </tbody>
 
 
 
-        </table>
+                </table>
 
-
+            </div>
+        </div>
     </div>
 </div>
 @*<button id="confirmOrder" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Confirm Order</button>*@
 <script>
     $(document).ready(function () {
+        $('#example').dataTable({
+        });
 
+        var table;
+        table = $('#datatable').dataTable();
+
+        var table1;
+        table1 = $('#datatable1').dataTable();
 
         $.ajax({
 
@@ -203,35 +249,26 @@
             data: {},
             success: function (data) {
 
-
+                table1.fnClearTable();
                 $.each(data, function (index) {
 
+                    //    var TableRow = "<tr><td>" + data[index].Title + "</td> <td>" + data[index].Discription + "</td>  <td>" + data[index].CourseType + "</td> <td>" + data[index].Price + "</td>  <td>" + data[index].Quantity + "</td><td>" + data[index].Status + "</td> <td id='btnid'><button data-toggle='modal' data-target='#myModal' style='display:none'  class='CancelOrderBtn btn btn-danger' id='" + data[index].Id + "' >Cancel Order</button></td>    </tr> "
 
-                    //var tablerow = '<tr>'
-                    //    +'<td>' + data[index].Title + '</td> ' +
-                    //    +'<td>' + data[index].Discription + '</td> ' +
-                    //    +'<td>' + data[index].CourseType + '</td> ' +
-                    //    +'<td>' + data[index].Price + '</td> ' +
-                    //    +'<td>' + data[index].Quantity + '</td> '+
-                    //    +'<td>' + data[index].Status + '</td> '+
+                    //                    table1.fnAddData(["<input class='checkboxes' id=" + data[index].Id + " type='checkbox' value=" + data[index].Total + "  >", data[index].Title, data[index].Discription, data[index].CourseType, data[index].Price, data[index].Quantity, data[index].Total, data[index].Status]);
+                    table1.fnAddData([data[index].Title, data[index].Discription, data[index].CourseType, data[index].Price, data[index].Quantity, data[index].Status,]);
 
-                    //'</tr > ';
-
-
-
-                    var TableRow = "<tr><td>" + data[index].Title + "</td> <td>" + data[index].Discription + "</td>  <td>" + data[index].CourseType + "</td> <td>" + data[index].Price + "</td>  <td>" + data[index].Quantity + "</td><td>" + data[index].Status + "</td> <td id='btnid'><button data-toggle='modal' data-target='#myModal' style='display:none'  class='CancelOrderBtn btn btn-danger' id='" + data[index].Id + "' >Cancel Order</button></td>    </tr> "
-                    // var TableRow = "<tr><td>" + data[index].Id + "</td> <td>" + data[index].Title + "</td> <td>" + data[index].Discription + "</td>  <td>" + data[index].CourseType + "</td> <td>" + data[index].Price + "</td>  <td>" + data[index].Quantity + "</td><td>" + data[index].Status + "</td> <td id='btnid'><button data-toggle='modal' data-target='#myModal'  class='CancelOrderBtn btn btn-danger' id='" + data[index].Id + "' disabled >Cancel Order</button></td>    </tr> "
-                    //alert(data[index].Discription);
-                    $('#RecentOrderTableBody').append(TableRow);
+                    //$('#RecentOrderTableBody').append(TableRow);
                 });
 
 
-
+                table1.fnDraw();
+                $('.eeniart0017').css("display", "none");
 
             }
 
 
         })
+
 
         $.ajax({
 
@@ -241,39 +278,28 @@
             success: function (data) {
 
 
+                table.fnClearTable();
                 $.each(data, function (index) {
-
-
-                    //var tablerow = '<tr>'
-                    //    +'<td>' + data[index].Title + '</td> ' +
-                    //    +'<td>' + data[index].Discription + '</td> ' +
-                    //    +'<td>' + data[index].CourseType + '</td> ' +
-                    //    +'<td>' + data[index].Price + '</td> ' +
-                    //    +'<td>' + data[index].Quantity + '</td> '+
-                    //    +'<td>' + data[index].Status + '</td> '+
-
-                    //'</tr > ';
 
                     if (data[index].Status == "Draft") {
 
-                        var TableRow = "<tr>  <td> <input class='checkboxes' id=" + data[index].Id + "  type='checkbox' value=" + data[index].Total + "> </td>  <td>" + data[index].Title + "</td> <td>" + data[index].Discription + "</td>  <td>" + data[index].CourseType + "</td> <td>" + data[index].Price + "</td>  <td>" + data[index].Quantity + "</td> <td class='TotalPrice'>" + data[index].Total + "</td>  <td>" + data[index].Status + "</td>    </tr> "
+                        // var TableRow = "<tr>  <td> <input class='checkboxes' id=" + data[index].Id + "  type='checkbox' value=" + data[index].Total + "> </td>  <td>" + data[index].Title + "</td> <td>" + data[index].Discription + "</td>  <td>" + data[index].CourseType + "</td> <td>" + data[index].Price + "</td>  <td>" + data[index].Quantity + "</td> <td class='TotalPrice'>" + data[index].Total + "</td>  <td>" + data[index].Status + "</td>    </tr> "
+                        table.fnAddData([data[index].Title, data[index].Discription, data[index].CourseType, data[index].Price, data[index].Quantity, data[index].Total, data[index].Status, "<input class='checkboxes' id=" + data[index].Id + " type='checkbox' value=" + data[index].Total + "  >"]);
+
+
                     }
 
 
                     //alert(data[index].Discription);
-                    $('#CartOrders').append(TableRow);
+                    // $('#CartOrders').append(TableRow);
                 });
-
-
-
-
+                table.fnDraw();
+                $('.eeniart0017').css("display", "none");
             }
-
-
         })
         var Total = 0;
         var arr = [];
-        var CheckAllCheckBoxes=0;
+        var CheckAllCheckBoxes = 0;
         $("#CartOrders").on("click", "input[type='checkbox']", function () {
             debugger
 
@@ -306,17 +332,17 @@
             //  alert(arr);
         });
 
-              function checkCheckBoxes() {
-                  if (CheckAllCheckBoxes == 0) {
+        function checkCheckBoxes() {
+            if (CheckAllCheckBoxes == 0) {
 
-                    $("#ConfirmOrder").attr("disabled", true);
-                    $("#DeleteOrders").attr("disabled", true);
-                }
-                else {
-                    $("#ConfirmOrder").attr("disabled", false);
-                    $("#DeleteOrders").attr("disabled", false);
+                $("#ConfirmOrder").attr("disabled", true);
+                $("#DeleteOrders").attr("disabled", true);
+            }
+            else {
+                $("#ConfirmOrder").attr("disabled", false);
+                $("#DeleteOrders").attr("disabled", false);
 
-                }
+            }
         }
 
 
@@ -327,10 +353,14 @@
                 type: "POST",
                 url: "/AspNetOrderNotes/DeleteOrders",
                 data: { "DeleteOrders": arr },
+
+
                 success: function (data) {
-
+                    debugger;
                     window.location.href = '/AspNetOrderNotes/Index/';
+                    // $('#example').dataTable().clear();
 
+                    //   $('#example').data.reload();
                 }
 
             })
@@ -425,6 +455,45 @@
 
 
         })
+
+        function drawTable() {
+            $('#example_filter').addClass("form-group");
+            $('#example_filter').addClass("has-feedback");
+            $('#example_length').addClass("col-lg-9 col-md-8 col-sm-12 col-xs-12");
+            //$('#example_filter').css("col-lg-9 col-md-8 col-sm-12 col-xs-12");
+
+            $('#example_wrapper').css("text-align", "left");
+            $('#example_length').css("text-align", "left");
+            $('#example_length label').addClass("col-md-3 col-sm-12 col-lg-2");
+            $("#example_length label").css("text-align", "left");
+            $('#example_length label').addClass("col-md-2 col-lg-2 col-sm-12");
+            // // $('#example_length label select').addClass("col-md-3 col-sm-8 col-lg-3"); : auto;
+            $('#example_filter input').css({ "border": "1px solid #ddd", "border-radius": "40px", "height": "30px", "margin-top": "-5px", "outline": "none", "padding-left": "10px", "color": "#000000 !important" });
+            //$('#example_length').css({ "overflow": "auto" });
+            $('#example_filter input').addClass("add");
+            $('#example_filter').append('<span  class="glyphicon glyphicon-search  form-control-feedback" style="margin-top: -33px; color: #666;"></span>');
+            var list = $("#ClassID").html();
+            $('#example_length').append(
+
+                '<div class="col-md-1 col-lg-1" style="width:0%; padding-left:1px;">' +
+                '<div class="d-bar"></div>' +
+                '</div>'
+                +
+
+
+
+
+                '<div class="col-md-3 col-lg-3">' +
+                '<div class="col-md-1 col-sm-3 col-xs-3" style="padding-left:0px"><a href=""><i class="glyphicon glyphicon-repeat" data-toggle="tooltip" title="Refresh" data-placement="bottom"></i></a></div>' +
+                '<div class="col-md-1 col-sm-3 col-xs-3"><a href="/Admin_Dashboard/StudentRegister"><i class="glyphicon glyphicon-edit" data-placement="bottom"></i></a></div>' +
+                '<div class="col-md-1 col-sm-3 col-xs-3"><a href="/AspNetUser/DisableStudentIndex"><i class="fa fa-ban" data-placement="bottom"></i>' + '</a></div>' +
+                '<div class="col-md-1 col-sm-3 col-xs-3"><a href=""><i onclick="download()"class="glyphicon glyphicon-download-alt" onclick="download()" data-placement="bottom"></i></a></div>' +
+                '<div class="col-md-1" padding-left:0px;">' +
+                '<div class="d-bar"></div>' +
+                '</div>' +
+                '</div>');
+            //$("#Class").prepend("<option value='0'>Select One</option>");
+        }
 
 
 

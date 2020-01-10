@@ -7,14 +7,13 @@
 
 
 
-    <link href="~/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/style.css" media="screen" rel="stylesheet" />
-  
+<link href="~/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/style.css" media="screen" rel="stylesheet" />
+
 
 <style>
-.page-header.navbar.navbar-fixed-top {
-
-padding-right: 0px;
-}
+    .page-header.navbar.navbar-fixed-top {
+        padding-right: 0px;
+    }
 
     .modal-content {
         position: relative;
@@ -29,8 +28,19 @@ padding-right: 0px;
         outline: 0;
     }
 
+    input[type=search] {
+        border: 1px solid rgb(221, 221, 221);
+        border-radius: 40px;
+        height: 30px;
+        outline: none;
+        padding-left: 10px;
+        color: rgb(221, 221, 221);
+        margin-top: 0px;
+    }
 
-
+    element.style {
+        padding: 10px 0px 0px 0px;
+    }
 </style>
 
 
@@ -60,156 +70,169 @@ padding-right: 0px;
     </ul>
 </div>
 
-<div class="tab-content" style=" background-color: #ECF0F5; padding: 10px 0px 0px 0px; ">
+<div class="tab-content" style="  background-color: #f7f6f6; padding: 10px 0px 0px 0px; ">
 
     <div class="tab-pane active" id="tab_1">
-
-        <p>
-            @Html.ActionLink("Create New", "Create")
-        </p>
-        <table class="table">
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Title)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Description)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.CourseType)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Price)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.CreationDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AspNetSubject.SubjectName)
-                </th>
-                <th></th>
-            </tr>
-
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Title)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CourseType)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Price)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CreationDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AspNetSubject.SubjectName)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                        @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                    </td>
-                </tr>
-            }
-
-        </table>
-    </div><!--End of Tab 1-->
-
-
-    <div class="tab-pane" id="tab_2">
-
-        <table class="table">
-            <tr>
-                <th>
-                    Id
-                </th>
-                <th>
-                    StudentName
-                </th>
-                <th>
-                    ClassName
-                </th>
-                <th>
-                    Total Amount
-                </th>
-                <th>
-                    Status
-                </th>
-
-                <th>
-                    Status
-                </th>
-            </tr>
-
-            <tbody id="RecentOrderTableBody">
-            </tbody>
-        </table>
-
-        <div id="bill" style="margin-left:30px">
-
-            <div class="ticket" id="ticket" style="border:1px solid">
-                <br>
-                <center>
-
-                    <img  src="~/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/logo.PNG" />
-                </center>
-
-
-                <p class="centered">
-                    Officer's Academy
-                    <br><span id="OrderNo"></span>
-                    <br><span id="DateTime"></span>
+        <div class="box box-primary">
+            <div class="box-title"></div>
+            <div class="box-body">
+                <p>
+                    @Html.ActionLink("Create New", "Create")
                 </p>
-
-
-                <br><b>Cashier:</b> SeaAdmin
-
-                <table>
+                <table class="table" id="example">
                     <thead>
+
                         <tr>
-                            <th class="description">Title</th>
-
-                            <th class="quantity">Qty</th>
-                            <th class="price">Price</th>
-                            <th class="Amount">Total</th>
-
+                            <th>
+                                @Html.DisplayNameFor(model => model.Title)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Description)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.CourseType)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Price)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.CreationDate)
+                            </th>
+                            <th>
+                                Subject Name
+                            </th>
+                            <th></th>
                         </tr>
-
-
                     </thead>
-                    <tbody id="billbody" style="border: 1px solid black">
+
+                    <tbody>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CourseType)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Price)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CreationDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AspNetSubject.SubjectName)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                                </td>
+                            </tr>
+                        }
                     </tbody>
+
                 </table>
-                <p class="centered">
-                    Thanks for your purchase!
-                    <br>Developed by : TheRiskAdvisors
-                </p>
-            </div>
-
-
-
+            </div><!--End of Tab 1-->
 
         </div>
-        <button id="btnPrint" style="display:none;margin-left:30px;" class="hidden-print">Print</button>
+    </div>
+    <div class="tab-pane" id="tab_2">
+        <div class="box box-primary">
+            <div class="box-title"></div>
+            <div class="box-body">
+                <table class="table" id="datatable">
+                    <thead>
+                        <tr>
+                            <th>
+                                Id
+                            </th>
+                            <th>
+                                Student Name
+                            </th>
+                            <th>
+                                Session Name
+                            </th>
+                            <th>
+                                Total Amount
+                            </th>
+                            <th>
+                                Status
+                            </th>
 
+                           
+                            <th>
+                                Details
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="RecentOrderTableBody">
+                    </tbody>
+                </table>
+
+
+
+                <div id="bill" style="margin-left:30px">
+
+                    <div class="ticket" id="ticket" style="border:1px solid">
+                        <br>
+                        <center>
+
+                            <img src="~/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/logo.PNG" />
+                        </center>
+
+
+                        <p class="centered">
+                            Officer's Academy
+                            <br><span id="OrderNo"></span>
+                            <br><span id="DateTime"></span>
+                        </p>
+
+
+                        <br><b>Cashier:</b> SeaAdmin
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="description">Title</th>
+
+                                    <th class="quantity">Qty</th>
+                                    <th class="price">Price</th>
+                                    <th class="Amount">Total</th>
+
+                                </tr>
+
+
+                            </thead>
+                            <tbody id="billbody" style="border: 1px solid black">
+                            </tbody>
+                        </table>
+                        <p class="centered">
+                            Thanks for your purchase!
+                            <br>Developed by : TheRiskAdvisors
+                        </p>
+                    </div>
+
+                </div>
+                <button id="btnPrint" style="display:none;margin-left:30px;" class="hidden-print">Print</button>
+            </div>
+        </div>
     </div> <!--End of Tab 2-->
-
-
-
 </div>
-
-
 
 <script>
 
     $(document).ready(function () {
+
+        $('#example').dataTable({
+        });
+        var table;
+        table = $('#datatable').dataTable();
 
         var clickedOrderId;
         $.ajax({
@@ -217,6 +240,7 @@ padding-right: 0px;
             url: "/AspNetNotes/RecentOrders",
             data: {},
             success: function (data) {
+                table.fnClearTable();
                 $.each(data, function (index) {
                     //var tablerow = '<tr>'
                     //    +'<td>' + data[index].Title + '</td> ' +
@@ -228,20 +252,31 @@ padding-right: 0px;
 
                     //'</tr > ';
                     if (data[index].OrderStatus == "Approved") {
-                        var TableRow = "<tr id='" + data[index].OrderID + "' data-toggle='modal' data-target='#myModal' >  <td>" + data[index].OrderID + "</td> <td >" + data[index].StudentName + "</td> <td >" + data[index].ClassName + "</td>  <td >" + data[index].TotalAmount + "</td>  <td >" + data[index].OrderStatus + "</td> <td><button  id='" + data[index].OrderID + "' class='btn btn-success btn-sm approveBtn' disabled>Approve</button></td></tr> "
+
+                        table.fnAddData([data[index].OrderID, data[index].StudentName, data[index].ClassName, data[index].TotalAmount, data[index].OrderStatus, "<center><button  id='" + data[index].OrderID + "' class='btn btn-success btn-sm approveBtn' disabled>Approve</button> <input type='button' class='btn btn-primary btn-sm ' value='Details' id='" + data[index].OrderID + "' data-toggle='modal' data-target='#myModal' ></center>"]);
+
+
+
+
+                        // var TableRow = "<tr id='" + data[index].OrderID + "' data-toggle='modal' data-target='#myModal' >  <td>" + data[index].OrderID + "</td> <td >" + data[index].StudentName + "</td> <td >" + data[index].ClassName + "</td>  <td >" + data[index].TotalAmount + "</td>  <td >" + data[index].OrderStatus + "</td> <td><button  id='" + data[index].OrderID + "' class='btn btn-success btn-sm approveBtn' disabled>Approve</button></td></tr> "
+
+
                     }
                     else {
-                        var TableRow = "<tr id='" + data[index].OrderID + "' data-toggle='modal' data-target='#myModal' > <td>" + data[index].OrderID + "</td> <td >" + data[index].StudentName + "</td> <td >" + data[index].ClassName + "</td>  <td >" + data[index].TotalAmount + "</td>  <td >" + data[index].OrderStatus + "</td> <td><button  id='" + data[index].OrderID + "' class='btn btn-success btn-sm approveBtn'>Approve</button></td></tr> "
+                        table.fnAddData([data[index].OrderID, data[index].StudentName, data[index].ClassName, data[index].TotalAmount, data[index].OrderStatus, "<center><button  id='" + data[index].OrderID + "' class='btn btn-success btn-sm approveBtn' >Approve</button> <input type='button' class='btn btn-primary btn-sm' value='Details' id='" + data[index].OrderID + "' data-toggle='modal' data-target='#myModal' > </center>"]);
+
+                        // var TableRow = "<tr id='" + data[index].OrderID + "' data-toggle='modal' data-target='#myModal' > <td>" + data[index].OrderID + "</td> <td >" + data[index].StudentName + "</td> <td >" + data[index].ClassName + "</td>  <td >" + data[index].TotalAmount + "</td>  <td >" + data[index].OrderStatus + "</td> <td><button  id='" + data[index].OrderID + "' class='btn btn-success btn-sm approveBtn'>Approve</button></td></tr> "
                     }
 
                     //alert(data[index].Discription);
-                    $('#RecentOrderTableBody').append(TableRow);
+                    // $('#RecentOrderTableBody').append(TableRow);
                 });
+                table.fnDraw();
 
             }
         });
 
-        $("#RecentOrderTableBody").on("click", "tr", function () {
+        $("#RecentOrderTableBody").on("click", "input[type='button']", function () {
 
             var OrderId = $(this).attr('id');
             // alert(OrderId);
@@ -288,6 +323,8 @@ padding-right: 0px;
 
                 success: function (data) {
                     $('#billbody').html("");
+
+
                     $.each(data, function (index) {
                         var TableRow = "<tr>  <td class='description'>" + data[index].Title + "</td> <td class='quantity' > &nbsp;&nbsp;&nbsp;&nbsp; " + data[index].Quantity + "</td> <td  class='price'>" + data[index].Price + "</td>  <td class='Amount' >&nbsp; " + data[index].Total + "</td>"
                         $('#billbody').append(TableRow);
@@ -300,7 +337,7 @@ padding-right: 0px;
                     $("#OrderNo").html('Order#' + OrderId);
                     $('#billbody').append("<tr>  <td style='word-break:break-all;' class='description'>Total</td>  <td class='quantity'>&nbsp; </td> <td class='price'></td> <td class='Amount'>&nbsp;&nbsp;" + Total + "</td> </tr>");
                     $("#bill").css('display', 'block');
-                      $("#btnPrint").css('display', 'block');
+                    $("#btnPrint").css('display', 'block');
 
                 }//end of success function
             })
@@ -314,22 +351,18 @@ padding-right: 0px;
 
 
 
-       
+
         var OrderId = $('#btnPrint').attr('name');
 
         var mywindow = window.open('', '', '');
-       
+
 
         mywindow.document.write('<html><head><title>' + document.title + '</title>  ');
 
         mywindow.document.write('<style>td,th,tr,table{border-top: 1px solid black;} td.description,th.description {width: 90px; max-width: 90px;word-break: break-word;}  td.quantity,th.quantity{ width: 40px;max-width: 40px;word-break: break-all;} td.Amount,th.Amount {  width: 60px;max-width: 60px;word-break: break-all;} td.Amount,th.Amount {  width: 60px;max-width: 60px;word-break: break-all;} .centered {text-align: center;align-content: center;} .ticket{width: 230px;max-width:230px;font-size: 12px}  img {  max-width: inherit;  width: inherit;} </style>');
         mywindow.document.write('</head><body >');
-       // mywindow.document.write('<h1>' + document.title + '</h1>');
+        // mywindow.document.write('<h1>' + document.title + '</h1>');
         mywindow.document.write(document.getElementById('bill').innerHTML);
-
-
-       
-
         mywindow.document.write('</body></html>');
         mywindow.document.close(); // necessary for IE >= 10
         mywindow.focus(); // necessary for IE >= 10*/
@@ -350,10 +383,91 @@ padding-right: 0px;
 
         })
 
+        function drawTable() {
+            $('#example_filter').addClass("form-group");
+            $('#example_filter').addClass("has-feedback");
+            $('#example_length').addClass("col-lg-9 col-md-8 col-sm-12 col-xs-12");
+            //$('#example_filter').css("col-lg-9 col-md-8 col-sm-12 col-xs-12");
+
+            $('#example_wrapper').css("text-align", "left");
+            $('#example_length').css("text-align", "left");
+            $('#example_length label').addClass("col-md-3 col-sm-12 col-lg-2");
+            $("#example_length label").css("text-align", "left");
+            $('#example_length label').addClass("col-md-2 col-lg-2 col-sm-12");
+            // // $('#example_length label select').addClass("col-md-3 col-sm-8 col-lg-3"); : auto;
+            $('#example_filter input').css({ "border": "1px solid #ddd", "border-radius": "40px", "height": "30px", "margin-top": "-5px", "outline": "none", "padding-left": "10px", "color": "#000000 !important" });
+            //$('#example_length').css({ "overflow": "auto" });
+            $('#example_filter input').addClass("add");
+            $('#example_filter').append('<span  class="glyphicon glyphicon-search  form-control-feedback" style="margin-top: -33px; color: #666;"></span>');
+            var list = $("#ClassID").html();
+            $('#example_length').append(
+
+                '<div class="col-md-1 col-lg-1" style="width:0%; padding-left:1px;">' +
+                '<div class="d-bar"></div>' +
+                '</div>'
+                +
 
 
 
+
+                '<div class="col-md-3 col-lg-3">' +
+                '<div class="col-md-1 col-sm-3 col-xs-3" style="padding-left:0px"><a href=""><i class="glyphicon glyphicon-repeat" data-toggle="tooltip" title="Refresh" data-placement="bottom"></i></a></div>' +
+                '<div class="col-md-1 col-sm-3 col-xs-3"><a href="/Admin_Dashboard/StudentRegister"><i class="glyphicon glyphicon-edit" data-placement="bottom"></i></a></div>' +
+                '<div class="col-md-1 col-sm-3 col-xs-3"><a href="/AspNetUser/DisableStudentIndex"><i class="fa fa-ban" data-placement="bottom"></i>' + '</a></div>' +
+                '<div class="col-md-1 col-sm-3 col-xs-3"><a href=""><i onclick="download()"class="glyphicon glyphicon-download-alt" onclick="download()" data-placement="bottom"></i></a></div>' +
+                '<div class="col-md-1" padding-left:0px;">' +
+                '<div class="d-bar"></div>' +
+                '</div>' +
+                '</div>');
+            //$("#Class").prepend("<option value='0'>Select One</option>");
+        }
+
+         function DrawTable1() {
+        $('#example_filter').addClass("form-group");
+        $('#example_filter').addClass("has-feedback");
+        $('#example_length').addClass("col-lg-9 col-md-8 col-sm-12 col-xs-12");
+        //$('#example_filter').addClass("col-lg-4 col-md-4 col-sm-12 col-xs-12");
+        $('#example_wrapper').css("text-align", "left");
+        $('#example_length').css("text-align", "left");
+        $('#example_length label').addClass("col-md-3 col-sm-12 col-lg-2");
+        $("#example_length label").css("text-align", "left");
+        $('#example_length label').addClass("col-md-2 col-lg-2 col-sm-12");
+        // // $('#example_length label select').addClass("col-md-3 col-sm-8 col-lg-3"); : auto;
+        $('#example_filter input').css({ "border": "1px solid #ddd", "border-radius": "40px", "height": "30px", "margin-top": "-5px", "outline": "none", "padding-left": "10px", "color": "#2b2b2b !important" });
+        //$('#example_length').css({ "overflow": "auto" });
+        $('#example_filter input').addClass("add");
+        $('#example_filter').append('<span class="glyphicon glyphicon-search form-control-feedback" style="margin-top: -33px; color: #666;"></span>');
+        var list = $("#ClassID").html();
+        $('#example_length').append(
+
+            '<div class="col-md-1" style="width:0%; padding-left:1px;">' +
+             '<div class="d-bar"></div>' +
+            '</div>'
+              +
+
+           '<lable class="col-md-2 col-lg-2 col-sm-12 col-xs-12 control-label" style="text-align:left;margin-top:0px ;width:100px; padding-left:0px; padding-right:0px;">Select Class</lable>' +
+           '<div class="col-md-2 col-lg-2">' +
+            '<select class="form-control input-sm" id="Class" name="ClassID" style="margin-top:-4px" onclick="class_click(this)">' + list +
+            '</select>' +
+           '</div>' +
+
+           '<div class="col-md-1" style="width:0%; padding-left:-10px;">' +
+           '<div class="d-bar"></div>' +
+            '</div>' +
+
+           '<div class="col-md-4 col-lg-4" style="padding-left=0px">' +
+           '<div class="col-md-1 col-sm-3 col-xs-3" style="padding-left:0px"><a href=""><i class="glyphicon glyphicon-repeat" data-toggle="tooltip" title="Refresh" data-placement="bottom"></i></a></div>' +
+           '<div class="col-md-1 col-sm-3 col-xs-3"><span style="color:grey"><i class="glyphicon glyphicon-edit" data-placement="bottom"></i></span></a></div>' +
+           '<div class="col-md-1 col-sm-3 col-xs-3"><span style="color:grey"><i class="fa fa-ban"  data-placement="bottom"></i></span>' + '</a></div>' +
+           '<div class="col-md-1 col-sm-3 col-xs-3"><span style="color:grey"><i class="glyphicon glyphicon-download-alt" data-placement="bottom"></i></a></div>' +
+           ' <div class="col-md-1" style="width:0%; padding-left:10px;">' +
+           '<div class="d-bar"></div>' +
+           '</div>' +
+          '</div>');
+        //$("#Class").prepend("<option value='0'>All</option>");
+    }
 
     })
+
 
 </script>
