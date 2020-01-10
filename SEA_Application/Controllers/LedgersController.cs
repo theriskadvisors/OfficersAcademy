@@ -16,6 +16,7 @@ namespace SEA_Application.Controllers
     public class LedgersController : Controller
     {
         private SEA_DatabaseEntities db = new SEA_DatabaseEntities();
+        int SessionID = Int32.Parse(SessionIDStaticController.GlobalSessionID);
 
         // GET: Ledgers
         //public ActionResult Index()
@@ -264,7 +265,7 @@ namespace SEA_Application.Controllers
 
                         var uid = User.Identity.GetUserId();
                         ledger.CreatedBy = db.AspNetUsers.Where(x => x.Id == uid).Select(x => x.Name).FirstOrDefault();
-                        ledger.SessionId = db.AspNetSessions.Where(x => x.Status == "Active").Select(x => x.Id).FirstOrDefault();
+                        ledger.SessionId = SessionID;
                        
                         var StartingBalance= workSheet.Cells[rowIterator, 4].Value.ToString();
                         ledger.StartingBalance = decimal.Parse(StartingBalance);

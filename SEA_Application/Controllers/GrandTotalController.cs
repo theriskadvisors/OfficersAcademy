@@ -282,8 +282,8 @@ namespace SEA_Application.Controllers
             var S_ID = db.StudentFeeMonths.Where(x => x.Id == feemonthid).FirstOrDefault().StudentId;
             var student = db.AspNetStudents.Where(x => x.Id == S_ID).FirstOrDefault();
             StudentFeeMonth Student_FeeMonth = db.StudentFeeMonths.Where(x => x.StudentId == student.Id && x.Months == month).FirstOrDefault();
-            Student_FeeMonth.ValildityDate = dates.ValidityDate;
-            Student_FeeMonth.DueDate = dates.DueDate;
+           // Student_FeeMonth.ValildityDate = dates.ValidityDate;
+          //  Student_FeeMonth.DueDate = dates.DueDate;
             Student_FeeMonth.Status = "Paid";
             db.SaveChanges();
 
