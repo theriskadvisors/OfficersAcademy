@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using SEA_Application.Models;
 using System.Threading.Tasks;
 using SEA_Application.Models.StudentAssessments;
+using Microsoft.AspNet.Identity;
 
 namespace SEA_Application.Controllers
 {
@@ -206,8 +207,8 @@ namespace SEA_Application.Controllers
             {
                 var totalfee = db.StudentRecurringFees.Where(x => x.ClassId == cid).FirstOrDefault();
                 var installment = totalfee.TotalFee;
-                    installment = totalfee.TotalFee / 2;
-              
+                installment = totalfee.TotalFee / 2;
+
                 //var totalfee = db.StudentRecurringFees.Where(x => x.ClassId == cid).FirstOrDefault();
 
                 string[] Months = { "September", "October", "November", "December", "January", "February", "March", "April", "May", "June", "July", "August" };
@@ -262,24 +263,35 @@ namespace SEA_Application.Controllers
         {
             if (ModelState.IsValid)
             {
-               var TotalFee = db.AspNetSessions.Where(x => x.Id == SessionID).FirstOrDefault().Total_Fee;
+                var TotalFee = db.AspNetSessions.Where(x => x.Id == SessionID).FirstOrDefault().Total_Fee;
+                decimal? TotalFeeOfAllStudents=0;
 
 
                 var feetype = Request.Form["feeType"];
                 IEnumerable<string> selectedstudents = Request.Form["students"].Split(',');
+                int count = selectedstudents.Count();
+
+                for(int i =1;i<=count;i++)
+                {
+                    TotalFeeOfAllStudents = TotalFee + TotalFeeOfAllStudents;
+
+
+                }
+
+
 
                 StudentRecurringFee studentRecurringFees = new StudentRecurringFee();
 
                 studentRecurringFees.ClassId = data.ClassId;
                 studentRecurringFees.SessionId = SessionID;
-                studentRecurringFees.TutionFee = TotalFee ;
+                studentRecurringFees.TutionFee = TotalFee;
                 studentRecurringFees.TotalFee = TotalFee;
                 db.StudentRecurringFees.Add(studentRecurringFees);
-                  db.SaveChanges();
+                db.SaveChanges();
 
                 var Total_Fees = studentRecurringFees.TotalFee;
-              
-                if(feetype == "Installment")
+
+                if (feetype == "Installment")
                 {
                     var CalculatedFee = Total_Fees / 2;
                     foreach (var std in selectedstudents)
@@ -289,8 +301,8 @@ namespace SEA_Application.Controllers
 
                         var classid = db.AspNetStudents.Where(x => x.Id == student.Id).Select(x => x.ClassID).FirstOrDefault();
                         var Month = DateTime.Now.ToString("MMMM");
-                        
-                        for(int i=0;i<=3; i++)
+
+                        for (int i = 0; i <= 3; i++)
                         {
                             var FirstMonth = DateTime.Now.ToString("MMMM");
                             StudentFeeMonth stdfeemonth = new StudentFeeMonth();
@@ -298,7 +310,7 @@ namespace SEA_Application.Controllers
                             stdfeemonth.Multiplier = 2;
                             stdfeemonth.SessionId = SessionID;
                             stdfeemonth.Status = "Pending";
-                           
+
                             var dddd = DateTime.Now;
                             var d = dddd.ToString("yyyy-MM-dd");
                             stdfeemonth.IssueDate = d;
@@ -315,7 +327,7 @@ namespace SEA_Application.Controllers
                                 stdfeemonth.FeePayable = 0;
                                 stdfeemonth.Months = DateTime.Now.Date.AddMonths(1).ToString("MMMM");
                             }
-                            else if(i == 2)
+                            else if (i == 2)
                             {
                                 stdfeemonth.Months = DateTime.Now.Date.AddMonths(2).ToString("MMMM");
                                 stdfeemonth.InstalmentAmount = CalculatedFee;
@@ -335,14 +347,14 @@ namespace SEA_Application.Controllers
                             stdfeemonth.FeeType = "Installment";
                             db.StudentFeeMonths.Add(stdfeemonth);
                             db.SaveChanges();
-                     
+
                         }
 
                     }
                 }
 
 
-                else if(feetype == "PerMonth")
+                else if (feetype == "PerMonth")
                 {
                     foreach (var std in selectedstudents)
                     {
@@ -371,13 +383,13 @@ namespace SEA_Application.Controllers
                                 stdfeemonth.InstalmentAmount = CalculatedFee;
                                 stdfeemonth.FeePayable = CalculatedFee;
                             }
-                            else 
+                            else
                             {
                                 stdfeemonth.InstalmentAmount = CalculatedFee;
                                 stdfeemonth.FeePayable = CalculatedFee;
                                 stdfeemonth.Months = DateTime.Now.Date.AddMonths(i).ToString("MMMM");
                             }
-                           
+
                             stdfeemonth.FeeType = "PerMonth";
                             db.StudentFeeMonths.Add(stdfeemonth);
                             db.SaveChanges();
@@ -386,12 +398,12 @@ namespace SEA_Application.Controllers
 
                     }
 
-                 }
+                }
                 else
                 {
                     foreach (var std in selectedstudents)
                     {
-                    
+
                         AspNetStudent student = db.AspNetStudents.Where(x => x.StudentID == std).FirstOrDefault();
 
                         var classid = db.AspNetStudents.Where(x => x.Id == student.Id).Select(x => x.ClassID).FirstOrDefault();
@@ -430,7 +442,65 @@ namespace SEA_Application.Controllers
                         }
 
                     }
-               }
+                }
+
+                var id = User.Identity.GetUserId();
+                var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
+
+                Voucher voucher = new Voucher();
+                voucher.Name = "Student Fee Created";
+                voucher.Notes = "Student Fee Created";
+                voucher.Date = DateTime.Now;
+                voucher.Name = username;
+                voucher.CreatedBy = username;
+                voucher.SessionID = SessionID;
+                int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);
+
+                voucher.VoucherNo = Convert.ToInt32(VoucherObj) + 1;
+                db.Vouchers.Add(voucher);
+                db.SaveChanges();
+
+               var Leadger =  db.Ledgers.Where(x => x.Name == "Account Receiveable").FirstOrDefault();
+
+                int AccountRecId = Leadger.Id;
+                decimal? CurrentBalance = Leadger.CurrentBalance;
+                VoucherRecord voucherRecord = new VoucherRecord();
+                decimal? AfterBalance = CurrentBalance + TotalFeeOfAllStudents;
+                voucherRecord.LedgerId = AccountRecId;
+                voucherRecord.Type = "Dr";
+                voucherRecord.Amount = TotalFeeOfAllStudents;
+                voucherRecord.CurrentBalance = CurrentBalance;
+                voucherRecord.AfterBalance = AfterBalance;
+                voucherRecord.VoucherId = voucher.Id;
+                voucherRecord.Description = "Student Fee debited in Account Receiveable";
+                Leadger.CurrentBalance = AfterBalance;
+                db.VoucherRecords.Add(voucherRecord);
+                db.SaveChanges();
+
+                //Second;
+
+                VoucherRecord voucherRecord1 = new VoucherRecord();
+
+                var LeadgerStudentFee = db.Ledgers.Where(x => x.Name == "Student Fee").FirstOrDefault();
+
+                decimal? CurrentBalanceOfStudentFee = LeadgerStudentFee.CurrentBalance;
+                decimal? AfterBalanceOfStudentFee = CurrentBalanceOfStudentFee + TotalFeeOfAllStudents;
+                voucherRecord1.LedgerId = LeadgerStudentFee.Id;
+                voucherRecord1.Type = "Cr";
+                voucherRecord1.Amount = TotalFeeOfAllStudents;
+                voucherRecord1.CurrentBalance = CurrentBalanceOfStudentFee;
+                voucherRecord1.AfterBalance = AfterBalanceOfStudentFee;
+                voucherRecord1.VoucherId = voucher.Id;
+                voucherRecord1.Description = "Student Fee Credit in Income";
+                LeadgerStudentFee.CurrentBalance = AfterBalanceOfStudentFee;
+
+                db.VoucherRecords.Add(voucherRecord1);
+                db.SaveChanges();
+
+
+               // db.SaveChanges();
+
+
 
             }
 

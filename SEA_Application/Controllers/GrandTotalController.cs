@@ -10,12 +10,14 @@ using System.Web.Mvc;
 using OfficeOpenXml;
 using System.IO;
 using System.Text;
+using Microsoft.AspNet.Identity;
 
 namespace SEA_Application.Controllers
 {
     public class GrandTotalController : Controller
     {
         private SEA_DatabaseEntities db = new SEA_DatabaseEntities();
+        int SessionID = Int32.Parse(SessionIDStaticController.GlobalSessionID);
 
         //
         // GET: /GrandTotal/
@@ -287,6 +289,7 @@ namespace SEA_Application.Controllers
             Student_FeeMonth.Status = "Paid";
             db.SaveChanges();
 
+
             var FeeMonth = db.StudentFeeMonths.Where(x => x.Id == feemonthid).FirstOrDefault();
 
             ChallanList.FeeMonth = FeeMonth.Months;
@@ -396,6 +399,88 @@ namespace SEA_Application.Controllers
             }
             return Content("0");
 
+        }
+
+        public ActionResult ChangeStatus(int Id)
+        {
+
+          var StudentFeeMonthToUpdate =   db.StudentFeeMonths.Where(x => x.Id == Id).FirstOrDefault();
+
+            StudentFeeMonthToUpdate.Status = "Paid";
+            db.SaveChanges();
+
+
+
+            var id = User.Identity.GetUserId();
+            var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
+
+            Voucher voucher = new Voucher();
+            voucher.Name = "Student Fee Clear";
+            voucher.Notes = "Student Fee Clear";
+            voucher.Date = DateTime.Now;
+            voucher.Name = username;
+            voucher.SessionID = SessionID;
+           
+            int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);
+
+            voucher.VoucherNo = Convert.ToInt32(VoucherObj) + 1;
+
+            db.Vouchers.Add(voucher);
+            db.SaveChanges();
+
+            var Leadger = db.Ledgers.Where(x => x.Name == "Account Receiveable").FirstOrDefault();
+
+            int AccountRecId = Leadger.Id;
+
+            decimal? CurrentBalance = Leadger.CurrentBalance;
+
+
+            VoucherRecord voucherRecord = new VoucherRecord();
+            decimal? AfterBalance = CurrentBalance - Convert.ToDecimal( StudentFeeMonthToUpdate.FeePayable);
+            
+            voucherRecord.LedgerId = AccountRecId;
+            voucherRecord.Type = "Cr";
+            voucherRecord.Amount = Convert.ToDecimal( StudentFeeMonthToUpdate.FeePayable);
+
+            voucherRecord.CurrentBalance = CurrentBalance;
+            voucherRecord.AfterBalance = AfterBalance;
+            voucherRecord.VoucherId = voucher.Id;
+            voucherRecord.Description = "Student Fee Credit in Account Receiveable";
+           
+            Leadger.CurrentBalance = AfterBalance;
+
+            db.VoucherRecords.Add(voucherRecord);
+            db.SaveChanges();
+
+
+            //Second;
+
+            VoucherRecord voucherRecord1 = new VoucherRecord();
+
+            var LeadgerAdminDrawer = db.Ledgers.Where(x => x.Name == "Admin Drawer").FirstOrDefault();
+
+            decimal? CurrentBalanceOfAdminDrawer = LeadgerAdminDrawer.CurrentBalance;
+            
+            decimal? AfterBalanceOfAdminDrawer = CurrentBalanceOfAdminDrawer + Convert.ToDecimal(StudentFeeMonthToUpdate.FeePayable);
+           
+            voucherRecord1.LedgerId = LeadgerAdminDrawer.Id;
+            voucherRecord1.Type = "Dr";
+            voucherRecord1.Amount = Convert.ToDecimal(StudentFeeMonthToUpdate.FeePayable);
+            voucherRecord1.CurrentBalance = CurrentBalanceOfAdminDrawer;
+            voucherRecord1.AfterBalance = AfterBalanceOfAdminDrawer;
+            voucherRecord1.VoucherId = voucher.Id;
+            voucherRecord1.Description = "Student Fee Debit in Admin Drawe";
+            LeadgerAdminDrawer.CurrentBalance = AfterBalanceOfAdminDrawer;
+
+            db.VoucherRecords.Add(voucherRecord1);
+            db.SaveChanges();
+            
+
+
+
+
+
+            return Json("", JsonRequestBehavior.AllowGet);
         }
     }
 }
