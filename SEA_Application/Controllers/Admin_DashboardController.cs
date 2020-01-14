@@ -410,7 +410,7 @@ namespace SEA_Application.Controllers
             ViewBag.TotalSessions = db.AspNetSessions.Count();
             ViewBag.TotalTeachers = db.AspNetEmployees.Where(x => x.PositionAppliedFor == "TEACHER" && x.PositionAppliedFor == "Teacher").Count();
 
-                                    
+
 
 
             ViewBag.TotalMessages = db.AspNetMessage_Receiver.Where(m => m.ReceiverID == CurrentUserId && m.Seen == "Not Seen").Count();
@@ -1725,7 +1725,7 @@ namespace SEA_Application.Controllers
                 emp.SpouseHighestDegree = Request.Form["spouseHighestDegree"];
                 emp.SpouseOccupation = Request.Form["spouseOccupation"];
                 emp.SpouseBusinessAddress = Request.Form["spouseBusinessAddress"];
-                
+
                 //emp.GrossSalary = Convert.ToInt32(Request.Form["GrossSalary"]);
                 //emp.BasicSalary = Convert.ToInt32(Request.Form["BasicSalary"]);
                 //emp.MedicalAllowance = Convert.ToInt32(Request.Form["MedicalAllowance"]);
@@ -1761,7 +1761,7 @@ namespace SEA_Application.Controllers
 
                     AspNetUsers_Session US = new AspNetUsers_Session();
                     US.UserID = emp.UserId;
-                  //  int sessionid = db.AspNetSessions.Where(x => x.Status == "Active").FirstOrDefault().Id;
+                    //  int sessionid = db.AspNetSessions.Where(x => x.Status == "Active").FirstOrDefault().Id;
                     US.SessionID = SessionID;
                     db.AspNetUsers_Session.Add(US);
                     if (db.SaveChanges() > 0)
@@ -1892,8 +1892,8 @@ namespace SEA_Application.Controllers
         {
             //var data = db.AspNetClasses 
             // ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
-           ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
-            ViewBag.ClassID2 = db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault();
+            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
+            // ViewBag.ClassID2 = db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault();
             return View();
         }
 
@@ -1902,7 +1902,7 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> StudentRegister(RegisterViewModel model, HttpPostedFileBase image)
         {
-          var age  = Convert.ToInt32(Request.Form["Age"]);
+            var age = Convert.ToInt32(Request.Form["Age"]);
             model.UserName = Request.Form["UserName"];
             var dbTransaction = db.Database.BeginTransaction();
             try
@@ -1916,7 +1916,7 @@ namespace SEA_Application.Controllers
                         var fileName = Path.GetFileName(image.FileName);
                         var extension = Path.GetExtension(image.FileName);
                         image.SaveAs(Server.MapPath("~/Content/Images/StudentImages/") + image.FileName);
-                    //    file.SaveAs(Server.MapPath("/Upload/") + file.FileName);
+                        //    file.SaveAs(Server.MapPath("/Upload/") + file.FileName);
                     }
 
 
@@ -1925,7 +1925,7 @@ namespace SEA_Application.Controllers
 
                     var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Name = model.Name, PhoneNumber = Request.Form["cellNo"] };
                     var result = await UserManager.CreateAsync(user, model.Password);
-                        if (result.Succeeded)
+                    if (result.Succeeded)
                     {
                         ruffdata rd = new ruffdata();
                         rd.SessionID = SessionID;
@@ -1935,15 +1935,15 @@ namespace SEA_Application.Controllers
                         db.ruffdatas.Add(rd);
                         db.SaveChanges();
 
-
                         AspNetStudent student = new AspNetStudent();
+                        
                         student.StudentID = user.Id;
 
-                    
+
                         student.Address = Request.Form["Address"];
                         student.ClassTimings = Request.Form["ClassTimings"];
                         student.Fathers_Name = Request.Form["Father_Name"];
-                        
+
                         student.Age = age;
 
 
@@ -1971,10 +1971,11 @@ namespace SEA_Application.Controllers
                         AspNetStudent_Session_class asc = new AspNetStudent_Session_class();
                         asc.ClassID = student.ClassID;
                         Aspnet_Employee_Session ES = new Aspnet_Employee_Session();
-                      //  int sessionid = db.AspNetSessions.Where(x => x.Status == "Active").FirstOrDefault().Id;
+                        //  int sessionid = db.AspNetSessions.Where(x => x.Status == "Active").FirstOrDefault().Id;
                         asc.SessionID = SessionID;
                         asc.StudentID = student.Id;
                         db.AspNetStudent_Session_class.Add(asc);
+
                         if (db.SaveChanges() > 0)
                         {
 
@@ -1987,21 +1988,21 @@ namespace SEA_Application.Controllers
 
 
 
-                        var subID = selectedsubjects.First();
+                       // var subID = selectedsubjects.First();
                         //  var classID = db.AspNetSubjects.Where(x=> x.Id == int.Parse(subID)).Select(x=> x.ClassID).FirstOrDefault();
-                        int id = Int32.Parse(subID);
-                        var c_id = db.AspNetSubjects.Where(x => x.Id == id).FirstOrDefault().ClassID;
-                        var subjects = db.AspNetSubjects.Where(x => x.ClassID == c_id && x.IsManadatory == true && x.CourseType == student.CourseType ).Select(x => x.Id);
+                      //  int id = Int32.Parse(subID);
+                      //  var c_id = db.AspNetSubjects.Where(x => x.Id == id).FirstOrDefault().ClassID;
+                        //var subjects = db.AspNetSubjects.Where(x => x.ClassID == c_id && x.IsManadatory == true && x.CourseType == student.CourseType).Select(x => x.Id);
 
-                        foreach (var item in subjects)
-                        {
+                        //foreach (var item in subjects)
+                        //{
 
-                            AspNetStudent_Subject stu_sub = new AspNetStudent_Subject();
-                            stu_sub.StudentID = user.Id;
-                            stu_sub.SubjectID = Convert.ToInt32(item);
-                            db.AspNetStudent_Subject.Add(stu_sub);
-                            db.SaveChanges();
-                        }
+                        //    AspNetStudent_Subject stu_sub = new AspNetStudent_Subject();
+                        //    stu_sub.StudentID = user.Id;
+                        //    stu_sub.SubjectID = Convert.ToInt32(item);
+                        //    db.AspNetStudent_Subject.Add(stu_sub);
+                        //    db.SaveChanges();
+                        //}
 
                         foreach (var item in selectedsubjects)
                         {
@@ -2161,14 +2162,14 @@ namespace SEA_Application.Controllers
         {
             int classid = db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault().Id;
 
-           return Content(classid.ToString());
+            return Content(classid.ToString());
         }
 
         [HttpGet]
         public JsonResult SubjectsByClass(int id, string coursetype)
         {
             db.Configuration.ProxyCreationEnabled = false;
-            List<AspNetSubject> sub = db.AspNetSubjects.Where(r => r.ClassID == id && r.IsManadatory == false && r.CourseType == coursetype).OrderByDescending(r => r.Id).ToList();
+            List<AspNetSubject> sub = db.AspNetSubjects.Where(r => r.ClassID == id && r.CourseType == coursetype).OrderByDescending(r => r.Id).ToList();
             ViewBag.Subjects = sub;
             return Json(sub, JsonRequestBehavior.AllowGet);
 
