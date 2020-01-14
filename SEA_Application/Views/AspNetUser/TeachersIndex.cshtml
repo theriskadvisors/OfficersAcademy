@@ -105,6 +105,7 @@ else
     }
 
     function TeacherByClass(selectedClass) {
+       // alert("test");
         $('.eeniart0017').css("display", "block");
         $.get('@Url.Action("TeachersByClass", "AspNetUser")',
            { id: selectedClass }, function (data) {
@@ -120,6 +121,8 @@ else
                $('#View').html("View Filtered");
            });
     }
+
+
     function download() {
         var classId = $("#Class").val();
         
@@ -154,12 +157,13 @@ else
         $('#example_length').append(
 
             '<div class="col-md-1" style="width:0%; padding-left:1px;">' +
-            
             '</div>'
               +
-
-        
-
+           '<lable class="col-md-2 col-lg-2 col-sm-12 col-xs-12 control-label" style="text-align:left;margin-top:0px ;width:100px; padding-left:0px; padding-right:0px;">Select Class</lable>' +
+           '<div class="col-md-2 col-lg-2">' +
+            '<select class="form-control input-sm" id="Class" name="ClassID" style="margin-top:-4px" onclick="class_click(this)">' + list +
+            '</select>' +
+           '</div>' +
            '<div class="col-md-1" style="width:0%; padding-left:-10px;">' +
            '<div class="d-bar"></div>' +
             '</div>' +

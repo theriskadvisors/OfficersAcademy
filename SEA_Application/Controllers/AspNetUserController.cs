@@ -67,7 +67,6 @@ namespace SEA_Application.Controllers
 
 
         //private object ConfigurationManager;
-
         /*************************************************************Student List Functions*******************************************************/
         [HttpGet]
         public JsonResult SubjectsByClass(int id)
@@ -395,7 +394,8 @@ namespace SEA_Application.Controllers
             ViewBag.UserDetails = aspNetUser.Highest_Degree;
             ViewBag.CourseType = employee.CourseType;
             ViewBag.employee = employee;
-            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+            //ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
             if (aspNetUser == null)
             {
                 return HttpNotFound();
@@ -741,7 +741,7 @@ namespace SEA_Application.Controllers
 
            // ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
 
-            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             return View();
         }
 
@@ -1193,7 +1193,7 @@ namespace SEA_Application.Controllers
         public ViewResult TeachersIndex()
         {
             //ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
-            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             
             return View();
         }
