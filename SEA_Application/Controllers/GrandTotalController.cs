@@ -276,6 +276,7 @@ namespace SEA_Application.Controllers
 
             var userid = idlist.Split(',');
             var dates = db.FeeDateSettings.FirstOrDefault();
+            // challanform ChallanList = new challanform();
             challanform ChallanList = new challanform();
 
             int feemonthid = Int32.Parse(idlist);
@@ -284,11 +285,10 @@ namespace SEA_Application.Controllers
             var S_ID = db.StudentFeeMonths.Where(x => x.Id == feemonthid).FirstOrDefault().StudentId;
             var student = db.AspNetStudents.Where(x => x.Id == S_ID).FirstOrDefault();
             StudentFeeMonth Student_FeeMonth = db.StudentFeeMonths.Where(x => x.StudentId == student.Id && x.Months == month).FirstOrDefault();
-           // Student_FeeMonth.ValildityDate = dates.ValidityDate;
-          //  Student_FeeMonth.DueDate = dates.DueDate;
+            // Student_FeeMonth.ValildityDate = dates.ValidityDate;
+            //  Student_FeeMonth.DueDate = dates.DueDate;
             Student_FeeMonth.Status = "Paid";
             db.SaveChanges();
-
 
             var FeeMonth = db.StudentFeeMonths.Where(x => x.Id == feemonthid).FirstOrDefault();
 
@@ -297,6 +297,8 @@ namespace SEA_Application.Controllers
             ChallanList.StudentUserName = FeeMonth.AspNetStudent.AspNetUser.UserName;
             ChallanList.PayableFee = FeeMonth.FeePayable;
             ChallanList.StudentClass = FeeMonth.AspNetStudent.AspNetClass.ClassName;
+            ChallanList.ChallanID = FeeMonth.Id;
+
 
             return Json(ChallanList, JsonRequestBehavior.AllowGet);
         }
@@ -418,7 +420,7 @@ namespace SEA_Application.Controllers
             voucher.Name = "Student Fee Clear";
             voucher.Notes = "Student Fee Clear";
             voucher.Date = DateTime.Now;
-            voucher.Name = username;
+            voucher.CreatedBy = username;
             voucher.SessionID = SessionID;
            
             int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);
