@@ -38,7 +38,7 @@ namespace SEA_Application.Controllers
                                join usr in db.AspNetUsers on std.StudentID equals usr.Id
                                join fee_mon in db.StudentFeeMonths on std.Id equals fee_mon.StudentId
 
-                               where usr.Status != "False" && fee_mon.Status == "Pending"
+                               where usr.Status != "False" 
                                select new { fee_mon.Id, usr.Name, usr.PhoneNumber, usr.Email, usr.UserName, std.AspNetClass.ClassName, fee_mon.Months, fee_mon.Status, fee_mon.FeePayable }).ToList();
                 return Json(result1, JsonRequestBehavior.AllowGet);
 
@@ -134,7 +134,7 @@ namespace SEA_Application.Controllers
                            join usr in db.AspNetUsers on std.StudentID equals usr.Id
                            join fee_mon in db.StudentFeeMonths on std.Id equals fee_mon.StudentId
 
-                           where usr.Status != "False" && fee_mon.Status == "Pending"
+                           where usr.Status != "False" 
                            select new { fee_mon.Id, usr.Name, usr.PhoneNumber, usr.Email, usr.UserName, std.AspNetClass.ClassName, fee_mon.Months, fee_mon.Status, fee_mon.FeePayable }).ToList();
             return Json(result1, JsonRequestBehavior.AllowGet);
 
@@ -274,22 +274,27 @@ namespace SEA_Application.Controllers
         public JsonResult GetChallanForm(string month, string idlist)
         {
 
+            //var userid = idlist.Split(',');
+            //var dates = db.FeeDateSettings.FirstOrDefault();
+            //// challanform ChallanList = new challanform();
+            //challanform ChallanList = new challanform();
+
+            //int feemonthid = Int32.Parse(idlist);
+            //var mnth = db.StudentFeeMonths.Where(x => x.Id == feemonthid).FirstOrDefault().Months;
+            //month = mnth;
+            //var S_ID = db.StudentFeeMonths.Where(x => x.Id == feemonthid).FirstOrDefault().StudentId;
+            //var student = db.AspNetStudents.Where(x => x.Id == S_ID).FirstOrDefault();
+            //StudentFeeMonth Student_FeeMonth = db.StudentFeeMonths.Where(x => x.StudentId == student.Id && x.Months == month).FirstOrDefault();
+
+            //// Student_FeeMonth.ValildityDate = dates.ValidityDate;
+            ////  Student_FeeMonth.DueDate = dates.DueDate;
+            //Student_FeeMonth.Status = "Paid";
+            //db.SaveChanges();
+            
             var userid = idlist.Split(',');
-            var dates = db.FeeDateSettings.FirstOrDefault();
-            // challanform ChallanList = new challanform();
-            challanform ChallanList = new challanform();
-
             int feemonthid = Int32.Parse(idlist);
-            var mnth = db.StudentFeeMonths.Where(x => x.Id == feemonthid).FirstOrDefault().Months;
-            month = mnth;
-            var S_ID = db.StudentFeeMonths.Where(x => x.Id == feemonthid).FirstOrDefault().StudentId;
-            var student = db.AspNetStudents.Where(x => x.Id == S_ID).FirstOrDefault();
-            StudentFeeMonth Student_FeeMonth = db.StudentFeeMonths.Where(x => x.StudentId == student.Id && x.Months == month).FirstOrDefault();
-            // Student_FeeMonth.ValildityDate = dates.ValidityDate;
-            //  Student_FeeMonth.DueDate = dates.DueDate;
-            Student_FeeMonth.Status = "Paid";
-            db.SaveChanges();
 
+            challanform ChallanList = new challanform();
             var FeeMonth = db.StudentFeeMonths.Where(x => x.Id == feemonthid).FirstOrDefault();
 
             ChallanList.FeeMonth = FeeMonth.Months;

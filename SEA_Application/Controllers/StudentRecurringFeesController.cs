@@ -82,7 +82,6 @@ namespace SEA_Application.Controllers
         }
         public ActionResult StudentList(int id)
         {
-
             var result1 = (from std in db.AspNetStudents
                            join usr in db.AspNetUsers on std.StudentID equals usr.Id
                            where usr.Status != "False" && std.ClassID == id
@@ -261,29 +260,27 @@ namespace SEA_Application.Controllers
 
         public ActionResult AddData(FeesData data)
         {
+
+            int? sessionId = db.AspNetClasses.Where(x => x.Id == data.ClassId).FirstOrDefault().SessionID;
+
             if (ModelState.IsValid)
             {
                 var TotalFee = db.AspNetSessions.Where(x => x.Id == SessionID).FirstOrDefault().Total_Fee;
-                decimal? TotalFeeOfAllStudents=0;
+
+                decimal? TotalFeeOfAllStudents = 0;
 
 
                 var feetype = Request.Form["feeType"];
                 IEnumerable<string> selectedstudents = Request.Form["students"].Split(',');
                 int count = selectedstudents.Count();
 
-                for(int i =1;i<=count;i++)
+                for (int i = 1; i <= count; i++)
                 {
                     TotalFeeOfAllStudents = TotalFee + TotalFeeOfAllStudents;
-
-
                 }
-
-
-
                 StudentRecurringFee studentRecurringFees = new StudentRecurringFee();
-
                 studentRecurringFees.ClassId = data.ClassId;
-                studentRecurringFees.SessionId = SessionID;
+                studentRecurringFees.SessionId = sessionId;
                 studentRecurringFees.TutionFee = TotalFee;
                 studentRecurringFees.TotalFee = TotalFee;
                 db.StudentRecurringFees.Add(studentRecurringFees);
@@ -308,7 +305,7 @@ namespace SEA_Application.Controllers
                             StudentFeeMonth stdfeemonth = new StudentFeeMonth();
                             stdfeemonth.StudentId = student.Id;
                             stdfeemonth.Multiplier = 2;
-                            stdfeemonth.SessionId = SessionID;
+                            stdfeemonth.SessionId = sessionId;
                             stdfeemonth.Status = "Pending";
 
                             var dddd = DateTime.Now;
@@ -370,7 +367,7 @@ namespace SEA_Application.Controllers
                             StudentFeeMonth stdfeemonth = new StudentFeeMonth();
                             stdfeemonth.StudentId = student.Id;
                             stdfeemonth.Multiplier = 1;
-                            stdfeemonth.SessionId = SessionID;
+                            stdfeemonth.SessionId = sessionId;
                             stdfeemonth.Status = "Pending";
 
                             var dddd = DateTime.Now;
@@ -415,7 +412,7 @@ namespace SEA_Application.Controllers
                             StudentFeeMonth stdfeemonth = new StudentFeeMonth();
                             stdfeemonth.StudentId = student.Id;
                             stdfeemonth.Multiplier = 4;
-                            stdfeemonth.SessionId = SessionID;
+                            stdfeemonth.SessionId = sessionId; //could be change To SessionID
                             stdfeemonth.Status = "Pending";
 
                             var dddd = DateTime.Now;
@@ -453,14 +450,14 @@ namespace SEA_Application.Controllers
                 voucher.Date = DateTime.Now;
                 voucher.Name = username;
                 voucher.CreatedBy = username;
-                voucher.SessionID = SessionID;
+                voucher.SessionID = sessionId;
                 int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);
 
                 voucher.VoucherNo = Convert.ToInt32(VoucherObj) + 1;
                 db.Vouchers.Add(voucher);
                 db.SaveChanges();
 
-               var Leadger =  db.Ledgers.Where(x => x.Name == "Account Receiveable").FirstOrDefault();
+                var Leadger = db.Ledgers.Where(x => x.Name == "Account Receiveable").FirstOrDefault();
 
                 int AccountRecId = Leadger.Id;
                 decimal? CurrentBalance = Leadger.CurrentBalance;
@@ -498,7 +495,7 @@ namespace SEA_Application.Controllers
                 db.SaveChanges();
 
 
-               // db.SaveChanges();
+                // db.SaveChanges();
 
 
 
@@ -590,7 +587,6 @@ namespace SEA_Application.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -600,9 +596,6 @@ namespace SEA_Application.Controllers
             base.Dispose(disposing);
         }
 
-
-
-
         public ActionResult AddFee()
         {
             //var ClassID = db.StudentRecurringFees.Include(x => x.AspNetClass).FirstOrDefault().ClassId;
@@ -610,30 +603,20 @@ namespace SEA_Application.Controllers
             //ViewBag.Class_ID = ClassID;
             ViewBag.SessionId = new SelectList(db.AspNetSessions, "Id", "SessionName");
             //  ViewBag.ClassId = new SelectList(db.AspNetClasses, "Id", "ClassName");
-
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
-
 
             return View();
         }
         public ActionResult StudentByClass(int id)
         {
-
-
-
+            var studentList = db.AspNetStudents.Where(x => x.AspNetStudent_Session_class.Any(y => y.ClassID == id)).Select(x => x.Id).ToList();
             var result1 = (from std in db.AspNetStudents
                            join usr in db.AspNetUsers on std.StudentID equals usr.Id
-
-                           where usr.Status != "False" && std.ClassID == id
+                           where usr.Status != "False" && std.ClassID == id && !db.StudentFeeMonths.Any(m => m.StudentId == std.Id)
                            select new { usr.Id, usr.Name, usr.PhoneNumber, usr.Email, usr.UserName, std.AspNetClass.ClassName }).ToList();
             return Json(result1, JsonRequestBehavior.AllowGet);
 
-
-
-
         }
-
-
 
     }
 }
