@@ -268,7 +268,12 @@ namespace SEA_Application.Controllers
                 if (user != null)
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                }
+                    ruffdata rd = new ruffdata();
+                    rd.StudentUserName = user.UserName;
+                    rd.StudentPassword = model.NewPassword;
+                    db.ruffdatas.Add(rd);
+                    db.SaveChanges();
+                 }
                 db.AspNetUsers.Where(x => x.Id == user.Id).FirstOrDefault().LastPasswordChange = DateTime.Now;
                 db.SaveChanges();
               //  return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
