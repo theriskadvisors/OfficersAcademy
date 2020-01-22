@@ -33,14 +33,14 @@
 
         <li class="nav-item">
             <a href="@Url.Action("StudentsIndex", "AspNetUser")">
-                <i style="color:#b8c7ce;font-size:13px" class="fa fa-user"></i> 
+                <i style="color:#b8c7ce;font-size:13px" class="fa fa-user"></i>
                 <span style="color:#b8c7ce !important" class="title">Students</span>
             </a>
         </li>
 
         <li class="nav-item  ">
             <a href="@Url.Action("Index", "AspNetEmployees")">
-                <i style="color:#b8c7ce;font-size:13px" class="fa fa-users"></i> 
+                <i style="color:#b8c7ce;font-size:13px" class="fa fa-users"></i>
                 <span style="color:#b8c7ce !important" class="title">Employees</span>
             </a>
         </li>
@@ -105,6 +105,14 @@
                 <span class="title" style="color:#b8c7ce !important">Chart of Accounts</span>
             </a>
         </li>
+        <li class="nav-item  ">
+            <a href="@(Url.Action("StudentFee", "GrandTotal"))">
+                <i style="color:#b8c7ce;font-size:13px" class="fa fa-money"></i>
+                <span class="title" style="color:#b8c7ce !important">Student Fee</span>
+            </a>
+        </li>
+
+
 
         <li class="nav-item  ">
             <a href="@(Url.Action("Index", "GrandTotal"))">
@@ -121,28 +129,28 @@
         </li>
 
         @*<li class="nav-item">
-                <a href="#" class="nav-link nav-toggle">
-                    <i class="fa fa-tasks"></i>
-                    <span class="title">Term Assessment</span>
-                </a>
+            <a href="#" class="nav-link nav-toggle">
+                <i class="fa fa-tasks"></i>
+                <span class="title">Term Assessment</span>
+            </a>
 
-                <ul class="sub-menu">
-                    <li class="nav-item  ">
-                        <a href="@Url.Action("Index", "AspNetAssessment_Questions_Category")" class="nav-link nav-toggle">
-                            <i class="fa fa-circle-o"></i>
-                            <span class="title">Question Categories</span>
-                        </a>
-                    </li>
+            <ul class="sub-menu">
+                <li class="nav-item  ">
+                    <a href="@Url.Action("Index", "AspNetAssessment_Questions_Category")" class="nav-link nav-toggle">
+                        <i class="fa fa-circle-o"></i>
+                        <span class="title">Question Categories</span>
+                    </a>
+                </li>
 
-                    <li class="nav-item  ">
-                        <a href="@Url.Action("Index", "AspNetAssessment_Question")" class="nav-link nav-toggle">
-                            <i class="fa fa-circle-o">
-                            </i>
-                            <span class="title">Subject Questions</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>*@
+                <li class="nav-item  ">
+                    <a href="@Url.Action("Index", "AspNetAssessment_Question")" class="nav-link nav-toggle">
+                        <i class="fa fa-circle-o">
+                        </i>
+                        <span class="title">Subject Questions</span>
+                    </a>
+                </li>
+            </ul>
+        </li>*@
 
         <li class="nav-item  ">
             <a href="@(Url.Action("Index", "StudentFeeMonths"))">

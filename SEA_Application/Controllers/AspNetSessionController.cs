@@ -58,76 +58,77 @@ namespace SEA_Application.Controllers
         {
 
             var TransactionObj = db.Database.BeginTransaction();
-          
-                    if (ModelState.IsValid)
-                    {
 
-                        aspNetSession.SessionEndDate = Convert.ToDateTime(Request.Form["SessionEndDate"]);
-                        aspNetSession.SessionStartDate = Convert.ToDateTime(Request.Form["SessionStartDate"]);
-                       aspNetSession.Total_Fee = aspNetSession.Total_Fee;
-                        db.AspNetSessions.Add(aspNetSession);
-                        db.SaveChanges();
-                    }
+            if (ModelState.IsValid)
+            {
 
-                
-                TransactionObj.Commit();
-                    ////////////////////////////////////////////////////////Term Add/////////////////////////////////////////////////////////////////
-                    //int length = 3;
-                    //for (int i = 0; i < length; i++)
-                    //{
-                    //    AspNetTerm aspnetTerm = new AspNetTerm();
-                    //    aspnetTerm.SessionID = aspNetSession.Id;
-                    //    aspnetTerm.TermName = "Term " + (i + 1);
-                    //    aspnetTerm.TermStartDate = DateTime.Now;
-                    //    aspnetTerm.TermEndDate = DateTime.Now;
-                    //    aspnetTerm.Status = "InActive";
-                    //    db.AspNetTerms.Add(aspnetTerm);
-                    //    db.SaveChanges();
-                    //}
-
-                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                    var UserNameLog = User.Identity.Name;
-                    AspNetUser a = db.AspNetUsers.First(x => x.UserName == UserNameLog);
-                    string UserIDLog = a.Id;
-                    var logMessage = "New Session Added, SessionName: " + aspNetSession.SessionName + ", SessionStartDate: " + aspNetSession.SessionStartDate + ", SessionEndDate: " + aspNetSession.SessionEndDate + ", Status: " + aspNetSession.Status;
-
-                    var LogControllerObj = new AspNetLogsController();
-                    LogControllerObj.CreateLogSave(logMessage, UserIDLog);
-                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                AspNetClass Class = new AspNetClass();
-
-                var CurrentSession = db.AspNetSessions.OrderByDescending(x => x.Id).FirstOrDefault();
-                Class.ClassName = CurrentSession.SessionName;
-                Class.Class = CurrentSession.SessionName;
-                Class.SessionID = CurrentSession.Id;
-                db.AspNetClasses.Add(Class);
+                aspNetSession.SessionEndDate = Convert.ToDateTime(Request.Form["SessionEndDate"]);
+                aspNetSession.SessionStartDate = Convert.ToDateTime(Request.Form["SessionStartDate"]);
+                aspNetSession.Total_Fee = aspNetSession.Total_Fee;
+                db.AspNetSessions.Add(aspNetSession);
                 db.SaveChanges();
+            }
+
+
+            TransactionObj.Commit();
+            ////////////////////////////////////////////////////////Term Add/////////////////////////////////////////////////////////////////
+            //int length = 3;
+            //for (int i = 0; i < length; i++)
+            //{
+            //    AspNetTerm aspnetTerm = new AspNetTerm();
+            //    aspnetTerm.SessionID = aspNetSession.Id;
+            //    aspnetTerm.TermName = "Term " + (i + 1);
+            //    aspnetTerm.TermStartDate = DateTime.Now;
+            //    aspnetTerm.TermEndDate = DateTime.Now;
+            //    aspnetTerm.Status = "InActive";
+            //    db.AspNetTerms.Add(aspnetTerm);
+            //    db.SaveChanges();
+            //}
+
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            var UserNameLog = User.Identity.Name;
+            AspNetUser a = db.AspNetUsers.First(x => x.UserName == UserNameLog);
+            string UserIDLog = a.Id;
+            var logMessage = "New Session Added, SessionName: " + aspNetSession.SessionName + ", SessionStartDate: " + aspNetSession.SessionStartDate + ", SessionEndDate: " + aspNetSession.SessionEndDate + ", Status: " + aspNetSession.Status;
+
+            var LogControllerObj = new AspNetLogsController();
+            LogControllerObj.CreateLogSave(logMessage, UserIDLog);
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            AspNetClass Class = new AspNetClass();
+
+            var CurrentSession = db.AspNetSessions.OrderByDescending(x => x.Id).FirstOrDefault();
+
+            Class.ClassName = CurrentSession.SessionName;
+            Class.Class = CurrentSession.SessionName;
+            Class.SessionID = CurrentSession.Id;
+            db.AspNetClasses.Add(Class);
+            db.SaveChanges();
 
 
 
-                return RedirectToAction("Indexs");
-                
-          
-          
+            return RedirectToAction("Indexs");
+
+
+
         }
 
         // GET: AspNetSession/Edit/5
 
-            public ActionResult CheckStatus(string status)
-            {
+        public ActionResult CheckStatus(string status)
+        {
             string status1 = "error";
             if (status == "Active")
             {
-                if(db.AspNetSessions.Where(x => x.Status == "Active").Count() == 0)
+                if (db.AspNetSessions.Where(x => x.Status == "Active").Count() == 0)
                 {
                     status1 = "success";
                 }
-            
+
             }
-              return  Content(status1);
-            }
+            return Content(status1);
+        }
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -151,11 +152,11 @@ namespace SEA_Application.Controllers
         {
             if (ModelState.IsValid)
             {
-               
-                    db.Entry(aspNetSession).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-               
+
+                db.Entry(aspNetSession).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+
             }
             return View(aspNetSession);
         }

@@ -11,6 +11,7 @@ using OfficeOpenXml;
 using System.IO;
 using System.Text;
 using Microsoft.AspNet.Identity;
+using System.Web.Script.Serialization;
 
 namespace SEA_Application.Controllers
 {
@@ -29,31 +30,31 @@ namespace SEA_Application.Controllers
 
         public ActionResult ListofStudents(int id)
         {
-            
-
-
             if (id == 0)
             {
                 var result1 = (from std in db.AspNetStudents
                                join usr in db.AspNetUsers on std.StudentID equals usr.Id
                                join fee_mon in db.StudentFeeMonths on std.Id equals fee_mon.StudentId
 
-                               where usr.Status != "False" 
+
+                               where usr.Status != "False"
                                select new { fee_mon.Id, usr.Name, usr.PhoneNumber, usr.Email, usr.UserName, std.AspNetClass.ClassName, fee_mon.Months, fee_mon.Status, fee_mon.FeePayable }).ToList();
                 return Json(result1, JsonRequestBehavior.AllowGet);
 
 
             }
+
             else
             {
-                var SessionId = db.AspNetClasses.Where(x => x.Id == id).FirstOrDefault().SessionID;
+                var SessionName = db.AspNetClasses.Where(x => x.Id == id).FirstOrDefault().ClassName;
+                var SessionId = db.AspNetSessions.Where(x => x.SessionName == SessionName).FirstOrDefault().Id;
 
-                //{
+
                 var result1 = (from std in db.AspNetStudents
                                join usr in db.AspNetUsers on std.StudentID equals usr.Id
                                join fee_mon in db.StudentFeeMonths on std.Id equals fee_mon.StudentId
 
-                               where usr.Status != "False" && fee_mon.SessionId == SessionId && fee_mon.Status == "Pending"
+                               where usr.Status != "False" && fee_mon.SessionId == SessionId
                                select new { fee_mon.Id, usr.Name, usr.PhoneNumber, usr.Email, usr.UserName, std.AspNetClass.ClassName, fee_mon.Months, fee_mon.Status, fee_mon.FeePayable }).ToList();
                 return Json(result1, JsonRequestBehavior.AllowGet);
 
@@ -71,6 +72,18 @@ namespace SEA_Application.Controllers
             //}
 
         }
+
+        public ActionResult StudentFee()
+        {
+
+            ViewBag.SessionId = new SelectList(db.AspNetSessions, "Id", "SessionName");
+            //  ViewBag.ClassId = new SelectList(db.AspNetClasses, "Id", "ClassName");
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+
+
+            return View();
+        }
+
         public void FeeChallan_ExcelReport(string month)
         {
             SEA_DatabaseEntities db = new SEA_DatabaseEntities();
@@ -134,7 +147,7 @@ namespace SEA_Application.Controllers
                            join usr in db.AspNetUsers on std.StudentID equals usr.Id
                            join fee_mon in db.StudentFeeMonths on std.Id equals fee_mon.StudentId
 
-                           where usr.Status != "False" 
+                           where usr.Status != "False"
                            select new { fee_mon.Id, usr.Name, usr.PhoneNumber, usr.Email, usr.UserName, std.AspNetClass.ClassName, fee_mon.Months, fee_mon.Status, fee_mon.FeePayable }).ToList();
             return Json(result1, JsonRequestBehavior.AllowGet);
 
@@ -290,7 +303,7 @@ namespace SEA_Application.Controllers
             ////  Student_FeeMonth.DueDate = dates.DueDate;
             //Student_FeeMonth.Status = "Paid";
             //db.SaveChanges();
-            
+
             var userid = idlist.Split(',');
             int feemonthid = Int32.Parse(idlist);
 
@@ -407,11 +420,23 @@ namespace SEA_Application.Controllers
             return Content("0");
 
         }
+        public ActionResult StudentByClass(int id)
+        {
+            //   var studentList = db.AspNetStudents.Where(x => x.AspNetStudent_Session_class.Any(y => y.ClassID == id)).Select(x => x.Id).ToList();
+            int? sessionId = db.AspNetClasses.Where(x => x.Id == id).FirstOrDefault().SessionID;
+
+
+            var result1 = db.GetPendingStudentsList(sessionId.ToString());
+
+            //&& !db.StudentFeeMonths.Any(m => m.StudentId == std.Id)
+            return Json(result1, JsonRequestBehavior.AllowGet);
+
+        }
 
         public ActionResult ChangeStatus(int Id)
         {
 
-          var StudentFeeMonthToUpdate =   db.StudentFeeMonths.Where(x => x.Id == Id).FirstOrDefault();
+            var StudentFeeMonthToUpdate = db.StudentFeeMonths.Where(x => x.Id == Id).FirstOrDefault();
 
             StudentFeeMonthToUpdate.Status = "Paid";
             db.SaveChanges();
@@ -421,13 +446,15 @@ namespace SEA_Application.Controllers
             var id = User.Identity.GetUserId();
             var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
 
+
+
             Voucher voucher = new Voucher();
             voucher.Name = "Student Fee Clear";
             voucher.Notes = "Student Fee Clear";
             voucher.Date = DateTime.Now;
             voucher.CreatedBy = username;
             voucher.SessionID = SessionID;
-           
+
             int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);
 
             voucher.VoucherNo = Convert.ToInt32(VoucherObj) + 1;
@@ -443,17 +470,17 @@ namespace SEA_Application.Controllers
 
 
             VoucherRecord voucherRecord = new VoucherRecord();
-            decimal? AfterBalance = CurrentBalance - Convert.ToDecimal( StudentFeeMonthToUpdate.FeePayable);
-            
+            decimal? AfterBalance = CurrentBalance - Convert.ToDecimal(StudentFeeMonthToUpdate.FeePayable);
+
             voucherRecord.LedgerId = AccountRecId;
             voucherRecord.Type = "Cr";
-            voucherRecord.Amount = Convert.ToDecimal( StudentFeeMonthToUpdate.FeePayable);
+            voucherRecord.Amount = Convert.ToDecimal(StudentFeeMonthToUpdate.FeePayable);
 
             voucherRecord.CurrentBalance = CurrentBalance;
             voucherRecord.AfterBalance = AfterBalance;
             voucherRecord.VoucherId = voucher.Id;
             voucherRecord.Description = "Student Fee Credit in Account Receiveable";
-           
+
             Leadger.CurrentBalance = AfterBalance;
 
             db.VoucherRecords.Add(voucherRecord);
@@ -467,27 +494,178 @@ namespace SEA_Application.Controllers
             var LeadgerAdminDrawer = db.Ledgers.Where(x => x.Name == "Admin Drawer").FirstOrDefault();
 
             decimal? CurrentBalanceOfAdminDrawer = LeadgerAdminDrawer.CurrentBalance;
-            
+
             decimal? AfterBalanceOfAdminDrawer = CurrentBalanceOfAdminDrawer + Convert.ToDecimal(StudentFeeMonthToUpdate.FeePayable);
-           
+
             voucherRecord1.LedgerId = LeadgerAdminDrawer.Id;
             voucherRecord1.Type = "Dr";
             voucherRecord1.Amount = Convert.ToDecimal(StudentFeeMonthToUpdate.FeePayable);
             voucherRecord1.CurrentBalance = CurrentBalanceOfAdminDrawer;
             voucherRecord1.AfterBalance = AfterBalanceOfAdminDrawer;
             voucherRecord1.VoucherId = voucher.Id;
-            voucherRecord1.Description = "Student Fee Debit in Admin Drawe";
+            voucherRecord1.Description = "Student Fee Debit in Admin Drawr";
             LeadgerAdminDrawer.CurrentBalance = AfterBalanceOfAdminDrawer;
 
             db.VoucherRecords.Add(voucherRecord1);
             db.SaveChanges();
-            
-
-
 
 
 
             return Json("", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult StudentFeeDetail(int id)
+        {
+            var studentFeeDetails = db.StudentFeeMonths.Where(x => x.StudentId == id).OrderByDescending(x => x.IssueDate).FirstOrDefault();
+
+
+
+
+            return Json(new
+            {
+                Id = studentFeeDetails.Id,
+                TotalFee = studentFeeDetails.TotalFee,
+                FeePayable = studentFeeDetails.FeePayable,
+                studentFeeDetails.FeeType,
+
+            }, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public ActionResult StudentFeeUpdate(int id, int ClassId, double RemainingFee = 0, double Discount = 0, double CashReceived = 0)
+        {
+            var FeePayable = RemainingFee + Discount + CashReceived;
+            int? sessionId = db.AspNetClasses.Where(x => x.Id == ClassId).FirstOrDefault().SessionID;
+
+            // db.AspNetSessions.Where(x=>x.Id==)
+           var SessionName =  db.AspNetSessions.Where(x => x.Id == sessionId).FirstOrDefault().SessionName;
+
+            var studenfee = db.StudentFeeMonths.Where(x => x.Id == id).FirstOrDefault();
+
+            StudentFeeMonth stdFeeMonth = new StudentFeeMonth();
+
+            stdFeeMonth.StudentId = studenfee.StudentId;
+            stdFeeMonth.IssueDate = DateTime.Now;
+            stdFeeMonth.TotalFee = studenfee.TotalFee;
+            stdFeeMonth.FeePayable = RemainingFee;
+            stdFeeMonth.Discount = Discount;
+            stdFeeMonth.FeeType = studenfee.FeeType;
+            stdFeeMonth.SessionId = sessionId;
+            stdFeeMonth.FeeReceived = CashReceived;
+            if (RemainingFee == 0)
+            {
+
+                stdFeeMonth.Status = "Paid";
+            }
+            else
+            { 
+
+                stdFeeMonth.Status = "Pending";
+            }
+
+            var Month = DateTime.Now.ToString("MMMM");
+            stdFeeMonth.Months = Month;
+
+            db.StudentFeeMonths.Add(stdFeeMonth);
+            db.SaveChanges();
+            var idd = User.Identity.GetUserId();
+            var username = db.AspNetUsers.Where(x => x.Id == idd).Select(x => x.Name).FirstOrDefault();
+            Voucher voucher = new Voucher();
+
+            var UsrId = db.AspNetStudents.Where(x => x.Id == studenfee.StudentId).FirstOrDefault().StudentID;
+
+            var StudentName = db.AspNetUsers.Where(x => x.Id == UsrId).FirstOrDefault().Name;
+
+            voucher.Name = "Fee Received by Admin of Student " + StudentName +" Session Name "+ SessionName;
+            voucher.Notes = "Fee Received by Admin " + StudentName + " Session Name " + SessionName;
+
+            voucher.Date = DateTime.Now;
+
+            voucher.CreatedBy = username;
+            voucher.SessionID = SessionID;
+            int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);
+
+            voucher.VoucherNo = Convert.ToInt32(VoucherObj) + 1;
+            db.Vouchers.Add(voucher);
+
+            db.SaveChanges();
+
+
+            var Leadger = db.Ledgers.Where(x => x.Name == "Account Receiveable").FirstOrDefault();
+            int AccountReceiveableId = Leadger.Id;
+            decimal? CurrentBalance = Leadger.CurrentBalance;
+            decimal? AfterBalance = 0;
+            VoucherRecord voucherRecord = new VoucherRecord();
+            if (Discount != 0)
+            {
+
+                AfterBalance = CurrentBalance - Convert.ToDecimal(CashReceived) - Convert.ToDecimal(Discount);
+            }
+            else
+            {
+                AfterBalance = CurrentBalance - Convert.ToDecimal(CashReceived);
+            }
+            voucherRecord.LedgerId = AccountReceiveableId;
+            voucherRecord.Type = "Cr";
+            voucherRecord.Amount = Convert.ToDecimal(CashReceived) + Convert.ToDecimal(Discount);
+            voucherRecord.CurrentBalance = CurrentBalance;
+
+            voucherRecord.AfterBalance = AfterBalance;
+            voucherRecord.VoucherId = voucher.Id;
+            voucherRecord.Description = "Fee received of Student (" + StudentName + ") (" + SessionName + ") ";
+            
+            Leadger.CurrentBalance = AfterBalance;
+
+            db.VoucherRecords.Add(voucherRecord);
+            db.SaveChanges();
+
+
+
+            var LeadgerAD = db.Ledgers.Where(x => x.Name == "Admin Drawer").FirstOrDefault();
+            int AdminDrawerId = LeadgerAD.Id;
+            decimal? CurrentBalanceAD = LeadgerAD.CurrentBalance;
+
+            VoucherRecord voucherRecord1 = new VoucherRecord();
+            decimal? AfterBalanceAD = CurrentBalanceAD + Convert.ToDecimal(CashReceived);
+            voucherRecord1.LedgerId = AdminDrawerId;
+            voucherRecord1.Type = "Dr";
+            voucherRecord1.Amount = Convert.ToDecimal(CashReceived);
+            voucherRecord1.CurrentBalance = CurrentBalanceAD;
+
+            voucherRecord1.AfterBalance = AfterBalanceAD;
+            voucherRecord1.VoucherId = voucher.Id;
+            voucherRecord1.Description = "Fee Collected by student  (" + StudentName + ") (" + SessionName + ") ";
+
+            LeadgerAD.CurrentBalance = AfterBalanceAD;
+            db.VoucherRecords.Add(voucherRecord1);
+            db.SaveChanges();
+
+
+            if (Discount != 0)
+            {
+                VoucherRecord voucherRecord3 = new VoucherRecord();
+
+                var LeadgerDiscount = db.Ledgers.Where(x => x.Name == "Discount").FirstOrDefault();
+
+                decimal? CurrentBalanceOfDiscount = LeadgerDiscount.CurrentBalance;
+                decimal? AfterBalanceOfDiscount = CurrentBalanceOfDiscount + Convert.ToDecimal(Discount);
+                voucherRecord3.LedgerId = LeadgerDiscount.Id;
+                voucherRecord3.Type = "Dr";
+                voucherRecord3.Amount = Convert.ToDecimal(Discount);
+                voucherRecord3.CurrentBalance = CurrentBalanceOfDiscount;
+                voucherRecord3.AfterBalance = AfterBalanceOfDiscount;
+                voucherRecord3.VoucherId = voucher.Id;
+                voucherRecord3.Description = "Discount given to student (" + StudentName + ") (" + SessionName + ")  on payable fee "+FeePayable;
+                LeadgerDiscount.CurrentBalance = AfterBalanceOfDiscount;
+
+                db.VoucherRecords.Add(voucherRecord3);
+                db.SaveChanges();
+
+            }
+
+
+            return Json("", JsonRequestBehavior.AllowGet);
+
         }
     }
 }

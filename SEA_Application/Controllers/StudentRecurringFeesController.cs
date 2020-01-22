@@ -175,7 +175,7 @@ namespace SEA_Application.Controllers
                             stdfeemonth.FeePayable = installment;
                             var dddd = DateTime.Now;
                             var d = dddd.ToString("yyyy-MM-dd");
-                            stdfeemonth.IssueDate = d;
+                           //shahzad stdfeemonth.IssueDate = d;
                             stdfeemonth.Months = Months[i];
                             db.StudentFeeMonths.Add(stdfeemonth);
                             //  db.SaveChanges();
@@ -222,7 +222,7 @@ namespace SEA_Application.Controllers
                     stdfeemonth.FeePayable = installment;
                     var dddd = DateTime.Now;
                     var d = dddd.ToString("yyyy-MM-dd");
-                    stdfeemonth.IssueDate = d;
+                   //shahzad stdfeemonth.IssueDate = d;
                     stdfeemonth.Months = Months[i];
                     db.StudentFeeMonths.Add(stdfeemonth);
                 }
@@ -310,7 +310,7 @@ namespace SEA_Application.Controllers
 
                             var dddd = DateTime.Now;
                             var d = dddd.ToString("yyyy-MM-dd");
-                            stdfeemonth.IssueDate = d;
+                         //shahzad   stdfeemonth.IssueDate = d;
 
                             if (i == 0)
                             {
@@ -372,7 +372,7 @@ namespace SEA_Application.Controllers
 
                             var dddd = DateTime.Now;
                             var d = dddd.ToString("yyyy-MM-dd");
-                            stdfeemonth.IssueDate = d;
+                          //shahzad  stdfeemonth.IssueDate = d;
 
                             if (i == 0)
                             {
@@ -417,7 +417,7 @@ namespace SEA_Application.Controllers
 
                             var dddd = DateTime.Now;
                             var d = dddd.ToString("yyyy-MM-dd");
-                            stdfeemonth.IssueDate = d;
+                          //shahzad  stdfeemonth.IssueDate = d;
 
                             if (i == 0)
                             {
@@ -545,7 +545,7 @@ namespace SEA_Application.Controllers
                             stdfeemonth.FeePayable = installment;
                             var dddd = DateTime.Now;
                             var d = dddd.ToString("yyyy-MM-dd");
-                            stdfeemonth.IssueDate = d;
+                          //shahzad  stdfeemonth.IssueDate = d;
                             stdfeemonth.Months = Months[i];
                             db.StudentFeeMonths.Add(stdfeemonth);
                         }

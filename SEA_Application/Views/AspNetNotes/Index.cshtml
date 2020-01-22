@@ -102,8 +102,15 @@
                                 Subject Name
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Price)
+                                @Html.DisplayNameFor(model => model.NotesType)
                             </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.GrandTotal)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.OAPrice)
+                            </th>
+
                             <th>
                                 Creation Date
                             </th>
@@ -125,19 +132,23 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.CourseType)
                                 </td>
-
                                 <td>
                                     @Html.DisplayFor(modelItem => item.AspNetSubject.SubjectName)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Price)
+                                    @Html.DisplayFor(modelItem => item.NotesType)
                                 </td>
-
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.GrandTotal)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.OAPrice)
+                                </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.CreationDate)
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                                    @Html.ActionLink("Edit","Edit",  new { id = item.Id } ) |
                                     @Html.ActionLink("Details", "Details", new { id = item.Id })
 
                                 </td>
@@ -173,7 +184,9 @@
                                 Status
                             </th>
 
-
+                            <th>
+                                OrderType
+                            </th>
                             <th>
                                 Details
                             </th>
@@ -227,15 +240,18 @@
                     </div>
 
                 </div>
+                <input type="hidden" id="OrderType" />
                 <button id="btnPrint" style="display:none;margin-left:30px;" class="hidden-print">Print</button>
             </div>
         </div>
     </div> <!--End of Tab 2-->
 </div>
-
 <script>
 
     $(document).ready(function () {
+
+        // $('a[href="#tab_2"]').trigger('click');
+        // var OrderType;
 
         $('#example').dataTable({
         });
@@ -259,22 +275,16 @@
                     //    +'<td>' + data[index].Status + '</td> '+
 
                     //'</tr > ';
-                    if (data[index].OrderStatus == "Approved") {
+                    if (data[index].OrderStatus == "Paid") {
 
-                        table.fnAddData([data[index].OrderID, data[index].StudentName, data[index].ClassName, data[index].TotalAmount, data[index].OrderStatus, "<center><button  id='" + data[index].OrderID + "' class='btn btn-success btn-sm approveBtn' disabled>Approve</button> <input type='button' class='btn btn-primary btn-sm ' value='Details' id='" + data[index].OrderID + "' data-toggle='modal' data-target='#myModal' ></center>"]);
-
-
-
-
+                        table.fnAddData([data[index].OrderID, data[index].StudentName, data[index].ClassName, data[index].TotalAmount, data[index].OrderStatus, data[index].OrderType, "<center><button  id='" + data[index].OrderID + "' name ='" + data[index].OrderType + "'   class='btn btn-success btn-sm approveBtn' disabled>Approve</button> <input type='button' class='btn btn-primary btn-sm ' value='Details' id='" + data[index].OrderID + "' data-toggle='modal' data-target='#myModal' ></center>"]);
                         // var TableRow = "<tr id='" + data[index].OrderID + "' data-toggle='modal' data-target='#myModal' >  <td>" + data[index].OrderID + "</td> <td >" + data[index].StudentName + "</td> <td >" + data[index].ClassName + "</td>  <td >" + data[index].TotalAmount + "</td>  <td >" + data[index].OrderStatus + "</td> <td><button  id='" + data[index].OrderID + "' class='btn btn-success btn-sm approveBtn' disabled>Approve</button></td></tr> "
-
-
                     }
                     else {
-                        table.fnAddData([data[index].OrderID, data[index].StudentName, data[index].ClassName, data[index].TotalAmount, data[index].OrderStatus, "<center><button  id='" + data[index].OrderID + "' class='btn btn-success btn-sm approveBtn' >Approve</button> <input type='button' class='btn btn-primary btn-sm' value='Details' id='" + data[index].OrderID + "' data-toggle='modal' data-target='#myModal' > </center>"]);
+                        table.fnAddData([data[index].OrderID, data[index].StudentName, data[index].ClassName, data[index].TotalAmount, data[index].OrderStatus, data[index].OrderType, "<center><button  id='" + data[index].OrderID + "'  name ='" + data[index].OrderType + "' class='btn btn-success btn-sm approveBtn' >Approve</button> <input type='button' class='btn btn-primary btn-sm' value='Details' id='" + data[index].OrderID + "' data-toggle='modal' data-target='#myModal' > </center>"]);
 
                         // var TableRow = "<tr id='" + data[index].OrderID + "' data-toggle='modal' data-target='#myModal' > <td>" + data[index].OrderID + "</td> <td >" + data[index].StudentName + "</td> <td >" + data[index].ClassName + "</td>  <td >" + data[index].TotalAmount + "</td>  <td >" + data[index].OrderStatus + "</td> <td><button  id='" + data[index].OrderID + "' class='btn btn-success btn-sm approveBtn'>Approve</button></td></tr> "
-                    }
+                          }
 
                     //alert(data[index].Discription);
                     // $('#RecentOrderTableBody').append(TableRow);
@@ -299,15 +309,12 @@
                     $('#modal0').html("");
 
                     $.each(data, function (index) {
-                        $('#modal0').append('<div > Title Name : ' + data[index].Title + ' </div>  <div> Price : ' + data[index].Price + ' </div> <div> Quantity : ' + data[index].Quantity + ' </div> <div> Total : ' + data[index].Total + ' </div> <br>  ');
+                        $('#modal0').append('<div > Title Name : ' + data[index].Title + ' </div>  <div> Price : ' + data[index].Price + ' </div> <div> Quantity : ' + data[index].Quantity + ' </div> <div> Total : ' + data[index].Total + ' </div>  <div> Total Photo Copier Price : ' + data[index].PhotoCopierPrice + '</div><div> Total OA Price : ' + data[index].OAPrice + '</div>  <br>  ');
                     });
                 }
             })
 
         });
-
-
-
 
         $("#RecentOrderTableBody").on("click", ".approveBtn", function () {
 
@@ -321,7 +328,12 @@
             $('#btnPrint').attr('name', OrderId);
 
 
+            var OrderType = $(this).attr('name');
 
+            $("#OrderType").val(OrderType);
+
+
+            //alert(OrderType);
             $("#btnPrint").attr('class', OrderId);
 
             $.ajax({
@@ -357,16 +369,12 @@
 
     $("#btnPrint").click(function () {
 
-
-
-
         var OrderId = $('#btnPrint').attr('name');
+        var OrderType = $("#OrderType").val();
+        // alert(OrderType);
 
         var mywindow = window.open('', '', '');
-
-
         mywindow.document.write('<html><head><title>' + document.title + '</title>  ');
-
         mywindow.document.write('<style>td,th,tr,table{border-top: 1px solid black;} td.description,th.description {width: 90px; max-width: 90px;word-break: break-word;}  td.quantity,th.quantity{ width: 40px;max-width: 40px;word-break: break-all;} td.Amount,th.Amount {  width: 60px;max-width: 60px;word-break: break-all;} td.Amount,th.Amount {  width: 60px;max-width: 60px;word-break: break-all;} .centered {text-align: center;align-content: center;} .ticket{width: 230px;max-width:230px;font-size: 12px}  img {  max-width: inherit;  width: inherit;} </style>');
         mywindow.document.write('</head><body >');
         // mywindow.document.write('<h1>' + document.title + '</h1>');
@@ -383,7 +391,7 @@
 
             type: "POST",
             url: "/AspNetNotes/ApproveOrders",
-            data: { "OrderId": OrderId },
+            data: { "OrderId": OrderId, "OrderType": OrderType },
             success: function (data) {
 
                 window.location.href = '/AspNetNotes/Index/';
@@ -414,9 +422,6 @@
                 '<div class="d-bar"></div>' +
                 '</div>'
                 +
-
-
-
 
                 '<div class="col-md-3 col-lg-3">' +
                 '<div class="col-md-1 col-sm-3 col-xs-3" style="padding-left:0px"><a href=""><i class="glyphicon glyphicon-repeat" data-toggle="tooltip" title="Refresh" data-placement="bottom"></i></a></div>' +

@@ -29,6 +29,14 @@
             window.location.href = '@Url.Action("StudentsIndex", "AspNetUser")';
         });
 
+        $("#WithNotes").click(function () {
+
+            $("#NotesAmount").prop('required', true);
+        })
+        $("WithOutNotes").click(function () {
+            $("#NotesAmount").prop('required', false);
+
+        })
 
 
         $.ajax({
@@ -589,7 +597,7 @@
             <div class="form-group">
                 <label class="col-md-1 col-lg-1 control-label">Session Fee:</label>
                 <div class="col-md-4">
-                    <input type="text" class="form-control round-border" name="SessionFee" id="SessionFee" value="@ViewBag.SessionFee" disabled />
+                    <input type="text" class="form-control round-border" name="SessionFee" id="SessionFee" value="@ViewBag.SessionFee" readonly />
                 </div>
             </div>
 
@@ -597,7 +605,7 @@
             <div class="form-group">
                 <label class="col-md-1 col-lg-1 control-label">Discount Amount:</label>
                 <div class="col-md-4">
-                    <input type="number" class="form-control round-border" name="Discount" id="Discount" />
+                    <input type="number" value="0" class="form-control round-border" name="Discount" id="Discount" />
                 </div>
             </div>
 
@@ -624,7 +632,7 @@
                     <div class="form-group">
                         <label class="col-md-1 col-lg-1 control-label">Total Fee:</label>
                         <div class="col-md-4">
-                            <input type="text" class="form-control round-border" name="TotalFee" id="TotalFee" disabled />
+                            <input type="text" required class="form-control round-border" name="TotalFee" id="TotalFee" readonly />
                         </div>
                     </div>
 

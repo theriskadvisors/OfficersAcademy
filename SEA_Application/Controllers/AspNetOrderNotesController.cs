@@ -22,6 +22,175 @@ namespace SEA_Application.Controllers
             var aspNetNotes = db.AspNetNotes.Include(a => a.AspNetSubject);
             return View(aspNetNotes.ToList());
         }
+        public ActionResult PrepaidNotesIndex()
+        {
+            var aspNetNotes = db.AspNetNotes.Include(a => a.AspNetSubject);
+
+            var ListOfIds = (from Notes in db.AspNetNotes
+                             join OrderNotes in db.AspNetNotesOrders on Notes.Id equals OrderNotes.NotesID
+                             where OrderNotes.OrderType == "Prepaid" 
+                             select new
+                             {
+                                 Notes.Id
+                             }).Distinct().ToList() ;
+
+            ViewBag.Id = ListOfIds;
+
+
+            return View(aspNetNotes.ToList());
+
+
+
+        }
+
+        public ActionResult DisableOrderButtons()
+        {
+            var CurrentUserId = User.Identity.GetUserId();
+            int StudentId = db.AspNetStudents.Where(x => x.StudentID == CurrentUserId).FirstOrDefault().Id;
+
+            var ListOfIds = (from Notes in db.AspNetNotes
+                             join OrderNotes in db.AspNetNotesOrders on Notes.Id equals OrderNotes.NotesID
+                             where OrderNotes.OrderType == "Prepaid"  && OrderNotes.StudentID == StudentId
+                             select new
+                             {
+                                 Notes.Id
+                             }).Distinct().ToList();
+
+            return Json(ListOfIds, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult PrepaidOrderToCart(int Id )
+        {
+            var CurrentUserId = User.Identity.GetUserId();
+            int StudentId = db.AspNetStudents.Where(x => x.StudentID == CurrentUserId).FirstOrDefault().Id;
+            AspNetNotesOrder NotesOrder = new AspNetNotesOrder();
+            NotesOrder.NotesID = Id;
+            NotesOrder.StudentID = StudentId;
+            NotesOrder.CreationDate = DateTime.Now;
+            NotesOrder.Quantity = 1;
+            NotesOrder.Status = "Draft";
+            NotesOrder.OrderType = "Prepaid";
+            db.AspNetNotesOrders.Add(NotesOrder);
+
+
+            db.SaveChanges();
+
+            return RedirectToAction("PrepaidNotesIndex");
+
+        }
+        public ActionResult PrepaidOrdersToShowInCart()
+        {
+            var CurrentUserId = User.Identity.GetUserId();
+
+            int StudentId = db.AspNetStudents.Where(x => x.StudentID == CurrentUserId).FirstOrDefault().Id;
+
+            var result = from Notes in db.AspNetNotes
+                         join OrderNotes in db.AspNetNotesOrders on Notes.Id equals OrderNotes.NotesID
+                         where OrderNotes.StudentID == StudentId && OrderNotes.Status =="Draft" &&
+                         OrderNotes.OrderType== "Prepaid"
+
+                         select new
+                         {
+                             Id = OrderNotes.Id,
+                             Title = Notes.Title,
+                             Discription = Notes.Description,
+                             CourseType = Notes.CourseType,
+                             Price = Notes.GrandTotal,
+                             Quantity = OrderNotes.Quantity,
+                             Total = Notes.GrandTotal * OrderNotes.Quantity,
+                             Status = OrderNotes.Status,
+
+                         };
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult PrepaidDeleteOrders(int[] DeleteOrders)
+        {
+            List<AspNetNotesOrder> AllNotesOrder = db.AspNetNotesOrders.ToList();
+
+            List<AspNetNotesOrder> OrdersToDelete = new List<AspNetNotesOrder>();
+
+            foreach (var deleteOrderIds in DeleteOrders)
+            {
+
+                foreach (var order in AllNotesOrder)
+                {
+
+                    if (deleteOrderIds == order.Id)
+
+                    {
+                        OrdersToDelete.Add(order);
+
+
+                    }
+                }
+
+
+            }
+
+            db.AspNetNotesOrders.RemoveRange(OrdersToDelete);
+            db.SaveChanges();
+
+            return Json("", JsonRequestBehavior.AllowGet);
+
+
+        }
+
+        public ActionResult PrepaidConfirmOdr(int TotalAmount, int[] IDs)
+        {
+
+            AspNetOrder order = new AspNetOrder();
+            order.TotalAmount = TotalAmount;
+            order.OrderType = "Prepaid";
+            order.Status = "Pending";
+
+            order.PublishDate = DateTime.Now;
+
+
+            db.AspNetOrders.Add(order);
+
+            db.SaveChanges();
+
+
+            int OrderId = order.Id;
+
+            List<AspNetNotesOrder> AllNotesOrder = db.AspNetNotesOrders.ToList();
+
+            List<AspNetNotesOrder> OrdersToModify = new List<AspNetNotesOrder>();
+
+            foreach (var OrderIds in IDs)
+            {
+
+                foreach (var findOrder in AllNotesOrder)
+                {
+
+                    if (OrderIds == findOrder.Id)
+
+                    {
+                        OrdersToModify.Add(findOrder);
+
+
+                    }
+                }
+
+
+            }
+
+            foreach (var OrderModify in OrdersToModify)
+            {
+
+                OrderModify.OrderId = OrderId;
+                OrderModify.Status = "Pending";
+
+                db.Entry(OrderModify).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+
+            return Json("", JsonRequestBehavior.AllowGet);
+        }
+
+
 
         // GET: AspNetOrderNotes/Details/5
         public ActionResult Details(int? id)
@@ -45,14 +214,14 @@ namespace SEA_Application.Controllers
 
             var result = from Notes in db.AspNetNotes
                          join OrderNotes in db.AspNetNotesOrders on Notes.Id equals OrderNotes.NotesID
-                         where OrderNotes.StudentID == StudentId
+                         where OrderNotes.StudentID == StudentId && OrderNotes.OrderType == "Postpaid"
                          select new
                          {
                              Id = OrderNotes.Id,
                              Title = Notes.Title,
                              Discription = Notes.Description,
                              CourseType = Notes.CourseType,
-                             Price = Notes.Price,
+                             Price = Notes.GrandTotal,
                              Quantity = OrderNotes.Quantity,
                              Status = OrderNotes.Status,
 
@@ -60,13 +229,39 @@ namespace SEA_Application.Controllers
             
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult PrepaidRecentOrders()
+        {
+            var CurrentUserId = User.Identity.GetUserId();
 
+            int StudentId = db.AspNetStudents.Where(x => x.StudentID == CurrentUserId).FirstOrDefault().Id;
+
+            var result = from Notes in db.AspNetNotes
+                         join OrderNotes in db.AspNetNotesOrders on Notes.Id equals OrderNotes.NotesID
+                         where OrderNotes.StudentID == StudentId && OrderNotes.OrderType == "Prepaid"
+                         select new
+                         {
+                             Id = OrderNotes.Id,
+                             Title = Notes.Title,
+                             Discription = Notes.Description,
+                             CourseType = Notes.CourseType,
+                             Price = Notes.GrandTotal,
+                             Quantity = OrderNotes.Quantity,
+                             Status = OrderNotes.Status,
+
+                         };
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        
         public ActionResult ConfirmOdr(int TotalAmount, int[] IDs)
         {
 
             AspNetOrder order = new AspNetOrder();
             order.TotalAmount=TotalAmount;
-            order.Status = "Publish";
+            order.Status = "Pending";
+            order.OrderType = "Postpaid";
+
 
             order.PublishDate = DateTime.Now;
 
@@ -104,7 +299,7 @@ namespace SEA_Application.Controllers
             {
 
                 OrderModify.OrderId = OrderId;
-                OrderModify.Status = "Publish";
+                OrderModify.Status = "Pending";
 
                 db.Entry(OrderModify).State = EntityState.Modified;
                 db.SaveChanges();
@@ -149,18 +344,16 @@ namespace SEA_Application.Controllers
             return Json("", JsonRequestBehavior.AllowGet);
         }
 
-
-
-
             public ActionResult CartOrders()
-        {
+            {
             var CurrentUserId = User.Identity.GetUserId();
 
             int StudentId = db.AspNetStudents.Where(x => x.StudentID == CurrentUserId).FirstOrDefault().Id;
 
             var result = from Notes in db.AspNetNotes
                          join OrderNotes in db.AspNetNotesOrders on Notes.Id equals OrderNotes.NotesID
-                         where OrderNotes.StudentID == StudentId
+                          where OrderNotes.StudentID == StudentId && OrderNotes.Status == "Draft" &&
+                            OrderNotes.OrderType == "Postpaid"
 
                          select new
                          {
@@ -168,15 +361,12 @@ namespace SEA_Application.Controllers
                              Title = Notes.Title,
                              Discription = Notes.Description,
                              CourseType = Notes.CourseType,
-                             Price = Notes.Price,
+                             Price = Notes.GrandTotal,
                              Quantity = OrderNotes.Quantity,
-                             Total = Notes.Price * OrderNotes.Quantity,
+                             Total = Notes.GrandTotal * OrderNotes.Quantity,
                              Status = OrderNotes.Status,
 
                          };
-
-
-
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
@@ -208,10 +398,10 @@ namespace SEA_Application.Controllers
 
             NotesOrder.NotesID = NotesId;
             NotesOrder.StudentID = StudentId;
-
+            NotesOrder.CreationDate = DateTime.Now;
             NotesOrder.Quantity = Quantity;
             NotesOrder.Status = "Draft";
-
+            NotesOrder.OrderType = "Postpaid";
             db.AspNetNotesOrders.Add(NotesOrder);
 
 
@@ -219,8 +409,6 @@ namespace SEA_Application.Controllers
 
             return Json("", JsonRequestBehavior.AllowGet);
         }
-
-
 
 
         // GET: AspNetOrderNotes/Create

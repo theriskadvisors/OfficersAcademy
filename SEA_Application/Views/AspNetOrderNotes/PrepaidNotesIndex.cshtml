@@ -1,10 +1,8 @@
 ﻿@model IEnumerable<SEA_Application.Models.AspNetNote>
-
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "PrepaidNotesIndex";
     Layout = "~/Views/Shared/_StudentDashboardLayout.cshtml";
 }
-
 <style>
 
     input[type=search] {
@@ -18,40 +16,13 @@
     }
 </style>
 
-<!-- Modal -->
-<div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Order to Cart</h4>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to place this order?</p>
-
-            </div>
-            <div class="modal-footer">
-                <button id="yesBtn" type="button" class="btn btn-default yesBtn" data-dismiss="modal">Yes</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-
-
-
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#tab_1" id="tab1" data-toggle="tab">Notes</a></li>
-        <li><a href="#tab_2"  id="tab2"  data-toggle="tab">Cart</a></li>
+        <li><a href="#tab_2" id="tab2" data-toggle="tab">Cart</a></li>
         <li><a href="#tab_3" id="tab3" data-toggle="tab">Recent Order</a></li>
     </ul>
 </div>
-
 <div class="tab-content" style="    background-color: #f7f6f6;
         padding: 10px 0px 0px 0px; ">
 
@@ -82,11 +53,11 @@
                             <th>
                                 Price
                             </th>
-                           
+
                             <th>
                                 @Html.DisplayNameFor(model => model.AspNetSubject.SubjectName)
                             </th>
-                            <th></th>
+                            <th>Order</th>
 
                         </tr>
                     </thead>
@@ -94,36 +65,33 @@
 
                         @foreach (var item in Model)
                         {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Id)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Title)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Description)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CourseType)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.NotesType)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.GrandTotal)
-                            </td>
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CourseType)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NotesType)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.GrandTotal)
+                                </td>
 
-                            <td>
-                                @Html.DisplayFor(modelItem => item.AspNetSubject.SubjectName)
-                            </td>
-                            <td>
-
-
-                                <a href="/AspNetOrderNotes/Details/@item.Id">  <button type="button" class="btn btn-success" id="@item.Id">Add to Cart</button> </a>
-
-                            </td>
-                        </tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AspNetSubject.SubjectName)
+                                </td>
+                                <td>
+                                 <a href="/AspNetOrderNotes/PrepaidOrderToCart/@item.Id">  <button type="button"  class="btn btn-success orderButtons" id="@item.Id">Order</button> </a>
+                                </td>
+                            </tr>
                         }
                     </tbody>
 
@@ -131,7 +99,6 @@
             </div>
         </div>
     </div>
-
 
     <div class="tab-pane" id="tab_2">
         <div class="box box-primary">
@@ -170,8 +137,6 @@
                         </tr>
                     </thead>
 
-
-
                     <tbody id="CartOrders">
                     </tbody>
 
@@ -184,7 +149,6 @@
         <button id="ConfirmOrder" disabled class="btn btn-success">Confirm Order</button>
         <button id="DeleteOrders" disabled class="btn btn-danger">Delete</button>
     </div>
-
 
     <div class="tab-pane" id="tab_3">
         <div class="box box-primary">
@@ -227,16 +191,11 @@
             </div>
         </div>
     </div>
+
 </div>
 
-@*<button id="confirmOrder" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Confirm Order</button>*@
 <script>
     $(document).ready(function () {
-
-      
-
-        $('#example').dataTable({
-        });
 
         var table;
         table = $('#datatable').dataTable();
@@ -245,9 +204,33 @@
         table1 = $('#datatable1').dataTable();
 
         $.ajax({
-
             type: "POST",
-            url: "/AspNetOrderNotes/RecentOrders",
+            url: '/AspNetOrderNotes/DisableOrderButtons/',
+            data: {},
+            success: function (response) {
+                debugger;
+                $.each(response, function (index, item) {
+                    $("#example tbody tr button").each(function () {
+                        var idOfButton = $(this).attr('id');
+
+                        //                       $('#'+idOfButton).css("display", "none");
+
+                        //alert(idOfButton);
+                        if (item.Id == idOfButton) {
+
+                            $("#" + idOfButton).css('display', 'none');
+
+                        }
+                    });
+                });
+                $('#example').dataTable();
+            }
+                    
+        });//end of ajax DisableOrder Buttons
+
+        $.ajax({
+            type: "POST",
+            url: "/AspNetOrderNotes/PrepaidRecentOrders",
             data: {},
             success: function (data) {
 
@@ -267,29 +250,22 @@
                 $('.eeniart0017').css("display", "none");
 
             }
-
-
         })
-
 
         $.ajax({
 
             type: "POST",
-            url: "/AspNetOrderNotes/CartOrders",
+            url: "/AspNetOrderNotes/PrepaidOrdersToShowInCart",
             data: {},
             success: function (data) {
 
 
                 table.fnClearTable();
                 $.each(data, function (index) {
-
-                    if (data[index].Status == "Draft") {
-
-                        // var TableRow = "<tr>  <td> <input class='checkboxes' id=" + data[index].Id + "  type='checkbox' value=" + data[index].Total + "> </td>  <td>" + data[index].Title + "</td> <td>" + data[index].Discription + "</td>  <td>" + data[index].CourseType + "</td> <td>" + data[index].Price + "</td>  <td>" + data[index].Quantity + "</td> <td class='TotalPrice'>" + data[index].Total + "</td>  <td>" + data[index].Status + "</td>    </tr> "
-                        table.fnAddData([data[index].Title, data[index].Discription, data[index].CourseType, data[index].Price, data[index].Quantity, data[index].Total, data[index].Status, "<input class='checkboxes' id=" + data[index].Id + " type='checkbox' value=" + data[index].Total + "  >"]);
+                    // var TableRow = "<tr>  <td> <input class='checkboxes' id=" + data[index].Id + "  type='checkbox' value=" + data[index].Total + "> </td>  <td>" + data[index].Title + "</td> <td>" + data[index].Discription + "</td>  <td>" + data[index].CourseType + "</td> <td>" + data[index].Price + "</td>  <td>" + data[index].Quantity + "</td> <td class='TotalPrice'>" + data[index].Total + "</td>  <td>" + data[index].Status + "</td>    </tr> "
+                    table.fnAddData([data[index].Title, data[index].Discription, data[index].CourseType, data[index].Price, data[index].Quantity, data[index].Total, data[index].Status, "<input class='checkboxes' id=" + data[index].Id + " type='checkbox' value=" + data[index].Total + "  >"]);
 
 
-                    }
 
 
                     //alert(data[index].Discription);
@@ -298,7 +274,7 @@
                 table.fnDraw();
                 $('.eeniart0017').css("display", "none");
             }
-        })//end of ajax card orders
+        })//end of ajax prepaid cart orders
 
 
         var Total = 0;
@@ -336,6 +312,7 @@
             //  alert(arr);
         });
 
+
         function checkCheckBoxes() {
             if (CheckAllCheckBoxes == 0) {
 
@@ -349,23 +326,22 @@
             }
         }
 
-
         $("#DeleteOrders").click(function () {
 
             $.ajax({
 
                 type: "POST",
-                url: "/AspNetOrderNotes/DeleteOrders",
+                url: "/AspNetOrderNotes/PrepaidDeleteOrders",
                 data: { "DeleteOrders": arr },
 
 
                 success: function (data) {
-                  
-                      //$("#tab2").trigger('click');
-                    window.location.href = '/AspNetOrderNotes/Index/';
+
+                    //$("#tab2").trigger('click');
+                    window.location.href = '/AspNetOrderNotes/PrepaidNotesIndex/';
 
 
-                    
+
                     // $('#example').dataTable().clear();
 
                     //   $('#example').data.reload();
@@ -373,7 +349,8 @@
 
             })
 
-        })
+        })//delete order prepaid
+
 
 
         $("#ConfirmOrder").click(function () {
@@ -383,14 +360,14 @@
             $.ajax({
 
                 type: "POST",
-                url: "/AspNetOrderNotes/ConfirmOdr",
+                url: "/AspNetOrderNotes/PrepaidConfirmOdr",
                 data: { "TotalAmount": TotalAmount, "IDs": arr },
                 success: function (data) {
 
 
 
 
-                    window.location.href = '/AspNetOrderNotes/Index/';
+                    window.location.href = '/AspNetOrderNotes/PrepaidNotesIndex/';
 
                 }
 
@@ -399,70 +376,7 @@
 
         })
 
-        $("#RecentOrderTableBody").on("click", "button", function () {
 
-            //alert( $(this).attr('id'));
-
-            var OdrId = $(this).attr('id');
-
-
-            $(".yesBtn").attr('name', OdrId);
-
-            //$.ajax({
-
-            //    type: "POST",
-            //    url: "/AspNetOrderNotes/CancelOrder",
-            //    data: { "OrderId": OdrId },
-            //    success: function (data) {
-
-
-            //    }
-
-            // });
-
-
-
-        });
-
-        $("#checkBoxToAllChek").click(function () {
-
-            $('#CartOrders input[type="checkbox"]').prop('checked', this.checked);
-
-        });
-
-
-        $("#yesBtn").click(function () {
-
-            //  alert( $("#yesBtn").attr('name'));
-
-            var OdrId = $("#yesBtn").attr('name')
-
-
-
-            $.ajax({
-
-                type: "POST",
-                url: "/AspNetOrderNotes/CancelOrder",
-                data: { "OrderId": OdrId },
-                success: function (data) {
-
-
-
-                    // $('button[id="'+OdrId+'"]').prop('disabled', true);
-
-
-                    window.location.href = '/AspNetOrderNotes/Index/';
-
-
-
-
-                }
-
-            });
-
-
-
-        })
 
         function drawTable() {
             $('#example_filter').addClass("form-group");
@@ -506,8 +420,13 @@
 
 
 
+    })//end of document ready
 
-    })
 
 
 </script>
+
+
+
+
+

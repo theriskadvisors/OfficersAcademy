@@ -63,7 +63,7 @@ namespace SEA_Application.Controllers
                 {
                     StudentMonthlyFee fee = new StudentMonthlyFee();
                     fee.Id = item.Id;
-                    fee.Date = item.IssueDate;
+                 //shahzad   fee.Date = item.IssueDate;
                     fee.Name = item.AspNetStudent.AspNetUser.Name;
                     fee.Month = item.Months;
                     fee.Status = item.Status;
@@ -84,7 +84,7 @@ namespace SEA_Application.Controllers
                 {
                     StudentMonthlyFee fee = new StudentMonthlyFee();
                     fee.Id = item.Id;
-                    fee.Date = item.IssueDate;
+                 //shahzad   fee.Date = item.IssueDate;
                     fee.Name = item.AspNetStudent.AspNetUser.Name;
                     fee.Month = item.Months;
                     fee.Status = item.Status;
@@ -104,7 +104,7 @@ namespace SEA_Application.Controllers
                 {
                     StudentMonthlyFee fee = new StudentMonthlyFee();
                     fee.Id = item.Id;
-                    fee.Date = item.IssueDate;
+                 //shahzad   fee.Date = item.IssueDate;
                     fee.Name = item.AspNetStudent.AspNetUser.Name;
                     fee.Month = item.Months;
                     fee.Status = item.Status;
@@ -124,7 +124,7 @@ namespace SEA_Application.Controllers
                 {
                     StudentMonthlyFee fee = new StudentMonthlyFee();
                     fee.Id = item.Id;
-                    fee.Date = item.IssueDate;
+                  //shahzad  fee.Date = item.IssueDate;
                     fee.Name = item.AspNetStudent.AspNetUser.Name;
                     fee.Month = item.Months;
                     fee.Status = item.Status;
@@ -144,7 +144,7 @@ namespace SEA_Application.Controllers
                 {
                     StudentMonthlyFee fee = new StudentMonthlyFee();
                     fee.Id = item.Id;
-                    fee.Date = item.IssueDate;
+                   //shahzad fee.Date = item.IssueDate;
                     fee.Name = item.AspNetStudent.AspNetUser.Name;
                     fee.Month = item.Months;
                     fee.Status = item.Status;
@@ -164,7 +164,7 @@ namespace SEA_Application.Controllers
                 {
                     StudentMonthlyFee fee = new StudentMonthlyFee();
                     fee.Id = item.Id;
-                    fee.Date = item.IssueDate;
+                  //shahzad  fee.Date = item.IssueDate;
                     fee.Name = item.AspNetStudent.AspNetUser.Name;
                     fee.Month = item.Months;
                     fee.Status = item.Status;
@@ -183,7 +183,7 @@ namespace SEA_Application.Controllers
                 {
                     StudentMonthlyFee fee = new StudentMonthlyFee();
                     fee.Id = item.Id;
-                    fee.Date = item.IssueDate;
+                    //shahzad  fee.Date = item.IssueDate;
                     fee.Name = item.AspNetStudent.AspNetUser.Name;
                     fee.Month = item.Months;
                     fee.Status = item.Status;
@@ -364,13 +364,6 @@ namespace SEA_Application.Controllers
             return Content(status);
 
         }
-
-
-
-
-
-
-
 
 
         public ActionResult Edit(int? id)
