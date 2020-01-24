@@ -79,7 +79,10 @@ namespace SEA_Application.Controllers
             ViewBag.SessionId = new SelectList(db.AspNetSessions, "Id", "SessionName");
             //  ViewBag.ClassId = new SelectList(db.AspNetClasses, "Id", "ClassName");
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+            var UserId = User.Identity.GetUserId();
+            var username = db.AspNetUsers.Where(x => x.Id == UserId).Select(x => x.Name).FirstOrDefault();
 
+            ViewBag.UserName = username;
 
             return View();
         }
@@ -517,10 +520,7 @@ namespace SEA_Application.Controllers
         public ActionResult StudentFeeDetail(int id)
         {
             var studentFeeDetails = db.StudentFeeMonths.Where(x => x.StudentId == id).OrderByDescending(x => x.IssueDate).FirstOrDefault();
-
-
-
-
+          
             return Json(new
             {
                 Id = studentFeeDetails.Id,

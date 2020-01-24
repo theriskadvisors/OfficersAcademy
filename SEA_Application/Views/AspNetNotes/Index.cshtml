@@ -43,10 +43,6 @@
     }
 </style>
 
-
-
-
-
 <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -72,7 +68,7 @@
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#tab_1" data-toggle="tab">Notes</a></li>
-        <li><a href="#tab_2" data-toggle="tab">Recent Order</a></li>
+        <li><a href="#tab_2" data-toggle="tab">Orders</a></li>
     </ul>
 </div>
 
@@ -256,7 +252,10 @@
         $('#example').dataTable({
         });
         var table;
-        table = $('#datatable').dataTable();
+        table = $('#datatable').dataTable({
+            aaSorting: [[0, 'desc']]
+
+        });
 
         var clickedOrderId;
         $.ajax({

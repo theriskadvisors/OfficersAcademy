@@ -89,7 +89,18 @@
                                     @Html.DisplayFor(modelItem => item.AspNetSubject.SubjectName)
                                 </td>
                                 <td>
-                                 <a href="/AspNetOrderNotes/PrepaidOrderToCart/@item.Id">  <button type="button"  class="btn btn-success orderButtons" id="@item.Id">Order</button> </a>
+                                    <a href="/AspNetOrderNotes/PrepaidOrderToCart/@item.Id"><button type="button" class="btn btn-success orderButtons hide" id="@item.Id">Order Now</button></a>
+                                    @*foreach (var item1 in ViewBag.Id)
+                                        {
+                                            @*if (item1.OrderType == "Prepaid")
+                                            {
+                                                <button type="button" onclick="Order()" class="btn btn-primary orderButtons disabled" id="@item.Id">Ordered</button>
+                                            }
+                                            else if(item1.Id == item.Id)
+                                            {
+                                                
+                                            }
+                                        }*@
                                 </td>
                             </tr>
                         }
@@ -196,37 +207,46 @@
 
 <script>
     $(document).ready(function () {
-
+        
         var table;
         table = $('#datatable').dataTable();
-
+        var test = 1;
         var table1;
+
         table1 = $('#datatable1').dataTable();
-
         $.ajax({
-            type: "POST",
-            url: '/AspNetOrderNotes/DisableOrderButtons/',
-            data: {},
+                type: "POST",
+                url: '/AspNetOrderNotes/DisableOrderButtons/',
+                data: {},
             success: function (response) {
-                debugger;
-                $.each(response, function (index, item) {
-                    $("#example tbody tr button").each(function () {
-                        var idOfButton = $(this).attr('id');
 
-                        //                       $('#'+idOfButton).css("display", "none");
+                     $("Button").removeClass("hide");
 
-                        //alert(idOfButton);
-                        if (item.Id == idOfButton) {
+                    $.each(response, function (index, item) {
+                        $("#example tbody tr button").each(function () {
+                            var idOfButton = $(this).attr('id');
+                           
+                            if (item.Id == idOfButton) {
 
-                            $("#" + idOfButton).css('display', 'none');
+                                $("#" + idOfButton).removeClass("btn-success");
+                                $("#" + idOfButton).addClass("btn-primary");
+                                $("#" + idOfButton).remove();
+                                $("#" + idOfButton).html("Order Placed");
 
-                        }
+                            }
+
+                        });
                     });
-                });
-                $('#example').dataTable();
-            }
-                    
-        });//end of ajax DisableOrder Buttons
+
+                    if (test == 1) {
+                        $('#example').dataTable();
+                        test = 2;
+                    }
+                }
+            });
+        
+
+        
 
         $.ajax({
             type: "POST",
@@ -281,7 +301,7 @@
         var arr = [];
         var CheckAllCheckBoxes = 0;
         $("#CartOrders").on("click", "input[type='checkbox']", function () {
-            debugger
+            
 
 
             if ($(this).prop("checked") == true) {

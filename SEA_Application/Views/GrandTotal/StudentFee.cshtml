@@ -14,9 +14,8 @@
         color: #777;
     }
 
-    #ChallanForm
-    {
-        display:none;
+    #ChallanForm {
+        display: none;
     }
 
     .txtcenter {
@@ -155,8 +154,6 @@
 
             })
 
-
-
         });
 
 
@@ -237,15 +234,8 @@
                         <input type="number" name="RemainingBalance" min="0" class="form-control" value="" id="RemainingBalance" readonly />
                     </div>
                 </div>
-
-
                 <input class="btn btn-primary" type="button" id="ChallanForm" value=" Get challan" />
-
-
             </div>
-
-
-
         }
 
         <div id="bill" style="margin-left:30px">
@@ -265,7 +255,7 @@
                 </p>
 
 
-                <br><b>Cashier:</b> Accountant
+                <br><b>Cashier:</b> @ViewBag.UserName
 
                 <table>
                     <thead>
@@ -280,7 +270,6 @@
                     </tbody>
                 </table>
                 <p class="centered">
-                    Thanks for your purchase!
                     <br>Developed by : TheRiskAdvisors
                 </p>
             </div>
@@ -292,11 +281,6 @@
 
     </div>
 </div>
-
-
-
-
-
 
 
 <script>
@@ -319,22 +303,22 @@
                 remaining = parseFloat(payableFee) - parseFloat(cashReceived);
             }
 
-           
-           
+
+
             $("#RemainingBalance").val(remaining);
 
-            
 
-            var remainingB =   $("#RemainingBalance").val();
-            if (remainingB == "" || cashReceived==0 || remaining < 0) {
+
+            var remainingB = $("#RemainingBalance").val();
+            if (remainingB == "" || cashReceived == 0 || remaining < 0 || cashReceived < 0 || discount < 0) {
 
                 $("#btnPrint").css('display', 'none');
                 $("#ChallanForm").css('display', 'none');
-                 $("#bill").css('display', 'none');
+                $("#bill").css('display', 'none');
 
             }
             else {
-              //   $("#btnPrint").css('display', 'block');
+                //   $("#btnPrint").css('display', 'block');
                 $("#ChallanForm").css('display', 'block');
             }
 
@@ -347,47 +331,25 @@
             var payableFee = $("#PayableFee").val();
             var discount = $(this).val();
             var remaining;
-            // alert("11");
-           
-
-
             var cashReceived = $("#CashReceived").val();
             if (cashReceived != "") {
-
-
                 remaining = parseFloat(payableFee) - parseFloat(cashReceived) - parseFloat(discount);
-
-
             }
             else {
                 remaining = parseFloat(payableFee) - parseFloat(discount);
             }
-          
-           // $("#RemainingBalance").val(0);
 
-           
-          
-               // alert("+number");
             $("#RemainingBalance").val(remaining);
-
-            
-
-            //$("#RemainingBalance").val(remaining);
-
-                //$("")
-
-           var remainingB =   $("#RemainingBalance").val();
-
-            if (remainingB == ""|| cashReceived==0 ||remaining < 0) {
+            var remainingB = $("#RemainingBalance").val();
+            if (remainingB == "" || cashReceived == 0 || remaining < 0 || cashReceived < 0 || discount < 0) {
 
                 $("#btnPrint").css('display', 'none');
                 $("#ChallanForm").css('display', 'none');
-               
                 $("#bill").css('display', 'none');
 
             }
             else {
-                 //$("#btnPrint").css('display', 'block');
+                //$("#btnPrint").css('display', 'block');
                 $("#ChallanForm").css('display', 'block');
             }
 
@@ -468,9 +430,9 @@
             mywindow.close();
 
 
-          //  var SessionName = $("ClassId")
+            //  var SessionName = $("ClassId")
 
-           var classId=  $("#ClassId").val();
+            var classId = $("#ClassId").val();
 
             var id = $(this).attr('name');
             var remainingfee = $("#RemainingBalance").val();
@@ -480,28 +442,28 @@
 
             if (isNaN(Discount)) {
                 Discount = 0;
-                 }
+            }
             if (isNaN(remainingfee)) {
 
                 remainingBalance = 0;
             }
-              if (isNaN(CashReceived)) {
+            if (isNaN(CashReceived)) {
 
                 CashReceived = 0;
             }
-            
+
 
 
             $.ajax({
 
                 type: "POST",
                 url: '/GrandTotal/StudentFeeUpdate',
-                data: { "Id": id, "RemainingFee": remainingfee, "Discount": Discount, "CashReceived": CashReceived,"ClassId":classId },
+                data: { "Id": id, "RemainingFee": remainingfee, "Discount": Discount, "CashReceived": CashReceived, "ClassId": classId },
                 success: function () {
 
                     // alert("success");
                     window.location.href = '/GrandTotal/StudentFee/';
-   }
+                }
 
 
             })
@@ -517,12 +479,10 @@
             $("#bill").css('display', 'none');
             $("#btnPrint").css('display', 'none');
 
-
-
         })
 
         $("#students").change(function () {
-              $("#ChallanForm").css('display', 'none');
+            $("#ChallanForm").css('display', 'none');
 
             $("#bill").css('display', 'none');
             $("#btnPrint").css('display', 'none');
