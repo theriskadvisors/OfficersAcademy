@@ -101,9 +101,6 @@ namespace SEA_Application.Controllers
                     db.Vouchers.Add(v);
                     db.SaveChanges();
 
-
-                    List<Voucher_Detail> LedgersIds = Vouchers.VoucherDetail.ToList();
-
                     foreach (Voucher_Detail voucher in Vouchers.VoucherDetail)
                     {
                         VoucherRecord VR = new VoucherRecord();
@@ -121,7 +118,7 @@ namespace SEA_Application.Controllers
                         VR.CurrentBalance = CurrentBlance;
                         VR.AfterBalance = AfterBalanceOfLedger;
                         VR.VoucherId = v.Id;
-                        VR.Description = "";
+                        VR.Description = voucher.Transaction;
                         Ledger.CurrentBalance = AfterBalanceOfLedger;
 
                         db.VoucherRecords.Add(VR);
