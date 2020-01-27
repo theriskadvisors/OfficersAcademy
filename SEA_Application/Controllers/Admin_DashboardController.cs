@@ -1915,9 +1915,16 @@ namespace SEA_Application.Controllers
                 discount = Convert.ToDouble( Request.Form["Discount"]);
             }
 
+            var age =0;
+            if (Request.Form["Age"] !="")
+            {
 
-            var age = Convert.ToInt32(Request.Form["Age"]);
+            age = Convert.ToInt32(Request.Form["Age"]);
+           
+            }
             model.UserName = Request.Form["UserName"];
+
+
             var dbTransaction = db.Database.BeginTransaction();
             try
             {
@@ -1935,7 +1942,15 @@ namespace SEA_Application.Controllers
 
 
                     ApplicationDbContext context = new ApplicationDbContext();
-                    IEnumerable<string> selectedsubjects = Request.Form["subjects"].Split(',');
+                    IEnumerable<string> selectedsubjects;
+                    if (Request.Form["subjects"] !=null)
+                    {
+                         selectedsubjects = Request.Form["subjects"].Split(',');
+                    }
+                    else
+                    {
+                        selectedsubjects = null;
+                    }
 
                     var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Name = model.Name, PhoneNumber = Request.Form["cellNo"] };
                     var result = await UserManager.CreateAsync(user, model.Password);
@@ -1954,21 +1969,27 @@ namespace SEA_Application.Controllers
                         student.StudentID = user.Id;
 
 
+                        student.Age = age;
 
 
                         student.Address = Request.Form["Address"];
+
                         student.ClassTimings = Request.Form["ClassTimings"];
+
+
                         student.Fathers_Name = Request.Form["Father_Name"];
 
-                        student.Age = age;
 
 
                         student.SchoolName = Request.Form["SchoolName"];
                         student.CourseType = Request.Form["CourseType"];
-                        student.BirthDate = Request.Form["BirthDate"];
-                        student.Nationality = Request.Form["Nationality"];
+                      //  student.BirthDate = Request.Form["BirthDate"];
+                       // student.Nationality = Request.Form["Nationality"];
                         student.Religion = Request.Form["Religion"];
-                        student.Gender = Request.Form["Gender"];
+                     //   student.Gender = Request.Form["Gender"];
+
+
+
                         student.CreationDate = DateTime.Now;
                         if (image != null)
                         {
@@ -2019,6 +2040,8 @@ namespace SEA_Application.Controllers
                         //    db.AspNetStudent_Subject.Add(stu_sub);
                         //    db.SaveChanges();
                         //}
+                        if(selectedsubjects !=null)
+                        {
 
                         foreach (var item in selectedsubjects)
                         {
@@ -2029,7 +2052,7 @@ namespace SEA_Application.Controllers
                             db.AspNetStudent_Subject.Add(stu_sub);
                             db.SaveChanges();
                         }
-
+                        }
                         var roleStore = new RoleStore<IdentityRole>(context);
                         var roleManager = new RoleManager<IdentityRole>(roleStore);
 
@@ -2433,7 +2456,7 @@ namespace SEA_Application.Controllers
             }
 
             base.Dispose(disposing);
-        }
+            }
 
         #region Helpers
         // Used for XSRF protection when adding external logins
