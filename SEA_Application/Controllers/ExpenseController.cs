@@ -4,8 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Data;
 using System.Web;
 using System.Web.Mvc;
+
+using System.Data.Entity.Core.Objects;
 
 namespace SEA_Application.Controllers
 {
@@ -241,6 +244,42 @@ namespace SEA_Application.Controllers
             }
             return Json(Head_list, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult Report()
+        {
+
+
+            return View();
+        }
+        public ActionResult ReportRecords()
+        {
+
+            //var Date = DateTime.Now.ToString("d/M/yyyy");
+            //var result = from Voucher in db.Vouchers
+            //             join VoucherRecord in db.VoucherRecords on Voucher.Id equals VoucherRecord.VoucherId
+            //             join Leadger in db.Ledgers on VoucherRecord.LedgerId equals Leadger.Id
+            //             where VoucherRecord.Ledger.Name == "Admin Drawer" && Voucher.Date.ToString() == Date
+            //             select new
+            //             {
+            //                 VoucherRecord.Type,
+            //                 Voucher.Date,
+            //                 VoucherRecord.Amount,
+            //                 Voucher.Id,
+            //                 VoucherRecord.Description,
+            //             };
+
+            //var x = 0;
+
+           var result =  db.TodayExpenseList("1");
+
+
+
+
+
+
+            return Json(result,JsonRequestBehavior.AllowGet);
+        }
+
+
 
 
     }

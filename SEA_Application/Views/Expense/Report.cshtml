@@ -1,0 +1,161 @@
+﻿
+@{
+    ViewBag.Title = "Report";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+<script src="~/Content/HtmlToPdf/html2canvas.min.js"></script>
+<script src="~/Content/HtmlToPdf/pdfmake.min.js"></script>
+
+
+
+<script type="text/javascript">
+    function Export() {
+        //alert("hello");
+        html2canvas(document.getElementById('ExpenseBody'), {
+            onrendered: function (canvas) {
+                var data = canvas.toDataURL();
+                var docDefinition = {
+                    content: [{
+                        image: data,
+                        width: 500
+                    }]
+                };
+                pdfMake.createPdf(docDefinition).download("ExpenseReport.pdf");
+               // alert("Admit Card Downloading Started");
+            }
+        });
+    }
+</script>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    h3.headings {
+    }
+
+    th, td {
+        padding: 5px;
+        background-color: none;
+        border-top: 1px solid;
+    }
+
+    th {
+        text-align: left;
+    }
+
+    td {
+        border-top: 1px solid;
+    }
+
+    th {
+        text-align: left;
+    }
+
+    .text_underline {
+        text-decoration: underline;
+    }
+</style>
+<br />
+<br />
+
+<div class="col-md-8 col-md-offset-2" style="border: 1px solid; height: auto; width: 700px; ">
+
+    <div id="ExpenseBody">
+
+
+        <h3 class="headings" align="center"> Income and Personal Expense</h3>
+        <br />
+
+        <h4 style="display:inline-block">
+            <span style="color:#3C8DBC"> Date:</span> <span class="text_underline">@DateTime.Now.ToString("d/M/yyyy")</span>
+
+        </h4>
+
+        <h4 class="pull-right" style="        display: inline-block
+">
+            <span style="color:#3C8DBC">Account:</span>  <span class="text_underline">Admin Drawer</span>
+
+        </h4>
+        <table id="ExpenseTable" width="100%" cellpadding="80">
+            <thead>
+
+                <tr>
+                    <th>Title</th>
+                    <th>Amount</th>
+
+                </tr>
+
+
+
+            </thead>
+
+            <tbody id="TableBody">
+            </tbody>
+
+        </table>
+
+        <br />
+    </div>
+    <center>
+        <input onclick="Export()" type="button" id="btnExport" class="btn btn-primary" name="name" value="Download as PDF" />
+    </center>
+    <br />
+
+</div>
+
+<script>
+
+    $.ajax({
+
+        type: "POST",
+        url: "/Expense/ReportRecords",
+        data: {},
+        success: function (result) {
+
+            //var currentDate = new Date();
+            //var date = currentDate.getDate();
+            //var month = currentDate.getMonth();
+            //var year = currentDate.getFullYear();
+
+            //  var monthDateYear = (month + 1) + "/" + date + "/" + year;
+            //alert(monthDateYear);
+            var Total = 0;
+            var TotalCredit = 0;
+            var TotalDebit = 0;
+            $.each(result, function (index) {
+
+                debugger
+                var ste = result[index].Date == Date.now;
+
+
+                if (result[index].VoucherType == "Dr") {
+                    var TableRow = "<tr><td>" + result[index].VoucherDescription + "</td> <td align='right'>" + result[index].VoucherAmount + " </td></tr>"
+
+                    TotalDebit = TotalDebit + parseFloat(result[index].VoucherAmount);
+                }
+
+                else {
+
+                    var TableRow = "<tr><td>" + result[index].VoucherDescription + "</td > <td align='right'><span style='color:red;'>" + result[index].VoucherAmount + "</span> </td></tr>"
+
+                    TotalCredit = TotalCredit + parseFloat(result[index].VoucherAmount);
+                }
+
+
+                // alert(result[index].Date);
+
+                $('#TableBody').append(TableRow);
+            });
+            var GrandTotal = TotalDebit - TotalCredit;
+
+            $('#TableBody').append("<tr><td align='right' colspan='1' ></td>   <td align='right'>Total: " + GrandTotal + "</td></tr>");
+
+        }
+
+
+    })
+
+</script>
