@@ -69,10 +69,10 @@ namespace SEA_Application.Controllers
         //private object ConfigurationManager;
         /*************************************************************Student List Functions*******************************************************/
         [HttpGet]
-        public JsonResult SubjectsByClass(int id)
+        public JsonResult SubjectsByClass(int id,string coursetype)
         {
             db.Configuration.ProxyCreationEnabled = false;
-            List<AspNetSubject> sub = db.AspNetSubjects.Where(r => r.ClassID == id && r.Status!="false").OrderByDescending(r => r.Id).ToList();
+            List<AspNetSubject> sub = db.AspNetSubjects.Where(r => r.ClassID == id  && r.CourseType == coursetype).OrderByDescending(r => r.Id).ToList();
             ViewBag.Subjects = sub;
 
             return Json(sub, JsonRequestBehavior.AllowGet);
@@ -185,6 +185,8 @@ namespace SEA_Application.Controllers
                     x.AspNetUser.PhoneNumber,
                     x.AspNetClass.ClassName,
                     x.AspNetUser.UserName
+
+
                 }).ToList();
 
                 foreach (var item in Students)
@@ -369,14 +371,21 @@ namespace SEA_Application.Controllers
         [HttpGet]
         public JsonResult StudentClass(string id)
         {
-
-
             var subID = db.AspNetStudent_Subject.FirstOrDefault(x => x.StudentID == id);
-            var classidcheck = db.AspNetSubjects.FirstOrDefault(x => x.Id == subID.SubjectID);
-            var ClassIDscheck = db.AspNetClasses.FirstOrDefault(x => x.Id == classidcheck.ClassID);
-            var ClassIDNAMEv = ClassIDscheck.Id;
+            if(subID!= null)
+            {
+                var classidcheck = db.AspNetSubjects.FirstOrDefault(x => x.Id == subID.SubjectID);
+                var ClassIDscheck = db.AspNetClasses.FirstOrDefault(x => x.Id == classidcheck.ClassID);
+                var ClassIDNAMEv = ClassIDscheck.Id;
+                return Json(ClassIDNAMEv, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                var stdid = db.AspNetStudents.Where(x => x.StudentID == id).FirstOrDefault().Id;
+                var class1 = db.AspNetStudent_Session_class.Where(x => x.StudentID == stdid).FirstOrDefault().ClassID;
 
-            return Json(ClassIDNAMEv, JsonRequestBehavior.AllowGet);
+                return Json(class1, JsonRequestBehavior.AllowGet);
+            }
         }
 
         // GET: AspNetUser/Edit/5
@@ -582,8 +591,22 @@ namespace SEA_Application.Controllers
 
 
                     ApplicationDbContext context = new ApplicationDbContext();
-                    IEnumerable<string> selectedsubjects = Request.Form["subjects"].Split(',');
-                    if(selectedsubjects==null)
+                    IEnumerable<string> selectedsubjects;
+                    if (Request.Form["subjects"] != null)
+                    { 
+                    selectedsubjects = Request.Form["subjects"].Split(',');
+
+                    }
+                    else
+                    {
+                        selectedsubjects = null;
+
+                    }
+
+
+
+
+                    if (selectedsubjects==null)
                     {
                         ViewBag.SubError = "Please select subjects";
                     }
@@ -598,12 +621,14 @@ namespace SEA_Application.Controllers
                         {
                             db.AspNetStudent_Subject.Remove(stu_sub_rem);
                             var student = db.AspNetStudents.Where(x => x.StudentID == aspNetUser.Id).Select(x => x).FirstOrDefault();
+                       
+                            
                             student.ClassID = Convert.ToInt32(selectedClass);
-                            student.Nationality = Request.Form["Nationality"];
+                          //  student.Nationality = Request.Form["Nationality"];
                             student.CourseType = Request.Form["CourseType"];
-                            student.BirthDate = Request.Form["BirthDate"];
+                          //  student.BirthDate = Request.Form["BirthDate"];
                             student.Religion = Request.Form["Religion"];
-                            student.Gender = Request.Form["Gender"];
+                            //student.Gender = Request.Form["Gender"];
                             student.SchoolName = Request.Form["SchoolName"];
 
                             if(image !=null)
@@ -622,8 +647,10 @@ namespace SEA_Application.Controllers
                     }
                     while (stu_sub_rem != null);
 
+                    if (selectedsubjects != null)
+                    {
 
-                    foreach (var item in selectedsubjects)
+                        foreach (var item in selectedsubjects)
                     {
                         AspNetStudent_Subject stu_sub = new AspNetStudent_Subject();
                         stu_sub.StudentID = aspNetUser.Id;
@@ -631,6 +658,8 @@ namespace SEA_Application.Controllers
                         db.AspNetStudent_Subject.Add(stu_sub);
                         db.SaveChanges();
                     }
+                    }
+
 
                     db.Entry(aspNetUser).State = EntityState.Modified;
                     db.SaveChanges();
@@ -672,21 +701,21 @@ namespace SEA_Application.Controllers
             var yea = niio.Year;
 
             string datooo = "";
-            var empl = employ.BirthDate;//.Replace("/", "-");
-            var tyuio = empl.Replace("/", "-");
-            var diib = employ.BirthDate.Split('-');
-            if(diib[0].Length == 4)
-            {
-                datooo = employ.BirthDate;
-            }
-            else
-            {
-                var dab = employ.BirthDate.Split('/');
-                datooo = dab[2] + "-" + dab[1] + "-" + dab[0];
+           // var empl = employ.BirthDate;//.Replace("/", "-");
+           // var tyuio = empl.Replace("/", "-");
+           // var diib = employ.BirthDate.Split('-');
+            //if(diib[0].Length == 4)
+            //{
+            //    datooo = employ.BirthDate;
+            //}
+            //else
+            //{
+            //    var dab = employ.BirthDate.Split('/');
+            //    datooo = dab[2] + "-" + dab[1] + "-" + dab[0];
 
-                db.AspNetStudents.Where(x => x.StudentID == aspNetUser.Id).Select(x => x).FirstOrDefault().BirthDate = datooo;
-                db.SaveChanges();
-            }
+            //    db.AspNetStudents.Where(x => x.StudentID == aspNetUser.Id).Select(x => x).FirstOrDefault().BirthDate = datooo;
+            //    db.SaveChanges();
+            //}
 
             //var yu = employ.BirthDate+ " 0:00:17 AM";
             //var date = DateTime.ParseExact(noo, "yy/MM/dd h:mm:ss tt", CultureInfo.InvariantCulture);
@@ -694,10 +723,10 @@ namespace SEA_Application.Controllers
             //DateTime result = DateTime.ParseExact(noo, "yy/MM/dd h:mm:ss tt", CultureInfo.InvariantCulture);
 
 
-            employee.BirthDate = datooo;
-            employee.Nationality = employ.Nationality;
-            employee.Religion = employ.Religion;
-            employee.Gender = employ.Gender;
+            //employee.BirthDate = datooo;
+          //  employee.Nationality = employ.Nationality;
+           // employee.Religion = employ.Religion;
+          //  employee.Gender = employ.Gender;
 
             employee.PhoneNumber = employ.PhoneNumber;
 
@@ -768,11 +797,6 @@ namespace SEA_Application.Controllers
 
         public ViewResult StudentIndex(string Error)
         {
-
-
-
-
-
          
            // ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
 
