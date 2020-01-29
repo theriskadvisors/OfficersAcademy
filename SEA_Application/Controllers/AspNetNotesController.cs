@@ -109,7 +109,7 @@ namespace SEA_Application.Controllers
 
                 voucherRecord.AfterBalance = AfterBalance;
                 voucherRecord.VoucherId = voucher.Id;
-                voucherRecord.Description = "Cash collected by student (" + NameOfStudent + ") (" + SessionName + ")";
+                voucherRecord.Description = "Notes collected by student (" + NameOfStudent + ") (" + SessionName + ")";
                 Leadger.CurrentBalance = AfterBalance;
                 db.VoucherRecords.Add(voucherRecord);
                 db.SaveChanges();
