@@ -115,7 +115,7 @@
 
                 if (VoucherDetail.Code == "-1") {
 
-                    $("#zero_Error").html("Please Enter an account and amount or delete the extra record");
+                $("#zero_Error").html("Please Enter an account and amount or delete the extra record");
                     return false;
                 }
 
@@ -425,6 +425,12 @@
         <div class="col-md-3">
             <span>Date</span><br />
             <input type="date" class="form-control round-border" id="ddate" />
+            <br />
+
+        </div>
+        <div class="col-md-3">
+            <span>Admin Drawer Balance</span><br />
+            <input type="text" class="form-control round-border" value="@ViewBag.CurrentBalance" readonly   />
             <br />
 
         </div>

@@ -20,6 +20,11 @@ namespace SEA_Application.Controllers
         // GET: Expense
         public ActionResult Index()
         {
+
+        ViewBag.CurrentBalance = db.Ledgers.Where(x => x.Name == "Admin Drawer").FirstOrDefault().CurrentBalance;
+            
+
+
             return View();
         }
 
@@ -143,7 +148,7 @@ namespace SEA_Application.Controllers
                     voucherRecord1.CurrentBalance = CurrentBalanceOfAdminDrawer;
                     voucherRecord1.AfterBalance = AfterBalanceOfAdminDrawer1;
                     voucherRecord1.VoucherId = v.Id;
-                    voucherRecord1.Description = "";
+                    voucherRecord1.Description = "Expense Credited";
                     LeadgerAdminDrawer1.CurrentBalance = AfterBalanceOfAdminDrawer1;
 
                     db.VoucherRecords.Add(voucherRecord1);
@@ -269,7 +274,7 @@ namespace SEA_Application.Controllers
 
             //var x = 0;
 
-           var result =  db.TodayExpenseList("1");
+           var result =  db.TodayExpensesList();
 
 
 
