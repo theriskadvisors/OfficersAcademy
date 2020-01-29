@@ -22,7 +22,7 @@ namespace SEA_Application.Controllers
                            join usr in db.AspNetUsers on std.StudentID equals usr.Id
                            join stdclass in db.AspNetClasses on std.ClassID equals stdclass.Id
                            where stdclass.SessionID == SessionID && usr.Id == CurrentUserId
-                           select new { usr.Name, usr.UserName, fee_mon.InstalmentAmount, fee_mon.Months, fee_mon.Status, stdclass.ClassName, std.CourseType }).ToList();
+                           select new { usr.Name, usr.UserName, fee_mon.TotalFee, fee_mon.FeePayable, fee_mon.Months, fee_mon.Status, stdclass.ClassName, std.CourseType }).ToList();
 
 
             List<StdFeeDetail> listFeeDetail = new List<StdFeeDetail>();
@@ -34,7 +34,8 @@ namespace SEA_Application.Controllers
 
                 stdFeeDetail.ClassName = result.ClassName;
                 stdFeeDetail.CourseType = result.CourseType;
-                stdFeeDetail.InstalmentAmount = result.InstalmentAmount;
+                stdFeeDetail.TotalFee = result.TotalFee;
+                stdFeeDetail.PayableFee = result.FeePayable;
                 stdFeeDetail.Months = result.Months;
                 stdFeeDetail.Name = result.Name;
                 stdFeeDetail.UserName = result.UserName;

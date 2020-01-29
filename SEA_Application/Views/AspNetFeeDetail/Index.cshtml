@@ -110,7 +110,11 @@
                         RollNo
                     </th>
                     <th>
-                        Installment Amount
+                        Total Fee
+                    </th>
+                    <th>
+                        Payable Fee
+                    </th>
                     <th>
                         Fee Month
                     </th>
@@ -128,30 +132,33 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.UserName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.InstalmentAmount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Months)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Status)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ClassName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CourseType)
-                        </td>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TotalFee)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PayableFee)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Months)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ClassName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CourseType)
+                    </td>
 
-                    </tr>
+                </tr>
                 }
             <tbody>
 

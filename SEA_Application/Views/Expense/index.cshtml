@@ -55,7 +55,7 @@
         Code: '',
         Transaction: '',
         Credit: '',
-      
+
 
     };
 
@@ -63,7 +63,7 @@
         VoucherName: '',
         Narration: '',
         Time: '',
-      
+
         uppertotal: '',
         VoucherNo: '',
         accounttype: '',
@@ -74,6 +74,7 @@
     function SaveVoucher() {
 
         debugger
+        var AdminDrawerBalance = $("#AdminDrawerBalance").val();
 
         var t = true;
         var name = $("#voucher").val();
@@ -97,10 +98,12 @@
             Voucher.Narration = $('#Notes').val();
             Voucher.VoucherNo = $('#VoucherNo').val();
             Voucher.Time = $('#ddate').val();
-           // Voucher.uppercode = $('#uppercode').val();
-          //  Voucher.upperdesc = $('#upperdesc').val();
+            // Voucher.uppercode = $('#uppercode').val();
+            //  Voucher.upperdesc = $('#upperdesc').val();
             debugger;
             Voucher.accounttype = type;
+
+
             Voucher.uppertotal = $('#zero').val();
 
             Voucher.VoucherDetail = [];
@@ -115,7 +118,7 @@
 
                 if (VoucherDetail.Code == "-1") {
 
-                $("#zero_Error").html("Please Enter an account and amount or delete the extra record");
+                    $("#zero_Error").html("Please Enter an account and amount or delete the extra record");
                     return false;
                 }
 
@@ -129,15 +132,15 @@
 
                 if (VoucherDetail.Credit == "") {
 
-                     $("#zero_Error").html("Please Enter an account and amount or delete the extra record");
+                    $("#zero_Error").html("Please Enter an account and amount or delete the extra record");
                     return false;
                 }
 
 
                 //var branch = "branch" + row[i];
                 //VoucherDetail.BranchId = document.getElementById(branch).value;
-                if (isNaN(VoucherDetail.Credit)) {
-                    $("#zero_Error").html("Enter only numbers");
+                if (isNaN(VoucherDetail.Credit) ||  VoucherDetail.Credit<0 ) {
+                    $("#zero_Error").html("Enter only Positive numbers");
                     t = false;
                     break;
                 }
@@ -153,7 +156,7 @@
 
 
 
-                  $.ajax({
+                $.ajax({
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
                     type: 'POST',
@@ -164,27 +167,31 @@
 
                         if (data == 'yes') {
                             //window.location.href = "index";
-                          //  $('form').trigger("reset");
-                             $('#voucher').val("");
-                             $('#Notes').val("");
-                             $('#VoucherNo').val("");
+                            //  $('form').trigger("reset");
+                            $('#voucher').val("");
+                            $('#Notes').val("");
+                            $('#VoucherNo').val("");
                             $('#ddate').val("");
-                              $('#Expenses0').val("");
-                              $('#description0').val("");
-                              $('#credit0').val("");
+                            $('#Expenses0').val("");
+                            $('#description0').val("");
+                            $('#credit0').val("");
 
                             $(".remove_btn").click();
-                                Voucher.uppertotal = $('#zero').val("");
+                            Voucher.uppertotal = $('#zero').val("");
 
+
+                            // var AdminDrawerBalance = $("#AdminDrawerBalance").val();
+
+                            var RemaningBalanceInAdminD = parseFloat(AdminDrawerBalance) - parseFloat(total);
+
+                            $("#AdminDrawerBalance").val(RemaningBalanceInAdminD);
 
                             $("#Success").css('display', 'block');
-
-
 
                         } else {
 
 
-                          //  window.location.href = "/Expense/index";
+                            //  window.location.href = "/Expense/index";
                             $("#Error").css('display', 'block');
 
                         }
@@ -250,7 +257,7 @@
 
         //debugger
         //var newDiv = document.createElement("div")
-        
+
         $("#journaldiv").append('<div class="col-md-10" style="margin-top:3px" id="' + count + '">' +
             '<div class="col-md-2">' +
             '<select id="Expenses' + count + '" style="width:135px" class="form-control ExpensesDynamic" ><option value="-1" selected>---Select One---</option>' + HeadName + ExpenseList + '</select>' +
@@ -270,13 +277,13 @@
         //var id = "#branch" + count;
         //var node = $(id);
         // node.prepend("<option value=''>---Select One---</option>").val('');
-           row[count] = count;
+        row[count] = count;
         //addAllLedger(count);
         //AddBranch(count);
 
         count = count + 1;
 
-       // $(".drop").select2();
+        // $(".drop").select2();
     }
     function Remove(e) {
         var credit = 0;
@@ -344,7 +351,7 @@
 
 
     function addAllLedger(rowNumber) {
-       
+
         var id = "#Expenses" + rowNumber;
         var node = $(id);
 
@@ -352,7 +359,7 @@
             type: "POST",
             url: "/Expense/SelectAllLedgers",
             success: function (data) {
-               
+
                 $.each(data, function (i, item) {
                     debugger;
                     var head = data[i];
@@ -375,8 +382,8 @@
     function NAN(ex) {
 
         var num = ex.value;
-        if (isNaN(num)) {
-            $("#zero_Error").html("Enter only numbers");
+        if (isNaN(num) || num<0 ) {
+            $("#zero_Error").html("Enter only Positive numbers");
             $("#submit").prop("disabled", true);
         }
         else {
@@ -430,7 +437,7 @@
         </div>
         <div class="col-md-3">
             <span>Admin Drawer Balance</span><br />
-            <input type="text" class="form-control round-border" value="@ViewBag.CurrentBalance" readonly   />
+            <input type="text" class="form-control round-border" value="@ViewBag.CurrentBalance" id="AdminDrawerBalance" readonly />
             <br />
 
         </div>
@@ -477,7 +484,7 @@
         <div class="col-md-1">
             <br />
             <button id="JournalEntries" class="btn btn-default" onclick="journalentries()"><i class="fa fa-plus" style="color:gray"></i></button>
-           
+
         </div>
 
     </div>

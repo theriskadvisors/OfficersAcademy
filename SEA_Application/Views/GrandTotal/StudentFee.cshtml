@@ -104,7 +104,12 @@
 
         }
 
-          $("#ClassId").click(function () {
+        $("#ClassId").click(function () {
+
+              $("#TotalFee").val(0)
+                    $("#PayableFee").val(0);
+
+                    $("#FeeType").val("");
                                  debugger
             var selectedClass = $("#ClassId").val();
             $.get('@Url.Action("StudentByClass")',
@@ -121,10 +126,13 @@
           });
 
 
-        $("#students").change(function () {
+        $("#students").click(function () {
 
             var selectedStudentId = $(this).val();
+               $("#TotalFee").val(0)
+                    $("#PayableFee").val(0);
 
+                    $("#FeeType").val("");
 
             $.ajax({
 
