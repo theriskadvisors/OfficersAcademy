@@ -427,8 +427,6 @@ namespace SEA_Application.Controllers
         {
 
 
-
-
             //   var studentList = db.AspNetStudents.Where(x => x.AspNetStudent_Session_class.Any(y => y.ClassID == id)).Select(x => x.Id).ToList();
             int? sessionId = db.AspNetClasses.Where(x => x.Id == id).FirstOrDefault().SessionID;
 
