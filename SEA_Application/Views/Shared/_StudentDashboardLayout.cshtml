@@ -1,22 +1,41 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<style>
-    
-.box.box-primary {
-    border-top-color: #5170a3;
-}
-.page-container-bg-solid .page-content {
-     background: #d0cfcf2e; 
+
+@using System.Linq;
+@using System.Net;
+@using System.Web.Mvc;
+@using SEA_Application.Models;
+@using System.IO;
+@using Microsoft.AspNet.Identity;
+@{
+    SEA_DatabaseEntities db = new SEA_DatabaseEntities();
+    var CurrentUserId = User.Identity.GetUserId();
+
+    int StudentId = db.AspNetStudents.Where(x => x.StudentID == CurrentUserId).FirstOrDefault().Id;
+
+    var NotesFee = db.StudentFeeMonths.Where(x => x.StudentId == StudentId).FirstOrDefault().NotesFee;
+
 }
 
-.page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+<style>
+
+
+    .box.box-primary {
+        border-top-color: #5170a3;
+    }
+
+    .page-container-bg-solid .page-content {
+        background: #d0cfcf2e;
+    }
+
+    .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
         list-style: none;
         margin: 0;
         padding: 0;
         height: 750px !important;
     }
-    </style>
+</style>
 <div class="page-sidebar navbar-collapse collapse">
     <!-- BEGIN SIDEBAR MENU -->
     <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
@@ -42,23 +61,29 @@
         </li>
 
         @*<li class="nav-item  ">
-            <a href="@(Url.Action("Student_Announcement", "Student_Dashboard"))">
-                <i class="fa fa-bullhorn"></i>
-                <span class="title">Announcment</span>
-            </a>
-        </li>*@
+                <a href="@(Url.Action("Student_Announcement", "Student_Dashboard"))">
+                    <i class="fa fa-bullhorn"></i>
+                    <span class="title">Announcment</span>
+                </a>
+            </li>*@
         <li class="nav-item  ">
             <a href="@(Url.Action("Index", "AspNetOrderNotes"))">
                 <i class="fa fa-hand-o-right"></i>
                 <span class="title">Order Notes</span>
             </a>
         </li>
-        <li class="nav-item  ">
-            <a href="@(Url.Action("PrepaidNotesIndex", "AspNetOrderNotes"))">
-                <i class="fa fa-hand-o-right"></i>
-                <span class="title">Prepaid Order Notes</span>
-            </a>
-        </li>
+
+        @if (NotesFee != null)
+        {
+            //your code
+
+            <li class="nav-item  ">
+                <a href="@(Url.Action("PrepaidNotesIndex", "AspNetOrderNotes"))">
+                    <i class="fa fa-hand-o-right"></i>
+                    <span class="title">Prepaid Order Notes</span>
+                </a>
+            </li>
+        }
 
         <li class="nav-item  ">
             <a href="@(Url.Action("Index", "AspNetFeeDetail"))">
@@ -77,18 +102,18 @@
 
 
         @*<li class="nav-item  ">
-            <a href="@(Url.Action("Student_Dairy", "Student_Dashboard"))">
-                <i class="fa fa-database"></i>
-                <span class="title">Dairy</span>
-            </a>
-        </li>
+                <a href="@(Url.Action("Student_Dairy", "Student_Dashboard"))">
+                    <i class="fa fa-database"></i>
+                    <span class="title">Dairy</span>
+                </a>
+            </li>
 
-        <li class="nav-item  ">
-            <a href="@(Url.Action("StudentAssessment", "Student_Dashboard"))">
-                <i class="fa fa-calendar"></i>
-                <span class="title">Student Term Assessment</span>
-            </a>
-        </li>*@
+            <li class="nav-item  ">
+                <a href="@(Url.Action("StudentAssessment", "Student_Dashboard"))">
+                    <i class="fa fa-calendar"></i>
+                    <span class="title">Student Term Assessment</span>
+                </a>
+            </li>*@
 
         <li class="nav-item  ">
             <a href="@(Url.Action("Inbox", "AspNetMessages"))">

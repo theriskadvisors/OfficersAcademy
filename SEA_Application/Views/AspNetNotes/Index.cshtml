@@ -5,11 +5,6 @@
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-
-
-
-
-
 <link href="~/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/style.css" media="screen" rel="stylesheet" />
    
 
@@ -396,6 +391,7 @@
             data: { "OrderId": OrderId, "OrderType": OrderType },
             success: function (data) {
 
+                debugger
                 window.location.href = '/AspNetNotes/Index/';
             }
 

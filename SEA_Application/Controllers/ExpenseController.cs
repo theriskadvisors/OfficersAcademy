@@ -72,9 +72,6 @@ namespace SEA_Application.Controllers
                 if (CurrentBalanceOfAdminDrawer > Total)
                 {    
 
-
-
-
                     string[] D4 = Vouchers.Time.Split('-');
                     Vouchers.Time = D4[2] + "/" + D4[1] + "/" + D4[0];
                     Voucher v = new Voucher();
@@ -118,10 +115,7 @@ namespace SEA_Application.Controllers
 
                         var Ledger =  db.Ledgers.Where(x => x.Id == idd).FirstOrDefault();
                         decimal? CurrentBlance = Ledger.CurrentBalance;
-
                         decimal? AfterBalanceOfLedger = CurrentBlance + Convert.ToDecimal(voucher.Credit);
-
-
                         VR.LedgerId = idd;
                         VR.Type = "Dr";
                         VR.Amount = Convert.ToDecimal(voucher.Credit);
@@ -276,16 +270,17 @@ namespace SEA_Application.Controllers
 
             //var x = 0;
 
-           var result =  db.TodayExpensesList();
-
-
-
-
-
+           var result =  db.TodayExpense();
 
             return Json(result,JsonRequestBehavior.AllowGet);
         }
+        public ActionResult DebitRecords()
+        {
 
+            var result = db.TodayDebitList();
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
 
 
 

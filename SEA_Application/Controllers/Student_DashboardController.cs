@@ -24,7 +24,7 @@ using iTextSharp.tool.xml.parser;
 
 namespace SEA_Application.Controllers
 {
-    
+
     [Authorize(Roles = "Student,Principal")]
     public class Student_DashboardController : Controller
     {
@@ -40,6 +40,16 @@ namespace SEA_Application.Controllers
         // GET: Student_Dashboard
         public ActionResult Dashboard()
         {
+            var CurrentUserId = User.Identity.GetUserId();
+            int StudentId = db.AspNetStudents.Where(x => x.StudentID == CurrentUserId).FirstOrDefault().Id;
+            var NotesFee = db.StudentFeeMonths.Where(x => x.StudentId == StudentId).FirstOrDefault().NotesFee;
+
+
+            //ViewBag.NotesFee = NotesFee;
+            TempData["NotesFee"] = NotesFee;
+
+            //var a = 0;
+
             return View("BlankPage");
         }
 
@@ -66,7 +76,7 @@ namespace SEA_Application.Controllers
 
         public ActionResult Student_Dairy()
         {
-            return RedirectToAction("Index","AspNetHomeworks");
+            return RedirectToAction("Index", "AspNetHomeworks");
         }
 
         public ActionResult PerformanceReport_Detail(int? id)
@@ -131,7 +141,7 @@ namespace SEA_Application.Controllers
             int id = Convert.ToInt32(Request.Form["id"]);
             AspNetStudent_Assessment result = (from p in db.AspNetStudent_Assessment
                                                where p.Id == id
-                                         select p).SingleOrDefault();
+                                               select p).SingleOrDefault();
 
             var dbTransaction = db.Database.BeginTransaction();
             try
@@ -168,7 +178,7 @@ namespace SEA_Application.Controllers
             int id = Convert.ToInt32(Request.Form["id"]);
             AspNetStudent_Project student_project = (from p in db.AspNetStudent_Project
                                                      where p.Id == id
-                                               select p).SingleOrDefault();
+                                                     select p).SingleOrDefault();
 
             var dbTransaction = db.Database.BeginTransaction();
             try
@@ -218,7 +228,7 @@ namespace SEA_Application.Controllers
             return View("_Student_Attendance");
         }
 
-       
+
         // GET: Assignment/Details/5
         public ActionResult AnnouncementDetail(int? id)
         {
@@ -232,7 +242,7 @@ namespace SEA_Application.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-           
+
 
             var Announcement = db.AspNetAnnouncement_Subject.Find(id);
 
@@ -391,7 +401,7 @@ namespace SEA_Application.Controllers
                          where student_assessment.AspNetAssessment.AspNetSubject_Catalog.AspNetSubject.Id == subjectID && student_assessment.StudentID == StudentID
                          group new { student_assessment.AspNetAssessment.Title, student_assessment.AspNetAssessment.DueDate, student_assessment.AspNetAssessment.TotalMarks, student_assessment.MarksGot } by student_assessment.AspNetAssessment.AspNetSubject_Catalog.AspNetCatalog.CatalogName into g
                          select new { Key = g.Key, Marks = g.ToList() }).ToList();
-            
+
             return Json(marks, JsonRequestBehavior.AllowGet);
         }
 
@@ -413,13 +423,13 @@ namespace SEA_Application.Controllers
             return Json(announcements, JsonRequestBehavior.AllowGet);
         }
 
-       
+
         public ActionResult StudentAssessment()
         {
             try
-            { 
-            var session =  db.AspNetSessions.OrderByDescending(x=> x.Id).First() ;
-            ViewBag.TermId = new SelectList(db.AspNetTerms.Where(x => x.SessionID == session.Id), "Id", "TermName");      // ).ToList();
+            {
+                var session = db.AspNetSessions.OrderByDescending(x => x.Id).First();
+                ViewBag.TermId = new SelectList(db.AspNetTerms.Where(x => x.SessionID == session.Id), "Id", "TermName");      // ).ToList();
             }
             catch
             {
@@ -499,7 +509,7 @@ namespace SEA_Application.Controllers
 
         public class Student_data
         {
-            public List<subject> assessment_data{ get; set; }
+            public List<subject> assessment_data { get; set; }
             public string PrincipleComment { set; get; }
         }
         public class subject
