@@ -14,6 +14,8 @@ namespace SEA_Application.Models
 
         public double? InstalmentAmount { get; set; }
 
+        public double? TotalFee { get; set; }
+        public double? PayableFee { get; set; }
         public string Months { get; set; }
 
         public string Status { get; set; }
