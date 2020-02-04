@@ -59,10 +59,9 @@ namespace SEA_Application.Controllers
             public List<Voucher_Detail> VoucherDetail { set; get; }
         }
         public ActionResult AddCashVoucher(_Voucher Vouchers)
-        {
+            {
             try
             {
-
                 var LeadgerAdminDrawer = db.Ledgers.Where(x => x.Name == "Admin Drawer").FirstOrDefault();
 
                 decimal? CurrentBalanceOfAdminDrawer = LeadgerAdminDrawer.CurrentBalance;

@@ -3,8 +3,7 @@
     ViewBag.Title = "index";
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
-
-
+<link href="~/Content/Toaster/toastr.min.css" rel="stylesheet" />
 <style>
     .select2-container--default .select2-selection--single {
         background-color: #fff;
@@ -20,18 +19,21 @@
     row = [];
     row[0] = 0;
 
+    var arr = [];
+    arr[0] = 0;
     var HeadName = "";
     var ExpenseList = "";
 
     var type = "Dr";
     $(document).ready(function () {
-        $("#Expenses0").prepend("<option value='-1' selected>---Select One---</option>").val('');
+        $("#Expenses0").prepend("<option value='-1' selected>---Select One---</option>");
+        //   $("#Expenses0").prepend("<option value='-1' selected>---Select One---</option>").val('');
 
         addAllLedger(0);
-        AddBranch(0);
-        addCashLedger();
+        // AddBranch(0);
+        // addCashLedger();
         CheckVoucherNo();
-        debugger;
+
         var now = new Date();
         var day = ("0" + now.getDate()).slice(-2);
         var month = ("0" + (now.getMonth() + 1)).slice(-2);
@@ -73,7 +75,8 @@
     Vouchers = [];
     function SaveVoucher() {
 
-        debugger
+        $("#submit").prop('disabled', true);
+
         var AdminDrawerBalance = $("#AdminDrawerBalance").val();
 
         var t = true;
@@ -83,16 +86,18 @@
         var total = $("#zero").val();
         if (name == "") {
             $("#Error_Vocuher").html("This field is required");
+            $("#submit").prop('disabled', false);
         }
 
         else if (total == 0) {
 
             $("#zero_Error").html("Please Enter an account and amount or delete the extra record");
-            $("#submit").prop("disabled", true);
+
+            $("#submit").prop("disabled", false);
         }
 
         else {
-            debugger;
+
             Voucher = Object.create(Voucher);
             Voucher.VoucherName = $('#voucher').val();
             Voucher.Narration = $('#Notes').val();
@@ -100,7 +105,7 @@
             Voucher.Time = $('#ddate').val();
             // Voucher.uppercode = $('#uppercode').val();
             //  Voucher.upperdesc = $('#upperdesc').val();
-            debugger;
+
             Voucher.accounttype = type;
 
 
@@ -108,24 +113,25 @@
 
             Voucher.VoucherDetail = [];
 
-            for (var i in row) {
-                if (row[i] == null)
+            for (var i in arr) {
+                if (arr[i] == null)
                     continue;
                 VoucherDetail = Object.create(VoucherDetail);
 
-                var expense = "Expenses" + row[i];
+                var expense = "Expenses" + arr[i];
                 VoucherDetail.Code = document.getElementById(expense).value;
 
-                if (VoucherDetail.Code == "-1") {
+                if (VoucherDetail.Code == "-1" || VoucherDetail.Code == "") {
 
                     $("#zero_Error").html("Please Enter an account and amount or delete the extra record");
+                    $("#submit").prop('disabled', false);
                     return false;
                 }
 
-                var transaction = "description" + row[i];
+                var transaction = "description" + arr[i];
                 VoucherDetail.Transaction = document.getElementById(transaction).value;
 
-                var credit = "credit" + row[i];
+                var credit = "credit" + arr[i];
 
 
                 VoucherDetail.Credit = document.getElementById(credit).value;
@@ -133,13 +139,14 @@
                 if (VoucherDetail.Credit == "") {
 
                     $("#zero_Error").html("Please Enter an account and amount or delete the extra record");
+                    $("#submit").prop('disabled', false);
                     return false;
                 }
 
 
                 //var branch = "branch" + row[i];
                 //VoucherDetail.BranchId = document.getElementById(branch).value;
-                if (isNaN(VoucherDetail.Credit) ||  VoucherDetail.Credit<0 ) {
+                if (isNaN(VoucherDetail.Credit) || VoucherDetail.Credit < 0) {
                     $("#zero_Error").html("Enter only Positive numbers");
                     t = false;
                     break;
@@ -149,12 +156,13 @@
             }
 
             if (t == true) {
-                debugger;
+
+
 
                 Vouchers = JSON.stringify({ 'Vouchers': Voucher });
                 $('.eeniart0017').css("display", "block");
 
-
+                $("#loaderDiv").css('display', 'block');
 
                 $.ajax({
                     contentType: 'application/json; charset=utf-8',
@@ -172,14 +180,23 @@
                             $('#Notes').val("");
                             $('#VoucherNo').val("");
                             $('#ddate').val("");
-                            $('#Expenses0').val("");
+                            $('#Expenses0').val("-1");
                             $('#description0').val("");
                             $('#credit0').val("");
 
                             $(".remove_btn").click();
                             Voucher.uppertotal = $('#zero').val("");
+                            //   $("#Expenses0").prepend("<option value='-1' selected>---Select One---</option>");
 
+                            CheckVoucherNo();
 
+                            var now = new Date();
+                            var day = ("0" + now.getDate()).slice(-2);
+                            var month = ("0" + (now.getMonth() + 1)).slice(-2);
+                            var today = now.getFullYear() + "-" + (month) + "-" + (day);
+                            $('#ddate').val(today);
+                            arr = [];
+                            arr[0] = 0;
                             // var AdminDrawerBalance = $("#AdminDrawerBalance").val();
 
                             var RemaningBalanceInAdminD = parseFloat(AdminDrawerBalance) - parseFloat(total);
@@ -187,12 +204,19 @@
                             $("#AdminDrawerBalance").val(RemaningBalanceInAdminD);
 
                             $("#Success").css('display', 'block');
+                            $("#submit").prop('disabled', false);
+
+                            $("#loaderDiv").css('display', 'none');
+                            debugger
+                            ShowSuccess("", "Expense has been created.");
 
                         } else {
 
 
                             //  window.location.href = "/Expense/index";
                             $("#Error").css('display', 'block');
+                            ShowError("", "Error! Invalid Info");
+
 
                         }
                     }
@@ -206,13 +230,16 @@
 
     }
     function CheckVoucherNo() {
-        debugger
+
+
         $.ajax({
             type: "POST",
             url: "/Expense/FindVoucherNo",
             success: function (data) {
-                debugger
+
+
                 $("#VoucherNo").val(data);
+                //addAllLedger(0);
             }
         });
     }
@@ -234,28 +261,28 @@
         })
 
     }
+    //shahzad
+    //function AddBranch(rowNumber) {
+    //    var id = "#branch" + rowNumber;
+    //    var node = $(id);
+    //    $.ajax({
+    //        type: "POST",
+    //        url: "/Expense/SelectListBranch",
+    //        success: function (data) {
+    //            console.log(data);
+    //            $.each(data, function (i, item) {
+    //                console.log(data.Name);
+    //                node.append("<option value=" + item.Id + " >" + item.Name + "</option>")
 
-    function AddBranch(rowNumber) {
-        var id = "#branch" + rowNumber;
-        var node = $(id);
-        $.ajax({
-            type: "POST",
-            url: "/Expense/SelectListBranch",
-            success: function (data) {
-                console.log(data);
-                $.each(data, function (i, item) {
-                    console.log(data.Name);
-                    node.append("<option value=" + item.Id + " >" + item.Name + "</option>")
+    //            });
 
-                });
-
-            }
-        });
-    }
+    //        }
+    //    });
+    //}
 
     function journalentries() {
 
-        //debugger
+
         //var newDiv = document.createElement("div")
 
         $("#journaldiv").append('<div class="col-md-10" style="margin-top:3px" id="' + count + '">' +
@@ -278,14 +305,21 @@
         //var node = $(id);
         // node.prepend("<option value=''>---Select One---</option>").val('');
         row[count] = count;
+
         //addAllLedger(count);
         //AddBranch(count);
+        arr[count] = count;
 
         count = count + 1;
 
         // $(".drop").select2();
     }
     function Remove(e) {
+
+
+        arr.splice($.inArray(e, arr), 1);
+
+        // alert(arr);
         var credit = 0;
         if ($("#zero").val() == "") {
             credit = "";
@@ -306,22 +340,26 @@
         row.splice(e, 1);
 
     }
-    function addCashLedger() {
-        debugger;
 
-        $.ajax({
-            type: "POST",
-            url: "/Expense/SelectListLedgers",
-            success: function (data) {
-                $.each(data, function (i, item) {
-                    debugger;
-                    $("#uppercode").append("<option value=" + item.Id + " >" + item.Name + "</option>")
-                });
-            }
-        });
-    }
+    //shahzad
+    //function addCashLedger() {
+    //    debugger;
+
+    //    $.ajax({
+    //        type: "POST",
+    //        url: "/Expense/SelectListLedgers",
+    //        success: function (data) {
+    //            $.each(data, function (i, item) {
+    //                debugger;
+    //                $("#uppercode").append("<option value=" + item.Id + " >" + item.Name + "</option>")
+    //            });
+    //        }
+    //    });
+    //}
+
+
     function Codedescription(e) {
-        debugger;
+
         var id = e.value;
         var ledgerid = e.id;
         var number = ledgerid[4];
@@ -335,7 +373,7 @@
             data: { id: id },
             success: function (data) {
                 var flag = data;
-                debugger;
+
                 if (flag == true) {
 
                     node.prop("disabled", false);
@@ -361,7 +399,7 @@
             success: function (data) {
 
                 $.each(data, function (i, item) {
-                    debugger;
+
                     var head = data[i];
                     node.append("<optgroup label=" + head.HeadName + " ></optgroup>")
                     HeadName = "<optgroup label=" + head.HeadName + " ></optgroup>";
@@ -382,7 +420,7 @@
     function NAN(ex) {
 
         var num = ex.value;
-        if (isNaN(num) || num<0 ) {
+        if (isNaN(num) || num < 0) {
             $("#zero_Error").html("Enter only Positive numbers");
             $("#submit").prop("disabled", true);
         }
@@ -410,9 +448,12 @@
 
 
     //}
-</script>
 
-<div class="col-md-10" id="maindiv" style="background-color:#f7f7f7;margin:50px;border-radius:10px;padding:10px;box-shadow: rgba(0, 0, 0, 0.16) 5px 10px 5px, rgba(0, 0, 0, 0.23) 0px 3px 5px">
+
+</script>
+<div class="col-md-10" id="maindiv" style="background-color: #f7f7f7; margin: 50px; border-radius: 10px; padding: 10px; box-shadow: rgba(0, 0, 0, 0.16) 5px 10px 5px, rgba(0, 0, 0, 0.23) 0px 3px 5px">
+
+
 
     <h4>Cash Transaction</h4>
     <div id="Success" style="display:none;color:white;background:rgb(150,181,103)">
@@ -464,6 +505,13 @@
             <input type="text" name="Name" id="Notes" class="form-control" />
             <br />
         </div>
+        <div class="col-md-4">
+
+            <div style="text-align:center;display:none" id="loaderDiv">
+                <img src="~/Content/InternetSlowdown_Day.gif" width="50" /> @* //put any image in content folder*@
+            </div>
+        </div>
+
     </div>
 
 
@@ -516,5 +564,7 @@
         <button class="col-md-2 form-control" onclick="window.location.href = '/FinanceSummary/CashIndex'" style="border-radius:35px;border:hidden;margin-right:10px;background-color:red;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
 
         <input class="col-md-2 form-control" id="submit" onclick="SaveVoucher()" type="submit" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />
+
     </div>
 </div>
+<script src="~/Content/Toaster/toastr.min.js"></script>

@@ -246,7 +246,11 @@
             });
         
 
-        
+        $(".orderButtons").click(function () {
+
+            $(this).remove();
+
+        })
 
         $.ajax({
             type: "POST",

@@ -10,12 +10,20 @@
         padding: 0;
         height: 1897px !important;
     }
+
+    #SubjectsList {
+        border: 1px solid silver;
+        height: 90px;
+        padding: 10px;
+        overflow: auto;
+        margin: auto;
+    }
 </style>
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 <script type="text/javascript">
     var selectedClass;
     $(document).ready(function () {
-        
+
         $("#UserName").bind('blur', function () {
             var userName = $("#UserName").val();
 
@@ -87,15 +95,22 @@
                      $('#subjects').html('');
                      $('#subjects').prop('disabled', false);
                      $.each(data, function (i, item) {
-                         $('#subjects').append('<option value=' + item.Id + '>' + item.SubjectName + '</option>');
+                       //  $('#subjects').append('<option value=' + item.Id + '>' + item.SubjectName + '</option>');
+
+                  $("#SubjectsList").append('<input  required type="checkbox" name ="subjects" id='+ item.Id + ' value=' + item.Id + '><label for='+ item.Id + ' style ="cursor:pointer"> '+item.SubjectName +'</label><br>')
+
+
                      });
-           
+
 
                      $.get('@Url.Action("SubjectsByStudent")',
                         { id: selectedStudent}, function (data) {
-                            $('#subjects').prop('disabled', false);
+                            //  $('#subjects').prop('disabled', false);
                             $.each(data, function (i, item) {
-                                $("#subjects option[value='" + item.Id + "']").prop("selected", true);
+
+
+
+                                $("#SubjectsList input[value='" + item.Id + "']").prop("checked", true);
 
                             });
                         });
@@ -105,8 +120,8 @@
 
            $('input[name="CourseType"]').click(function () {
 
-             $('#subjects').html('');
-
+             $('#SubjectsList').html('');
+               $("#ClassID").click();
 
         })
 
@@ -128,11 +143,13 @@
                     { id: selectedClasss, coursetype :CourseType}, function (data) {
 
 
-                        $('#subjects').html('');
-                        $('#subjects').prop('disabled', false);
+                         $('#SubjectsList').html('');
+                        // $('#subjects').prop('disabled', false);
                         $.each(data, function (i, item) {
 
-                            $('#subjects').append('<option value=' + item.Id + '>' + item.SubjectName + '</option>');
+                           // $('#subjects').append('<option value=' + item.Id + '>' + item.SubjectName + '</option>');
+                        $("#SubjectsList").append('<input  required type="checkbox" name ="subjects" id='+ item.Id + ' value=' + item.Id + '><label for='+ item.Id + ' style ="cursor:pointer"> '+item.SubjectName +'</label><br>')	
+
                         });
 
                     });
@@ -241,6 +258,8 @@
                     <div class="col-md-5">
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                         @Html.HiddenFor(model => model.Id)
+                        
+                        @*<input type="hidden" name="PasswordHash" value="@ViewBag.UserPassword" />*@
 
                         <div class="form-group">
                             <label class="control-label col-md-2 col-lg-2">Name<span class="red-mark">*</span></label>
@@ -293,8 +312,8 @@
                                 <br>
                                 <input type="radio" name="CourseType" value="PMS"> PMS
                                 <br>
-                             
-                             <label><input type="radio" name="CourseType" id="OnePaper" value="OnePaper"> One Paper </label>
+
+                                <label><input type="radio" name="CourseType" id="OnePaper" value="OnePaper"> One Paper </label>
 
                             </div>
                         </div>
@@ -358,7 +377,7 @@
                 </div>
 
 
-                
+
 
                 @*<div class="box box-primary">
                         <div class="box-title"></div>
@@ -626,7 +645,15 @@
                         <div class="form-group" id="subjectsdiv">
                             <label class="control-label col-md-1 col-lg-1">Subjects</label>
                             <div class="col-md-6">
-                                <select multiple class="form-control" id="subjects" name="subjects" required></select>
+                                @*<select multiple class="form-control" id="subjects" name="subjects" required></select>*@
+
+                                <div class="checkbox-group required" id="SubjectsList">
+
+
+
+                                </div>
+
+
                             </div>
                         </div>
                     </div>
@@ -683,29 +710,29 @@
 
         $("input[value='OnePaper']").click(function () {
 
-            $('#subjects').prop('required', false);
-            
-            $( "#subjectsdiv" ).css( "display", "none");
-            
+            // $('#subjects').prop('required', false);
+
+            $("#subjectsdiv").css("display", "none");
+
         })
         $("input[value='CSS']").click(function () {
 
-            $('#subjects').prop('required', true);
-            $( "#subjectsdiv" ).css( "display", "block");
+            // $('#subjects').prop('required', true);
+            $("#subjectsdiv").css("display", "block");
 
 
         })
         $("input[value='PMS']").click(function () {
 
-            $('#subjects').prop('required', true);
-            $( "#subjectsdiv" ).css( "display", "block");
+            // $('#subjects').prop('required', true);
+            $("#subjectsdiv").css("display", "block");
 
 
         })
         if ($("input[value='OnePaper']").is(':checked')) {
 
-            $('#subjects').prop('required', false);
-            $( "#subjectsdiv" ).css( "display", "none");
+            //  $('#subjects').prop('required', false);
+            $("#subjectsdiv").css("display", "none");
 
         }
 

@@ -366,6 +366,8 @@
 
     $("#btnPrint").click(function () {
 
+        $("#btnPrint").css('display', 'none');
+
         var OrderId = $('#btnPrint').attr('name');
         var OrderType = $("#OrderType").val();
         // alert(OrderType);

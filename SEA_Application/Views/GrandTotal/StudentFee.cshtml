@@ -365,7 +365,6 @@
                 $("#ChallanForm").css('display', 'block');
             }
 
-
         })
 
         $("#ChallanForm").click(function () {
@@ -426,6 +425,7 @@
         })
         $("#btnPrint").click(function () {
 
+            $("#btnPrint").css('display', 'none');
             var mywindow = window.open('', '', '');
 
             mywindow.document.write('<html><head><title></title>  ');

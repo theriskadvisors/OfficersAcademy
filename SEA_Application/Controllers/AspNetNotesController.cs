@@ -32,7 +32,7 @@ namespace SEA_Application.Controllers
 
 
             db.Entry(OrderToModify).State = EntityState.Modified;
-            db.SaveChanges(); ;
+            db.SaveChanges();
 
 
             List<AspNetNotesOrder> NotesOrderToModify = db.AspNetNotesOrders.Where(x => x.OrderId == OrderId).ToList();
@@ -109,7 +109,7 @@ namespace SEA_Application.Controllers
 
                 voucherRecord.AfterBalance = AfterBalance;
                 voucherRecord.VoucherId = voucher.Id;
-                voucherRecord.Description = "Notes collected by student (" + NameOfStudent + ") (" + SessionName + ")";
+                voucherRecord.Description = "Notes paid by student (" + NameOfStudent + ") (" + SessionName + ")";
                 Leadger.CurrentBalance = AfterBalance;
                 db.VoucherRecords.Add(voucherRecord);
                 db.SaveChanges();

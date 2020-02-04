@@ -663,6 +663,7 @@ namespace SEA_Application.Controllers
                 db.VoucherRecords.Add(voucherRecord3);
                 db.SaveChanges();
 
+
             }
 
 

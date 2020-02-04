@@ -398,7 +398,7 @@ namespace SEA_Application.Controllers
 
             AspNetUser aspNetUser = db.AspNetUsers.Find(id);
             var employee = db.AspNetStudents.Where(x => x.StudentID == id).Select(x => x).FirstOrDefault();
-
+            ViewBag.UserPassword = aspNetUser.PasswordHash;
             ViewBag.StudentImage = employee.StudentIMG;
             ViewBag.UserDetails = aspNetUser.Highest_Degree;
             ViewBag.CourseType = employee.CourseType;
@@ -593,7 +593,7 @@ namespace SEA_Application.Controllers
                     ApplicationDbContext context = new ApplicationDbContext();
                     IEnumerable<string> selectedsubjects;
                     if (Request.Form["subjects"] != null)
-                    { 
+                     { 
                     selectedsubjects = Request.Form["subjects"].Split(',');
 
                     }
@@ -620,24 +620,9 @@ namespace SEA_Application.Controllers
                         try
                         {
                             db.AspNetStudent_Subject.Remove(stu_sub_rem);
-                            var student = db.AspNetStudents.Where(x => x.StudentID == aspNetUser.Id).Select(x => x).FirstOrDefault();
                        
                             
-                            student.ClassID = Convert.ToInt32(selectedClass);
-                          //  student.Nationality = Request.Form["Nationality"];
-                            student.CourseType = Request.Form["CourseType"];
-                          //  student.BirthDate = Request.Form["BirthDate"];
-                            student.Religion = Request.Form["Religion"];
-                            //student.Gender = Request.Form["Gender"];
-                            student.SchoolName = Request.Form["SchoolName"];
-
-                            if(image !=null)
-                            {
-
-
-                            student.StudentIMG = image.FileName;
-                            }
-
+                            
                             db.SaveChanges();
                         }
                         catch
@@ -645,7 +630,26 @@ namespace SEA_Application.Controllers
 
                         }
                     }
+
                     while (stu_sub_rem != null);
+
+                    var student = db.AspNetStudents.Where(x => x.StudentID == aspNetUser.Id).Select(x => x).FirstOrDefault();
+
+                    student.ClassID = Convert.ToInt32(selectedClass);
+                    //  student.Nationality = Request.Form["Nationality"];
+                    student.CourseType = Request.Form["CourseType"];
+                    //  student.BirthDate = Request.Form["BirthDate"];
+                    student.Religion = Request.Form["Religion"];
+                    //student.Gender = Request.Form["Gender"];
+                    student.SchoolName = Request.Form["SchoolName"];
+
+                    if (image != null)
+                    {
+
+                        student.StudentIMG = image.FileName;
+                    }
+                     db.SaveChanges();
+
 
                     if (selectedsubjects != null)
                     {
@@ -659,9 +663,15 @@ namespace SEA_Application.Controllers
                         db.SaveChanges();
                     }
                     }
+                    //db.Entry(aspNetUser).State = EntityState.Modified;
 
+                  //  db.Entry(registration).Property(x => x.Name).IsModified = false;
 
                     db.Entry(aspNetUser).State = EntityState.Modified;
+
+                    db.Entry(aspNetUser).Property(x => x.PasswordHash).IsModified = false;
+                    db.Entry(aspNetUser).Property(x => x.SecurityStamp).IsModified = false;
+
                     db.SaveChanges();
                 }
                 dbTransaction.Commit();
@@ -1977,7 +1987,7 @@ namespace SEA_Application.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+           if (disposing)
             {
                 db.Dispose();
             }

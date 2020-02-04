@@ -1924,7 +1924,6 @@ namespace SEA_Application.Controllers
             }
             model.UserName = Request.Form["UserName"];
 
-
             var dbTransaction = db.Database.BeginTransaction();
             try
             {
@@ -2132,7 +2131,7 @@ namespace SEA_Application.Controllers
                         var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
                         Voucher voucher = new Voucher();
                         var SessionName=  db.AspNetSessions.Where(x => x.Id == SessionID).FirstOrDefault().SessionName; 
-                        voucher.Name = "Student Fee Creation of student" + model.Name + " Session Name " + SessionName; ;
+                        voucher.Name = "Student Fee Creation of student " + model.Name + " Session Name " + SessionName; ;
                         voucher.Notes = "Account Receiveable, discount, and revenue is updated";
                         voucher.Date = DateTime.Now;
 
