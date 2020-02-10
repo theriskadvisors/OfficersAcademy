@@ -40,16 +40,8 @@ namespace SEA_Application.Controllers
         // GET: Student_Dashboard
         public ActionResult Dashboard()
         {
-            var CurrentUserId = User.Identity.GetUserId();
-            int StudentId = db.AspNetStudents.Where(x => x.StudentID == CurrentUserId).FirstOrDefault().Id;
-            var NotesFee = db.StudentFeeMonths.Where(x => x.StudentId == StudentId).FirstOrDefault().NotesFee;
 
-
-            //ViewBag.NotesFee = NotesFee;
-            TempData["NotesFee"] = NotesFee;
-
-            //var a = 0;
-
+         
             return View("BlankPage");
         }
 

@@ -45,24 +45,121 @@
 
         });
 
+        $("#ClassID").change(function () {
+
+            $("#MandatorySubjects").removeAttr('checked');
+
+        })
+         var MandatorySub;
+        var AllSub;
+         $('#MandatorySubjects').change(function() {
+          if (this.checked) {
+
+              var ClassId = $("#ClassID").val();
+
+              if (ClassId != "") {
+
+                  $.ajax({
+
+                     type: "POST",
+                     url: "/Admin_Dashboard/GetMandatorySubjects",
+                     data: { "ClassId":ClassId},
+                      success: function (data) {
+
+                          var MandatorySubjects = data.MandatorySubjects;
+                          var AllSubjects = data.AllSubjects;
+
+                           MandatorySub = data.MandatorySubjects;
+                            AllSub=data.AllSubjects;
+                          $.each( MandatorySubjects, function( key, value1 ) {
+
+                              $.each( AllSubjects, function( key, value2 ) {
+
+
+                                  if (value1 == value2) {
+
+
+                                         $("#" + value1).prop("checked", true);
+                                  }
+
+
+
+                              });
+
+
+                          });
+
+
+                      }
+                  })
+
+
+              }
+
+
+
+
+
+          }
+          else {
+              $.each( MandatorySub, function( key, value1 ) {
+
+                    $.each(AllSub, function (key, value2) {
+
+
+                                  if (value1 == value2) {
+
+
+                                         $("#" + value1).removeAttr('checked');
+                                  }
+
+
+
+                              });
+
+
+                          });
+
+          }
+       // $('#textbox1').val(this.checked);
+    });
+
+
         $("#Email").bind('blur', function () {
             var email = $("#Email").val();
 
-            $.ajax({
-                type: "POST",
-                url: "/AspNetUser/Email",
-                data: { "Email": email },
-                success: function (data) {
-                    console.log(data);
-                    if (data == 0) {
-                        $('#FormSubmit').prop('disabled', false);
+           var testEmail = /^[A-Z0-9._%+-]+@@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
+            if (email != "") {
+
+            if (testEmail.test(email)) {
+
+
+
+                $.ajax({
+                    type: "POST",
+                    url: "/AspNetUser/Email",
+                    data: { "Email": email },
+                    success: function (data) {
+                        console.log(data);
+                        if (data == 0) {
+                            $('#FormSubmit').prop('disabled', false);
+                        }
+                        else {
+                            $('#Email-Error').html("Email Already taken");
+                            $('#FormSubmit').prop('disabled', true);
+                        }
                     }
-                    else {
-                        $('#Email-Error').html("Email Already taken");
-                        $('#FormSubmit').prop('disabled', true);
-                    }
-                }
-            });
+                });
+
+            }
+
+
+            else {
+                $('#Email-Error').html("Email is Not Valid ");
+                  $('#FormSubmit').prop('disabled', true);
+            }
+             }
+
 
         });
 
@@ -127,6 +224,9 @@
 
 
         $("#ClassID").click(function () {
+
+              $("#MandatorySubjects").removeAttr('checked');
+
             var selectedClasss = $("#ClassID").val();
 
             var CourseType = $("input[name='CourseType']:checked").val();
@@ -148,7 +248,7 @@
                         $.each(data, function (i, item) {
 
                            // $('#subjects').append('<option value=' + item.Id + '>' + item.SubjectName + '</option>');
-                        $("#SubjectsList").append('<input  required type="checkbox" name ="subjects" id='+ item.Id + ' value=' + item.Id + '><label for='+ item.Id + ' style ="cursor:pointer"> '+item.SubjectName +'</label><br>')	
+                        $("#SubjectsList").append('<input  required type="checkbox" name ="subjects" id='+ item.Id + ' value=' + item.Id + '><label for='+ item.Id + ' style ="cursor:pointer"> '+item.SubjectName +'</label><br>')
 
                         });
 
@@ -258,7 +358,7 @@
                     <div class="col-md-5">
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                         @Html.HiddenFor(model => model.Id)
-                        
+
                         @*<input type="hidden" name="PasswordHash" value="@ViewBag.UserPassword" />*@
 
                         <div class="form-group">
@@ -353,13 +453,13 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-md-2 col-lg-2"> Phone Number</label>
-                            <div class="col-md-5">
-                                @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control", @onblur = "checkPhone(this)" } })
-                                @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger", @id = "Phone-Error" })
-                            </div>
-                        </div>
+                        @*<div class="form-group">
+                                <label class="control-label col-md-2 col-lg-2"> Phone Number</label>
+                                <div class="col-md-5">
+                                    @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control", @onblur = "checkPhone(this)" } })
+                                    @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger", @id = "Phone-Error" })
+                                </div>
+                            </div>*@
 
 
                         <div class="form-group">
@@ -642,6 +742,20 @@
                                 @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control" })
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label class="col-md-1 col-lg-1 control-label">Mandatory Subjects</label>
+                            <div class="col-md-2">
+                                <input id="MandatorySubjects" type="checkbox" name="name" style="width:30px;height:30px" value="" />
+
+
+                            </div>
+
+
+                        </div>
+
+
+
                         <div class="form-group" id="subjectsdiv">
                             <label class="control-label col-md-1 col-lg-1">Subjects</label>
                             <div class="col-md-6">

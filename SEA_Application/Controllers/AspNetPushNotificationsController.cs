@@ -238,8 +238,6 @@ namespace SEA_Application.Controllers
                                              select new { notification.Id, notification.AspNetNotification.Subject, notification.AspNetNotification.Time, notification.AspNetNotification.Description, notification.AspNetNotification.SenderID }).ToList();
 
 
-
-
                 //var NotificationsList = db.AspNetPushNotifications.Where(x => x.UserID == currentUser.Id && x.IsOpen == false).ToList();
                 return Json(NotificationsList, JsonRequestBehavior.AllowGet);
 
@@ -250,7 +248,7 @@ namespace SEA_Application.Controllers
 
                 //var NotificationsList = db.AspNetPushNotifications.Where(x => x.UserID == currentUser.Id && x.IsOpen == false).ToList();
                    var NotificationsList = (from notification in db.AspNetNotification_User
-                                         where notification.UserID == currentUser.Id && notification.Seen == false
+                                         where  notification.Seen == false
                                          select new { notification.Id, notification.AspNetNotification.Subject, notification.AspNetNotification.Time ,notification.AspNetNotification.Description,notification.AspNetNotification.SenderID}).ToList();
 
                 return Json(NotificationsList, JsonRequestBehavior.AllowGet);

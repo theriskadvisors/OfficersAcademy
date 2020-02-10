@@ -13,6 +13,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using System.Web;
@@ -1892,7 +1893,7 @@ namespace SEA_Application.Controllers
         {
             //var data = db.AspNetClasses 
             // ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
-            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             ViewBag.SessionFee = db.AspNetSessions.Where(x => x.Id == SessionID).FirstOrDefault().Total_Fee;
             // ViewBag.ClassID2 = db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault();
             return View();
@@ -1903,7 +1904,10 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> StudentRegister(RegisterViewModel model, HttpPostedFileBase image)
         {
+
             // Discount
+            int? SessionIdOfSelectedStudent = db.AspNetClasses.Where(x => x.Id == model.ClassID).FirstOrDefault().SessionID;
+
             var Discount = Request.Form["Discount"];
             double discount = 0;
             if (Request.Form["Discount"] == "")
@@ -1912,17 +1916,25 @@ namespace SEA_Application.Controllers
             }
             else
             {
-                discount = Convert.ToDouble( Request.Form["Discount"]);
+                discount = Convert.ToDouble(Request.Form["Discount"]);
             }
 
-            var age =0;
-            if (Request.Form["Age"] !="")
+            var age = 0;
+            if (Request.Form["Age"] != "")
             {
 
-            age = Convert.ToInt32(Request.Form["Age"]);
-           
+                age = Convert.ToInt32(Request.Form["Age"]);
+
             }
             model.UserName = Request.Form["UserName"];
+
+            if(model.Email == null)
+            {
+
+                model.Email = "oa" + model.UserName + "@gmail.com";
+
+            }
+
 
             var dbTransaction = db.Database.BeginTransaction();
             try
@@ -1942,9 +1954,9 @@ namespace SEA_Application.Controllers
 
                     ApplicationDbContext context = new ApplicationDbContext();
                     IEnumerable<string> selectedsubjects;
-                    if (Request.Form["subjects"] !=null)
+                    if (Request.Form["subjects"] != null)
                     {
-                         selectedsubjects = Request.Form["subjects"].Split(',');
+                        selectedsubjects = Request.Form["subjects"].Split(',');
                     }
                     else
                     {
@@ -1956,7 +1968,7 @@ namespace SEA_Application.Controllers
                     if (result.Succeeded)
                     {
                         ruffdata rd = new ruffdata();
-                        rd.SessionID = SessionID;
+                        rd.SessionID = SessionIdOfSelectedStudent;
                         rd.StudentName = model.Name;
                         rd.StudentUserName = model.UserName;
                         rd.StudentPassword = model.Password;
@@ -1982,10 +1994,10 @@ namespace SEA_Application.Controllers
 
                         student.SchoolName = Request.Form["SchoolName"];
                         student.CourseType = Request.Form["CourseType"];
-                      //  student.BirthDate = Request.Form["BirthDate"];
-                       // student.Nationality = Request.Form["Nationality"];
+                        //  student.BirthDate = Request.Form["BirthDate"];
+                        // student.Nationality = Request.Form["Nationality"];
                         student.Religion = Request.Form["Religion"];
-                     //   student.Gender = Request.Form["Gender"];
+                        //   student.Gender = Request.Form["Gender"];
 
 
 
@@ -2008,7 +2020,7 @@ namespace SEA_Application.Controllers
                         asc.ClassID = student.ClassID;
                         Aspnet_Employee_Session ES = new Aspnet_Employee_Session();
                         //  int sessionid = db.AspNetSessions.Where(x => x.Status == "Active").FirstOrDefault().Id;
-                        asc.SessionID = SessionID;
+                        asc.SessionID = SessionIdOfSelectedStudent;
                         asc.StudentID = student.Id;
                         db.AspNetStudent_Session_class.Add(asc);
 
@@ -2017,12 +2029,10 @@ namespace SEA_Application.Controllers
 
                             AspNetUsers_Session AS = new AspNetUsers_Session();
                             AS.UserID = student.StudentID;
-                            AS.SessionID = SessionID;
+                            AS.SessionID = SessionIdOfSelectedStudent;
                             db.AspNetUsers_Session.Add(AS);
                             db.SaveChanges();
                         }
-
-
 
                         // var subID = selectedsubjects.First();
                         //  var classID = db.AspNetSubjects.Where(x=> x.Id == int.Parse(subID)).Select(x=> x.ClassID).FirstOrDefault();
@@ -2039,18 +2049,18 @@ namespace SEA_Application.Controllers
                         //    db.AspNetStudent_Subject.Add(stu_sub);
                         //    db.SaveChanges();
                         //}
-                        if(selectedsubjects !=null)
+                        if (selectedsubjects != null)
                         {
 
-                        foreach (var item in selectedsubjects)
-                        {
+                            foreach (var item in selectedsubjects)
+                            {
 
-                            AspNetStudent_Subject stu_sub = new AspNetStudent_Subject();
-                            stu_sub.StudentID = user.Id;
-                            stu_sub.SubjectID = Convert.ToInt32(item);
-                            db.AspNetStudent_Subject.Add(stu_sub);
-                            db.SaveChanges();
-                        }
+                                AspNetStudent_Subject stu_sub = new AspNetStudent_Subject();
+                                stu_sub.StudentID = user.Id;
+                                stu_sub.SubjectID = Convert.ToInt32(item);
+                                db.AspNetStudent_Subject.Add(stu_sub);
+                                db.SaveChanges();
+                            }
                         }
                         var roleStore = new RoleStore<IdentityRole>(context);
                         var roleManager = new RoleManager<IdentityRole>(roleStore);
@@ -2071,15 +2081,13 @@ namespace SEA_Application.Controllers
                         dbTransaction.Commit();
                         string Error = "Student successfully saved.";
 
-
-
                         StudentFeeMonth studentFeeMonth = new StudentFeeMonth();
                         string NotesCategory = Request.Form["NotesCategory"];
                         string FeeType = Request.Form["FeeType"];
                         double NotesFee = 0;
                         double Total = Convert.ToDouble(Request.Form["SessionFee"]);
                         double studentFee = Convert.ToDouble(Request.Form["SessionFee"]);
-                        
+
 
                         if (FeeType == "Installment")
                         {
@@ -2120,7 +2128,7 @@ namespace SEA_Application.Controllers
                         studentFeeMonth.FeePayable = Convert.ToDouble(Request.Form["TotalFee"]);
                         studentFeeMonth.Discount = discount;
                         studentFeeMonth.FeeType = Request.Form["FeeType"];
-                        studentFeeMonth.SessionId = SessionID;
+                        studentFeeMonth.SessionId = SessionIdOfSelectedStudent;
                         studentFeeMonth.StudentId = student.Id;
                         studentFeeMonth.Status = "Pending";
 
@@ -2130,20 +2138,20 @@ namespace SEA_Application.Controllers
                         var id = User.Identity.GetUserId();
                         var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
                         Voucher voucher = new Voucher();
-                        var SessionName=  db.AspNetSessions.Where(x => x.Id == SessionID).FirstOrDefault().SessionName; 
+                        var SessionName = db.AspNetSessions.Where(x => x.Id == SessionIdOfSelectedStudent).FirstOrDefault().SessionName;
                         voucher.Name = "Student Fee Creation of student " + model.Name + " Session Name " + SessionName; ;
                         voucher.Notes = "Account Receiveable, discount, and revenue is updated";
                         voucher.Date = DateTime.Now;
 
                         voucher.CreatedBy = username;
-                        voucher.SessionID = SessionID;
+                        voucher.SessionID = SessionIdOfSelectedStudent;
                         int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);
 
                         voucher.VoucherNo = Convert.ToInt32(VoucherObj) + 1;
                         db.Vouchers.Add(voucher);
 
                         db.SaveChanges();
-                        
+
                         var Leadger = db.Ledgers.Where(x => x.Name == "Account Receiveable").FirstOrDefault();
                         int AdminDrawerId = Leadger.Id;
                         decimal? CurrentBalance = Leadger.CurrentBalance;
@@ -2158,9 +2166,9 @@ namespace SEA_Application.Controllers
                         voucherRecord.AfterBalance = AfterBalance;
                         voucherRecord.VoucherId = voucher.Id;
 
-                        voucherRecord.Description = "Fee added of student ("+ model.Name+ ") (" + SessionName + ")";
-                       
-                        
+                        voucherRecord.Description = "Fee added of student (" + model.Name + ") (" + SessionName + ")";
+
+
                         Leadger.CurrentBalance = AfterBalance;
                         db.VoucherRecords.Add(voucherRecord);
                         db.SaveChanges();
@@ -2224,14 +2232,14 @@ namespace SEA_Application.Controllers
                             var LeadgerDiscount = db.Ledgers.Where(x => x.Name == "Discount").FirstOrDefault();
 
                             decimal? CurrentBalanceOfDiscount = LeadgerDiscount.CurrentBalance;
-                            decimal? AfterBalanceOfDiscount = CurrentBalanceOfDiscount + Convert.ToDecimal( discount);
+                            decimal? AfterBalanceOfDiscount = CurrentBalanceOfDiscount + Convert.ToDecimal(discount);
                             voucherRecord3.LedgerId = LeadgerDiscount.Id;
                             voucherRecord3.Type = "Dr";
                             voucherRecord3.Amount = Convert.ToDecimal(discount);
                             voucherRecord3.CurrentBalance = CurrentBalanceOfDiscount;
                             voucherRecord3.AfterBalance = AfterBalanceOfDiscount;
                             voucherRecord3.VoucherId = voucher.Id;
-                            voucherRecord3.Description = "Discount given to student  (" + model.Name + ") (" + SessionName + ") on payable fee "+ Convert.ToDouble(Request.Form["TotalFee"]);
+                            voucherRecord3.Description = "Discount given to student  (" + model.Name + ") (" + SessionName + ") on payable fee " + Convert.ToDouble(Request.Form["TotalFee"]);
                             LeadgerDiscount.CurrentBalance = AfterBalanceOfDiscount;
 
                             db.VoucherRecords.Add(voucherRecord3);
@@ -2254,8 +2262,29 @@ namespace SEA_Application.Controllers
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             return View(model);
         }
+        public ActionResult GetMandatorySubjects(int ClassId)
+        {
+           var MandatorySubjectsList =  db.AspNetSubjects.Where(x => x.ClassID == ClassId && x.IsManadatory == true).Select(x => x.Id);
+           var AllSubjectList = db.AspNetSubjects.Where(x=>x.ClassID == ClassId).Select(x => x.Id);
 
 
+
+            return Json(new { MandatorySubjects = MandatorySubjectsList , AllSubjects = AllSubjectList }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetSessionFee(int SelectedClassId)
+        {
+            int? SessionId = db.AspNetClasses.Where(x => x.Id == SelectedClassId).FirstOrDefault().SessionID;
+
+            var SessionFee = db.AspNetSessions.Where(x => x.Id == SessionId).FirstOrDefault().Total_Fee;
+
+            if (SessionFee == null)
+            {
+                SessionFee = 0;
+            }
+
+            return Json(SessionFee, JsonRequestBehavior.AllowGet);
+        }
 
 
         [HttpPost]
@@ -2265,6 +2294,9 @@ namespace SEA_Application.Controllers
         {
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             // if (ModelState.IsValid)
+
+
+
             var dbTransaction = db.Database.BeginTransaction();
             try
             {
@@ -2284,75 +2316,498 @@ namespace SEA_Application.Controllers
                     var noOfCol = workSheet.Dimension.End.Column;
                     var noOfRow = workSheet.Dimension.End.Row;
 
-                    for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
+                    for (int rowIterator = 2; rowIterator < noOfRow; rowIterator++)
                     {
                         var student = new RegisterViewModel();
-                        student.Email = workSheet.Cells[rowIterator, 1].Value.ToString();
-                        student.Name = workSheet.Cells[rowIterator, 2].Value.ToString();
-                        student.UserName = workSheet.Cells[rowIterator, 3].Value.ToString();
-                        student.Password = workSheet.Cells[rowIterator, 4].Value.ToString();
-                        student.ConfirmPassword = workSheet.Cells[rowIterator, 5].Value.ToString();
+                        var Email = workSheet.Cells[rowIterator, 1].Value;
 
-                        ApplicationDbContext context = new ApplicationDbContext();
-                        var user = new ApplicationUser { UserName = student.UserName, Email = student.Email, Name = student.Name };
-                        var result = await UserManager.CreateAsync(user, student.Password);
-                        if (result.Succeeded)
+                        string ErrorMsg;
+                        bool ErrorMsgExist = false;
+                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator - 1) + Environment.NewLine;
+                        if (Email != null)
                         {
-                            var subjects = new List<string>();
-                            var Class = workSheet.Cells[rowIterator, 6].Value.ToString();
-                            subjects.Add(workSheet.Cells[rowIterator, 7].Value.ToString());
-                            subjects.Add(workSheet.Cells[rowIterator, 8].Value.ToString());
-                            subjects.Add(workSheet.Cells[rowIterator, 9].Value.ToString());
-                            subjects.Add(workSheet.Cells[rowIterator, 10].Value.ToString());
-                            subjects.Add(workSheet.Cells[rowIterator, 11].Value.ToString());
-                            subjects.Add(workSheet.Cells[rowIterator, 12].Value.ToString());
-                            subjects.Add(workSheet.Cells[rowIterator, 13].Value.ToString());
-                            subjects.Add(workSheet.Cells[rowIterator, 14].Value.ToString());
-                            subjects.Add(workSheet.Cells[rowIterator, 15].Value.ToString());
-                            subjects.Add(workSheet.Cells[rowIterator, 16].Value.ToString());
+                            string EmailInString = workSheet.Cells[rowIterator, 1].Value.ToString();
+                            var EmailContains = db.AspNetUsers.Where(x => x.Email == EmailInString);
 
-                            var subjectIDs = (from subject in db.AspNetSubjects
-                                              join Classes in db.AspNetClasses on subject.ClassID equals Classes.Id
-                                              where Classes.ClassName == Class && subjects.Contains(subject.SubjectName)
-                                              select subject).ToList();
-
-                            foreach (var subjectid in subjectIDs)
+                            if (EmailContains.Count() > 0)
                             {
-                                AspNetStudent_Subject stu_sub = new AspNetStudent_Subject();
-                                stu_sub.StudentID = user.Id;
-                                stu_sub.SubjectID = subjectid.Id;
-                                db.AspNetStudent_Subject.Add(stu_sub);
-                                db.SaveChanges();
+                                ErrorMsg = ErrorMsg + "Email already Exist" + Environment.NewLine;
+                                ErrorMsgExist = true;
+                             //   TempData["ErrorMsg"] = ErrorMsg;
+                                //  return RedirectToAction("StudentRegister");
                             }
 
-                            AspNetStudent studentDetail = new AspNetStudent();
-                            studentDetail.StudentID = user.Id;
-                            studentDetail.SchoolName = workSheet.Cells[rowIterator, 17].Value.ToString();
-                            studentDetail.BirthDate = workSheet.Cells[rowIterator, 18].Value.ToString();
-                            studentDetail.Nationality = workSheet.Cells[rowIterator, 19].Value.ToString();
-                            studentDetail.Religion = workSheet.Cells[rowIterator, 20].Value.ToString();
-                            studentDetail.Gender = workSheet.Cells[rowIterator, 21].Value.ToString();
-                            studentDetail.ClassID = db.AspNetClasses.Where(x => x.ClassName == Class).Select(x => x.Id).FirstOrDefault();
-                            db.AspNetStudents.Add(studentDetail);
-                            db.SaveChanges();
+                            else
+                            {
+                                student.Email = EmailInString;
 
-                            var roleStore = new RoleStore<IdentityRole>(context);
-                            var roleManager = new RoleManager<IdentityRole>(roleStore);
-                            var userStore = new UserStore<ApplicationUser>(context);
-                            var userManager = new UserManager<ApplicationUser>(userStore);
-                            userManager.AddToRole(user.Id, "Student");
+                            }
 
                         }
                         else
                         {
-                            dbTransaction.Dispose();
-                            AddErrors(result);
-                            return View("StudentRegister", model);
+                            ErrorMsg = ErrorMsg + "Email is Required" + Environment.NewLine;
+                            ErrorMsgExist = true;
+                            //return RedirectToAction("StudentRegister");
                         }
-                    }
-                    dbTransaction.Commit();
-                }
-            }
+
+
+                        // student.Name = workSheet.Cells[rowIterator, 2].Value.ToString();
+                        var Name = workSheet.Cells[rowIterator, 2].Value;
+                        if (Name != null)
+                        {
+
+                            student.Name = workSheet.Cells[rowIterator, 2].Value.ToString();
+                        }
+                        else
+                        {
+                            ErrorMsg = "Name is Required" + Environment.NewLine;
+                            ErrorMsgExist = true;
+                        }
+
+                        // student.UserName = workSheet.Cells[rowIterator, 3].Value.ToString();
+                        var UserName = workSheet.Cells[rowIterator, 3].Value;
+
+                        if (UserName != null)
+                        {
+                            string UserNameInString = workSheet.Cells[rowIterator, 3].Value.ToString();
+                            var UserContains = db.AspNetUsers.Where(x => x.UserName == UserNameInString);
+
+                            if (UserContains.Count() > 0)
+                            {
+                                ErrorMsg = ErrorMsg + "UserName already Exist" + Environment.NewLine;
+                                ErrorMsgExist = true;
+
+                                TempData["ErrorMsg"] = ErrorMsg;
+
+                            }
+
+                            else
+                            {
+                                student.UserName = UserNameInString;
+
+                            }
+                        }
+                        else
+                        {
+                            ErrorMsg = ErrorMsg + "UserName is Required" + Environment.NewLine;
+                            ErrorMsgExist = true;
+
+                        }
+
+                        //Regex regex = new Regex(@"^(?=.{6,})(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[@@#$%^&+=]).*$");
+                        //Match match = regex.Match(email);
+
+                        var Password = workSheet.Cells[rowIterator, 4].Value;
+                        var ConfirmPassword = workSheet.Cells[rowIterator, 5].Value;
+
+                        if (Password != null)
+                        {
+                            if (ConfirmPassword != null)
+                            {
+                                var compare = String.Equals(Password.ToString(), ConfirmPassword.ToString());
+
+                                if (compare == false)
+                                {
+
+                                    ErrorMsg = ErrorMsg + "password and confirm password does not match" + Environment.NewLine;
+                                    ErrorMsgExist = true;
+
+                                }
+
+                            }
+
+                        }
+                        else
+                        {
+                            ErrorMsg = ErrorMsg + "Password is Required" + Environment.NewLine;
+                            ErrorMsgExist = true;
+
+                        }
+                        student.Password = workSheet.Cells[rowIterator, 4].Value.ToString();
+
+                        student.ConfirmPassword = workSheet.Cells[rowIterator, 5].Value.ToString();
+                        var ClassName = workSheet.Cells[rowIterator, 6].Value;
+
+
+                        string Class = "";
+                        bool ClassExist = false;
+                        if (ClassName != null)
+                        {
+                            string ClassNameInString = workSheet.Cells[rowIterator, 6].Value.ToString();
+                            var ClassContains = db.AspNetClasses.Where(x => x.ClassName == ClassNameInString).FirstOrDefault();
+
+
+                            if (ClassContains == null)
+                            {
+                                ErrorMsg = ErrorMsg + "Class not Exist in database" + Environment.NewLine;
+                                ErrorMsgExist = true;
+
+
+
+                            }
+
+                            else
+                            {
+                                Class = ClassNameInString;
+                                ClassExist = true;
+                            }
+
+
+
+                        }
+                        else
+                        {
+                            ErrorMsg = ErrorMsg + "ClassName is Required" + Environment.NewLine;
+                            ErrorMsgExist = true;
+
+                        }
+
+                        var subjects = new List<string>();
+                        List<object> subjectsobjects = new List<object>();
+                        subjectsobjects.Add(workSheet.Cells[rowIterator, 7].Value);
+                        subjectsobjects.Add(workSheet.Cells[rowIterator, 8].Value);
+                        subjectsobjects.Add(workSheet.Cells[rowIterator, 9].Value);
+                        subjectsobjects.Add(workSheet.Cells[rowIterator, 10].Value);
+                        subjectsobjects.Add(workSheet.Cells[rowIterator, 11].Value);
+                        subjectsobjects.Add(workSheet.Cells[rowIterator, 12].Value);
+                        subjectsobjects.Add(workSheet.Cells[rowIterator, 13].Value);
+                        subjectsobjects.Add(workSheet.Cells[rowIterator, 14].Value);
+                        subjectsobjects.Add(workSheet.Cells[rowIterator, 15].Value);
+                        subjectsobjects.Add(workSheet.Cells[rowIterator, 16].Value);
+                        bool SubjectExistInExcelFile = false;
+                        foreach (object subject in subjectsobjects)
+                        {
+                            if (subject != null)
+                            {
+
+                                subjects.Add(subject.ToString().ToLower());
+                                SubjectExistInExcelFile = true;
+                            }
+
+                        }
+
+                        if (!SubjectExistInExcelFile)
+                        {
+                            ErrorMsg = ErrorMsg + "At Least One Subject Needed" + Environment.NewLine;
+                            ErrorMsgExist = true;
+
+                        }
+
+
+                      //  var user = new { Id = "001a670e-7c8d-44d3-9972-ce92160ed643" };
+                        if (ClassExist == true)
+                        {
+
+                            int ClassId = db.AspNetClasses.Where(x => x.ClassName == Class).FirstOrDefault().Id;
+
+                            List<AspNetSubject> ListSubjects = db.AspNetSubjects.Where(x => x.ClassID == ClassId).Distinct().ToList();
+                                var ListSubjectLower =  ListSubjects.Select(x => x.SubjectName.ToLower());        
+
+                            bool SubjectExist = true;
+                            if (subjects.Count > 0)
+                            {
+
+
+                                foreach (var subject in subjects)
+                                {
+                                    foreach (var sub in ListSubjectLower)
+                                    {
+                                        if (sub != subject)
+                                        {
+                                            SubjectExist = false;
+
+                                        }
+                                        else
+                                        {
+                                            SubjectExist = true;
+
+                                            break;
+
+                                        }
+                                    }
+                                    if (SubjectExist == false)
+                                    {
+                                        break;
+                                    }
+
+
+                                }
+
+
+
+                                if (SubjectExist == false)
+                                {
+                                    ErrorMsg = ErrorMsg + Class + "dont have all these subjects" + Environment.NewLine;
+                                    ErrorMsgExist = true;
+
+                                }
+
+                            }
+                        }
+
+                        //var ClassTimings = workSheet.Cells[rowIterator, 23];
+
+                        //if (ClassTimings != null)
+                        //{
+                        //    var ClassTimingInString = ClassTimings.ToString();
+
+                        //    if (!ClassTimingInString.Equals("Morning") || !ClassTimingInString.Equals("Evening"))
+                        //    {
+                        //        ErrorMsg = ErrorMsg + "Class Timing is not Correct" + Environment.NewLine;
+
+                        //    }
+                        //}
+
+
+
+                        var CourseType = workSheet.Cells[rowIterator, 24].Value;
+                        if (CourseType != null)
+                        {
+                            var CourseTypeInString = CourseType.ToString().ToLower();
+
+                            if (CourseTypeInString == "css" || CourseTypeInString == "pms" || CourseTypeInString == "one paper")
+                            {
+                            }
+                            else
+                            {
+                                ErrorMsg = ErrorMsg + "Course Type is not Correct " + Environment.NewLine;
+                                ErrorMsgExist = true;
+                            }
+
+                        }
+                        else
+                        {
+                            ErrorMsg = ErrorMsg + "Course Type is Required" + Environment.NewLine;
+                            ErrorMsgExist = true;
+                        }
+
+
+                        var IsExistNotesCategory = false;
+                        var NotesCategory = workSheet.Cells[rowIterator, 25].Value;
+
+                        if (NotesCategory != null)
+                        {
+                            var NotesCategoryInString = NotesCategory.ToString().ToLower();
+                           
+                            if (NotesCategoryInString == "with notes" || NotesCategoryInString == "without notes")
+                            {
+
+                                IsExistNotesCategory = true;
+                              
+                            }
+                            else
+                            {
+                                ErrorMsg = ErrorMsg + "Notes Category is not Correct " + Environment.NewLine;
+                                ErrorMsgExist = true;
+
+
+                            }
+
+                        }
+                        else
+                        {
+                            ErrorMsg = ErrorMsg + "Notes Category is Required" + Environment.NewLine;
+                            ErrorMsgExist = true;
+
+                        }
+
+
+
+                        var NotesFee = workSheet.Cells[rowIterator, 30].Value;
+                        if (IsExistNotesCategory == true)
+                        {
+
+                            if (NotesFee != null)
+                            {
+                                if(NotesCategory.ToString().ToLower() == "with notes")
+                                {
+
+                                var NotesFeeInString = NotesFee.ToString();
+
+                                var isNumeric = NotesFeeInString.All(char.IsDigit);
+                                if (isNumeric == false)
+                                {
+                                    ErrorMsg = ErrorMsg + "Notes Fee should be in numeric form" + Environment.NewLine;
+                                        ErrorMsgExist = true;
+
+
+                                    }
+                                    else
+                                {
+
+                                }
+                                }
+                                else
+                                {
+                                    ErrorMsg = ErrorMsg + "Note Fee is Not Required because Notes Category is Without Notes" + Environment.NewLine;
+                                    ErrorMsgExist = true;
+
+                                }
+
+                            }
+                            else
+                            {
+                               
+                                    if (NotesCategory.ToString().ToLower() == "with notes")
+                                    {
+                                        ErrorMsg = ErrorMsg + "Notes Category is required" + Environment.NewLine;
+                                    ErrorMsgExist = true;
+
+
+                                }
+
+
+
+                            }
+
+                        }
+
+
+
+                        var FeeType = workSheet.Cells[rowIterator, 28].Value;
+
+                        if (FeeType != null)
+                        {
+                            var FeeTypeInString = FeeType.ToString().ToLower();
+
+                            if (FeeTypeInString == "installment" || FeeTypeInString == "per month" || FeeTypeInString == "full fee")
+                            {
+
+                            }
+                            else
+                            {
+                                ErrorMsg = ErrorMsg + "Fee Type is not Correct " + Environment.NewLine;
+                                ErrorMsgExist = true;
+
+                            }
+
+
+                        }
+                        else
+                        {
+                            ErrorMsg = ErrorMsg + "Fee Type is Required" + Environment.NewLine;
+                            ErrorMsgExist = true;
+
+                        }
+
+
+                        var SessionFee = workSheet.Cells[rowIterator, 26].Value;
+                        if (SessionFee != null)
+                        {
+
+                            if (ClassExist == true)
+                            {
+
+                                var ClassId1 = db.AspNetClasses.Where(x => x.ClassName == Class).Select(x => x.Id).FirstOrDefault();
+                                var SessionIdOfCurrentStudent = db.AspNetClasses.Where(x => x.Id == ClassId1).FirstOrDefault().SessionID;
+
+                                var SessionFeeofCurrentSession = db.AspNetSessions.Where(x => x.Id == SessionIdOfCurrentStudent).FirstOrDefault().Total_Fee;
+                                var SessionFeeInString = SessionFee.ToString();
+
+
+                                var isNumeric = SessionFeeInString.All(char.IsDigit);
+                                if (isNumeric == false)
+                                {
+                                    ErrorMsg = ErrorMsg + "Session Fee Should be in numeric form" + Environment.NewLine;
+                                    ErrorMsgExist = true;
+
+
+                                }
+                                else
+                                {
+                                    int? SessionFeeInInt = Convert.ToInt32(SessionFee);
+
+                                    if (SessionFeeInInt != SessionFeeofCurrentSession)
+                                    {
+                                        ErrorMsg = ErrorMsg + "Session Fee is incorrect" + Environment.NewLine;
+                                        ErrorMsgExist = true;
+
+                                    }
+                                }
+
+
+
+                            }
+
+                        }
+                        else
+                        {
+                            ErrorMsg = ErrorMsg + "Session Fee is required" + Environment.NewLine;
+                            ErrorMsgExist = true;
+
+
+                        }
+
+
+                        var Discount =  workSheet.Cells[rowIterator, 27].Value;
+
+                        if(Discount !=null)
+                        {
+                            var DiscountInString = Discount.ToString();
+
+                            var isNumeric = DiscountInString.All(char.IsDigit);
+                            if (isNumeric == false)
+                            {
+                                ErrorMsg = ErrorMsg + "Discount Should be in numeric form" + Environment.NewLine;
+                                ErrorMsgExist = true;
+
+
+                            }
+
+                        }
+
+                      
+
+
+                        var TotalFee = workSheet.Cells[rowIterator, 29].Value;
+
+                        if (TotalFee != null)
+                        {
+                            var TotalFeeInString = TotalFee.ToString();
+
+                            var isNumeric = TotalFeeInString.All(char.IsDigit);
+                            if (isNumeric == false)
+                            {
+                                ErrorMsg = ErrorMsg + "Total Fee should be in numeric form" + Environment.NewLine;
+                                ErrorMsgExist = true;
+
+
+                            }
+
+                        }
+                        else
+                        {
+                            ErrorMsg = ErrorMsg + "Total Fee should be is Required" + Environment.NewLine;
+                            ErrorMsgExist = true;
+
+
+                        }
+
+
+                                
+                        if(ErrorMsgExist==  true)
+                        {
+
+
+
+                        TempData["ErrorMsg"] = ErrorMsg;
+
+                            return RedirectToAction("StudentRegister");
+                            break;
+                        }
+
+
+
+                    }//loop
+
+
+
+
+                }//using
+
+
+            }//try
             catch (Exception e)
             {
                 ModelState.AddModelError("", e.InnerException);
@@ -2455,7 +2910,7 @@ namespace SEA_Application.Controllers
             }
 
             base.Dispose(disposing);
-            }
+        }
 
         #region Helpers
         // Used for XSRF protection when adding external logins

@@ -17,18 +17,18 @@
         padding: 0;
         height: 2020px !important;
     }
-    
-	#SubjectsList
-	{
-		border:1px solid silver;
-		
-		height: 90px;
-		padding: 10px;
-		overflow: auto;
-		margin: auto;
-        
-		
-	}
+
+    .newlines {
+        white-space: pre-line;
+    }
+
+    #SubjectsList {
+        border: 1px solid silver;
+        height: 90px;
+        padding: 10px;
+        overflow: auto;
+        margin: auto;
+    }
 </style>
 
 <label>@Html.ActionLink("Home", "Dashboard", "Account") > @Html.ActionLink("Student", "StudentsIndex", "AspNetUser") > <span class="text-primary">Create</span></label>
@@ -39,15 +39,122 @@
             window.location.href = '@Url.Action("StudentsIndex", "AspNetUser")';
         });
 
-        $("#WithNotes").click(function () {
+        $("#ClassID").change(function () {
 
-            $("#NotesAmount").prop('required', true);
+            $('#CalculateFee').click();
+            $("#MandatorySubjects").removeAttr('checked');
+
+            var ClassId = $(this).val();
+
+            if (ClassId != "") {
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin_Dashboard/GetSessionFee",
+                data: { "SelectedClassId": ClassId },
+                success: function (data) {
+
+
+                        $("#SessionFee").val(data);
+
+
+
+                    }
+
+            })
+            }
+
         })
-        $("WithOutNotes").click(function () {
-            $("#NotesAmount").prop('required', false);
+        var MandatorySub;
+        var AllSub;
+      $('#MandatorySubjects').change(function() {
+          if (this.checked) {
 
-        })
+              var ClassId = $("#ClassID").val();
 
+              if (ClassId != "") {
+
+                  $.ajax({
+
+                     type: "POST",
+                     url: "/Admin_Dashboard/GetMandatorySubjects",
+                     data: { "ClassId":ClassId},
+                      success: function (data) {
+
+                          var MandatorySubjects = data.MandatorySubjects;
+                          var AllSubjects = data.AllSubjects;
+                          MandatorySub = data.MandatorySubjects;
+                            AllSub=data.AllSubjects;
+
+                          $.each( MandatorySubjects, function( key, value1 ) {
+
+                              $.each( AllSubjects, function( key, value2 ) {
+
+
+                                  if (value1 == value2) {
+
+
+                                         $("#" + value1).prop("checked", true);
+                                  }
+
+
+
+                              });
+
+
+                          });
+
+
+                      }
+                  })
+
+
+              }
+
+
+
+
+
+          }
+          else {
+
+
+                $.each( MandatorySub, function( key, value1 ) {
+
+                    $.each(AllSub, function (key, value2) {
+
+
+                                  if (value1 == value2) {
+
+
+                                         $("#" + value1).removeAttr('checked');
+                                  }
+
+                              });
+
+
+                          });
+
+            //  $("input[name='subjects']").removeAttr('checked');
+
+
+
+          }
+       // $('#textbox1').val(this.checked);
+    });
+        //$("#WithNotes").click(function () {
+
+        //    $("#FeeType  option[value='PerMonth']").remove();
+        //    $("#NotesAmount").prop('required', true);
+        //})
+        //$("WithOutNotes").click(function () {
+        //    //debugger
+        //   // alert("Without note");
+        //       $('#FeeType').append('<option value="PerMonth">PerMonth</option>');
+
+        //    $("#NotesAmount").prop('required', false);
+
+        //})
 
         $.ajax({
             type: "POST",
@@ -67,8 +174,6 @@
 
             }
         });
-
-
 
 
 
@@ -104,18 +209,20 @@
             $('#NotesID').hide();
             $('#NotesAmount').val(0);
             $("#TotalFee").val("");
-
+            //alert("Without note");
+            $('#FeeType').append('<option value="PerMonth">PerMonth</option>');
+           $("#NotesAmount").prop('required', false);
         });
         $('#WithNotes').click(function () {
+
+            $("#FeeType  option[value='PerMonth']").remove();
+           $("#NotesAmount").prop('required', true);
+
             $('#NotesID').show();
             $("#TotalFee").val("");
 
 
         });
-
-
-
-
 
 
         $("#birthDate").bind('blur', function () {
@@ -158,6 +265,7 @@
 
         });
 
+
         $("#Password").bind('blur', function () {
             var password = $("#Password").val();
 
@@ -173,6 +281,7 @@
 
         });
 
+
         //$("#UserName").bind('blur', function () {
         //    var userName = $("#UserName").val();
 
@@ -181,6 +290,7 @@
         //        url: "/AspNetUser/GetUserName",
         //        data: { "userName": userName },
         //        success: function (data) {
+        //            debugger
         //            if (data.count == 0) {
         //                $('#FormSubmit').removeAttr('disabled');
         //            }
@@ -226,6 +336,8 @@
 
         $("#ClassID").click(function () {
             debugger;
+              $("#MandatorySubjects").removeAttr('checked');
+
            //  alert($("#ClassID").val());
             var selectedClass = $("#ClassID").val();
             var CourseType = $("input[name='CourseType']:checked").val();
@@ -247,7 +359,7 @@
                         debugger;
                         //$('#subjects').append('<option value=' + item.Id + '>' + item.SubjectName + '</option>');
 
-                        $("#SubjectsList").append('<input  required type="checkbox" name ="subjects" id='+ item.Id + ' value=' + item.Id + '><label for='+ item.Id + ' style ="cursor:pointer"> '+item.SubjectName +'</label><br>')	
+                        $("#SubjectsList").append('<input  required type="checkbox" name ="subjects" id='+ item.Id + ' value=' + item.Id + '><label for='+ item.Id + ' style ="cursor:pointer"> '+item.SubjectName +'</label><br>')
 
                     });
 
@@ -453,7 +565,12 @@
     <button class="btn btn-default pull-left btn-sm" onclick="onCancel()">
         Cancel
     </button>
-    <button class="pull-right" style="background-color: transparent; border: none; outline: none; font-size: 20px; color: rgb(89, 89, 89) !important" onclick="onSave()">
+    <button class="pull-right" style="        background-color: transparent;
+        border: none;
+        outline: none;
+        font-size: 20px;
+        color: rgb(89, 89, 89) !important
+" onclick="onSave()">
         <i class="fa fa-floppy-o"></i>
     </button>
 </div>
@@ -484,6 +601,8 @@
                                             <div class="col-md-10">
                                                 @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
                                                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                                <br />
+
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -569,6 +688,7 @@
                                     <div class="form-group">
                                         <label class="col-md-2 col-lg-2 control-label" for="Email">Email: </label>
                                         <div class="col-md-4">
+
                                             @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
                                             @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger", @id = "Email-Error" })
                                         </div>
@@ -576,8 +696,8 @@
                                     <div class="form-group">
                                         <label class="col-md-2 col-lg-2 control-label" for="UserName">Roll Number: <span class="red-mark">*</span></label>
                                         <div class="col-md-4">
-                                            @*@Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
-                                                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger", @id = "UserName-Error" })*@
+                                            @*@Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })*@
+                                            @*@Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger", @id = "UserName-Error" })*@
                                             <input type="text" id="UserName" class="form-control round-border" name="UserName" readonly />
                                         </div>
                                     </div>
@@ -604,88 +724,7 @@
                                 </div>
                             </div>
 
-                            <div class="box box-primary">
 
-                                <div class="box-header with-border"><h3 class="orange">Fee Details</h3></div>
-                                <div class="box-body">
-                                    @*<div class="form-group">
-                                            <label class="col-md-1 col-lg-1 control-label">Industry:</label>
-                                            <div class="col-md-4">
-                                                <input type="text" id="Industry" class="form-control round-border" name="Industry" />
-                                            </div>
-                                        </div>*@
-                                    <div class="form-group">
-                                        <label for="CourseType" class="col-md-2 col-lg-2 control-label">Notes Catergory:</label>
-                                        <div class="col-md-10">
-
-                                            <div class="form-group">
-                                                <div class="checkbox">
-
-                                                    <label><input type="radio" name="NotesCategory" value="WithOutNotes" id="WithOutNotes" checked>Without Notes</label>
-                                                    &nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <label><input type="radio" name="NotesCategory" value="WithNotes" id="WithNotes">With Notes</label>
-
-                                                </div>
-
-                                            </div>
-                                            <span id="Phone-Error" class="text-danger"></span>
-                                        </div>
-
-                                    </div>
-                                    <div class="form-group" style="display:none" id="NotesID">
-                                        <label class="col-md-1 col-lg-1 control-label">Notes Amount:</label>
-                                        <div class="col-md-4">
-                                            <input type="number" class="form-control round-border" name="NotesAmount" id="NotesAmount" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label">Session Fee:</label>
-                                        <div class="col-md-4">
-                                            <input type="text" class="form-control round-border" name="SessionFee" id="SessionFee" value="@ViewBag.SessionFee" readonly />
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label">Discount Amount:</label>
-                                        <div class="col-md-4">
-                                            <input type="number" value="0" class="form-control round-border" name="Discount" id="Discount" />
-                                        </div>
-                                    </div>
-
-
-
-                                    <div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label">Fee Type</label>
-                                        <div class="col-md-4">
-                                            <select name="FeeType" id="FeeType" class="form-control round-border">
-                                                <option value="FullFee" selected>Full Fee</option>
-                                                <option value="Installment">Installment</option>
-                                                <option value="PerMonth">Per Month</option>
-
-                                            </select>
-
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label"></label>
-                                        <div class="col-md-4">
-                                            <button type="button" onclick="Calc()" class="btn btn-primary">Calculate Fee</button>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label">Total Fee:</label>
-                                        <div class="col-md-4">
-                                            <input type="text" required class="form-control round-border" name="TotalFee" id="TotalFee" readonly />
-                                        </div>
-                                    </div>
-
-
-
-                                    <br />
-                                    <br />
-                                </div>
-                            </div>
 
                             @*<div class="box box-primary">
 
@@ -988,7 +1027,8 @@
                                     </div>
                             -->
                             <div class="box box-primary">
-                                <div class="box-title"></div>
+
+                                <div class="box-header with-border"><h3 class="orange">Subject Details</h3></div>
                                 <div class="box-body">
 
                                     <div class="form-group">
@@ -997,26 +1037,117 @@
                                             @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control", name = "ClassID", @required = true })
 
                                         </div>
+
+
                                     </div>
+
+                                    <div class="form-group">
+                                        <label class="col-md-1 col-lg-1 control-label">Mandatory Subjects</label>
+                                        <div class="col-md-2">
+                                            <input id="MandatorySubjects" type="checkbox" name="name" style="width:30px;height:30px" value="" />
+                                        </div>
+                                    </div>
+
+
                                     <div class="form-group" id="subjectsdiv">
                                         <label class="control-label col-md-1 col-lg-1">Subjects: <span class="red-mark">*</span></label>
                                         <div class="col-md-6">
-
-
+                                    
                                             @*<select multiple class="form-control" id="subjects" name="subjects" required></select>*@
 
-                                            <div  class="checkbox-group required" id="SubjectsList">
+                                            <div class="checkbox-group required" id="SubjectsList">
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    @*<div class="form-group">
+                                            <label class="col-md-1 col-lg-1 control-label">Industry:</label>
+                                            <div class="col-md-4">
+                                                <input type="text" id="Industry" class="form-control round-border" name="Industry" />
+                                            </div>
+                                        </div>*@
+
+                                    <br />
+                                    <br />
+                                </div>
+                            </div>
+
+                            <div class="box box-primary">
+                                @*<div class="box-title"></div>*@
+                                <div class="box-header with-border"><h3 class="orange">Fee Details</h3></div>
+                                <div class="box-body">
 
 
-                                                    
+                                    <div class="form-group">
+                                        <label for="CourseType" class="col-md-2 col-lg-2 control-label">Notes Catergory:</label>
+                                        <div class="col-md-10">
+
+                                            <div class="form-group">
+                                                <div class="checkbox">
+
+                                                    <label><input type="radio" name="NotesCategory" value="WithOutNotes" id="WithOutNotes" checked>Without Notes</label>
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <label><input type="radio" name="NotesCategory" value="WithNotes" id="WithNotes">With Notes</label>
+
                                                 </div>
 
                                             </div>
+                                            <span id="Phone-Error" class="text-danger"></span>
                                         </div>
+
+                                    </div>
+                                    <div class="form-group" style="display:none" id="NotesID">
+                                        <label class="col-md-1 col-lg-1 control-label">Notes Amount:</label>
+                                        <div class="col-md-4">
+                                            <input type="number" class="form-control round-border" name="NotesAmount" id="NotesAmount" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-1 col-lg-1 control-label">Session Fee:</label>
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control round-border" name="SessionFee" id="SessionFee" value="0" readonly />
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label class="col-md-1 col-lg-1 control-label">Discount Amount:</label>
+                                        <div class="col-md-4">
+                                            <input type="number" value="0" class="form-control round-border" name="Discount" id="Discount" />
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="form-group">
+                                        <label class="col-md-1 col-lg-1 control-label">Fee Type</label>
+                                        <div class="col-md-4">
+                                            <select name="FeeType" id="FeeType" class="form-control round-border">
+                                                <option value="FullFee" selected>Full Fee</option>
+                                                <option value="Installment">Installment</option>
+                                                <option value="PerMonth">Per Month</option>
+
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-1 col-lg-1 control-label"></label>
+                                        <div class="col-md-4">
+                                            <button id="CalculateFee" type="button" onclick="Calc()" class="btn btn-primary">Calculate Fee</button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-1 col-lg-1 control-label">Total Fee:</label>
+                                        <div class="col-md-4">
+                                            <input type="text" required class="form-control round-border" name="TotalFee" id="TotalFee" readonly />
+                                        </div>
+                                    </div>
+
+
                                     <hr />
-
-
-
 
                                     <div class="form-group">
                                         <div class="col-md-offset-1 col-lg-offset-1 col-md-5">
@@ -1041,12 +1172,6 @@
                         <div class="box-header with-border">
 
 
-
-
-
-
-
-
                             <h3 class="orange">Upload Excel File &nbsp; <i class="fa fa-file-excel-o" aria-hidden="true"></i></h3>
                         </div>
 
@@ -1064,6 +1189,12 @@
                                 </div>
                                 <br />
                                 <br />
+                                <div id="ErrorDiv">
+                                    <span class="newlines" style="color:red"> @TempData["ErrorMsg"]</span>
+
+                                </div>
+
+
                                 <div class="box-footer">
                                     <div class="form-group">
                                         <div class="col-md-2">
@@ -1125,13 +1256,13 @@
 
         $("input[value='OnePaper']").click(function () {
 
-         
+
             $("#subjectsdiv").css("display", "none");
 
         })
         $("input[value='CSS']").click(function () {
 
-           
+
             $("#subjectsdiv").css("display", "block");
 
 

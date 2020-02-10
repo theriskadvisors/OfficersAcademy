@@ -186,6 +186,7 @@ namespace SEA_Application.Controllers
             aspNetSubject.CourseType = Request.Form["CourseType"];
             string IsMandatory  =  Request.Form["IsMandatory"];
             aspNetSubject.Points = Int32.Parse(Request.Form["Points"]);
+
             if(IsMandatory == "on")
             {
                 aspNetSubject.IsManadatory = true;

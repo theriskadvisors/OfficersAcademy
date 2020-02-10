@@ -74,7 +74,7 @@
 
     Vouchers = [];
     function SaveVoucher() {
-
+        debugger
         $("#submit").prop('disabled', true);
 
         var AdminDrawerBalance = $("#AdminDrawerBalance").val();
@@ -171,6 +171,7 @@
                     url: '/Expense/AddCashVoucher',
                     data: Vouchers,
                     success: function (data) {
+
                         $('.eeniart0017').css("display", "none");
 
                         if (data == 'yes') {
@@ -204,25 +205,22 @@
                             $("#AdminDrawerBalance").val(RemaningBalanceInAdminD);
 
                             $("#Success").css('display', 'block');
-                            $("#submit").prop('disabled', false);
-
-                            $("#loaderDiv").css('display', 'none');
-                            debugger
-                            ShowSuccess("", "Expense has been created.");
+                            $("#Error").css('display', 'none');
 
                         } else {
 
-
+                             
                             //  window.location.href = "/Expense/index";
                             $("#Error").css('display', 'block');
-                            ShowError("", "Error! Invalid Info");
-
+                            $("#Success").css('display', 'none');
 
                         }
-                    }
+                           $("#submit").prop('disabled', false);
+
+                        $("#loaderDiv").css('display', 'none');
+
+                    }//end of success
                 });
-
-
 
             }
 

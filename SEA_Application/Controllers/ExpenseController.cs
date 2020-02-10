@@ -21,7 +21,7 @@ namespace SEA_Application.Controllers
         public ActionResult Index()
         {
 
-        ViewBag.CurrentBalance = db.Ledgers.Where(x => x.Name == "Admin Drawer").FirstOrDefault().CurrentBalance;
+           ViewBag.CurrentBalance = db.Ledgers.Where(x => x.Name == "Admin Drawer").FirstOrDefault().CurrentBalance;
             
 
 
@@ -62,6 +62,7 @@ namespace SEA_Application.Controllers
             {
             try
             {
+
                 var LeadgerAdminDrawer = db.Ledgers.Where(x => x.Name == "Admin Drawer").FirstOrDefault();
 
                 decimal? CurrentBalanceOfAdminDrawer = LeadgerAdminDrawer.CurrentBalance;
@@ -111,7 +112,7 @@ namespace SEA_Application.Controllers
                     {
                         VoucherRecord VR = new VoucherRecord();
                         int idd = Convert.ToInt32( voucher.Code);
-
+                        
                         var Ledger =  db.Ledgers.Where(x => x.Id == idd).FirstOrDefault();
                         decimal? CurrentBlance = Ledger.CurrentBalance;
                         decimal? AfterBalanceOfLedger = CurrentBlance + Convert.ToDecimal(voucher.Credit);

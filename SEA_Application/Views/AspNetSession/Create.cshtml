@@ -149,7 +149,7 @@
                 <div class="form-group">
                     <label class="col-md-1 col-lg-1 control-label" for="UserName">Total Fee: <span class="red-mark">*</span></label>
                     <div class="col-md-6">
-                        @Html.EditorFor(model => model.Total_Fee, new { htmlAttributes = new { @class = "form-control", @onblur = "isempty(this)" } })
+                        @Html.EditorFor(model => model.Total_Fee, new { htmlAttributes = new { @class = "form-control", @onblur = "isempty(this)", required="required" } })
                         @Html.ValidationMessageFor(model => model.Total_Fee, "", new { @class = "text-danger" })
                     </div>
                 </div>

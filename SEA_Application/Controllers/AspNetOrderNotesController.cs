@@ -24,6 +24,11 @@ namespace SEA_Application.Controllers
         }
         public ActionResult PrepaidNotesIndex()
         {
+            //TimeZone time2 = TimeZone.CurrentTimeZone;
+            //DateTime test = time2.ToUniversalTime(DateTime.Now);
+            //var singapore = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
+            //var singaporetime = TimeZoneInfo.ConvertTimeFromUtc(test, singapore);
+
             var aspNetNotes = db.AspNetNotes.Include(a => a.AspNetSubject);
 
             var ListOfIds = (from Notes in db.AspNetNotes
@@ -214,10 +219,13 @@ namespace SEA_Application.Controllers
 
             var result = from Notes in db.AspNetNotes
                          join OrderNotes in db.AspNetNotesOrders on Notes.Id equals OrderNotes.NotesID
-                         where OrderNotes.StudentID == StudentId && OrderNotes.OrderType == "Postpaid"
+                         join Order in db.AspNetOrders on OrderNotes.OrderId equals Order.Id
+                         where OrderNotes.StudentID == StudentId && OrderNotes.OrderType == "Postpaid" && OrderNotes.Status =="Pending"
+
                          select new
                          {
-                             Id = OrderNotes.Id,
+                             OrderId = Order.Id,
+                            // Id = OrderNotes.Id,
                              Title = Notes.Title,
                              Discription = Notes.Description,
                              CourseType = Notes.CourseType,
@@ -237,9 +245,11 @@ namespace SEA_Application.Controllers
 
             var result = from Notes in db.AspNetNotes
                          join OrderNotes in db.AspNetNotesOrders on Notes.Id equals OrderNotes.NotesID
-                         where OrderNotes.StudentID == StudentId && OrderNotes.OrderType == "Prepaid"
+                         join Order in db.AspNetOrders on OrderNotes.OrderId equals Order.Id
+                         where OrderNotes.StudentID == StudentId && OrderNotes.OrderType == "Prepaid" && OrderNotes.Status == "Pending"
                          select new
                          {
+                             OrderId = Order.Id,
                              Id = OrderNotes.Id,
                              Title = Notes.Title,
                              Discription = Notes.Description,
@@ -256,7 +266,7 @@ namespace SEA_Application.Controllers
         
         public ActionResult ConfirmOdr(int TotalAmount, int[] IDs)
         {
-
+            var CurrentUserId = User.Identity.GetUserId();
             AspNetOrder order = new AspNetOrder();
             order.TotalAmount=TotalAmount;
             order.Status = "Pending";
@@ -304,7 +314,10 @@ namespace SEA_Application.Controllers
                 db.Entry(OrderModify).State = EntityState.Modified;
                 db.SaveChanges();
             }
-                                    
+
+
+            
+
             return Json("", JsonRequestBehavior.AllowGet);
         }
 
@@ -352,8 +365,8 @@ namespace SEA_Application.Controllers
 
             var result = from Notes in db.AspNetNotes
                          join OrderNotes in db.AspNetNotesOrders on Notes.Id equals OrderNotes.NotesID
-                          where OrderNotes.StudentID == StudentId && OrderNotes.Status == "Draft" &&
-                            OrderNotes.OrderType == "Postpaid"
+                         where OrderNotes.StudentID == StudentId && OrderNotes.Status == "Draft" &&
+                          OrderNotes.OrderType == "Postpaid"
 
                          select new
                          {

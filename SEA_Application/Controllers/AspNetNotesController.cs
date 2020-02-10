@@ -177,7 +177,7 @@ namespace SEA_Application.Controllers
                 var LeadgerPhotoCopierE = db.Ledgers.Where(x => x.Id == photoCopierIdOfExpense).FirstOrDefault();
 
                 decimal? CurrentBalanceOfPhotoCopiterE = LeadgerPhotoCopierE.CurrentBalance;
-                decimal? AfterBalanceOfPhotoCopierE = CurrentBalanceOfPhotoCopiter + Convert.ToDecimal(TotalPriceOfPhotoCopier);
+                decimal? AfterBalanceOfPhotoCopierE = CurrentBalanceOfPhotoCopiterE + Convert.ToDecimal(TotalPriceOfPhotoCopier);
                 voucherRecord3.LedgerId = LeadgerPhotoCopierE.Id;
                 voucherRecord3.Type = "Dr";
                 voucherRecord3.Amount = Convert.ToDecimal(TotalPriceOfPhotoCopier);
@@ -185,7 +185,7 @@ namespace SEA_Application.Controllers
                 voucherRecord3.AfterBalance = AfterBalanceOfPhotoCopierE;
                 voucherRecord3.VoucherId = voucher.Id;
                 voucherRecord3.Description = "Notes against order ID " + OrderId;
-               LeadgerPhotoCopierE.CurrentBalance = AfterBalanceOfPhotoCopierE;
+                LeadgerPhotoCopierE.CurrentBalance = AfterBalanceOfPhotoCopierE;
 
                 db.VoucherRecords.Add(voucherRecord3);
                 db.SaveChanges();

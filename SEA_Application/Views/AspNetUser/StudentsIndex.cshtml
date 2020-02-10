@@ -42,8 +42,19 @@
     }
     function download() {
         var classId = $("#Class").val();
+        var myUrlPattern = '.local';
+
+        if (window.location.hostname === "localhost" || location.hostname === "127.0.0.1" || window.location.hostname.indexOf(myUrlPattern) >= 0) {
         var url = "http://localhost:1331/AspNetUser/StudentExcelRecord?ClassId=" + classId;
         var WINDOW = window.open(url, '_blank');
+          
+        }
+        else {
+
+        var url = "http://sea-oacss.com/AspNetUser/StudentExcelRecord?ClassId=" + classId;
+        var WINDOW = window.open(url, '_blank');
+
+        }
 
 
     }
@@ -199,7 +210,7 @@ else
                    '<div class="col-md-1 col-sm-3 col-xs-3" style="padding-left:0px"><a href=""><i class="glyphicon glyphicon-repeat" data-toggle="tooltip" title="Refresh" data-placement="bottom"></i></a></div>' +
                    '<div class="col-md-1 col-sm-3 col-xs-3"><a href="/Admin_Dashboard/StudentRegister"><i class="glyphicon glyphicon-edit" data-placement="bottom"></i></a></div>' +
                    '<div class="col-md-1 col-sm-3 col-xs-3"><a href="/AspNetUser/DisableStudentIndex"><i class="fa fa-ban" data-placement="bottom"></i>' + '</a></div>' +
-                   '<div class="col-md-1 col-sm-3 col-xs-3"><a href=""><i onclick="download()"class="glyphicon glyphicon-download-alt" onclick="download()" data-placement="bottom"></i></a></div>' +
+                   '<div class="col-md-1 col-sm-3 col-xs-3"><a href=""><i class="glyphicon glyphicon-download-alt" onclick="download()" data-placement="bottom"></i></a></div>' +
                    '<div class="col-md-1" padding-left:0px;">' +
                    '<div class="d-bar"></div>' +
                    '</div>' +

@@ -404,7 +404,7 @@ namespace SEA_Application.Controllers
             ViewBag.CourseType = employee.CourseType;
             ViewBag.employee = employee;
             //ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
-            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             if (aspNetUser == null)
             {
                 return HttpNotFound();
@@ -587,7 +587,12 @@ namespace SEA_Application.Controllers
                         image.SaveAs(Server.MapPath("~/Content/Images/StudentImages/") + image.FileName);
                         //    file.SaveAs(Server.MapPath("/Upload/") + file.FileName);
                     }
+                    if (aspNetUser.Email == null)
+                    {
 
+                        aspNetUser.Email = "oa" + aspNetUser.UserName + "@gmail.com";
+
+                    }
 
 
                     ApplicationDbContext context = new ApplicationDbContext();
@@ -786,11 +791,23 @@ namespace SEA_Application.Controllers
 
         public JsonResult AllStudents()
         {
+            //            var students = (from std in db.AspNetStudents.Where(x => x.AspNetUser.Status != "False")
+            //                            join t2 in
+            //db.AspNetStudent_Session_class.Where(x => x.SessionID == SessionID) on std.Id equals t2.StudentID
+            //                            select new
+            //                            {
 
-            
-           
+            //                                std.AspNetUser.Name,
+            //                                std.AspNetUser.Email,
+            //                                std.AspNetUser.PhoneNumber,
+            //                                std.AspNetClass.ClassName,
+            //                                std.AspNetUser.UserName
+            //                            }).ToList();
+
+
+
             var students =(from std in  db.AspNetStudents.Where(x => x.AspNetUser.Status != "False") join t2 in
-                               db.AspNetStudent_Session_class.Where(x => x.SessionID == SessionID) on std.Id equals t2.StudentID
+                               db.AspNetStudent_Session_class on std.Id equals t2.StudentID
                           select new {
                               
                 std.AspNetUser.Name,
@@ -799,6 +816,8 @@ namespace SEA_Application.Controllers
                 std.AspNetClass.ClassName,
                 std.AspNetUser.UserName
             }).ToList();
+
+       
 
             return Json(students, JsonRequestBehavior.AllowGet);
 

@@ -1,7 +1,7 @@
 ﻿﻿@model SEA_Application.Models.FeesData
 @{
     ViewBag.Title = "Create";
-    Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 <style>
     #error-tag {
@@ -15,6 +15,10 @@
     }
 
     #ChallanForm {
+        display: none;
+    }
+
+    #ChallanForm1 {
         display: none;
     }
 
@@ -85,6 +89,11 @@
         display: none;
     }
 
+    #bill1 {
+        margin-left: 30px;
+        display: none;
+    }
+
     #btnPrint {
         display: none;
     }
@@ -95,10 +104,9 @@
         debugger;
 
         $("#error-tag").hide();
-       var classid = '@ViewBag.Class_ID';
+        var classid = '@ViewBag.Class_ID';
         var defaultclassid = $("#ClassId").val();
-        if(classid == defaultclassid)
-        {
+        if (classid == defaultclassid) {
             $("#error-tag").show();
             $('#submit').prop("disabled", true);
 
@@ -108,71 +116,104 @@
 
 
 
-        $("#ClassId").click(function () {
+        $("#ClassId").change(function () {
+            debugger
 
-              $("#TotalFee").val(0)
-                    $("#PayableFee").val(0);
+            var SelectedClassValue = $(this).val();
+            if (SelectedClassValue != "") {
 
-                    $("#FeeType").val("");
-                                 debugger
-            var selectedClass = $("#ClassId").val();
-            $.get('@Url.Action("StudentByClass")',
-                { id: selectedClass }, function (data) {
+                $("#TotalFee").val(0)
+                $("#PayableFee").val(0);
 
-                    $('#students').html('');
+                $("#FeeType").val("");
+                debugger
+                var selectedClass = $("#ClassId").val();
 
-                    $.each(data, function (i, item) {
+                $.get('@Url.Action("StudentByClass")',
+                    { id: selectedClass }, function (data) {
 
-                        $('#students').append('<option value=' + item.ID + '>' + item.Name  + ' ('+item.UserName +') </option>');
+                        $('#students').html('');
+                        $('#students').append('  <option value="-1">Select One</option>');
+
+                        $.each(data, function (i, item) {
+
+                            $('#students').append('<option value=' + item.ID + '>' + item.Name + ' (' + item.UserName + ') </option>');
+                        });
+
                     });
 
-                });
-          });
+            }
+            else {
+                $("#students").html("");
+              $("#TotalFee").val(0)
+            $("#PayableFee").val(0);
 
+            $("#FeeType").val("");
 
-        $("#students").click(function () {
-
-            var selectedStudentId = $(this).val();
-               $("#TotalFee").val(0)
-                    $("#PayableFee").val(0);
-
-                    $("#FeeType").val("");
-
-            $.ajax({
-
-
-                type: "POST",
-                url: "/GrandTotal/StudentFeeDetail/",
-                data: { "id": selectedStudentId },
-                success: function (data) {
-
-                    //TotalFee
-                    //PayableFee
-                    $("#TotalFee").val(data.TotalFee)
-                    $("#PayableFee").val(data.FeePayable);
-
-                    $("#FeeType").val(data.FeeType);
-
-                    $("#ChallanForm").attr('name', data.Id);
-                    $("#btnPrint").attr('name', data.Id);
-
-
-                    $("#CashReceived").val(0);
-                    $("#Discount").val(0);
-
-
-                }
-
-
-            })
+            }
 
         });
 
 
-       // $("#students").change
+        $("#students").change(function () {
+
+            debugger
+            var selectedStudentId = $(this).val();
+            var ClassId = $("#ClassId option:selected").val();
+
+            if (ClassId != "") {
+
+                if (selectedStudentId != "-1") {
+
+                    $("#TotalFee").val(0)
+                    $("#PayableFee").val(0);
+
+                    $("#FeeType").val("");
+
+                    $.ajax({
 
 
-   });
+                        type: "POST",
+                        url: "/GrandTotal/StudentFeeDetail/",
+                        data: { "id": selectedStudentId },
+                        success: function (data) {
+
+                            //TotalFee
+                            //PayableFee
+                            $("#TotalFee").val(data.TotalFee)
+                            $("#PayableFee").val(data.FeePayable);
+
+                            $("#FeeType").val(data.FeeType);
+
+                            $("#ChallanForm").attr('name', data.Id);
+                            $("#btnPrint").attr('name', data.Id);
+
+
+                            $("#CashReceived").val(0);
+                            $("#Discount").val(0);
+
+
+                        }
+
+
+                    })
+                }
+                else {
+                        $("#TotalFee").val(0)
+                         $("#PayableFee").val(0);
+
+                     $("#FeeType").val("");
+                }
+            }
+
+
+        });
+
+
+        // $("#students").change
+
+
+    });
 
 </script>
 <div class="box box-primary">
@@ -194,7 +235,7 @@
                 <div class="form-group">
                     <span class="col-md-2">Session</span>
                     <div class="col-md-6">
-                        @Html.DropDownList("ClassId", null, htmlAttributes: new { @class = "form-control", @id = "ClassId" })
+                        @Html.DropDownList("ClassId", null, " Select One", htmlAttributes: new { @class = "form-control", @id = "ClassId" })
                         @Html.ValidationMessageFor(model => model.ClassId, "", new { @class = "text-danger" })
 
                     </div>
@@ -202,7 +243,8 @@
                 <div class="form-group">
                     <label class="control-label col-md-2 col-lg-2">Students: <span class="red-mark">*</span></label>
                     <div class="col-md-6">
-                        <select class="form-control" id="students" name="students" required></select>
+                        <select class="form-control" id="students" name="students" required>
+                        </select>
                     </div>
                 </div>
 
@@ -249,6 +291,9 @@
                 <input class="btn btn-primary" type="button" id="ChallanForm" value=" Get challan" />
             </div>
         }
+        <br />
+
+
 
         <div id="bill" style="margin-left:30px">
 
@@ -267,7 +312,10 @@
                 </p>
 
 
-                <br><b>Cashier:</b> @ViewBag.UserName
+                <b>Cashier:</b> @ViewBag.UserName <span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Admin Copy</b>
+                </span>
 
                 <table>
                     <thead>
@@ -288,6 +336,53 @@
 
 
         </div>
+
+        <br />
+
+
+        <!--slip 2-->
+        <div id="bill1" style="margin-left:30px">
+
+            <div class="ticket" id="ticket">
+                <br>
+                <center>
+                    <img src="/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/logo.PNG" />
+
+                </center>
+
+
+                <p class="centered">
+                    Officer's Academy
+                    <br><span id="Recipt1">Recipt#<span id="challanNo1"></span> </span>
+                    <br><span id="DateTime1"></span>
+                </p>
+
+                <b>Cashier:</b> @ViewBag.UserName <span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Student Copy</b>
+                </span>
+
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="description" colspan="2">Challan Information</th>
+
+                        </tr>
+
+
+                    </thead>
+                    <tbody id="billbody1" style="border: 1px solid black">
+                    </tbody>
+                </table>
+                <p class="centered">
+                    <br>Developed by : TheRiskAdvisors
+                </p>
+            </div>
+
+
+        </div>
+
         <button id="btnPrint" style="display:none;margin-left:30px;" class="hidden-print">Print</button>
 
 
@@ -369,7 +464,7 @@
 
         $("#ChallanForm").click(function () {
             $('#billbody').html("");
-
+            $('#billbody1').html("");
             var student = $("#students option:selected").text();
             var session = $("#ClassId option:selected").text();
 
@@ -405,7 +500,9 @@
             var challanNo = $("#ChallanForm").attr('name');
 
             $('#billbody').append(TableRow);
+            $('#billbody1').append(TableRow);
             $("#challanNo").html(challanNo);
+            $("#challanNo1").html(challanNo);
 
 
             //var d = new Date($.now());
@@ -418,6 +515,7 @@
 
 
             $("#bill").css('display', 'block');
+            $("#bill1").css('display', 'block');
             $("#btnPrint").css('display', 'block');
 
 
@@ -434,6 +532,8 @@
             mywindow.document.write('</head><body >');
             // mywindow.document.write('<h1>' + document.title + '</h1>');
             mywindow.document.write(document.getElementById('bill').innerHTML);
+            //mywindow.document.write('<br>');
+            mywindow.document.write(document.getElementById('bill1').innerHTML);
             mywindow.document.write('</body></html>');
             mywindow.document.close(); // necessary for IE >= 10
             mywindow.focus(); // necessary for IE >= 10*/
@@ -464,8 +564,6 @@
                 CashReceived = 0;
             }
 
-
-
             $.ajax({
 
                 type: "POST",
@@ -491,6 +589,10 @@
             $("#bill").css('display', 'none');
             $("#btnPrint").css('display', 'none');
 
+            $("#ChallanForm1").css('display', 'none');
+
+            $("#bill1").css('display', 'none');
+
         })
 
         $("#students").change(function () {
@@ -499,7 +601,9 @@
             $("#bill").css('display', 'none');
             $("#btnPrint").css('display', 'none');
 
+            $("#ChallanForm1").css('display', 'none');
 
+            $("#bill1").css('display', 'none');
         })
 
     })

@@ -69,7 +69,7 @@ namespace SEA_Application.Models
 
     public class RegisterViewModel
     {
-        [Required]
+      
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
@@ -92,6 +92,9 @@ namespace SEA_Application.Models
         [Required]
         [Display(Name = "Name")]
         public string Name { get; set; }
+        
+        public int ClassID { get; set; }
+
 
     }
 
