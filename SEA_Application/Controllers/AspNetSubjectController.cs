@@ -181,19 +181,35 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,SubjectName,ClassID,TeacherID")] AspNetSubject aspNetSubject)
         {
+            var CourseType = Convert.ToString( Request.Form["CourseType"]);
             var class_id = db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault().Id;
             aspNetSubject.ClassID = class_id;
             aspNetSubject.CourseType = Request.Form["CourseType"];
             string IsMandatory  =  Request.Form["IsMandatory"];
             aspNetSubject.Points = Int32.Parse(Request.Form["Points"]);
+            
 
             if(IsMandatory == "on")
             {
                 aspNetSubject.IsManadatory = true;
+
             }
             else
             {
                 aspNetSubject.IsManadatory = false;
+
+                if(CourseType == "CSS")
+                {
+                    aspNetSubject.SubjectGroup = Convert.ToString( Request.Form["CSSGroup"]) ;
+                }
+                else
+                {
+                    aspNetSubject.SubjectGroup = Convert.ToString(Request.Form["PMSGroup"]);
+
+
+                }
+
+
             }
 
 
@@ -219,12 +235,12 @@ namespace SEA_Application.Controllers
 
                 AspNetTeacherSubject ts = new AspNetTeacherSubject();
             //    var class_id = db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault().Id;
-                 var sub_id = db.AspNetSubjects.Where(x => x.SubjectName == aspNetSubject.SubjectName && x.ClassID == class_id).FirstOrDefault().Id;
+               //  var sub_id = db.AspNetSubjects.Where(x => x.SubjectName == aspNetSubject.SubjectName && x.ClassID == class_id).FirstOrDefault().Id;
 
                 var teacherid =  db.AspNetEmployees.Where(x => x.UserId == aspNetSubject.TeacherID).FirstOrDefault().Id;
 
                 ts.TeacherID = teacherid;
-                ts.SubjectID = sub_id;
+                ts.SubjectID = aspNetSubject.Id;
                 db.AspNetTeacherSubjects.Add(ts);
                 db.SaveChanges();
                 

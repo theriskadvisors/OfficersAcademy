@@ -69,13 +69,57 @@ namespace SEA_Application.Controllers
         //private object ConfigurationManager;
         /*************************************************************Student List Functions*******************************************************/
         [HttpGet]
-        public JsonResult SubjectsByClass(int id,string coursetype)
+        public JsonResult SubjectsByClass(int id, string coursetype)
         {
             db.Configuration.ProxyCreationEnabled = false;
-            List<AspNetSubject> sub = db.AspNetSubjects.Where(r => r.ClassID == id  && r.CourseType == coursetype).OrderByDescending(r => r.Id).ToList();
-            ViewBag.Subjects = sub;
+            //List<AspNetSubject> sub = db.AspNetSubjects.Where(r => r.ClassID == id && r.CourseType == coursetype).OrderByDescending(r => r.Id).ToList();
+            //ViewBag.Subjects = sub;
+            AspNetSubject sub = new AspNetSubject();
 
-            return Json(sub, JsonRequestBehavior.AllowGet);
+            if (coursetype == "CSS")
+            {
+
+                var MandatorySubjects = db.AspNetSubjects.Where(x => x.ClassID == id && x.CourseType == coursetype && x.IsManadatory == true);
+
+                var OptionalSubjects = db.AspNetSubjects.Where(x => x.ClassID == id && x.CourseType == coursetype && x.IsManadatory == false);
+
+
+                return Json(new
+                {
+                    MandatorySubjectsList = MandatorySubjects,
+                    OptionalSubjectsList = OptionalSubjects,
+
+
+                }, JsonRequestBehavior.AllowGet);
+            }
+            else if (coursetype == "PMS")
+            {
+                var MandatorySubjects = db.AspNetSubjects.Where(x => x.ClassID == id && x.CourseType == coursetype && x.IsManadatory == true);
+
+                var OptionalSubjects = db.AspNetSubjects.Where(x => x.ClassID == id && x.CourseType == coursetype && x.IsManadatory == false);
+
+                return Json(new
+                {
+                    MandatorySubjectsList = MandatorySubjects,
+                    OptionalSubjectsList = OptionalSubjects,
+
+
+                }, JsonRequestBehavior.AllowGet);
+
+            }
+            else
+            {
+                return Json(new
+                {
+                    MandatorySubjectsList = "",
+                    OptionalSubjectsList = "",
+
+
+                }, JsonRequestBehavior.AllowGet);
+
+
+            }
+
 
         }
 
@@ -228,15 +272,81 @@ namespace SEA_Application.Controllers
         }
 
         [HttpGet]
-        public JsonResult SubjectsByStudent(string id)
+        public JsonResult SubjectsByStudent(string id, string coursetype)
         {
             db.Configuration.ProxyCreationEnabled = false;
+
             var subs = (from sub in db.AspNetStudent_Subject
                         where sub.StudentID == id
                         select new { sub.AspNetSubject.Id, sub.AspNetSubject.SubjectName, sub.AspNetSubject.ClassID }).ToList();
+            if (coursetype == "CSS")
+            {
+
+                //   var MandatorySubjects = db.AspNetSubjects.Where(x => x.ClassID == id && x.CourseType == coursetype && x.IsManadatory == true);
+                var MandatorySubjects = from Subject in db.AspNetSubjects
+                                        join StudentSubject in db.AspNetStudent_Subject on Subject.Id equals StudentSubject.SubjectID
+                                        where StudentSubject.StudentID == id && Subject.CourseType == coursetype && Subject.IsManadatory == true
+                                        select Subject;
+                                       
 
 
-            return Json(subs, JsonRequestBehavior.AllowGet);
+
+
+                var OptionalSubjects = from Subject in db.AspNetSubjects
+                                       join StudentSubject in db.AspNetStudent_Subject on Subject.Id equals StudentSubject.SubjectID
+                                       where StudentSubject.StudentID == id && Subject.CourseType == coursetype && Subject.IsManadatory == false
+                                       select Subject;
+
+
+                return Json(new
+                {
+                    MandatorySubjectsList = MandatorySubjects,
+                    OptionalSubjectsList = OptionalSubjects,
+
+
+                }, JsonRequestBehavior.AllowGet);
+            }
+            else if (coursetype == "PMS")
+            {
+                var MandatorySubjects = from Subject in db.AspNetSubjects
+                                        join StudentSubject in db.AspNetStudent_Subject on Subject.Id equals StudentSubject.SubjectID
+                                        where StudentSubject.StudentID == id && Subject.CourseType == coursetype && Subject.IsManadatory == true
+                                        select Subject;
+
+
+                var OptionalSubjects = from Subject in db.AspNetSubjects
+                                       join StudentSubject in db.AspNetStudent_Subject on Subject.Id equals StudentSubject.SubjectID
+                                       where StudentSubject.StudentID == id && Subject.CourseType == coursetype && Subject.IsManadatory == false
+                                       select Subject;
+
+                return Json(new
+                {
+                    MandatorySubjectsList = MandatorySubjects,
+                    OptionalSubjectsList = OptionalSubjects,
+
+
+                }, JsonRequestBehavior.AllowGet);
+
+            }
+            else
+            {
+                return Json(new
+                {
+                    MandatorySubjectsList = "",
+                    OptionalSubjectsList = "",
+
+
+                }, JsonRequestBehavior.AllowGet);
+
+
+            }
+
+
+
+
+
+
+            //return Json(subs, JsonRequestBehavior.AllowGet);
 
         }
 
@@ -371,26 +481,35 @@ namespace SEA_Application.Controllers
         [HttpGet]
         public JsonResult StudentClass(string id)
         {
-            var subID = db.AspNetStudent_Subject.FirstOrDefault(x => x.StudentID == id);
-            if(subID!= null)
-            {
-                var classidcheck = db.AspNetSubjects.FirstOrDefault(x => x.Id == subID.SubjectID);
-                var ClassIDscheck = db.AspNetClasses.FirstOrDefault(x => x.Id == classidcheck.ClassID);
-                var ClassIDNAMEv = ClassIDscheck.Id;
-                return Json(ClassIDNAMEv, JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                var stdid = db.AspNetStudents.Where(x => x.StudentID == id).FirstOrDefault().Id;
-                var class1 = db.AspNetStudent_Session_class.Where(x => x.StudentID == stdid).FirstOrDefault().ClassID;
+            //var subID = db.AspNetStudent_Subject.FirstOrDefault(x => x.StudentID == id);
+            //if(subID!= null)
+            //{
+                //Modified by shahazad
+                //var classidcheck = db.AspNetSubjects.FirstOrDefault(x => x.Id == subID.SubjectID);
+                //var ClassIDscheck = db.AspNetClasses.FirstOrDefault(x => x.Id == classidcheck.ClassID);
+                //var ClassIDNAMEv = ClassIDscheck.Id;
+                
 
-                return Json(class1, JsonRequestBehavior.AllowGet);
-            }
+
+                var ClassIDNAMEv = db.AspNetStudents.Where(x => x.StudentID == id).FirstOrDefault().ClassID;
+
+
+
+                return Json(ClassIDNAMEv, JsonRequestBehavior.AllowGet);
+            //}
+            //else
+            //{
+            //    var stdid = db.AspNetStudents.Where(x => x.StudentID == id).FirstOrDefault().Id;
+            //    var class1 = db.AspNetStudent_Session_class.Where(x => x.StudentID == stdid).FirstOrDefault().ClassID;
+
+            //    return Json(class1, JsonRequestBehavior.AllowGet);
+            //}
         }
 
         // GET: AspNetUser/Edit/5
         public ActionResult EditStudent(string id)
         {
+             
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -402,6 +521,7 @@ namespace SEA_Application.Controllers
             ViewBag.StudentImage = employee.StudentIMG;
             ViewBag.UserDetails = aspNetUser.Highest_Degree;
             ViewBag.CourseType = employee.CourseType;
+            ViewBag.ClassTiming = employee.ClassTimings;
             ViewBag.employee = employee;
             //ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
@@ -596,24 +716,87 @@ namespace SEA_Application.Controllers
 
 
                     ApplicationDbContext context = new ApplicationDbContext();
-                    IEnumerable<string> selectedsubjects;
-                    if (Request.Form["subjects"] != null)
-                     { 
-                    selectedsubjects = Request.Form["subjects"].Split(',');
+                    //IEnumerable<string> selectedsubjects;
+                    //if (Request.Form["subjects"] != null)
+                    // { 
+                    //selectedsubjects = Request.Form["subjects"].Split(',');
 
+                    //}
+                    //else
+                    //{
+                    //    selectedsubjects = null;
+
+                    //}
+
+                    //if (selectedsubjects==null)
+                    //{
+                    //    ViewBag.SubError = "Please select subjects";
+                    //}
+
+                    List<string> selectedsubjects = new List<string>();
+
+                    var CourseType = Request.Form["CourseType"];
+                    int AllNullCSSSubjects = 0;
+                    if (CourseType == "CSS")
+                    {
+
+                        for (int i = 0; i <= 7; i++)
+                        {
+                            var Subject = "CSSSubjects" + i;
+                            if (Request.Form[Subject] != null)
+                            {
+
+                                selectedsubjects.AddRange(Request.Form[Subject].Split(',').ToList());
+                            }
+                            else
+                            {
+                                AllNullCSSSubjects = AllNullCSSSubjects + 1;
+                            }
+
+                        }
+                        if (AllNullCSSSubjects == 8)
+                        {
+                            var employee = db.AspNetStudents.Where(x => x.StudentID == aspNetUser.Id).Select(x => x).FirstOrDefault();
+                            ViewBag.CourseType = employee.CourseType;
+
+                            ViewBag.SubjectsErrorMsg = "Please Select at least one Subject";
+                            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+
+                            return View(aspNetUser);
+                        }
+                    }
+
+
+                    else if (CourseType == "PMS")
+                    {
+                        for (int i = 0; i <= 5; i++)
+                        {
+                            var Subject = "PMSSubjects" + i;
+                            if (Request.Form[Subject] != null)
+                            {
+                                selectedsubjects.AddRange(Request.Form[Subject].Split(',').ToList());
+                            }
+                            else
+                            {
+                                AllNullCSSSubjects = AllNullCSSSubjects + 1;
+                            }
+
+                        }
+
+                        if (AllNullCSSSubjects == 6)
+                        {
+                            var employee = db.AspNetStudents.Where(x => x.StudentID == aspNetUser.Id).Select(x => x).FirstOrDefault();
+                            ViewBag.CourseType = employee.CourseType;
+
+                            ViewBag.SubjectsErrorMsg = "Please Select at least one Subject";
+                            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+
+                            return View(aspNetUser);
+                        }
                     }
                     else
                     {
                         selectedsubjects = null;
-
-                    }
-
-
-
-
-                    if (selectedsubjects==null)
-                    {
-                        ViewBag.SubError = "Please select subjects";
                     }
 
                     string selectedClass = Request.Form["ClassID"];
@@ -647,6 +830,8 @@ namespace SEA_Application.Controllers
                     student.Religion = Request.Form["Religion"];
                     //student.Gender = Request.Form["Gender"];
                     student.SchoolName = Request.Form["SchoolName"];
+                    student.ClassTimings = Request.Form["ClassTimings"];
+
 
                     if (image != null)
                     {
@@ -670,19 +855,24 @@ namespace SEA_Application.Controllers
                     }
                     //db.Entry(aspNetUser).State = EntityState.Modified;
 
-                  //  db.Entry(registration).Property(x => x.Name).IsModified = false;
+                    //  db.Entry(registration).Property(x => x.Name).IsModified = false;
 
-                    db.Entry(aspNetUser).State = EntityState.Modified;
+                    SEA_DatabaseEntities db1 = new SEA_DatabaseEntities();
 
-                    db.Entry(aspNetUser).Property(x => x.PasswordHash).IsModified = false;
-                    db.Entry(aspNetUser).Property(x => x.SecurityStamp).IsModified = false;
+                    db1.AspNetUsers.Attach(aspNetUser);
 
-                    db.SaveChanges();
+
+                    db1.Entry(aspNetUser).State = EntityState.Modified;
+
+                    db1.Entry(aspNetUser).Property(x => x.PasswordHash).IsModified = false;
+                    db1.Entry(aspNetUser).Property(x => x.SecurityStamp).IsModified = false;
+
+                    db1.SaveChanges();
                 }
                 dbTransaction.Commit();
                 return RedirectToAction("StudentsIndex");
             }
-            catch (Exception) { dbTransaction.Dispose(); }
+            catch (Exception ex) { dbTransaction.Dispose(); }
 
             return View("StudentsIndex");
         }

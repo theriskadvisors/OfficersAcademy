@@ -10,9 +10,21 @@
 
 <label>@Html.ActionLink("Home", "Dashboard", "Account") > @Html.ActionLink("Subject", "ClassIndex", "AspNetSubject") > <a href="#"><b>Create</b></a> </label>
 <h4 class="orange">Add Subjects &nbsp;</h4>
+<style>
+    #CSSGroupDiv {
+        display:none;
+    }
+    #PMSGroupDiv
+    {
+        display:none;
+    }
+
+</style>
+
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 <script>
     $(document).ready(function () {
+
 
         $("#SubjectName").prop('required', true);
         $("#ClassID").prop('required', true);
@@ -21,8 +33,91 @@
         $('#cancel').click(function () {
             window.location.href = '@Url.Action("ClassIndex", "AspNetSubject")';
         });
-
         
+        $("#IsMandatory").change(function () {
+              var CourseType =   $("#CourseType").val();
+            if (this.checked) {
+
+                //alert("Checkbox checked");
+                  $("#CSSGroupDiv").css('display', 'none');
+                $("#PMSGroupDiv").css('display', 'none');
+                $("#CSSGroup").prop('required', false);
+               $("#PMSGroup").prop('required',false);
+            }
+            else {
+                // alert("checkbox is not checked ");
+               // alert(CourseType);
+                if (CourseType != "") {
+
+                   if (CourseType == "CSS") {
+
+                        $("#CSSGroupDiv").css('display', 'block');
+                         $("#PMSGroupDiv").css('display', 'none');
+
+                        $("#CSSGroup").prop('required',true);
+                        $("#PMSGroup").prop('required',false);
+                }
+                      if (CourseType == "PMS") {
+
+                        $("#PMSGroupDiv").css('display', 'block');
+                        $("#CSSGroupDiv").css('display', 'none');
+                         $("#PMSGroup").prop('required',true);
+                        $("#CSSGroup").prop('required',false);
+
+                    }
+
+                }
+                }
+
+
+
+
+        })
+
+
+        $("#CourseType").change(function () {
+          var CourseType =   $(this).val();
+
+
+            if (CourseType != "") {
+
+                if ($("#IsMandatory").prop('checked') == false) {
+
+                    if (CourseType == "CSS") {
+
+                        $("#CSSGroupDiv").css('display', 'block');
+                        $("#PMSGroupDiv").css('display', 'none');
+
+                        $("#CSSGroup").prop('required', true);
+                        $("#PMSGroup").prop('required', false);
+                    }
+                    else {
+
+                        $("#PMSGroupDiv").css('display', 'block');
+                        $("#CSSGroupDiv").css('display', 'none');
+                        $("#PMSGroup").prop('required', true);
+                        $("#CSSGroup").prop('required', false);
+
+                    }
+
+                }
+
+
+            }
+            else {
+
+                $("#PMSGroupDiv").css('display', 'none');
+                        $("#CSSGroupDiv").css('display', 'none');
+                        $("#PMSGroup").prop('required', false);
+                        $("#CSSGroup").prop('required', false);
+            }
+
+
+
+
+        })
+ 
+
 
         @*$.get('@Url.Action("TeachersbySession")',
            { id: 1 }, function (data) {
@@ -58,7 +153,10 @@
         //})
 
 
+
+
     });
+
 
 </script>
 
@@ -92,30 +190,62 @@
                                             </div>
                                         </div>
                                         @*<div class="form-group">
-                                            <label class="control-label col-md-2" for="ClassID">Class Name: <span class="red-mark">*</span></label>
-                                            <div class="col-md-6">
-                                                @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control" })
-                                                @Html.ValidationMessageFor(model => model.ClassID, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>*@
+            <label class="control-label col-md-2" for="ClassID">Class Name: <span class="red-mark">*</span></label>
+            <div class="col-md-6">
+                @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ClassID, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
                                         <div class="form-group">
                                             <label for="CourseType" class="col-md-2 col-lg-2 control-label">Course Type: <span class="red-mark">*</span></label>
                                             <div class="col-md-6">
-                                                <select name="CourseType" class="form-control" required>
+                                                <select name="CourseType" id="CourseType" class="form-control" required>
                                                     <option value="CSS">CSS</option>
                                                     <option value="PMS">PMS</option>
                                                 </select>
                                                 <span id="Phone-Error" class="text-danger"></span>
                                             </div>
                                         </div>
-                                       
+
+
                                         <div class="form-group">
                                             <label for="IsMandatory" class="col-md-2 col-lg-2 control-label"> Is Mandatory: <span class="red-mark">*</span></label>
                                             <div class="col-md-6">
 
-                                                <input type="checkbox" checked data-toggle="toggle" id="IsMandatory" name="IsMandatory">
-                                            </div>                                           
-                                         </div>
+                                                <input type="checkbox" style="width:30px;height:30px" checked id="IsMandatory" name="IsMandatory">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" id="CSSGroupDiv">
+                                            <label for="Points" class="col-md-2 col-lg-2 control-label"> CSS Group: <span class="red-mark">*</span></label>
+                                            <div class="col-md-6">
+                                                <select name="CSSGroup" id="CSSGroup" class="form-control">
+                                                    <option value="1">Group 1</option>
+                                                    <option value="2">Group 2</option>
+                                                    <option value="3">Group 3</option>
+                                                    <option value="4">Group 4</option>
+                                                    <option value="5">Group 5</option>
+                                                    <option value="6">Group 6</option>
+                                                    <option value="7">Group 7</option>
+                                                </select>
+                                                <span id="Phone-Error" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" id="PMSGroupDiv" >
+                                            <label for="Points" class="col-md-2 col-lg-2 control-label"> PMS Group: <span class="red-mark">*</span></label>
+                                            <div class="col-md-6">
+                                                <select name="PMSGroup" id="PMSGroup" class="form-control">
+                                                    <option value="1">Group 1</option>
+                                                    <option value="2">Group 2</option>
+                                                    <option value="3">Group 3</option>
+                                                    <option value="4">Group 4</option>
+                                                    <option value="5">Group 5</option>
+                                                  
+                                                </select>
+                                                <span id="Phone-Error" class="text-danger"></span>
+                                            </div>
+                                        </div>
                                         <div class="form-group">
                                             <label for="Points" class="col-md-2 col-lg-2 control-label"> Marks: <span class="red-mark">*</span></label>
                                             <div class="col-md-6">
@@ -127,6 +257,9 @@
                                             </div>
                                         </div>
 
+
+
+
                                         <div class="form-group">
                                             <label class="control-label col-md-2" for="TeacherID">Teacher Name: <span class="red-mark">*</span></label>
                                             <div class="col-md-6">
@@ -135,11 +268,11 @@
                                             </div>
                                         </div>
                                         @*<div class="form-group">
-                                            <label class="control-label col-md-2 col-lg-2">Teachers: <span class="red-mark">*</span></label>
-                                            <div class="col-md-6">
-                                                <select multiple class="form-control" id="subjects" name="subjects" required></select>
-                                            </div>
-                                        </div>*@
+            <label class="control-label col-md-2 col-lg-2">Teachers: <span class="red-mark">*</span></label>
+            <div class="col-md-6">
+                <select multiple class="form-control" id="subjects" name="subjects" required></select>
+            </div>
+        </div>*@
                                         <div class="form-group">
                                             <div class="col-md-offset-2 col-md-2">
                                                 <input type="submit" value="Create" class="btn btn-primary" />

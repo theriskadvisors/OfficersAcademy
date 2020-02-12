@@ -124,28 +124,28 @@ namespace SEA_Application.Controllers
                 db.AspNetNotifications.Add(NotificationObj);
                 db.SaveChanges();
 
-                //var NotificationID = db.AspNetNotifications.Max(x => x.Id);
-                //var students = db.AspNetStudent_Project.Where(sp => sp.ProjectID == aspNetProject.Id).Select(x => x.StudentID).ToList();
+                var NotificationID = db.AspNetNotifications.Max(x => x.Id);
+                var students = db.AspNetStudent_Project.Where(sp => sp.ProjectID == aspNetProject.Id).Select(x => x.StudentID).ToList();
 
-                //var users = new List<String>();
+                var users = new List<String>();
 
-                //foreach (var item in students)
-                //{
-                //    var parentID = db.AspNetParent_Child.Where(x => x.ChildID == item).Select(x => x.ParentID).FirstOrDefault();
-                //    users.Add(parentID);
-                //}
+                foreach (var item in students)
+                {
+                    var parentID = db.AspNetParent_Child.Where(x => x.ChildID == item).Select(x => x.ParentID).FirstOrDefault();
+                    users.Add(parentID);
+                }
 
-                //var allusers = users.Union(students);
+                var allusers = users.Union(students);
 
-                //foreach (var receiver in allusers)
-                //{
-                //    var notificationRecieve = new AspNetNotification_User();
-                //    notificationRecieve.NotificationID = NotificationID;
-                //    notificationRecieve.UserID = Convert.ToString(receiver);
-                //    notificationRecieve.Seen = false;
-                //    db.AspNetNotification_User.Add(notificationRecieve);
-                //    db.SaveChanges();
-                //}
+                foreach (var receiver in allusers)
+                {
+                    var notificationRecieve = new AspNetNotification_User();
+                    notificationRecieve.NotificationID = NotificationID;
+                    notificationRecieve.UserID = Convert.ToString(receiver);
+                    notificationRecieve.Seen = false;
+                    db.AspNetNotification_User.Add(notificationRecieve);
+                    db.SaveChanges();
+                }
 
                 ///////////////////////////////////////Email/////////////////////////////////////////
 

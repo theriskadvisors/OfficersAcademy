@@ -1953,15 +1953,78 @@ namespace SEA_Application.Controllers
 
 
                     ApplicationDbContext context = new ApplicationDbContext();
-                    IEnumerable<string> selectedsubjects;
-                    if (Request.Form["subjects"] != null)
+                    List<string> selectedsubjects = new List<string>() ;
+
+                    var CourseType = Request.Form["CourseType"];
+                    int AllNullCSSSubjects = 0;
+                    if (CourseType =="CSS")
                     {
-                        selectedsubjects = Request.Form["subjects"].Split(',');
+
+                    for (int i = 0; i <= 7; i++)
+                    {
+                        var Subject = "CSSSubjects" + i;
+                        if (Request.Form[Subject] != null)
+                        {
+                               
+                                selectedsubjects.AddRange(Request.Form[Subject].Split(',').ToList());
+                        }
+                        else
+                            {
+                                AllNullCSSSubjects = AllNullCSSSubjects + 1;
+                            }
+
+                     }
+                        if (AllNullCSSSubjects == 8)
+                        {
+                            ViewBag.SubjectsErrorMsg = "Please Select at least one Subject";
+                            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+                            ViewBag.SessionFee = db.AspNetSessions.Where(x => x.Id == SessionID).FirstOrDefault().Total_Fee;
+                            return View(model);
+                        }
+                    }
+                  
+
+                    else if (CourseType  =="PMS")
+                    {
+                        for (int i = 0; i <= 5; i++)
+                        {
+                            var Subject = "PMSSubjects" + i;
+                            if (Request.Form[Subject] != null)
+                            {
+                                selectedsubjects.AddRange(Request.Form[Subject].Split(',').ToList());
+                            }
+                            else
+                            {
+                                AllNullCSSSubjects = AllNullCSSSubjects + 1;
+                            }
+
+                        }
+
+                        if (AllNullCSSSubjects == 6)
+                        {
+                            ViewBag.SubjectsErrorMsg = "Please Select at least one Subject";
+                            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+                            ViewBag.SessionFee = db.AspNetSessions.Where(x => x.Id == SessionID).FirstOrDefault().Total_Fee;
+                            return View(model);
+                        }
                     }
                     else
                     {
                         selectedsubjects = null;
                     }
+
+                    //if (Request.Form["MandatoryCSSSubjects0"] != null)
+                    //{
+                    //    selectedsubjects = Request.Form["MandatoryCSSSubjects0"].Split(',').ToList();
+                    //}
+
+                    //var a = "CSSSubjects1";
+                    //if (Request.Form[a] != null)
+                    //{
+                    //    selectedsubjects.AddRange( Request.Form["CSSSubjects1"].Split(',').ToList());
+                    //}
+
+
 
                     var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Name = model.Name, PhoneNumber = Request.Form["cellNo"] };
                     var result = await UserManager.CreateAsync(user, model.Password);
@@ -1979,19 +2042,13 @@ namespace SEA_Application.Controllers
 
                         student.StudentID = user.Id;
 
-
                         student.Age = age;
 
 
                         student.Address = Request.Form["Address"];
 
                         student.ClassTimings = Request.Form["ClassTimings"];
-
-
                         student.Fathers_Name = Request.Form["Father_Name"];
-
-
-
                         student.SchoolName = Request.Form["SchoolName"];
                         student.CourseType = Request.Form["CourseType"];
                         //  student.BirthDate = Request.Form["BirthDate"];
@@ -2054,7 +2111,6 @@ namespace SEA_Application.Controllers
 
                             foreach (var item in selectedsubjects)
                             {
-
                                 AspNetStudent_Subject stu_sub = new AspNetStudent_Subject();
                                 stu_sub.StudentID = user.Id;
                                 stu_sub.SubjectID = Convert.ToInt32(item);
@@ -2262,15 +2318,15 @@ namespace SEA_Application.Controllers
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             return View(model);
         }
-        public ActionResult GetMandatorySubjects(int ClassId)
-        {
-           var MandatorySubjectsList =  db.AspNetSubjects.Where(x => x.ClassID == ClassId && x.IsManadatory == true).Select(x => x.Id);
-           var AllSubjectList = db.AspNetSubjects.Where(x=>x.ClassID == ClassId).Select(x => x.Id);
+        //public ActionResult GetMandatorySubjects(int ClassId)
+        //{
+        //   var MandatorySubjectsList =  db.AspNetSubjects.Where(x => x.ClassID == ClassId && x.IsManadatory == true).Select(x => x.Id);
+        //   var AllSubjectList = db.AspNetSubjects.Where(x=>x.ClassID == ClassId).Select(x => x.Id);
 
 
 
-            return Json(new { MandatorySubjects = MandatorySubjectsList , AllSubjects = AllSubjectList }, JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(new { MandatorySubjects = MandatorySubjectsList , AllSubjects = AllSubjectList }, JsonRequestBehavior.AllowGet);
+        //}
 
         public ActionResult GetSessionFee(int SelectedClassId)
         {
@@ -2657,13 +2713,9 @@ namespace SEA_Application.Controllers
 
                                 }
 
-
-
                             }
 
                         }
-
-
 
                         var FeeType = workSheet.Cells[rowIterator, 28].Value;
 
@@ -2711,9 +2763,9 @@ namespace SEA_Application.Controllers
                                 {
                                     ErrorMsg = ErrorMsg + "Session Fee Should be in numeric form" + Environment.NewLine;
                                     ErrorMsgExist = true;
-
-
                                 }
+
+
                                 else
                                 {
                                     int? SessionFeeInInt = Convert.ToInt32(SessionFee);
@@ -2725,8 +2777,6 @@ namespace SEA_Application.Controllers
 
                                     }
                                 }
-
-
 
                             }
 
@@ -2757,9 +2807,6 @@ namespace SEA_Application.Controllers
 
                         }
 
-                      
-
-
                         var TotalFee = workSheet.Cells[rowIterator, 29].Value;
 
                         if (TotalFee != null)
@@ -2772,7 +2819,6 @@ namespace SEA_Application.Controllers
                                 ErrorMsg = ErrorMsg + "Total Fee should be in numeric form" + Environment.NewLine;
                                 ErrorMsgExist = true;
 
-
                             }
 
                         }
@@ -2783,7 +2829,6 @@ namespace SEA_Application.Controllers
 
 
                         }
-
 
                                 
                         if(ErrorMsgExist==  true)
@@ -2801,8 +2846,62 @@ namespace SEA_Application.Controllers
 
                     }//loop
 
+                    //second loop save excel column values to database
+                    for (int rowIterator = 2; rowIterator < noOfRow; rowIterator++)
+                    {
+                        var student = new RegisterViewModel();
+                        var Email = workSheet.Cells[rowIterator, 1].Value;
+                     
+                        student.Email = workSheet.Cells[rowIterator, 1].Value.ToString();
+                        student.Name = workSheet.Cells[rowIterator, 2].Value.ToString();
+                        student.UserName = workSheet.Cells[rowIterator, 3].Value.ToString();
+                        student.Password = workSheet.Cells[rowIterator, 4].Value.ToString();
+                        student.ConfirmPassword = workSheet.Cells[rowIterator, 5].Value.ToString();
+                        // student. = workSheet.Cells[rowIterator, 5].Value.ToString();
+
+                        ApplicationDbContext context = new ApplicationDbContext();
+                        var user = new ApplicationUser { UserName = student.UserName, Email = student.Email, Name = student.Name };
+                        var result = await UserManager.CreateAsync(user, student.Password);
+                        if (result.Succeeded)
+                        {
 
 
+                            var subjects = new List<string>();
+                            var Class = workSheet.Cells[rowIterator, 6].Value.ToString();
+
+
+
+                            subjects.Add(workSheet.Cells[rowIterator, 7].Value.ToString());
+                            subjects.Add(workSheet.Cells[rowIterator, 8].Value.ToString());
+                            subjects.Add(workSheet.Cells[rowIterator, 9].Value.ToString());
+                            subjects.Add(workSheet.Cells[rowIterator, 10].Value.ToString());
+                            subjects.Add(workSheet.Cells[rowIterator, 11].Value.ToString());
+                            subjects.Add(workSheet.Cells[rowIterator, 12].Value.ToString());
+                            subjects.Add(workSheet.Cells[rowIterator, 13].Value.ToString());
+                            subjects.Add(workSheet.Cells[rowIterator, 14].Value.ToString());
+                            subjects.Add(workSheet.Cells[rowIterator, 15].Value.ToString());
+                            subjects.Add(workSheet.Cells[rowIterator, 16].Value.ToString());
+
+
+                            var subjectIDs = (from subject in db.AspNetSubjects
+                                              join Classes in db.AspNetClasses on subject.ClassID equals Classes.Id
+                                              where Classes.ClassName == Class && subjects.Contains(subject.SubjectName)
+                                              select subject).ToList();
+
+                            foreach (var subjectid in subjectIDs)
+                            {
+                                AspNetStudent_Subject stu_sub = new AspNetStudent_Subject();
+                                stu_sub.StudentID = user.Id;
+                                stu_sub.SubjectID = subjectid.Id;
+                                db.AspNetStudent_Subject.Add(stu_sub);
+                                // db.SaveChanges();
+                            }
+
+                        }
+
+
+
+                        }
 
                 }//using
 
@@ -2814,6 +2913,9 @@ namespace SEA_Application.Controllers
                 dbTransaction.Dispose();
                 return View("StudentRegister", model);
             }
+
+
+
             return RedirectToAction("StudentsIndex", "AspNetUser");
         }
 
@@ -2829,9 +2931,51 @@ namespace SEA_Application.Controllers
         public JsonResult SubjectsByClass(int id, string coursetype)
         {
             db.Configuration.ProxyCreationEnabled = false;
-            List<AspNetSubject> sub = db.AspNetSubjects.Where(r => r.ClassID == id && r.CourseType == coursetype).OrderByDescending(r => r.Id).ToList();
-            ViewBag.Subjects = sub;
-            return Json(sub, JsonRequestBehavior.AllowGet);
+            //List<AspNetSubject> sub = db.AspNetSubjects.Where(r => r.ClassID == id && r.CourseType == coursetype).OrderByDescending(r => r.Id).ToList();
+            //ViewBag.Subjects = sub;
+            AspNetSubject sub = new AspNetSubject();
+
+            if (coursetype == "CSS")
+            {
+
+                var MandatorySubjects = db.AspNetSubjects.Where(x => x.ClassID == id && x.CourseType == coursetype && x.IsManadatory == true);
+
+                var OptionalSubjects = db.AspNetSubjects.Where(x => x.ClassID == id && x.CourseType == coursetype && x.IsManadatory == false );
+   
+
+                return Json(new { MandatorySubjectsList = MandatorySubjects,OptionalSubjectsList = OptionalSubjects,
+
+                 
+                }, JsonRequestBehavior.AllowGet);
+            }
+            else if(coursetype =="PMS")
+            {
+                var MandatorySubjects = db.AspNetSubjects.Where(x => x.ClassID == id && x.CourseType == coursetype && x.IsManadatory == true);
+
+                var OptionalSubjects = db.AspNetSubjects.Where(x => x.ClassID == id && x.CourseType == coursetype && x.IsManadatory == false );
+            
+                return Json(new
+                {
+                    MandatorySubjectsList = MandatorySubjects,
+                    OptionalSubjectsList = OptionalSubjects,
+
+
+                }, JsonRequestBehavior.AllowGet);
+
+            }
+            else
+            {
+                return Json(new
+                {
+                    MandatorySubjectsList = "",
+                    OptionalSubjectsList = "",
+
+
+                }, JsonRequestBehavior.AllowGet);
+
+
+            }
+
 
         }
 
