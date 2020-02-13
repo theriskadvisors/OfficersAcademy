@@ -1744,6 +1744,8 @@ namespace SEA_Application.Controllers
 
                     var userStore = new UserStore<ApplicationUser>(context);
                     var userManager = new UserManager<ApplicationUser>(userStore);
+
+
                     userManager.AddToRole(user.Id, "Teacher");
 
                     db.AspNetEmployees.Add(emp);
@@ -1813,44 +1815,88 @@ namespace SEA_Application.Controllers
                     ApplicationDbContext context = new ApplicationDbContext();
                     for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
                     {
+
+                        string ErrorMsg;
+                        bool ErrorMsgExist = false;
+                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator - 1) + Environment.NewLine;
+
                         var teacher = new RegisterViewModel();
+
+                        var Name = workSheet.Cells[rowIterator, 2].Value;
+
                         teacher.Email = workSheet.Cells[rowIterator, 1].Value.ToString();
                         teacher.Name = workSheet.Cells[rowIterator, 2].Value.ToString();
                         teacher.UserName = workSheet.Cells[rowIterator, 3].Value.ToString();
                         teacher.Password = workSheet.Cells[rowIterator, 4].Value.ToString();
-                        teacher.ConfirmPassword = workSheet.Cells[rowIterator, 5].Value.ToString();
-                        string number = workSheet.Cells[rowIterator, 14].Value.ToString();
-                        var user = new ApplicationUser { UserName = teacher.UserName, Email = teacher.Email, Name = teacher.Name, PhoneNumber = number };
+
+                        //  string number = workSheet.Cells[rowIterator, 14].Value.ToString();
+
+                        //var MailingAddress = workSheet.Cells[rowIterator, 6].Value.ToString();
+                        //var CellNo = workSheet.Cells[rowIterator, 7].Value.ToString();
+                        //var LandLine = workSheet.Cells[rowIterator, 8].Value.ToString();
+
+
+
+
+                        var user = new ApplicationUser { UserName = teacher.UserName, Email = teacher.Email, Name = teacher.Name };
                         var result = await UserManager.CreateAsync(user, teacher.Password);
                         if (result.Succeeded)
                         {
+
+                            ruffdata rd = new ruffdata();
+                            rd.SessionID = SessionID;
+                            rd.StudentName = teacher.Name;
+                            rd.StudentUserName = teacher.UserName;
+                            rd.StudentPassword = workSheet.Cells[rowIterator, 4].Value.ToString();
+                            db.ruffdatas.Add(rd);
+                            db.SaveChanges();
+
+
                             AspNetEmployee teacherDetail = new AspNetEmployee();
                             teacherDetail.Name = teacher.Name;
                             teacherDetail.Email = teacher.Email;
                             teacherDetail.UserName = teacher.UserName;
                             teacherDetail.UserId = user.Id;
-                            teacherDetail.PositionAppliedFor = workSheet.Cells[rowIterator, 6].Value.ToString();
-                            teacherDetail.DateAvailable = workSheet.Cells[rowIterator, 7].Value.ToString();
-                            teacherDetail.JoiningDate = workSheet.Cells[rowIterator, 8].Value.ToString();
-                            teacherDetail.BirthDate = workSheet.Cells[rowIterator, 9].Value.ToString();
-                            teacherDetail.Nationality = workSheet.Cells[rowIterator, 10].Value.ToString();
-                            teacherDetail.Religion = workSheet.Cells[rowIterator, 11].Value.ToString();
-                            teacherDetail.Gender = workSheet.Cells[rowIterator, 12].Value.ToString(); ;
-                            teacherDetail.MailingAddress = workSheet.Cells[rowIterator, 13].Value.ToString();
-                            teacherDetail.CellNo = workSheet.Cells[rowIterator, 14].Value.ToString();
-                            teacherDetail.Landline = workSheet.Cells[rowIterator, 15].Value.ToString();
-                            teacherDetail.SpouseName = workSheet.Cells[rowIterator, 16].Value.ToString();
-                            teacherDetail.SpouseHighestDegree = workSheet.Cells[rowIterator, 17].Value.ToString();
-                            teacherDetail.SpouseOccupation = workSheet.Cells[rowIterator, 18].Value.ToString();
-                            teacherDetail.SpouseBusinessAddress = workSheet.Cells[rowIterator, 19].Value.ToString();
-                            teacherDetail.Illness = workSheet.Cells[rowIterator, 20].Value.ToString();
-                            teacherDetail.GrossSalary = Convert.ToInt32(workSheet.Cells[rowIterator, 21].Value.ToString());
-                            teacherDetail.BasicSalary = Convert.ToInt32(workSheet.Cells[rowIterator, 22].Value.ToString());
-                            teacherDetail.MedicalAllowance = Convert.ToInt32(workSheet.Cells[rowIterator, 23].Value.ToString());
-                            teacherDetail.Accomodation = Convert.ToInt32(workSheet.Cells[rowIterator, 24].Value.ToString());
-                            teacherDetail.ProvidedFund = Convert.ToInt32(workSheet.Cells[rowIterator, 25].Value.ToString());
-                            teacherDetail.Tax = Convert.ToInt32(workSheet.Cells[rowIterator, 26].Value.ToString());
-                            teacherDetail.EOP = Convert.ToInt32(workSheet.Cells[rowIterator, 27].Value.ToString());
+
+
+
+                            var MailingAddress = workSheet.Cells[rowIterator, 5].Value;
+
+                            if (MailingAddress == null)
+                            {
+                                teacherDetail.MailingAddress = "-";
+                            }
+                            else
+                            {
+                                teacherDetail.MailingAddress = workSheet.Cells[rowIterator, 5].Value.ToString();
+                            }
+
+                            var CellNo = workSheet.Cells[rowIterator, 6].Value;
+
+                            if (CellNo == null)
+                            {
+                                teacherDetail.CellNo = "-";
+                            }
+                            else
+                            {
+                                teacherDetail.CellNo = workSheet.Cells[rowIterator, 6].Value.ToString();
+                            }
+
+
+                           // teacherDetail.Landline = workSheet.Cells[rowIterator, 8].Value.ToString();
+
+                            var LandLine = workSheet.Cells[rowIterator, 7].Value;
+
+                            if (LandLine == null)
+                            {
+                                teacherDetail.Landline = "-";
+                            }
+                            else
+                            {
+                                teacherDetail.Landline = workSheet.Cells[rowIterator, 7].Value.ToString();
+                            }
+
+
                             teacherDetail.VirtualRoleId = db.AspNetVirtualRoles.Where(x => x.Name == "Teaching Staff").Select(x => x.Id).FirstOrDefault();
                             db.AspNetEmployees.Add(teacherDetail);
                             db.SaveChanges();
@@ -1860,6 +1906,62 @@ namespace SEA_Application.Controllers
                             var userStore = new UserStore<ApplicationUser>(context);
                             var userManager = new UserManager<ApplicationUser>(userStore);
                             userManager.AddToRole(user.Id, "Teacher");
+
+
+                            if (db.SaveChanges() > 0)
+                            {
+
+                                AspNetUser usr = db.AspNetUsers.Find(user.Id);
+                              
+                                //db.AspNetUsers.Add(usr);
+                                db.SaveChanges();
+                            }
+
+                          
+
+
+                            AspNetUsers_Session US = new AspNetUsers_Session();
+                            US.UserID = user.Id;
+                            //  int sessionid = db.AspNetSessions.Where(x => x.Status == "Active").FirstOrDefault().Id;
+                            US.SessionID = SessionID;
+                            db.AspNetUsers_Session.Add(US);
+                            
+                            if (db.SaveChanges() > 0)
+                            {
+                                Aspnet_Employee_Session aes = new Aspnet_Employee_Session();
+                                aes.Emp_Id = teacherDetail.Id;
+                                aes.Session_Id = SessionID;
+                                db.Aspnet_Employee_Session.Add(aes);
+                                db.SaveChanges();
+                            }
+
+
+
+                            //teacherDetail.PositionAppliedFor = workSheet.Cells[rowIterator, 6].Value.ToString();
+                            //teacherDetail.DateAvailable = workSheet.Cells[rowIterator, 7].Value.ToString();
+                            //teacherDetail.JoiningDate = workSheet.Cells[rowIterator, 8].Value.ToString();
+                            //teacherDetail.BirthDate = workSheet.Cells[rowIterator, 9].Value.ToString();
+                            //teacherDetail.Nationality = workSheet.Cells[rowIterator, 10].Value.ToString();
+                            //teacherDetail.Religion = workSheet.Cells[rowIterator, 11].Value.ToString();
+                            //teacherDetail.Gender = workSheet.Cells[rowIterator, 12].Value.ToString(); ;
+                            //teacherDetail.SpouseName = workSheet.Cells[rowIterator, 16].Value.ToString();
+                            //teacherDetail.SpouseHighestDegree = workSheet.Cells[rowIterator, 17].Value.ToString();
+                            //teacherDetail.SpouseOccupation = workSheet.Cells[rowIterator, 18].Value.ToString();
+                            //teacherDetail.SpouseBusinessAddress = workSheet.Cells[rowIterator, 19].Value.ToString();
+                            //teacherDetail.Illness = workSheet.Cells[rowIterator, 20].Value.ToString();
+                            //teacherDetail.GrossSalary = Convert.ToInt32(workSheet.Cells[rowIterator, 21].Value.ToString());
+                            //teacherDetail.BasicSalary = Convert.ToInt32(workSheet.Cells[rowIterator, 22].Value.ToString());
+                            //teacherDetail.MedicalAllowance = Convert.ToInt32(workSheet.Cells[rowIterator, 23].Value.ToString());
+                            //teacherDetail.Accomodation = Convert.ToInt32(workSheet.Cells[rowIterator, 24].Value.ToString());
+                            //teacherDetail.ProvidedFund = Convert.ToInt32(workSheet.Cells[rowIterator, 25].Value.ToString());
+                            //teacherDetail.Tax = Convert.ToInt32(workSheet.Cells[rowIterator, 26].Value.ToString());
+                            //teacherDetail.EOP = Convert.ToInt32(workSheet.Cells[rowIterator, 27].Value.ToString());
+
+
+
+
+
+
                         }
                         else
                         {
@@ -1928,7 +2030,7 @@ namespace SEA_Application.Controllers
             }
             model.UserName = Request.Form["UserName"];
 
-            if(model.Email == null)
+            if (model.Email == null)
             {
 
                 model.Email = "oa" + model.UserName + "@gmail.com";
@@ -1953,27 +2055,27 @@ namespace SEA_Application.Controllers
 
 
                     ApplicationDbContext context = new ApplicationDbContext();
-                    List<string> selectedsubjects = new List<string>() ;
+                    List<string> selectedsubjects = new List<string>();
 
                     var CourseType = Request.Form["CourseType"];
                     int AllNullCSSSubjects = 0;
-                    if (CourseType =="CSS")
+                    if (CourseType == "CSS")
                     {
 
-                    for (int i = 0; i <= 7; i++)
-                    {
-                        var Subject = "CSSSubjects" + i;
-                        if (Request.Form[Subject] != null)
+                        for (int i = 0; i <= 7; i++)
                         {
-                               
+                            var Subject = "CSSSubjects" + i;
+                            if (Request.Form[Subject] != null)
+                            {
+
                                 selectedsubjects.AddRange(Request.Form[Subject].Split(',').ToList());
-                        }
-                        else
+                            }
+                            else
                             {
                                 AllNullCSSSubjects = AllNullCSSSubjects + 1;
                             }
 
-                     }
+                        }
                         if (AllNullCSSSubjects == 8)
                         {
                             ViewBag.SubjectsErrorMsg = "Please Select at least one Subject";
@@ -1982,9 +2084,9 @@ namespace SEA_Application.Controllers
                             return View(model);
                         }
                     }
-                  
 
-                    else if (CourseType  =="PMS")
+
+                    else if (CourseType == "PMS")
                     {
                         for (int i = 0; i <= 5; i++)
                         {
@@ -2389,7 +2491,7 @@ namespace SEA_Application.Controllers
                             {
                                 ErrorMsg = ErrorMsg + "Email already Exist" + Environment.NewLine;
                                 ErrorMsgExist = true;
-                             //   TempData["ErrorMsg"] = ErrorMsg;
+                                //   TempData["ErrorMsg"] = ErrorMsg;
                                 //  return RedirectToAction("StudentRegister");
                             }
 
@@ -2551,14 +2653,14 @@ namespace SEA_Application.Controllers
                         }
 
 
-                      //  var user = new { Id = "001a670e-7c8d-44d3-9972-ce92160ed643" };
+                        //  var user = new { Id = "001a670e-7c8d-44d3-9972-ce92160ed643" };
                         if (ClassExist == true)
                         {
 
                             int ClassId = db.AspNetClasses.Where(x => x.ClassName == Class).FirstOrDefault().Id;
 
                             List<AspNetSubject> ListSubjects = db.AspNetSubjects.Where(x => x.ClassID == ClassId).Distinct().ToList();
-                                var ListSubjectLower =  ListSubjects.Select(x => x.SubjectName.ToLower());        
+                            var ListSubjectLower = ListSubjects.Select(x => x.SubjectName.ToLower());
 
                             bool SubjectExist = true;
                             if (subjects.Count > 0)
@@ -2645,12 +2747,12 @@ namespace SEA_Application.Controllers
                         if (NotesCategory != null)
                         {
                             var NotesCategoryInString = NotesCategory.ToString().ToLower();
-                           
+
                             if (NotesCategoryInString == "with notes" || NotesCategoryInString == "without notes")
                             {
 
                                 IsExistNotesCategory = true;
-                              
+
                             }
                             else
                             {
@@ -2676,23 +2778,23 @@ namespace SEA_Application.Controllers
 
                             if (NotesFee != null)
                             {
-                                if(NotesCategory.ToString().ToLower() == "with notes")
+                                if (NotesCategory.ToString().ToLower() == "with notes")
                                 {
 
-                                var NotesFeeInString = NotesFee.ToString();
+                                    var NotesFeeInString = NotesFee.ToString();
 
-                                var isNumeric = NotesFeeInString.All(char.IsDigit);
-                                if (isNumeric == false)
-                                {
-                                    ErrorMsg = ErrorMsg + "Notes Fee should be in numeric form" + Environment.NewLine;
+                                    var isNumeric = NotesFeeInString.All(char.IsDigit);
+                                    if (isNumeric == false)
+                                    {
+                                        ErrorMsg = ErrorMsg + "Notes Fee should be in numeric form" + Environment.NewLine;
                                         ErrorMsgExist = true;
 
 
                                     }
                                     else
-                                {
+                                    {
 
-                                }
+                                    }
                                 }
                                 else
                                 {
@@ -2704,10 +2806,10 @@ namespace SEA_Application.Controllers
                             }
                             else
                             {
-                               
-                                    if (NotesCategory.ToString().ToLower() == "with notes")
-                                    {
-                                        ErrorMsg = ErrorMsg + "Notes Category is required" + Environment.NewLine;
+
+                                if (NotesCategory.ToString().ToLower() == "with notes")
+                                {
+                                    ErrorMsg = ErrorMsg + "Notes Category is required" + Environment.NewLine;
                                     ErrorMsgExist = true;
 
 
@@ -2790,9 +2892,9 @@ namespace SEA_Application.Controllers
                         }
 
 
-                        var Discount =  workSheet.Cells[rowIterator, 27].Value;
+                        var Discount = workSheet.Cells[rowIterator, 27].Value;
 
-                        if(Discount !=null)
+                        if (Discount != null)
                         {
                             var DiscountInString = Discount.ToString();
 
@@ -2830,13 +2932,13 @@ namespace SEA_Application.Controllers
 
                         }
 
-                                
-                        if(ErrorMsgExist==  true)
+
+                        if (ErrorMsgExist == true)
                         {
 
 
 
-                        TempData["ErrorMsg"] = ErrorMsg;
+                            TempData["ErrorMsg"] = ErrorMsg;
 
                             return RedirectToAction("StudentRegister");
                             break;
@@ -2851,7 +2953,7 @@ namespace SEA_Application.Controllers
                     {
                         var student = new RegisterViewModel();
                         var Email = workSheet.Cells[rowIterator, 1].Value;
-                     
+
                         student.Email = workSheet.Cells[rowIterator, 1].Value.ToString();
                         student.Name = workSheet.Cells[rowIterator, 2].Value.ToString();
                         student.UserName = workSheet.Cells[rowIterator, 3].Value.ToString();
@@ -2901,7 +3003,7 @@ namespace SEA_Application.Controllers
 
 
 
-                        }
+                    }
 
                 }//using
 
@@ -2940,20 +3042,23 @@ namespace SEA_Application.Controllers
 
                 var MandatorySubjects = db.AspNetSubjects.Where(x => x.ClassID == id && x.CourseType == coursetype && x.IsManadatory == true);
 
-                var OptionalSubjects = db.AspNetSubjects.Where(x => x.ClassID == id && x.CourseType == coursetype && x.IsManadatory == false );
-   
+                var OptionalSubjects = db.AspNetSubjects.Where(x => x.ClassID == id && x.CourseType == coursetype && x.IsManadatory == false);
 
-                return Json(new { MandatorySubjectsList = MandatorySubjects,OptionalSubjectsList = OptionalSubjects,
 
-                 
+                return Json(new
+                {
+                    MandatorySubjectsList = MandatorySubjects,
+                    OptionalSubjectsList = OptionalSubjects,
+
+
                 }, JsonRequestBehavior.AllowGet);
             }
-            else if(coursetype =="PMS")
+            else if (coursetype == "PMS")
             {
                 var MandatorySubjects = db.AspNetSubjects.Where(x => x.ClassID == id && x.CourseType == coursetype && x.IsManadatory == true);
 
-                var OptionalSubjects = db.AspNetSubjects.Where(x => x.ClassID == id && x.CourseType == coursetype && x.IsManadatory == false );
-            
+                var OptionalSubjects = db.AspNetSubjects.Where(x => x.ClassID == id && x.CourseType == coursetype && x.IsManadatory == false);
+
                 return Json(new
                 {
                     MandatorySubjectsList = MandatorySubjects,
