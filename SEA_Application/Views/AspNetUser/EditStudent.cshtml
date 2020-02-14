@@ -24,9 +24,9 @@
 
     .SubjectsBoxesPMS {
     }
-     table th,td{
 
-        width:200px;    
+    table th, td {
+        width: 200px;
     }
 
     .table {
@@ -38,6 +38,7 @@
     table {
         border: 1px solid rgb(221, 221, 221);
     }
+
     .table .SubjectHeader {
         text-align: left;
     }
@@ -56,6 +57,9 @@
 <script type="text/javascript">
     var selectedClass;
     $(document).ready(function () {
+
+
+    
 
         $("#UserName").bind('blur', function () {
             var userName = $("#UserName").val();
@@ -256,7 +260,7 @@
                             $(".SubjectsBoxesCSS").css('display', 'block');
                             $(".SubjectsBoxesPMS").css('display', 'none');
 
-                            $("#MandatorySubjectsCSS").append('<h3><span style="color:#3C8DBC !important"><b>Mandatory Subjects</b></span></h3>');
+                            $("#MandatorySubjectsCSS").append('<h3><span style="color:#3C8DBC !important"><b>Mandatory Subjects</b></span><input  type="checkbox" class="CheckboxCSSMandatory"></h3>');
                             $("#MandatorySubjectsCSS").append('<table  class="table table-condensed table-hover"><thead><tr><th class="SubjectHeader">Subjects</th><th>Marks</th><th>Select</th></tr></thead><tbody id ="MandatorySubjectsCSSTableBody"></tbody></table>');
                             $.each(MandatorySubjectsList, function (key, value1) {
 
@@ -333,7 +337,7 @@
 
                             $(".SubjectsBoxesPMS").css('display', 'block');
 
-                            $("#MandatorySubjectsPMS").append('<h3><span style="color:#3C8DBC !important"><b>Mandatory Subjects</b></span></h3>');
+                            $("#MandatorySubjectsPMS").append('<h3><span style="color:#3C8DBC !important"><b>Mandatory Subjects</b></span> <input  type="checkbox" class="CheckboxPMSMandatory"></h3>');
                             $("#MandatorySubjectsPMS").append('<table  class="table table-condensed table-hover"><thead><tr><th class="SubjectHeader">Subjects</th><th>Marks</th><th>Select</th></tr></thead><tbody id ="MandatorySubjectsPMSTableBody"></tbody></table>');
                             $.each(MandatorySubjectsList, function (key, value1) {
 
@@ -407,7 +411,7 @@
                                    var OptionalSubjecsList = data.OptionalSubjectsList;
 
                                           debugger
-                               
+
                                // alert(CourseType1);
                                 if (CourseType1 == "CSS") {
 
@@ -469,7 +473,7 @@
 
                                       })
 
-                                    
+
                                     $.each(OptionalSubjecsList, function (key, value1) {
 
                                         if (value1.SubjectGroup == "1") {
@@ -507,7 +511,7 @@
 
                                 }
 
-                            
+
                         });
                  });
         });
@@ -563,7 +567,7 @@
                             $(".SubjectsBoxesCSS").css('display', 'block');
                             $(".SubjectsBoxesPMS").css('display', 'none');
 
-                            $("#MandatorySubjectsCSS").append('<h3><span style="color:#3C8DBC !important"><b>Mandatory Subjects</b></span></h3>');
+                            $("#MandatorySubjectsCSS").append('<h3><span style="color:#3C8DBC !important"><b>Mandatory Subjects</b></span><input  type="checkbox" class="CheckboxCSSMandatory"></h3>');
                             $("#MandatorySubjectsCSS").append('<table  class="table table-condensed table-hover"><thead><tr><th class="SubjectHeader">Subjects</th><th>Marks</th><th>Select</th></tr></thead><tbody id ="MandatorySubjectsCSSTableBody"></tbody></table>');
                             $.each(MandatorySubjectsList, function (key, value1) {
 
@@ -640,7 +644,7 @@
 
                             $(".SubjectsBoxesPMS").css('display', 'block');
 
-                            $("#MandatorySubjectsPMS").append('<h3><span style="color:#3C8DBC !important"><b>Mandatory Subjects</b></span></h3>');
+                            $("#MandatorySubjectsPMS").append('<h3><span style="color:#3C8DBC !important"><b>Mandatory Subjects</b></span><input  type="checkbox" class="CheckboxPMSMandatory"></h3>');
                             $("#MandatorySubjectsPMS").append('<table  class="table table-condensed table-hover"><thead><tr><th class="SubjectHeader">Subjects</th><th>Marks</th><th>Select</th></tr></thead><tbody id ="MandatorySubjectsPMSTableBody"></tbody></table>');
                             $.each(MandatorySubjectsList, function (key, value1) {
 
@@ -714,7 +718,11 @@
 
             }
 
-            });
+      });
+
+
+            
+
 
         $("#BirthDate").bind('blur', function () {
             var dob = $("#birthDate").val();
@@ -1412,6 +1420,50 @@
             $("#subjectsdiv").css("display", "none");
 
         }
+
+        
+        $("#MandatorySubjectsCSS").on('change', ".CheckboxCSSMandatory", function () {
+            debugger
+
+            var CourseType = $("input[name='CourseType']").val();
+
+
+            if ($(this).is(':checked')) {
+
+
+                $("input[name='CSSSubjects0']").prop("checked", true);
+
+            }
+
+            else {
+
+                $("input[name='CSSSubjects0']").prop("checked", false);
+
+            }
+
+        })
+
+
+
+        $("#MandatorySubjectsPMS").on('change', ".CheckboxPMSMandatory", function () {
+            debugger
+
+            var CourseType = $("input[name='CourseType']").val();
+
+
+            if ($(this).is(':checked')) {
+
+
+                $("input[name='PMSSubjects0']").prop("checked", true);
+
+            }
+
+            else {
+
+                $("input[name='PMSSubjects0']").prop("checked", false);
+
+            }
+            })
 
     })
 
