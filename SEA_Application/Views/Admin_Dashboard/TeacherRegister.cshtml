@@ -42,8 +42,7 @@
                         $('#UserName-Error').html("UserName Already taken by "+ data.by);
                         $('#FormSubmit').prop('disabled', true);
                     }
-
-                }
+         }
             });
 
         });
@@ -295,27 +294,27 @@
                                     <div class="box-header with-border"><h3 class="orange">User Information<span class="red-mark">*</span></h3></div>
                                     <div class="box-body">
                                         @*<div class="form-group">
-                                            <label class="col-md-1 col-lg-1 control-label">Position Applied For:</label>
-                                            <div class="col-md-6">
-                                                <input type="text" class="form-control round-border" name="appliedFor" />
-                                            </div>
-                                        </div>
+            <label class="col-md-1 col-lg-1 control-label">Position Applied For:</label>
+            <div class="col-md-6">
+                <input type="text" class="form-control round-border" name="appliedFor" />
+            </div>
+        </div>
 
-                                        <div class="form-group">
-                                            <label class="col-md-1 col-lg-1 control-label">Date Available: <span class="red-mark">*</span></label>
-                                            <div class="col-md-6">
-                                                <input type="date" class="form-control round-border" id="dateAvailable" name="dateAvailable" required />
-                                                <span id="Avail-Error" class="text-danger"></span>
-                                            </div>
-                                        </div>
+        <div class="form-group">
+            <label class="col-md-1 col-lg-1 control-label">Date Available: <span class="red-mark">*</span></label>
+            <div class="col-md-6">
+                <input type="date" class="form-control round-border" id="dateAvailable" name="dateAvailable" required />
+                <span id="Avail-Error" class="text-danger"></span>
+            </div>
+        </div>
 
-                                        <div class="form-group">
-                                            <label class="col-md-1 col-lg-1 control-label">Joining Date: <span class="red-mark">*</span></label>
-                                            <div class="col-md-6">
-                                                <input type="date" class="form-control round-border" id="JoiningDate" name="JoiningDate" required />
-                                                <span id="join-Error" class="text-danger"></span>
-                                            </div>
-                                        </div>*@
+        <div class="form-group">
+            <label class="col-md-1 col-lg-1 control-label">Joining Date: <span class="red-mark">*</span></label>
+            <div class="col-md-6">
+                <input type="date" class="form-control round-border" id="JoiningDate" name="JoiningDate" required />
+                <span id="join-Error" class="text-danger"></span>
+            </div>
+        </div>*@
                                         <div class="form-group">
                                             <label class="col-md-1 col-lg-1 control-label" for="Name">Name: <span class="red-mark">*</span></label>
                                             <div class="col-md-6">
@@ -344,10 +343,20 @@
                                                 @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control round-border" })
                                                 @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
                                             </div>
+
                                         </div>
+                                        <div class="form-group">
+                                            <label class="col-md-1 col-lg-1 control-label"><b> Section:</b> <span class="red-mark">*</span></label>
+                                            <div class="col-md-6">
+                                                @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control text_box_style", name = "ClassID", @required = true })
+                                                <br />
+                                            </div>
+
+                                        </div>
+
                                         <br />
                                         <br />
-                               </div>
+                                    </div>
                             </div>
 
                             @*<div class="box box-primary">
