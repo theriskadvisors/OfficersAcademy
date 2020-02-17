@@ -380,7 +380,7 @@ namespace SEA_Application.Controllers
             var teachers = (from teacher in db.AspNetUsers.Where(x => x.Status != "False")
                             join t2 in db.AspNetUsers_Session
                             on teacher.Id equals t2.UserID 
-                            where teacher.AspNetRoles.Select(y => y.Name).Contains("Teacher") && t2.AspNetSession.AspNetClasses.Any(x => x.Id == id)
+                            where teacher.AspNetRoles.Select(y => y.Name).Contains("Teacher") && t2.AspNetSession.AspNetClasses.Any(x => x.Id == id) /*&& db.AspNetChapters.Any(x=>x.Id==id)*/
                             select new
                             {
                                 teacher.Id,
@@ -426,6 +426,7 @@ namespace SEA_Application.Controllers
                                 teacher.PhoneNumber,
                                 teacher.UserName,
                                 teacher.Name,
+
                             }).ToList();
 
 
@@ -436,10 +437,10 @@ namespace SEA_Application.Controllers
         {
             var TeacherDetail = db.AspNetEmployees.Where(x => x.AspNetUser.UserName == UserName).Select(x => x).FirstOrDefault();
             AspNetUser aspNetUser = db.AspNetUsers.Where(x => x.UserName == UserName).Select(x => x).FirstOrDefault();
-       //     ViewBag.date = Convert.ToDateTime(TeacherDetail.DateAvailable);
-         //   string[] date = TeacherDetail.DateAvailable.Split(' ');
-           // string[] join = TeacherDetail.JoiningDate.Split(' ');
-
+            //     ViewBag.date = Convert.ToDateTime(TeacherDetail.DateAvailable);
+            //   string[] date = TeacherDetail.DateAvailable.Split(' ');
+            // string[] join = TeacherDetail.JoiningDate.Split(' ');
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
 
             ViewBag.TeacherDetail = TeacherDetail;
 
@@ -523,6 +524,28 @@ namespace SEA_Application.Controllers
             //}
         }
 
+
+
+        public JsonResult TeacherClass(string id)
+        {
+           
+
+
+            var SessionId = db.AspNetUsers_Session.Where(x => x.UserID== id).FirstOrDefault().SessionID;
+            var ClassId  = db.AspNetClasses.Where(x => x.SessionID== SessionId).FirstOrDefault().Id;
+
+
+
+            return Json(ClassId, JsonRequestBehavior.AllowGet);
+            //}
+            //else
+            //{
+            //    var stdid = db.AspNetStudents.Where(x => x.StudentID == id).FirstOrDefault().Id;
+            //    var class1 = db.AspNetStudent_Session_class.Where(x => x.StudentID == stdid).FirstOrDefault().ClassID;
+
+            //    return Json(class1, JsonRequestBehavior.AllowGet);
+            //}
+        }
         // GET: AspNetUser/Edit/5
         public ActionResult EditStudent(string id)
         {
@@ -1460,7 +1483,7 @@ namespace SEA_Application.Controllers
 
         public ViewResult TeacherIndex(string Error)
         {
-            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x=>x.SessionID == SessionID), "Id", "ClassName");
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             ViewBag.Error = Error;
             return View("TeachersIndex");
         }
@@ -1799,6 +1822,7 @@ namespace SEA_Application.Controllers
             //string[] date = TeacherDetail.DateAvailable.Split(' ');
             //string[] join = TeacherDetail.JoiningDate.Split(' ');
 
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             ViewBag.UserDetails = aspNetUser.Highest_Degree;
             ViewBag.TeacherDetail = TeacherDetail;
 

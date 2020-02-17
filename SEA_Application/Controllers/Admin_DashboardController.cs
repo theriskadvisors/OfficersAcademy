@@ -1674,6 +1674,23 @@ namespace SEA_Application.Controllers
 
             db.SaveChanges();
 
+
+            var ClassId = Convert.ToInt32(Request.Form["ClassId"]);
+            var SessionId = db.AspNetClasses.Where(x => x.Id == ClassId).FirstOrDefault().SessionID;
+
+            var UserSession = db.AspNetUsers_Session.Where(x => x.UserID == id).FirstOrDefault();
+
+            //  int sessionid = db.AspNetSessions.Where(x => x.Status == "Active").FirstOrDefault().Id;
+            UserSession.SessionID = SessionId;
+            db.SaveChanges();
+
+            Aspnet_Employee_Session EmployeeSession = db.Aspnet_Employee_Session.Where(x => x.Emp_Id == emp.Id).FirstOrDefault();
+            
+            EmployeeSession.Session_Id = SessionId;
+
+            db.SaveChanges();
+
+
             return RedirectToAction("TeachersIndex", "AspNetUser");
         }
 
@@ -2607,7 +2624,7 @@ namespace SEA_Application.Controllers
 
                         student.ConfirmPassword = workSheet.Cells[rowIterator, 5].Value.ToString();
                         var ClassName = workSheet.Cells[rowIterator, 6].Value;
-                       
+
 
                         string Class = "";
                         bool ClassExist = false;
@@ -2687,7 +2704,7 @@ namespace SEA_Application.Controllers
                             bool SubjectExist = true;
                             if (subjects.Count > 0)
                             {
-                                
+
 
                                 foreach (var subject in subjects)
                                 {
@@ -2710,9 +2727,9 @@ namespace SEA_Application.Controllers
                                     }
                                     if (SubjectExist == false)
                                     {
-                                   ExcelErrors.Add(new ExcelSheetError { Row = RowNumber, Message = "Error", Detail = subject + " not Exist" });
+                                        ExcelErrors.Add(new ExcelSheetError { Row = RowNumber, Message = "Error", Detail = subject + " not Exist" });
 
-                                        
+
                                     }
                                 }
 
@@ -2962,7 +2979,7 @@ namespace SEA_Application.Controllers
                     {
 
 
-                         TempData["ErrorMsg"] = ExcelErrors;
+                        TempData["ErrorMsg"] = ExcelErrors;
 
 
                         //TempData["ErrorMsg"] = ErrorMsg;
