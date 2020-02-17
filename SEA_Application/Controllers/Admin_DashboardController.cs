@@ -1626,6 +1626,8 @@ namespace SEA_Application.Controllers
 
         public ActionResult TeacherRegister()
         {
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+
             return View();
         }
 
@@ -1681,6 +1683,7 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> TeacherRegister(RegisterViewModel model)
         {
+            int? SessionIdOfSelectedStudent = db.AspNetClasses.Where(x => x.Id == model.ClassID).FirstOrDefault().SessionID;
             if (1 == 1)
             {
                 ApplicationDbContext context = new ApplicationDbContext();
@@ -1693,7 +1696,7 @@ namespace SEA_Application.Controllers
                 var Deg = Request.Form["Degree"];
                 var Ind = Request.Form["Industry"];
                 ruffdata rd = new ruffdata();
-                rd.SessionID = SessionID;
+                rd.SessionID = SessionIdOfSelectedStudent;
                 rd.StudentName = model.Name;
                 rd.StudentUserName = model.UserName;
                 rd.StudentPassword = model.Password;
@@ -1765,13 +1768,13 @@ namespace SEA_Application.Controllers
                     AspNetUsers_Session US = new AspNetUsers_Session();
                     US.UserID = emp.UserId;
                     //  int sessionid = db.AspNetSessions.Where(x => x.Status == "Active").FirstOrDefault().Id;
-                    US.SessionID = SessionID;
+                    US.SessionID = SessionIdOfSelectedStudent;
                     db.AspNetUsers_Session.Add(US);
                     if (db.SaveChanges() > 0)
                     {
                         Aspnet_Employee_Session aes = new Aspnet_Employee_Session();
                         aes.Emp_Id = emp.Id;
-                        aes.Session_Id = SessionID;
+                        aes.Session_Id = SessionIdOfSelectedStudent;
                         db.Aspnet_Employee_Session.Add(aes);
                         db.SaveChanges();
                     }
@@ -1835,9 +1838,6 @@ namespace SEA_Application.Controllers
                         //var CellNo = workSheet.Cells[rowIterator, 7].Value.ToString();
                         //var LandLine = workSheet.Cells[rowIterator, 8].Value.ToString();
 
-
-
-
                         var user = new ApplicationUser { UserName = teacher.UserName, Email = teacher.Email, Name = teacher.Name };
                         var result = await UserManager.CreateAsync(user, teacher.Password);
                         if (result.Succeeded)
@@ -1883,7 +1883,7 @@ namespace SEA_Application.Controllers
                             }
 
 
-                           // teacherDetail.Landline = workSheet.Cells[rowIterator, 8].Value.ToString();
+                            // teacherDetail.Landline = workSheet.Cells[rowIterator, 8].Value.ToString();
 
                             var LandLine = workSheet.Cells[rowIterator, 7].Value;
 
@@ -1912,12 +1912,12 @@ namespace SEA_Application.Controllers
                             {
 
                                 AspNetUser usr = db.AspNetUsers.Find(user.Id);
-                              
+
                                 //db.AspNetUsers.Add(usr);
                                 db.SaveChanges();
                             }
 
-                          
+
 
 
                             AspNetUsers_Session US = new AspNetUsers_Session();
@@ -1925,7 +1925,7 @@ namespace SEA_Application.Controllers
                             //  int sessionid = db.AspNetSessions.Where(x => x.Status == "Active").FirstOrDefault().Id;
                             US.SessionID = SessionID;
                             db.AspNetUsers_Session.Add(US);
-                            
+
                             if (db.SaveChanges() > 0)
                             {
                                 Aspnet_Employee_Session aes = new Aspnet_Employee_Session();
@@ -2458,6 +2458,8 @@ namespace SEA_Application.Controllers
             var dbTransaction = db.Database.BeginTransaction();
             try
             {
+
+
                 HttpPostedFileBase file = Request.Files["students"];
                 if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
                 {
@@ -2469,19 +2471,24 @@ namespace SEA_Application.Controllers
                 var studentList = new List<RegisterViewModel>();
                 using (var package = new ExcelPackage(file.InputStream))
                 {
+                    string ErrorMsg = "";
+                    bool ErrorMsgExist = false;
                     var currentSheet = package.Workbook.Worksheets;
                     var workSheet = currentSheet.First();
                     var noOfCol = workSheet.Dimension.End.Column;
                     var noOfRow = workSheet.Dimension.End.Row;
 
-                    for (int rowIterator = 2; rowIterator < noOfRow; rowIterator++)
+                    List<ExcelSheetError> ExcelErrors = new List<ExcelSheetError>();
+
+                    for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
                     {
+                        var checktotalrows = rowIterator;
                         var student = new RegisterViewModel();
                         var Email = workSheet.Cells[rowIterator, 1].Value;
+                        var RowNumber = rowIterator - 1;
 
-                        string ErrorMsg;
-                        bool ErrorMsgExist = false;
-                        ErrorMsg = "Error in Row " + Convert.ToString(rowIterator - 1) + Environment.NewLine;
+                        ErrorMsg = ErrorMsg + Environment.NewLine + "Error in Row " + Convert.ToString(rowIterator - 1) + Environment.NewLine;
+
                         if (Email != null)
                         {
                             string EmailInString = workSheet.Cells[rowIterator, 1].Value.ToString();
@@ -2489,7 +2496,14 @@ namespace SEA_Application.Controllers
 
                             if (EmailContains.Count() > 0)
                             {
+
+                                // ExcelSheetError ExcelError = new ExcelSheetError();
+
+
                                 ErrorMsg = ErrorMsg + "Email already Exist" + Environment.NewLine;
+
+                                ExcelErrors.Add(new ExcelSheetError { Row = RowNumber, Message = "Error", Detail = EmailInString + " already Exist" });
+
                                 ErrorMsgExist = true;
                                 //   TempData["ErrorMsg"] = ErrorMsg;
                                 //  return RedirectToAction("StudentRegister");
@@ -2505,6 +2519,8 @@ namespace SEA_Application.Controllers
                         else
                         {
                             ErrorMsg = ErrorMsg + "Email is Required" + Environment.NewLine;
+                            ExcelErrors.Add(new ExcelSheetError { Row = RowNumber, Message = "Error", Detail = "Email is Required" });
+
                             ErrorMsgExist = true;
                             //return RedirectToAction("StudentRegister");
                         }
@@ -2519,6 +2535,8 @@ namespace SEA_Application.Controllers
                         }
                         else
                         {
+                            ExcelErrors.Add(new ExcelSheetError { Row = RowNumber, Message = "Error", Detail = "Name is Required" });
+
                             ErrorMsg = "Name is Required" + Environment.NewLine;
                             ErrorMsgExist = true;
                         }
@@ -2535,6 +2553,7 @@ namespace SEA_Application.Controllers
                             {
                                 ErrorMsg = ErrorMsg + "UserName already Exist" + Environment.NewLine;
                                 ErrorMsgExist = true;
+                                ExcelErrors.Add(new ExcelSheetError { Row = RowNumber, Message = "Error", Detail = UserNameInString + "already Exist" });
 
                                 TempData["ErrorMsg"] = ErrorMsg;
 
@@ -2549,6 +2568,8 @@ namespace SEA_Application.Controllers
                         else
                         {
                             ErrorMsg = ErrorMsg + "UserName is Required" + Environment.NewLine;
+                            ExcelErrors.Add(new ExcelSheetError { Row = RowNumber, Message = "Error", Detail = "UserName is Required" });
+
                             ErrorMsgExist = true;
 
                         }
@@ -2586,13 +2607,15 @@ namespace SEA_Application.Controllers
 
                         student.ConfirmPassword = workSheet.Cells[rowIterator, 5].Value.ToString();
                         var ClassName = workSheet.Cells[rowIterator, 6].Value;
-
+                       
 
                         string Class = "";
                         bool ClassExist = false;
+
+
                         if (ClassName != null)
                         {
-                            string ClassNameInString = workSheet.Cells[rowIterator, 6].Value.ToString();
+                            string ClassNameInString = workSheet.Cells[rowIterator, 6].Value.ToString().Trim();
                             var ClassContains = db.AspNetClasses.Where(x => x.ClassName == ClassNameInString).FirstOrDefault();
 
 
@@ -2600,8 +2623,6 @@ namespace SEA_Application.Controllers
                             {
                                 ErrorMsg = ErrorMsg + "Class not Exist in database" + Environment.NewLine;
                                 ErrorMsgExist = true;
-
-
 
                             }
 
@@ -2633,6 +2654,7 @@ namespace SEA_Application.Controllers
                         subjectsobjects.Add(workSheet.Cells[rowIterator, 14].Value);
                         subjectsobjects.Add(workSheet.Cells[rowIterator, 15].Value);
                         subjectsobjects.Add(workSheet.Cells[rowIterator, 16].Value);
+
                         bool SubjectExistInExcelFile = false;
                         foreach (object subject in subjectsobjects)
                         {
@@ -2665,7 +2687,7 @@ namespace SEA_Application.Controllers
                             bool SubjectExist = true;
                             if (subjects.Count > 0)
                             {
-
+                                
 
                                 foreach (var subject in subjects)
                                 {
@@ -2675,6 +2697,7 @@ namespace SEA_Application.Controllers
                                         {
                                             SubjectExist = false;
 
+
                                         }
                                         else
                                         {
@@ -2683,23 +2706,23 @@ namespace SEA_Application.Controllers
                                             break;
 
                                         }
+
                                     }
                                     if (SubjectExist == false)
                                     {
-                                        break;
+                                   ExcelErrors.Add(new ExcelSheetError { Row = RowNumber, Message = "Error", Detail = subject + " not Exist" });
+
+                                        
                                     }
-
-
                                 }
 
 
+                                //if (SubjectExist == false)
+                                //{
+                                //    ErrorMsg = ErrorMsg + Class + "Dont have all these subjects" + Environment.NewLine;
+                                //    ErrorMsgExist = true;
 
-                                if (SubjectExist == false)
-                                {
-                                    ErrorMsg = ErrorMsg + Class + "dont have all these subjects" + Environment.NewLine;
-                                    ErrorMsgExist = true;
-
-                                }
+                                //}
 
                             }
                         }
@@ -2932,21 +2955,21 @@ namespace SEA_Application.Controllers
 
                         }
 
-
-                        if (ErrorMsgExist == true)
-                        {
-
-
-
-                            TempData["ErrorMsg"] = ErrorMsg;
-
-                            return RedirectToAction("StudentRegister");
-                            break;
-                        }
-
-
-
                     }//loop
+
+
+                    if (ErrorMsgExist == true)
+                    {
+
+
+                         TempData["ErrorMsg"] = ExcelErrors;
+
+
+                        //TempData["ErrorMsg"] = ErrorMsg;
+
+                        return RedirectToAction("StudentRegister");
+
+                    }
 
                     //second loop save excel column values to database
                     for (int rowIterator = 2; rowIterator < noOfRow; rowIterator++)
@@ -3019,6 +3042,15 @@ namespace SEA_Application.Controllers
 
 
             return RedirectToAction("StudentsIndex", "AspNetUser");
+        }
+
+        public class ExcelSheetError
+        {
+            public int Row { get; set; }
+            public string Message { get; set; }
+            public string Detail { get; set; }
+
+
         }
 
         /**********************************************************************************************************************************/

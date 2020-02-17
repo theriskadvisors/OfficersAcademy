@@ -11,16 +11,9 @@
 
 <style>
 
-    .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        height: 3630px !important;
-    }
 
-    .newlines {
-        white-space: pre-line;
-    }
+
+
 
     /*#SubjectsList {
         border: 1px solid ;
@@ -34,6 +27,34 @@
     }
 
     .SubjectsBoxesPMS {
+    }
+
+    .RadioButtonPadding {
+        padding-left: 20px;
+    }
+
+    .text_box_style {
+        padding: .5em;
+        padding-right: 1.5em;
+        margin-bottom: 0;
+        border-radius: 0;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    label {
+        color: black !important;
+        text-align: right !important;
+        font-family: OpenSans,Arial,sans-serif;
+        font-weight: bold;
+    }
+
+    input[type=text], input[type=password], input[type=email], input[type=number], inut[type=date], input[type=hidden] {
+        border-radius: 0px !important;
+    }
+
+    select {
+        border-radius: 0px !important;
     }
 
     .table {
@@ -63,6 +84,28 @@
     table th, td {
         width: 200px;
     }
+    .font_style
+    {
+      color:black;
+
+    }
+    .RadioButtonsInline
+    {
+        display:inline-block;
+        padding-right:20px;
+    }
+     input[type=radio]:hover
+     {
+         cursor:pointer;
+     }
+     .box
+     {
+         margin-bottom:0;
+     }
+     b{
+         font-family: OpenSans,Arial,sans-serif;
+     }
+    
 </style>
 
 <label>@Html.ActionLink("Home", "Dashboard", "Account") > @Html.ActionLink("Student", "StudentsIndex", "AspNetUser") > <span class="text-primary">Create</span></label>
@@ -817,10 +860,9 @@
                 <li><a href="#tab_2" data-toggle="tab">Upload Excel File</a></li>
             </ul>
 
-            <div class="tab-content" style="
-        background-color: #ECF0F5;
+            <div class="tab-content" style="        background-color: #ECF0F5;
         padding: 10px 0px 0px 0px;
-   ">
+    ">
                 <div class="tab-pane active" id="tab_1">
 
                     <div class="form-three widget-shadow">
@@ -828,53 +870,66 @@
                         {
                             @Html.AntiForgeryToken()
 
-                            <div class="box box-primary">
+                            <div class="box box-primary" >
                                 <div class="box-header with-border"><h3 class="orange">User Information<span class="red-mark">*</span></h3></div>
                                 <div class="box-body row">
 
-                                    <div class="col-md-5">
+                                    <div class="col-md-12">
 
                                         <div class="form-group">
-                                            <label class="col-md-2 col-lg-2 control-label" for="Name">Name: <span class="red-mark">*</span></label>
-                                            <div class="col-md-10">
-                                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                                            <label class="col-md-2 col-lg-2" for="Name"><b>Name: </b><span class="red-mark">*</span></label>
+                                            <div class="col-md-6">
+                                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control text_box_style" })
                                                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                                                 <br />
 
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-md-2 col-lg-2 control-label" for="Father_Name">Father's Name: </label>
-                                            <div class="col-md-10">
-                                                <input type="text" class="form-control round-border" id="Father_Name" name="Father_Name">
+                                            <label class="col-md-2 col-lg-2" for="Name"><b>Profile Photo: </b><span class="red-mark">*</span></label>
+                                            <div class="col-md-6">
+
+                                                    <img src="/Content/Images/StudentDummy.png" id="imgPreview" height="150" width="150" />
+                                                    <input title="Upload a product image" style="" id="UploadImg" type="file" name="image" />
+                                           
+                                                <br />
+
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label class="col-md-2 col-lg-2" for="Father_Name"><b style="">Father's Name: </b></label>
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control  text_box_style" id="Father_Name" name="Father_Name">
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-md-2 col-lg-2 control-label" for="Address">Address:</label>
-                                            <div class="col-md-10">
-                                                <input type="text" class="form-control round-border" id="Address" name="Address">
+                                            <label class="col-md-2 col-lg-2 control-label" for="Address"><b>Address:</b></label>
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control text_box_style" id="Address" name="Address">
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-md-2 col-lg-2 control-label" for="Name">Age: <span class="red-mark"></span></label>
-                                            <div class="col-md-10">
-                                                <input type="number" class="form-control round-border" id="Age" name="Age" min="15" max="60" T>
+                                            <label class="col-md-2 col-lg-2 control-label" for="Name"><b>Age: </b><span class="red-mark"></span></label>
+                                            <div class="col-md-6">
+                                                <input type="number" class="form-control text_box_style" id="Age" name="Age" min="15" max="60" T>
 
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="inputEmail3" class="col-md-2 col-lg-2 control-label">Cell No.: </label>
-                                            <div class="col-md-10">
-                                                <input type="text" class="form-control round-border" id="inputEmail3" name="cellNo" placeholder="03*********" onblur="checkPhone(this)">
+                                            <label for="inputEmail3" class="col-md-2 col-lg-2 control-label"><b>Cell No:</b> </label>
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control text_box_style" id="inputEmail3" name="cellNo" placeholder="03*********" onblur="checkPhone(this)">
                                                 <span id="Phone-Error" class="text-danger"></span>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="ClassTimings" class="col-md-2 col-lg-2 control-label">Section Timings: </label>
-                                            <div class="col-md-10">
-                                                <select name="ClassTimings" class="form-control">
+                                            <label for="ClassTimings" class="col-md-2 col-lg-2 control-label"><b>Section Timings:</b> </label>
+                                            <div class="col-md-6">
+                                                <select name="ClassTimings" class="form-control text_box_style">
                                                     <option value="Morning">Morning</option>
                                                     <option value="Evening">Evening</option>
                                                 </select>
@@ -885,21 +940,21 @@
 
 
                                         <div class="form-group">
-                                            <label for="CourseType" class="col-md-2 col-lg-2 control-label">Course Type: <span class="red-mark">*</span></label>
-                                            <div class="col-md-10">
+                                            <label for="CourseType" class="col-md-2 col-lg-2 control-label"><b>Course Type:</b> <span class="red-mark">*</span></label>
+                                            <div class="col-md-6">
 
-                                                <div class="form-group">
-                                                    <div class="checkbox">
+                                                <div class="form-group RadioButtonPadding" >
+                                                    <div class="radio RadioButtonsInline">
 
-                                                        <label><input type="radio" name="CourseType" id="CssCourse" value="CSS" checked> CSS</label>
+                                                        <label ><input   type="radio" name="CourseType" id="CssCourse" value="CSS" checked> CSS</label>
                                                     </div>
-                                                    <div class="checkbox">
+                                                    <div class="radio RadioButtonsInline">
 
-                                                        <label><input type="radio" name="CourseType" id="PmsCourse" value="PMS"> PMS </label>
+                                                        <label  ><input type="radio"  name="CourseType" id="PmsCourse" value="PMS"> PMS </label>
                                                     </div>
-                                                    <div class="checkbox">
+                                                    <div class="radio RadioButtonsInline">
 
-                                                        <label><input type="radio" name="CourseType" id="OnePaper" value="OnePaper"> One Paper </label>
+                                                        <label  ><input type="radio"  name="CourseType" id="OnePaper" value="OnePaper"> One Paper </label>
                                                     </div>
 
                                                 </div>
@@ -910,52 +965,45 @@
 
                                     </div>
 
-                                    <div class="col-md-7">
-                                        <img id="imgPreview" height="200" width="200" />
-                                        <input title="Upload a product image" id="UploadImg" type="file" name="image" />
-                                    </div>
                                 </div>
                             </div>
 
 
-                            <div class="box box-primary">
+                            <div class="box box-primary" @*style="border:0"*@ >
 
-                                <div class="box-header with-border"><h3 class="orange">Account Information</h3></div>
+                                <div class="box-header with-border" ><h3 class="orange">Account Information</h3></div>
                                 <div class="box-body">
 
                                     <div class="form-group">
-                                        <label class="col-md-2 col-lg-2 control-label" for="Email">Email: </label>
-                                        <div class="col-md-4">
+                                        <label class="col-md-2 col-lg-2 control-label" for="Email"><b>Email:</b> </label>
+                                        <div class="col-md-6">
 
-                                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control text_box_style" })
                                             @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger", @id = "Email-Error" })
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-2 col-lg-2 control-label" for="UserName">Roll Number: <span class="red-mark">*</span></label>
-                                        <div class="col-md-4">
+                                        <label class="col-md-2 col-lg-2 control-label" for="UserName"><b>Roll Number:</b> <span class="red-mark">*</span></label>
+                                        <div class="col-md-6">
                                             @*@Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })*@
                                             @*@Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger", @id = "UserName-Error" })*@
-                                            <input type="text" id="UserName" class="form-control round-border" name="UserName" readonly />
+                                            <input type="text" id="UserName" class="form-control text_box_style" name="UserName" readonly />
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-2 col-lg-2 control-label" for="Password">Password: <span class="red-mark">*</span></label>
-                                        <div class="col-md-4">
-                                            @Html.TextBoxFor(m => m.Password, new { @class = "form-control", Value = "Oa@1234", @readonly = "readonly" })
+                                        <label class="col-md-2 col-lg-2 control-label" for="Password"><b>Password:</b> <span class="red-mark">*</span></label>
+                                        <div class="col-md-6">
+                                            @Html.TextBoxFor(m => m.Password, new { @class = "form-control text_box_style", Value = "Oa@1234", @readonly = "readonly" })
                                             @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger", @id = "Password-Error" })
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-2 col-lg-2 control-label" for="Confirm Password">Confirm Password: <span class="red-mark">*</span></label>
-                                        <div class="col-md-4">
-                                            @Html.TextBoxFor(m => m.ConfirmPassword, new { @class = "form-control", Value = "Oa@1234", @readonly = "readonly" })
+                                        <label class="col-md-2 col-lg-2 control-label" for="Confirm Password"><b>Confirm Password:</b> <span class="red-mark">*</span></label>
+                                        <div class="col-md-6">
+                                            @Html.TextBoxFor(m => m.ConfirmPassword, new { @class = "form-control text_box_style", Value = "Oa@1234", @readonly = "readonly" })
                                             @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
-
-
-
 
                                     <br />
                                     <br />
@@ -1264,23 +1312,24 @@
                                         </div>
                                     </div>
                             -->
-                            <div class="box box-primary">
+                            <div class="box box-primary" >
 
                                 <div class="box-header with-border"><h3 class="orange">Subject Details</h3></div>
                                 <div class="box-body">
 
                                     <div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label">Section: <span class="red-mark">*</span></label>
-                                        <div class="col-md-4">
-                                            @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control", name = "ClassID", @required = true })
+                                        <label class="col-md-2 col-lg-2 control-label"><b> Section:</b> <span class="red-mark">*</span></label>
+                                        <div class="col-md-6">
+                                            @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control text_box_style", name = "ClassID", @required = true })
                                             <br />
                                             <span style="color:red"> @ViewBag.SubjectsErrorMsg</span>
                                         </div>
 
                                     </div>
 
+
                                     <div class="form-group SubjectsBoxesCSS" id="MandatorySubjectCss">
-                                        <div class="col-md-12" id="MandatorySubjectsCSS">
+                                        <div class="col-md-12 col-md-offset-1 col-lg-offset-1" id="MandatorySubjectsCSS">
 
 
                                         </div>
@@ -1289,44 +1338,44 @@
 
                                     <div class="form-group SubjectsBoxesCSS" id="Group1CSS">
 
-                                        <div class="col-md-12" id="SubjectCSSGroup1">
+                                        <div class="col-md-12 col-md-offset-1 col-lg-offset-1" id="SubjectCSSGroup1">
 
                                         </div>
 
                                     </div>
                                     <div class="form-group SubjectsBoxesCSS" id="Group2CSS">
 
-                                        <div class="col-md-12" id="SubjectCSSGroup2">
+                                        <div class="col-md-12 col-md-offset-1 col-lg-offset-1" id="SubjectCSSGroup2">
 
                                         </div>
 
                                     </div>
 
                                     <div class="form-group SubjectsBoxesCSS" id="Group3CSS">
-                                        <div class="col-md-12" id="SubjectCSSGroup3">
+                                        <div class="col-md-12 col-md-offset-1 col-lg-offset-1" id="SubjectCSSGroup3">
 
                                         </div>
 
                                     </div>
                                     <div class="form-group SubjectsBoxesCSS" id="Group4CSS">
-                                        <div class="col-md-12" id="SubjectCSSGroup4">
+                                        <div class="col-md-12 col-md-offset-1 col-lg-offset-1" id="SubjectCSSGroup4">
 
                                         </div>
 
                                     </div>
                                     <div class="form-group SubjectsBoxesCSS" id="Group5CSS">
-                                        <div class="col-md-12" id="SubjectCSSGroup5">
+                                        <div class="col-md-12 col-md-offset-1 col-lg-offset-1" id="SubjectCSSGroup5">
                                         </div>
 
                                     </div>
                                     <div class="form-group SubjectsBoxesCSS" id="Group6CSS">
-                                        <div class="col-md-12" id="SubjectCSSGroup6">
+                                        <div class="col-md-12 col-md-offset-1 col-lg-offset-1" id="SubjectCSSGroup6">
 
                                         </div>
 
                                     </div>
                                     <div class="form-group SubjectsBoxesCSS" id="Group7CSS">
-                                        <div class="col-md-12" id="SubjectCSSGroup7">
+                                        <div class="col-md-12 col-md-offset-1 col-lg-offset-1" id="SubjectCSSGroup7">
 
                                         </div>
 
@@ -1336,40 +1385,40 @@
                                     <!--PMS-->
 
                                     <div class="form-group SubjectsBoxesPMS" id="MandatorySubjectPMS">
-                                        <div class="col-md-12" id="MandatorySubjectsPMS">
+                                        <div class="col-md-12 col-md-offset-1 col-lg-offset-1" id="MandatorySubjectsPMS">
                                         </div>
 
                                     </div>
 
                                     <div class="form-group SubjectsBoxesPMS" id="Group1PMS">
 
-                                        <div class="col-md-12" id="SubjectPMSGroup1">
+                                        <div class="col-md-12 col-md-offset-1 col-lg-offset-1" id="SubjectPMSGroup1">
 
                                         </div>
 
                                     </div>
                                     <div class="form-group SubjectsBoxesPMS" id="Group2PMS">
 
-                                        <div class="col-md-12" id="SubjectPMSGroup2">
+                                        <div class="col-md-12 col-md-offset-1 col-lg-offset-1" id="SubjectPMSGroup2">
 
                                         </div>
 
                                     </div>
 
                                     <div class="form-group SubjectsBoxesPMS" id="Group3PMS">
-                                        <div class="col-md-12" id="SubjectPMSGroup3">
+                                        <div class="col-md-12 col-md-offset-1 col-lg-offset-1" id="SubjectPMSGroup3">
 
                                         </div>
 
                                     </div>
                                     <div class="form-group SubjectsBoxesPMS" id="Group4PMS">
-                                        <div class="col-md-12" id="SubjectPMSGroup4">
+                                        <div class="col-md-12 col-md-offset-1 col-lg-offset-1" id="SubjectPMSGroup4">
 
                                         </div>
 
                                     </div>
                                     <div class="form-group SubjectsBoxesPMS" id="Group5PMS">
-                                        <div class="col-md-12" id="SubjectPMSGroup5">
+                                        <div class="col-md-12 col-md-offset-1 col-lg-offset-1" id="SubjectPMSGroup5">
                                         </div>
 
                                     </div>
@@ -1422,11 +1471,11 @@
                                 <div class="box-body">
 
 
-                                    <div class="form-group">
-                                        <label for="CourseType" class="col-md-2 col-lg-2 control-label">Notes Catergory:</label>
-                                        <div class="col-md-10">
+                                    <div class="form-group" >
+                                        <label for="CourseType" class="col-md-2 col-lg-2 control-label"><b>Notes Catergory:</b></label>
+                                        <div class="col-md-6">
 
-                                            <div class="form-group">
+                                            <div class="form-group RadioButtonPadding">
                                                 <div class="checkbox">
 
                                                     <label><input type="radio" name="NotesCategory" value="WithOutNotes" id="WithOutNotes" checked>Without Notes</label>
@@ -1441,22 +1490,22 @@
 
                                     </div>
                                     <div class="form-group" style="display:none" id="NotesID">
-                                        <label class="col-md-1 col-lg-1 control-label">Notes Amount:</label>
-                                        <div class="col-md-4">
+                                        <label class="col-md-2 col-lg-2 control-label"><b>Notes Amount:</b></label>
+                                        <div class="col-md-6">
                                             <input type="number" class="form-control round-border" name="NotesAmount" id="NotesAmount" />
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label">Session Fee:</label>
-                                        <div class="col-md-4">
+                                        <label class="col-md-2 col-lg-2 control-label"><b>Session Fee:</b></label>
+                                        <div class="col-md-6">
                                             <input type="text" class="form-control round-border" name="SessionFee" id="SessionFee" value="0" readonly />
                                         </div>
                                     </div>
 
 
                                     <div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label">Discount Amount:</label>
-                                        <div class="col-md-4">
+                                        <label class="col-md-2 col-lg-2 control-label"><b>Discount Amount:</b></label>
+                                        <div class="col-md-6">
                                             <input type="number" value="0" class="form-control round-border" name="Discount" id="Discount" />
                                         </div>
                                     </div>
@@ -1464,9 +1513,9 @@
 
 
                                     <div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label">Fee Type</label>
-                                        <div class="col-md-4">
-                                            <select name="FeeType" id="FeeType" class="form-control round-border">
+                                        <label class="col-md-2 col-lg-2 control-label"><b>Fee Type</b></label>
+                                        <div class="col-md-6">
+                                            <select name="FeeType" id="FeeType" class="form-control text_box_style">
                                                 <option value="FullFee" selected>Full Fee</option>
                                                 <option value="Installment">Installment</option>
                                                 <option value="PerMonth">Per Month</option>
@@ -1476,15 +1525,15 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label"></label>
-                                        <div class="col-md-4">
-                                            <button id="CalculateFee" type="button" onclick="Calc()" class="btn btn-primary">Calculate Fee</button>
+                                        <label class="col-md-2 col-lg-2 control-label"></label>
+                                        <div class="col-md-6">
+                                            <button id="CalculateFee" type="button" onclick="Calc()" class="btn btn-primary ">Calculate Fee</button>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-1 col-lg-1 control-label">Total Fee:</label>
-                                        <div class="col-md-4">
-                                            <input type="text" required class="form-control round-border" name="TotalFee" id="TotalFee" readonly />
+                                        <label class="col-md-2 col-lg-2 control-label"><b>Total Fee:</b></label>
+                                        <div class="col-md-6">
+                                            <input type="text" required class="form-control text_box_style" name="TotalFee" id="TotalFee" readonly />
                                         </div>
                                     </div>
 
@@ -1532,8 +1581,14 @@
                                 <br />
                                 <br />
 
+                                @*<div id="ErrorDiv">
+                <span class="newlines" style="color:red"> @TempData["ErrorMsg"]</span>
+
+            </div>*@
+
+
                                 <div id="ErrorDiv">
-                                    <table style="display:none">
+                                    <table border="1">
                                         <thead>
 
                                             <tr>
@@ -1546,18 +1601,18 @@
                                         <tbody>
                                             @if (TempData["ErrorMsg"] != null)
                                             {
-                                                foreach(var Error in (List<SEA_Application.Controllers.Admin_DashboardController.ExcelSheetError>) TempData["ErrorMsg"] )
+                                                foreach (var Error in (List<SEA_Application.Controllers.Admin_DashboardController.ExcelSheetError>)TempData["ErrorMsg"])
                                                 {
 
-                                                <tr>
-                                                    <td>@Error.Row</td>
-                                                    <td>@Error.Message</td>
-                                                    <td>@Error.Detail</td>
+                                                    <tr>
+                                                        <td>@Error.Row</td>
+                                                        <td style="color:red">@Error.Message</td>
+                                                        <td>@Error.Detail</td>
 
-                                                </tr>
+                                                    </tr>
                                                 }
-                                            
-                                                }
+
+                                            }
 
 
                                         </tbody>
@@ -1573,10 +1628,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-
-
-
                             }
                         </div>
                     </div>
@@ -1627,6 +1678,7 @@
 
         //        })
         //$("#")
+
 
 
         $("input[value='OnePaper']").click(function () {

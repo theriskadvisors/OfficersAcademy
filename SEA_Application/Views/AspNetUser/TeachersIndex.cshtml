@@ -142,8 +142,10 @@ else
     function class_click(item) {
         if (item.value != "ALL")
             TeacherByClass(item.value);
-        else
+        else {
             Teachers();
+        }
+             
     }
 
     function DrawTable() {
@@ -279,9 +281,9 @@ else
                     <th>
                         Phone Number
                     </th>
-                    @*<th>
+                    <th>
                         Class
-                    </th>*@
+                    </th>
                 </tr>
             </thead>
             <tbody id="submission_table"></tbody>

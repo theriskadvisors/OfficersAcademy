@@ -377,19 +377,35 @@ namespace SEA_Application.Controllers
         public JsonResult TeachersByClass(int id)
         {
 
-            var teachers = (from teacher in db.AspNetSubjects
-                            where teacher.ClassID == id && teacher.AspNetUser.Status != "False"
+            var teachers = (from teacher in db.AspNetUsers.Where(x => x.Status != "False")
+                            join t2 in db.AspNetUsers_Session
+                            on teacher.Id equals t2.UserID 
+                            where teacher.AspNetRoles.Select(y => y.Name).Contains("Teacher") && t2.AspNetSession.AspNetClasses.Any(x => x.Id == id)
                             select new
                             {
-                                teacher.AspNetUser.Id,
-                                teacher.ClassID,
-                                teacher.TeacherID,
-                                teacher.AspNetUser.Email,
-                                teacher.AspNetUser.PhoneNumber,
-                                teacher.AspNetUser.UserName,
-                                teacher.AspNetUser.Name,
-                                teacher.AspNetClass.ClassName
-                            }).Distinct().ToList();
+                                teacher.Id,
+                                ClassName = t2.AspNetSession.SessionName,
+                                Subject = "-",
+                                teacher.Email,
+                                teacher.PhoneNumber,
+                                teacher.UserName,
+                                teacher.Name,
+                            }).ToList();
+
+
+            //var teachers = (from teacher in db.AspNetSubjects
+            //                where teacher.ClassID == id && teacher.AspNetUser.Status != "False"
+            //                select new
+            //                {
+            //                    teacher.AspNetUser.Id,
+            //                    teacher.ClassID, 
+            //                    teacher.TeacherID,
+            //                    teacher.AspNetUser.Email,
+            //                    teacher.AspNetUser.PhoneNumber,
+            //                    teacher.AspNetUser.UserName,
+            //                    teacher.AspNetUser.Name,
+            //                    teacher.AspNetClass.ClassName
+            //                }).Distinct().ToList();
 
 
             return Json(teachers, JsonRequestBehavior.AllowGet);
@@ -398,19 +414,20 @@ namespace SEA_Application.Controllers
         public JsonResult AllTeachers()
         {
 
-            var teachers = (from teacher in db.AspNetUsers.Where(x => x.Status != "False") join t2 in db.AspNetUsers_Session.Where(s=>s.SessionID == SessionID)
+            var teachers = (from teacher in db.AspNetUsers.Where(x => x.Status != "False") join t2 in db.AspNetUsers_Session
                             on teacher.Id  equals t2.UserID
                             where teacher.AspNetRoles.Select(y => y.Name).Contains("Teacher")
                             select new
                             {
                                 teacher.Id,
-                                Class = teacher.AspNetClasses.Select(x => x.ClassName).FirstOrDefault(),
+                                Class = t2.AspNetSession.SessionName,
                                 Subject = "-",
                                 teacher.Email,
                                 teacher.PhoneNumber,
                                 teacher.UserName,
                                 teacher.Name,
                             }).ToList();
+
 
             return Json(teachers, JsonRequestBehavior.AllowGet);
         }
