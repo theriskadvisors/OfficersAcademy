@@ -2430,6 +2430,7 @@ namespace SEA_Application.Controllers
             }
             catch (Exception e)
             {
+                ViewBag.ErrorMsg = e.Message;
                 dbTransaction.Dispose();
                 ModelState.AddModelError("", e.Message);
             }
