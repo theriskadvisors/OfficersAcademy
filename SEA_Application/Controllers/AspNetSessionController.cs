@@ -101,12 +101,28 @@ namespace SEA_Application.Controllers
             var CurrentSession = db.AspNetSessions.OrderByDescending(x => x.Id).FirstOrDefault();
 
             Class.ClassName = CurrentSession.SessionName;
+
             Class.Class = CurrentSession.SessionName;
             Class.SessionID = CurrentSession.Id;
             db.AspNetClasses.Add(Class);
             db.SaveChanges();
+            
+            var AllSubjectsofTestSession =  db.AspNetSubjects.Where(x => x.ClassID == 1).ToList();
+            foreach(AspNetSubject Subject in AllSubjectsofTestSession)
+            {
+
+                AspNetSubject NewSubjectForSession = new AspNetSubject();
+
+                NewSubjectForSession = Subject;
+
+                NewSubjectForSession.ClassID = Class.Id;
+                NewSubjectForSession.TeacherID =null;
+
+                db.AspNetSubjects.Add(NewSubjectForSession);
+                db.SaveChanges();
 
 
+            }
 
             return RedirectToAction("Indexs");
 
@@ -155,6 +171,15 @@ namespace SEA_Application.Controllers
 
                 db.Entry(aspNetSession).State = EntityState.Modified;
                 db.SaveChanges();
+
+                //Change Class Name of Session Name
+
+                var ClassToModify  = db.AspNetClasses.Where(x => x.SessionID == aspNetSession.Id).FirstOrDefault();
+                ClassToModify.ClassName = aspNetSession.SessionName;
+                ClassToModify.Class = aspNetSession.SessionName;
+
+                db.SaveChanges();
+
                 return RedirectToAction("Index");
 
             }

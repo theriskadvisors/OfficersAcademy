@@ -380,7 +380,7 @@ namespace SEA_Application.Controllers
             var teachers = (from teacher in db.AspNetUsers.Where(x => x.Status != "False")
                             join t2 in db.AspNetUsers_Session
                             on teacher.Id equals t2.UserID 
-                            where teacher.AspNetRoles.Select(y => y.Name).Contains("Teacher") && t2.AspNetSession.AspNetClasses.Any(x => x.Id == id) /*&& db.AspNetChapters.Any(x=>x.Id==id)*/
+                            where teacher.AspNetRoles.Select(y => y.Name).Contains("Teacher") &&  t2.AspNetSession.AspNetClasses.Any(x => x.Id == id) /*&& db.AspNetChapters.Any(x=>x.Id==id)*/
                             select new
                             {
                                 teacher.Id,
@@ -412,10 +412,10 @@ namespace SEA_Application.Controllers
         }
 
         public JsonResult AllTeachers()
-        {
+        { 
 
             var teachers = (from teacher in db.AspNetUsers.Where(x => x.Status != "False") join t2 in db.AspNetUsers_Session
-                            on teacher.Id  equals t2.UserID
+                            on teacher.Id  equals t2.UserID 
                             where teacher.AspNetRoles.Select(y => y.Name).Contains("Teacher")
                             select new
                             {
@@ -428,7 +428,6 @@ namespace SEA_Application.Controllers
                                 teacher.Name,
 
                             }).ToList();
-
 
             return Json(teachers, JsonRequestBehavior.AllowGet);
         }

@@ -1717,8 +1717,6 @@ namespace SEA_Application.Controllers
                 rd.StudentName = model.Name;
                 rd.StudentUserName = model.UserName;
                 rd.StudentPassword = model.Password;
-                db.ruffdatas.Add(rd);
-                db.SaveChanges();
 
                 AspNetUser Teacher = new AspNetUser();
                 Teacher.Name = user.Name;
@@ -1759,6 +1757,9 @@ namespace SEA_Application.Controllers
                 emp.UserId = user.Id;
                 if (result.Succeeded)
                 {
+                    db.ruffdatas.Add(rd);
+                    db.SaveChanges();
+
                     var roleStore = new RoleStore<IdentityRole>(context);
                     var roleManager = new RoleManager<IdentityRole>(roleStore);
 
@@ -1799,7 +1800,13 @@ namespace SEA_Application.Controllers
                     string Error = "Teacher successfully saved.";
                     return RedirectToAction("TeacherIndex", "AspNetUser", new { Error });
                 }
-                AddErrors(result);
+                else {
+                    var remove = db.AspNetUsers.Where(x => x.Id == user.Id).FirstOrDefault(); 
+                    db.AspNetUsers.Remove(remove);
+                    db.SaveChanges();
+                    AddErrors(result);
+                }
+
             }
 
             // If we got this far, something failed, redisplay form
@@ -1952,8 +1959,6 @@ namespace SEA_Application.Controllers
                                 db.SaveChanges();
                             }
 
-
-
                             //teacherDetail.PositionAppliedFor = workSheet.Cells[rowIterator, 6].Value.ToString();
                             //teacherDetail.DateAvailable = workSheet.Cells[rowIterator, 7].Value.ToString();
                             //teacherDetail.JoiningDate = workSheet.Cells[rowIterator, 8].Value.ToString();
@@ -1973,12 +1978,6 @@ namespace SEA_Application.Controllers
                             //teacherDetail.ProvidedFund = Convert.ToInt32(workSheet.Cells[rowIterator, 25].Value.ToString());
                             //teacherDetail.Tax = Convert.ToInt32(workSheet.Cells[rowIterator, 26].Value.ToString());
                             //teacherDetail.EOP = Convert.ToInt32(workSheet.Cells[rowIterator, 27].Value.ToString());
-
-
-
-
-
-
                         }
                         else
                         {
