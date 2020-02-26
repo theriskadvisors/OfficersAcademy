@@ -177,6 +177,16 @@
                                             @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger", @id = "UserName-Error" })
                                         </div>
                                     </div>
+
+                                        <div class="form-group">
+                                        <label class="col-md-1 col-lg-1 control-label">Select Section</label>
+                                        <div class="col-md-6">
+                                            @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control" })
+                                            <br />
+                                        </div>
+                                        </div>
+
+
            
                                     <br />
                                     <br />

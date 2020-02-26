@@ -434,6 +434,7 @@ namespace SEA_Application.Controllers
 
         public ActionResult TeacherDetail(string UserName)
         {
+
             var TeacherDetail = db.AspNetEmployees.Where(x => x.AspNetUser.UserName == UserName).Select(x => x).FirstOrDefault();
             AspNetUser aspNetUser = db.AspNetUsers.Where(x => x.UserName == UserName).Select(x => x).FirstOrDefault();
             //     ViewBag.date = Convert.ToDateTime(TeacherDetail.DateAvailable);

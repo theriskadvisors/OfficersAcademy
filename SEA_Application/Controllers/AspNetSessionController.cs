@@ -11,6 +11,13 @@ using System.Globalization;
 
 namespace SEA_Application.Controllers
 {
+    public class subjects_mapping
+    {
+        public int oldId;
+        public int newId;
+        public string name;
+        public int teacherId;
+    }
     public class AspNetSessionController : Controller
     {
         private SEA_DatabaseEntities db = new SEA_DatabaseEntities();
@@ -105,22 +112,98 @@ namespace SEA_Application.Controllers
             Class.Class = CurrentSession.SessionName;
             Class.SessionID = CurrentSession.Id;
             db.AspNetClasses.Add(Class);
-            db.SaveChanges();
-            
-            var AllSubjectsofTestSession =  db.AspNetSubjects.Where(x => x.ClassID == 1).ToList();
-            foreach(AspNetSubject Subject in AllSubjectsofTestSession)
+         //   db.SaveChanges();
+
+            //Create Subjects to New Session
+
+            var AllSubjectsofTestSession = db.AspNetSubjects.Where(x => x.ClassID == 1).ToList();
+
+            List<subjects_mapping> list = new List<subjects_mapping>();
+
+            foreach (AspNetSubject Subject in AllSubjectsofTestSession)
             {
+                subjects_mapping sub = new subjects_mapping();
+                sub.oldId = Subject.Id;
+                sub.name = Subject.SubjectName;
 
                 AspNetSubject NewSubjectForSession = new AspNetSubject();
-
+               
                 NewSubjectForSession = Subject;
 
                 NewSubjectForSession.ClassID = Class.Id;
-                NewSubjectForSession.TeacherID =null;
+                NewSubjectForSession.TeacherID = null;
 
                 db.AspNetSubjects.Add(NewSubjectForSession);
                 db.SaveChanges();
 
+                sub.newId = NewSubjectForSession.Id;
+
+                list.Add(sub);
+            }
+
+
+          var AllTeacherSubjects = db.AspNetTeacherSubjects.Where(x => x.AspNetSubject.ClassID == 1).ToList();
+
+            foreach (var item in AllTeacherSubjects)
+            {
+                foreach (var item1 in list)
+                {
+                    if(item1.oldId == item.SubjectID)
+                    {
+                        AspNetTeacherSubject TS = new AspNetTeacherSubject();
+                        TS.SubjectID = item1.newId;
+                        TS.TeacherID = item.TeacherID;
+                        db.AspNetTeacherSubjects.Add(TS);
+                        break;
+                    }
+                    
+                }
+            }
+
+            db.SaveChanges();
+
+
+            var UserIDs = (from teacher in db.AspNetUsers.Where(x => x.Status != "False")
+                           join t2 in db.AspNetUsers_Session
+                           on teacher.Id equals t2.UserID
+                           join t3 in db.AspNetEmployees
+                           on teacher.Id equals t3.UserId
+
+                           where teacher.AspNetRoles.Select(y => y.Name).Contains("Teacher") && t2.AspNetSession.AspNetClasses.Any(x => x.Id == 1) /*&& db.AspNetChapters.Any(x=>x.Id==id)*/
+                           select new
+                           {
+                               TeacherId = teacher.Id,
+                               EmployeeId = t3.Id,
+
+                                
+                           }).ToList();
+
+                foreach (var Id in UserIDs)
+                {
+                string IdString = Id.TeacherId.ToString();
+
+                AspNetUsers_Session UserSession = new AspNetUsers_Session();
+
+                UserSession.SessionID = aspNetSession.Id;
+                UserSession.UserID = IdString;
+
+                db.AspNetUsers_Session.Add(UserSession);
+                db.SaveChanges();
+                
+                  }
+
+
+            foreach( var Id in UserIDs)
+            {
+                
+                Aspnet_Employee_Session EmployeeSession = new Aspnet_Employee_Session();
+
+                
+                EmployeeSession.Emp_Id = Id.EmployeeId;
+                EmployeeSession.Session_Id = aspNetSession.Id;
+
+               db.Aspnet_Employee_Session.Add(EmployeeSession);
+                db.SaveChanges();
 
             }
 

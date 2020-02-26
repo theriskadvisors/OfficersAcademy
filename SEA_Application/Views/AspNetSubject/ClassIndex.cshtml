@@ -11,12 +11,23 @@
         @ViewBag.Error
     </div>
 }
+<style>
+
+    label {
+        color: black !important;
+        text-align: right !important;
+        font-family: OpenSans,Arial,sans-serif;
+        font-weight: bold;
+    }
+</style>
 
 
 
 <script type="text/javascript">
     var table;
     $(document).ready(function () {
+          var TeacherId;
+        var SessionId;
 
         $("#ClassID").prepend('<option value="0" >All</option>');
         table = $("#example").dataTable();
@@ -28,6 +39,198 @@
 
             window.location.href = "Details?Id=" + $(td[1]).children("input").val();
         });
+
+        //Second Panel or Tab Code
+
+        $("#ClassID1").change(function () {
+            //alert("usama");
+        var SelectedClass = $(this).val();
+           // alert(SelectedClass);
+
+            if (SelectedClass == "") {
+
+
+
+                 $("#MandatorySubjectsCSS").html('');
+                 $("#SubjectCSSGroup1").html('');
+
+            }
+            else {
+
+
+            $.ajax({
+            type: "POST",
+            url: "/AspNetSubject/TeachersByClass",
+            data: { "ClassId": SelectedClass },
+
+            success: function (data) {
+
+                $("#teachers").html("");
+                $("#teachers").append("<option value=''>Select One</option>");
+                $.each(data, function (i, item) {
+
+
+                    $("#teachers").append("<option  value='" + item.EmployeeId + "'>" + item.Name + "</option>");
+
+                });
+
+                AllSubjects1();
+
+            }
+
+        })
+
+
+            }
+
+
+
+
+           //  alert($("#ClassID").val());
+
+
+
+
+        })//Class click change
+
+
+
+          $("form").submit(function(){
+              //alert("Submitted");
+
+
+              var SelectedTeacher = $("#teachers").val();
+              var SelectedClass = $("#ClassID1").val();
+              debugger
+              //alert(SelectedTeacher);
+              if (SelectedTeacher == "" || SelectedClass=="" ) {
+
+                //  $("#saveButton").attr("disabled", true);
+
+
+
+                  $("#Error").css('display', 'block');
+                  return false;
+
+
+              }
+                  $("#saveButton").attr("disabled", true);
+
+
+            });
+
+        $("#btnCancel").click(function () {
+
+            window.location.href = "/AspNetSubject/ClassIndex";
+        })
+
+
+        $("#teachers").change(function () {
+
+            $("#Error").css("display", 'none');
+
+            var SelectedTeacher = $(this).val();
+            var SelectedClass = $("#ClassID1").val();
+
+           // alert(SelectedTeacher);
+
+            if (SelectedTeacher != ""  &&  SelectedClass  !="") {
+               
+                $.ajax({
+                    type: "GET",
+                    url: "/AspNetSubject/TeacherSubjects1",
+
+                    data: { "TeacherId": SelectedTeacher, "ClassId": SelectedClass },
+
+                    success: function (data) {
+
+                        $('input[type="checkbox"]').attr('checked', false);
+
+                        $.each(JSON.parse(data), function (key, value1) {
+                            debugger
+                            //  $("#SubjectsList input[value='" + item.Id + "']").prop("checked", true);
+                            $("#MandatorySubjectsCSSTableBody input[value='" + value1.SubjectID + "']").prop("checked", true);
+
+                        })
+
+                        $.each(JSON.parse(data), function (key, value1) {
+                            //  $("#SubjectsList input[value='" + item.Id + "']").prop("checked", true);
+                            debugger
+
+                            $("#SubjectCSSGroup1TableBody input[  value='" + value1.SubjectID + "']").prop("checked", true);
+
+
+                        })
+                    }
+
+                })
+
+
+
+            }
+
+            else {
+                $('input[type="checkbox"]').attr('checked', false);
+            
+            }
+        })
+
+
+        function AllSubjects1() {
+
+
+
+            // var CourseType = $("input[name='CourseType']:checked").val();
+            var selectedClass = $("#ClassID1").val();
+
+            if (selectedClass == "") {
+                //    alert("Please select a Class");
+            }
+            else {
+
+                $.get('@Url.Action("SubjectsByClass")',
+                    { ClassId: selectedClass}, function (data) {
+
+                        // $('#SubjectsList').html('');
+                        debugger
+
+                        var MandatorySubjectsList = data.MandatorySubjectsList;
+                        var OptionalSubjecsList = data.OptionalSubjectsList;
+
+                            $("#MandatorySubjectsCSS").html('');
+                            $("#SubjectCSSGroup1").html('');
+
+                            //$(".SubjectsBoxesCSS").css('display', 'block');
+                            //$(".SubjectsBoxesPMS").css('display', 'none');
+
+                            $("#MandatorySubjectsCSS").append('<h3><span style="color:#3C8DBC !important"><b>Mandatory Subjects </b></span></h3>');
+                            $("#MandatorySubjectsCSS").append('<table  class="table  table-bordered table-condensed table-hover"><thead><tr><th style="width:600px;" class="SubjectHeader">Subjects</th><th>Course Type</th><th>Marks</th><th>Select</th></tr></thead><tbody id ="MandatorySubjectsCSSTableBody"></tbody></table>');
+
+
+                            $.each(MandatorySubjectsList, function (key, value1) {
+
+                                $("#MandatorySubjectsCSSTableBody").append('<tr> <td style="width:600px;">' + value1.SubjectName + '</td >  <td> ' + value1.CourseType + '</td>   <td align="center">' + value1.Points + '</td><td align="center"><input    type="checkbox" id=' + value1.Id + ' value=' + value1.Id + ' name="MandatorySubjects"></td></tr>');
+
+                            })
+
+
+                            $("#SubjectCSSGroup1").append('<h3><span style="color:#3C8DBC !important"><b>Optional Subjects</b></span></h3>');
+                            $("#SubjectCSSGroup1").append('<table  class="table table-bordered table-condensed table-hover"><thead><tr><th style="width:600px;" class="SubjectHeader">Subjects</th><th>Course Type</th> <th>Marks</th><th>Select</th></tr></thead><tbody id ="SubjectCSSGroup1TableBody"></tbody></table>');
+
+                            $.each(OptionalSubjecsList, function (key, value1) {
+
+                           $("#SubjectCSSGroup1TableBody").append('<tr> <td style="width:600px;">' + value1.SubjectName + '</td > <td> ' + value1.CourseType + '</td> <td align="center">'+value1.Points+'</td><td align="center"><input     type="checkbox" id=' + value1.Id + ' value=' + value1.Id + ' name="OptionalSubjects"></td></tr>');
+
+                            })
+
+                    })
+
+
+            }
+
+        }
+
+
 
     });
     function download() {
@@ -78,7 +281,7 @@
 
            '<div class="col-md-4 col-lg-4" style="padding-left=0px">' +
            '<div class="col-md-1 col-sm-3 col-xs-3" style="padding-left:0px"><a href=""><i class="glyphicon glyphicon-repeat" data-toggle="tooltip" title="Refresh" data-placement="bottom"></i></a></div>' +
-           '<div class="col-md-1 col-sm-3 col-xs-3"><a href="/AspNetSubject/Create"><i class="glyphicon glyphicon-edit" data-placement="bottom"></i></a></div>' +
+           '<div class="col-md-1 col-sm-3 col-xs-3"><i style="color:grey" class="glyphicon glyphicon-edit" data-placement="bottom"></i></div>' +
            '<div class="col-md-1 col-sm-3 col-xs-3"><span style="color:grey"><i class="fa fa-ban"  data-placement="bottom"></i></span>' + '</a></div>' +
            '<div class="col-md-1 col-sm-3 col-xs-3"><a href=""><i class="glyphicon glyphicon-download-alt" onclick="download()" data-placement="bottom"></i></a></div>' +
            ' <div class="col-md-1" style="width:0%; padding-left:10px;">' +
@@ -89,7 +292,7 @@
     }
 
 
-  
+
 
 
     function DrawTable1() {
@@ -138,7 +341,7 @@
     }
 
 
-   
+
     function AllSubjects() {
         $('.eeniart0017').css("display", "block");
         $.get('@Url.Action("AllSubjects", "AspNetSubject")',
@@ -162,16 +365,28 @@
             { id: selectedClass }, function (data) {
                 table.fnClearTable();
                 $.each(data, function (i, item) {
-                    
+
                     table.fnAddData([item.SubjectName, item.ClassName + "<input type='hidden' value=" + item.Id + " />", item.CourseType]);
                     //$('#submission_table').append('<tr id=' + item.Id + '><td>' + item.SubjectName + '</td><td>' + item.Name + '</td><td><a href="/AspNetSubject/Edit/' + item.Id + '">Edit</a>' + ' | <a href="/AspNetSubject/Details/' + item.Id + '">Detail</a>' + ' | <a href="/AspNetSubject/Delete/' + item.Id + '">Delete</a></td></tr>');
                 });
                 table.fnDraw();
-                    $('.eeniart0017').css("display", "none");    
+                    $('.eeniart0017').css("display", "none");
                     $('#View').html("View Filtered");
 
             });
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
 </script>
 
@@ -204,46 +419,169 @@ else
     }*/
 </style>
 
-<div class="box box-primary" style="display:none">
-    <div class="box-title"></div>
-    <div class="box-body">
+<div class="row">
+    <div class="col-md-12">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab_1" data-toggle="tab">Subjects</a></li>
+                <li><a href="#tab_2" data-toggle="tab">Subjects By Teachers</a></li>
+            </ul>
+            <div class="tab-content" style="
+        background-color: #ECF0F5;
+        padding: 10px 0px 0px 0px;
+    ">
 
-        <div class="col-md-12">
-            <div class="form-three widget-shadow">
-                <form class="forms form-horizontal">
-                    <div class="form-group">
-                        <div class="col-md-8">
-                            @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control" })
+                <div class="tab-pane active" id="tab_1">
+
+                    <div class="box box-primary" style="display:none">
+                        <div class="box-title"></div>
+                        <div class="box-body">
+
+                            <div class="col-md-12">
+                                <div class="form-three widget-shadow">
+                                    <form class="forms form-horizontal">
+                                        <div class="form-group">
+                                            <div class="col-md-8">
+                                                @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control" })
+                                            </div>
+                                            <br />
+                                        </div>
+                                    </form>
+                                    <hr />
+
+                                </div>
+                            </div>
                         </div>
-                        <br />
                     </div>
-                </form>
-                <hr />
+
+                    <div class="box box-primary">
+                        <div class="box-title"></div>
+                        <div class="box-body">
+                            <table class="table table-striped table-bordered" id="example">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Subject
+                                        </th>
+
+                                        <th>
+                                            Class Name
+                                        </th>
+                                        <th>
+                                            Course Type
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody id="submission_table"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="tab-pane" id="tab_2">
+
+
+
+
+                    <div class="box box-primary">
+                        <input type="hidden" name="TeacherId" />
+
+
+                        <div class="box-header with-border"></div>
+                        @using (Html.BeginForm("NewSubjectsForTeacher", "AspNetSubject", FormMethod.Post, new { enctype = "multipart/form-data", @class = "forms form-horizontal", role = "form" }))
+                        {
+
+
+                            <div class="box-body row">
+
+
+
+                                <div class="col-md-12">
+
+
+                                    <div class="form-group">
+                                        <label class="col-md-2 col-lg-2  control-label"> Section:<span class="red-mark">*</span></label>
+                                        <div class="col-md-6">
+                                            @Html.DropDownList("ClassID1", null, "Select One ", htmlAttributes: new { @class = "form-control text_box_style", name = "ClassID1", @required = true })
+                                            <br />
+                                        </div>
+                                    </div>
+
+
+
+
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+
+                                        <label class="col-md-2 col-lg-2  control-label"> Teachers: <span class="red-mark">*</span></label>
+                                        <div class="col-md-6">
+
+                                            <select class="form-control" id="teachers" name="teachers">
+                                                <option value="">Select One</option>
+                                            </select>
+                                            <span style="display:none;color:red" id="Error">Teacher and Section Fields are Required</span>
+
+                                            <br />
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="col-md-6  col-md-offset-3">
+                                        <button class="btn btn-primary" id="saveButton" type="submit">Save Changes</button>
+                                        <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-12">
+
+
+                                    <div class="form-group SubjectsBoxesCSS" id="MandatorySubjectCss">
+                                        <div class="col-md-12 " id="MandatorySubjectsCSS">
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+
+                                <div class="col-md-12">
+
+                                    <div class="form-group SubjectsBoxesCSS" id="Group1CSS">
+
+                                        <div class="col-md-12" id="SubjectCSSGroup1">
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+
+
+
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+
+
 
             </div>
+
+
+
         </div>
     </div>
 </div>
-
-<div class="box box-primary">
-    <div class="box-title"></div>
-    <div class="box-body">
-        <table class="table table-striped table-bordered" id="example">
-            <thead>
-                <tr>
-                    <th>
-                        Subject
-                    </th>
-                   
-                    <th>
-                        Class Name
-                    </th>
-                    <th>
-                        Course Type
-                    </th>
-                   
-                </tr>
-            </thead>
-            <tbody id="submission_table"></tbody>
-        </table>
-        </div></div>

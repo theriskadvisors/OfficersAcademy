@@ -27,7 +27,7 @@ namespace SEA_Application.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private SEA_DatabaseEntities db = new SEA_DatabaseEntities();
-        int SessionID = Int32.Parse(SessionIDStaticController.GlobalSessionID);
+        int SessionID = Convert.ToInt32(SessionIDStaticController.GlobalSessionID);
         // GET: Admin_Dashboard
         public ActionResult Index()
         {
@@ -1675,20 +1675,21 @@ namespace SEA_Application.Controllers
             db.SaveChanges();
 
 
-            var ClassId = Convert.ToInt32(Request.Form["ClassId"]);
-            var SessionId = db.AspNetClasses.Where(x => x.Id == ClassId).FirstOrDefault().SessionID;
+            //var ClassId = Convert.ToInt32(Request.Form["ClassId"]);
+            //var SessionId = db.AspNetClasses.Where(x => x.Id == ClassId).FirstOrDefault().SessionID;
 
-            var UserSession = db.AspNetUsers_Session.Where(x => x.UserID == id).FirstOrDefault();
+            //var UserSession = db.AspNetUsers_Session.Where(x => x.UserID == id).FirstOrDefault();
+            //UserSession.SessionID = SessionId;
+            //db.SaveChanges();
 
             //  int sessionid = db.AspNetSessions.Where(x => x.Status == "Active").FirstOrDefault().Id;
-            UserSession.SessionID = SessionId;
-            db.SaveChanges();
 
-            Aspnet_Employee_Session EmployeeSession = db.Aspnet_Employee_Session.Where(x => x.Emp_Id == emp.Id).FirstOrDefault();
+
+            //Aspnet_Employee_Session EmployeeSession = db.Aspnet_Employee_Session.Where(x => x.Emp_Id == emp.Id).FirstOrDefault();
             
-            EmployeeSession.Session_Id = SessionId;
+            //EmployeeSession.Session_Id = SessionId;
 
-            db.SaveChanges();
+            //db.SaveChanges();
 
 
             return RedirectToAction("TeachersIndex", "AspNetUser");
@@ -2075,6 +2076,7 @@ namespace SEA_Application.Controllers
 
                     var CourseType = Request.Form["CourseType"];
                     int AllNullCSSSubjects = 0;
+
                     if (CourseType == "CSS")
                     {
 
@@ -2092,6 +2094,7 @@ namespace SEA_Application.Controllers
                             }
 
                         }
+
                         if (AllNullCSSSubjects == 8)
                         {
                             ViewBag.SubjectsErrorMsg = "Please Select at least one Subject";

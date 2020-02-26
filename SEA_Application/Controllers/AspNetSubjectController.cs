@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using SEA_Application.Models;
 using OfficeOpenXml;
+using System.Web.Script.Serialization;
 
 namespace SEA_Application.Controllers
 {
@@ -49,13 +50,19 @@ namespace SEA_Application.Controllers
         public ActionResult ClassIndex()
         {
             ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
+            ViewBag.ClassID1 = new SelectList(db.AspNetClasses, "Id", "ClassName");
+
+
             return View();
 
         }
 
         public ActionResult ClassIndexs()
         {
-            ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
+
+           ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+
             ViewBag.Error = "Subject Created successfully";
             return View("ClassIndex");
 
@@ -170,7 +177,11 @@ namespace SEA_Application.Controllers
         public ActionResult Create()
         {
             ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
-            ViewBag.TeacherID = new SelectList(db.AspNetUsers.Where(x => x.AspNetRoles.Select(y => y.Name).Contains("Teacher") && x.AspNetUsers_Session.Any(z => z.SessionID == SessionID)), "Id", "Name");
+            //shahzad
+             ViewBag.TeacherID = new SelectList(db.AspNetUsers.Where(x => x.AspNetRoles.Select(y => y.Name).Contains("Teacher") && x.AspNetUsers_Session.Any(z => z.SessionID == SessionID)), "Id", "Name");
+
+          //  ViewBag.Teachers = new MultiSelectList(db.AspNetUsers.Where(x => x.AspNetRoles.Select(y => y.Name).Contains("Teacher") && x.AspNetUsers_Session.Any(z => z.SessionID == SessionID)), "Id", "Name");
+
             return View();
         }
 
@@ -180,7 +191,7 @@ namespace SEA_Application.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,SubjectName,ClassID,TeacherID")] AspNetSubject aspNetSubject)
-        {
+         {
             var CourseType = Convert.ToString( Request.Form["CourseType"]);
             var class_id = db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault().Id;
             aspNetSubject.ClassID = class_id;
@@ -232,18 +243,31 @@ namespace SEA_Application.Controllers
                 string user = db.AspNetUsers.Where(x => x.Id == aspNetSubject.TeacherID).Select(x => x.Name).FirstOrDefault();
                 var logMessage = "New Subject Added, SubjectName: " + aspNetSubject.SubjectName + ", ClassID: " + aspNetSubject.ClassID + ", TeacherName: " + user;
 
+                //string[] SelectedTeachers = Request.Form["TotalTeachers"].Split(',');
 
-                AspNetTeacherSubject ts = new AspNetTeacherSubject();
             //    var class_id = db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault().Id;
                //  var sub_id = db.AspNetSubjects.Where(x => x.SubjectName == aspNetSubject.SubjectName && x.ClassID == class_id).FirstOrDefault().Id;
 
                 var teacherid =  db.AspNetEmployees.Where(x => x.UserId == aspNetSubject.TeacherID).FirstOrDefault().Id;
 
+
+                //var SelectedTeahcersFromDB = db.AspNetEmployees.Where(x=> SelectedTeachers.Contains(x.UserId)).ToList(); 
+
+
+                //foreach(var Emplyee in SelectedTeahcersFromDB)
+                //{
+
+
+                 AspNetTeacherSubject ts = new AspNetTeacherSubject();
+
+
                 ts.TeacherID = teacherid;
                 ts.SubjectID = aspNetSubject.Id;
                 db.AspNetTeacherSubjects.Add(ts);
                 db.SaveChanges();
-                
+
+                //}
+
                 var LogControllerObj = new AspNetLogsController();
                 LogControllerObj.CreateLogSave(logMessage, UserIDLog);
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -259,9 +283,7 @@ namespace SEA_Application.Controllers
 
                 return View("Create", aspNetSubject);
             }
-
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult SubjectfromFile(AspNetSubject aspNetSubject)
@@ -372,8 +394,192 @@ namespace SEA_Application.Controllers
         }
 
 
-        
+        public ActionResult TeacherSubjects()
+        {
 
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+
+            return View();
+        }
+
+        public ActionResult TeachersByClass(int ClassId)
+        {
+
+          int? SessionId  = db.AspNetClasses.Where(x => x.Id == ClassId).FirstOrDefault().SessionID;
+
+            var teachers = (from teacher in db.AspNetUsers.Where(x => x.Status != "False")
+                            join t3 in db.AspNetEmployees
+                            on teacher.Id equals t3.UserId
+                            where teacher.AspNetRoles.Select(y => y.Name).Contains("Teacher")  /*&& t2.AspNetSession.AspNetClasses.Any(x => x.Id == ClassId)*/   //*&& db.AspNetChapters.Any(x=>x.Id==id)
+                            select new
+                            {
+                                teacher.Id,
+                                EmployeeId = t3.Id,
+                                //ClassName = t2.AspNetSession.SessionName,
+                                Subject = "-",
+                                teacher.Email,
+                                teacher.PhoneNumber,
+                                teacher.UserName,
+                                teacher.Name,
+                            }).ToList();
+            
+            //var teachers = (from teacher in db.AspNetUsers.Where(x => x.Status != "False")
+            //                join t2 in db.AspNetUsers_Session
+            //                on teacher.Id equals t2.UserID
+            //                join t3 in db.AspNetEmployees
+            //                on teacher.Id equals t3.UserId
+            //                where teacher.AspNetRoles.Select(y => y.Name).Contains("Teacher")  /*&& t2.AspNetSession.AspNetClasses.Any(x => x.Id == ClassId)*/   //*&& db.AspNetChapters.Any(x=>x.Id==id)
+            //                select new
+            //                {
+            //                    teacher.Id,
+            //                    EmployeeId = t3.Id,
+            //                    ClassName = t2.AspNetSession.SessionName,
+            //                    Subject = "-",
+            //                    teacher.Email,
+            //                    teacher.PhoneNumber,
+            //                    teacher.UserName,
+            //                    teacher.Name,
+            //                }).ToList();
+
+
+            return Json(teachers, JsonRequestBehavior.AllowGet);
+        }
+
+
+
+        public JsonResult SubjectsByClass(int ClassId)
+        {
+            db.Configuration.ProxyCreationEnabled = false;
+            //List<AspNetSubject> sub = db.AspNetSubjects.Where(r => r.ClassID == id && r.CourseType == coursetype).OrderByDescending(r => r.Id).ToList();
+            //ViewBag.Subjects = sub;
+            AspNetSubject sub = new AspNetSubject();
+
+          
+                var MandatorySubjects = db.AspNetSubjects.Where(x => x.ClassID == ClassId  && (x.CourseType=="PMS" || x.CourseType == "CSS") &&  x.IsManadatory == true).OrderBy(x=>x.CourseType);
+
+                var OptionalSubjects = db.AspNetSubjects.Where(x => x.ClassID == ClassId  && (x.CourseType == "PMS" || x.CourseType == "CSS") &&  x.IsManadatory == false).OrderBy(x => x.CourseType);
+
+
+
+                return Json(new
+                {
+                    MandatorySubjectsList = MandatorySubjects,
+                    OptionalSubjectsList = OptionalSubjects,
+
+
+                }, JsonRequestBehavior.AllowGet);
+            
+        }
+
+        //public ActionResult SubjectsOfTeachers(int TeacherId, int ClassId)
+        //{
+
+
+        //  //var AllSubject =    db.AspNetSubjects.Where(x => x.ClassID == ClassId).ToList();
+
+        //  //List<AspNetTeacherSubject> AllTeacherSubjects =   db.AspNetTeacherSubjects.Where(x => x.AspNetSubject.ClassID == ClassId).ToList();
+
+        //  //  var AllSubjectsOfCurrentTeacher = AllTeacherSubjects.Where(x => x.TeacherID == TeacherId).Select(x=> new { x.SubjectID, x.TeacherID});
+
+
+        //  //  var json = new JavaScriptSerializer().Serialize(AllSubjectsOfCurrentTeacher);
+
+
+        //    return View("", JsonRequestBehavior.AllowGet);
+        //}
+       
+        public JsonResult TeacherSubjects1(int TeacherId, int ClassId)
+        {
+
+            var AllSubject = db.AspNetSubjects.Where(x => x.ClassID == ClassId).ToList();
+
+            List<AspNetTeacherSubject> AllTeacherSubjects = db.AspNetTeacherSubjects.Where(x => x.AspNetSubject.ClassID == ClassId).ToList();
+
+            var AllSubjectsOfCurrentTeacher = AllTeacherSubjects.Where(x => x.TeacherID == TeacherId).Select(x => new { x.SubjectID, x.TeacherID });
+            var json = new JavaScriptSerializer().Serialize(AllSubjectsOfCurrentTeacher);
+            return Json(json, JsonRequestBehavior.AllowGet);
+
+        } 
+        
+        public ActionResult NewSubjectsForTeacher(string ClassID1, string teachers)
+        {
+
+            int? classId = Convert.ToInt32(ClassID1);
+            List<AspNetTeacherSubject> AllTeacherSubjectOfCurrentClass = db.AspNetTeacherSubjects.Where(x => x.AspNetSubject.ClassID == classId).ToList();
+
+            int? teacherId = Convert.ToInt32(teachers);
+
+            var SubjectsToRemoveOfCurrentTeacher = AllTeacherSubjectOfCurrentClass.Where(x => x.TeacherID == teacherId);
+
+            db.AspNetTeacherSubjects.RemoveRange(SubjectsToRemoveOfCurrentTeacher);
+            db.SaveChanges();
+
+
+            List<string> selectedsubjects = new List<string>();
+                
+
+            if (Request.Form["MandatorySubjects"] != null)
+            {
+
+                selectedsubjects.AddRange(Request.Form["MandatorySubjects"].Split(',').ToList());
+            }
+
+            if (Request.Form["OptionalSubjects"] != null)
+            {
+
+                selectedsubjects.AddRange(Request.Form["OptionalSubjects"].Split(',').ToList());
+
+            }
+
+            if (selectedsubjects != null)
+            {
+
+                foreach (var item in selectedsubjects)
+                {
+
+                    AspNetTeacherSubject teacherSubject = new AspNetTeacherSubject();
+
+                    teacherSubject.TeacherID = teacherId;
+                    teacherSubject.SubjectID = Convert.ToInt32(item);
+
+                    db.AspNetTeacherSubjects.Add(teacherSubject);
+
+                    db.SaveChanges();
+                }
+            }
+
+            int? SessionId = db.AspNetClasses.Where(x => x.Id == classId).FirstOrDefault().SessionID;
+
+            var  EmployeeExist =   db.Aspnet_Employee_Session.Where(x => x.Emp_Id == teacherId && x.Session_Id == SessionId).FirstOrDefault();
+             
+            if(EmployeeExist ==null)
+            {
+
+                Aspnet_Employee_Session ES = new Aspnet_Employee_Session();
+                ES.Emp_Id = teacherId;
+                ES.Session_Id = SessionId;
+                db.Aspnet_Employee_Session.Add(ES);
+                db.SaveChanges();
+                
+            }
+
+             var UserId  =     db.AspNetEmployees.Where(x => x.Id == teacherId).FirstOrDefault().UserId;
+
+           var EmployeeExist1 =   db.AspNetUsers_Session.Where(x => x.UserID == UserId && x.SessionID == SessionId).FirstOrDefault();
+
+            if(EmployeeExist1 ==null)
+            {
+                AspNetUsers_Session US = new AspNetUsers_Session();
+                US.UserID = UserId;
+                US.SessionID = SessionId;
+                db.AspNetUsers_Session.Add(US);
+                db.SaveChanges();
+
+            }
+
+
+            return RedirectToAction("ClassIndex");
+        }
 
         // GET: AspNetSubject/Edit/5
         public ActionResult Edit(int? id)
@@ -389,6 +595,9 @@ namespace SEA_Application.Controllers
             }
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName", aspNetSubject.ClassID);
             ViewBag.TeacherID = new SelectList(db.AspNetUsers.Where(x => x.AspNetRoles.Select(y => y.Name).Contains("Teacher") && x.AspNetUsers_Session.Any(z => z.SessionID == SessionID)), "Id", "Name");
+            ViewBag.SubjectGroup = aspNetSubject.SubjectGroup;
+            var IsMandatory = aspNetSubject.IsManadatory;
+            ViewBag.IsMandatory = aspNetSubject.IsManadatory;
 
            // ViewBag.TeacherID = new SelectList(db.AspNetUsers, "Id", "Name", aspNetSubject.TeacherID);
             return View(aspNetSubject);
