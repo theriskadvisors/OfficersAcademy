@@ -2011,43 +2011,41 @@ namespace SEA_Application.Controllers
             return View();
         }
 
-        public ActionResult CheckVerifiction(string RollNo)
-        {
+        //public ActionResult CheckVerifiction(string RollNo)
+        //{
 
-            AspNetUser User =   db.AspNetUsers.Where(x => x.UserName == RollNo).FirstOrDefault();
-            string VerifictionMsg = "";
+        //    AspNetUser User =   db.AspNetUsers.Where(x => x.UserName == RollNo).FirstOrDefault();
+        //    string VerifictionMsg = "";
                 
-            if( User !=null)
-            {
+        //    if( User !=null)
+        //    {
 
-                AspNetStudent Student =    db.AspNetStudents.Where(x => x.StudentID == User.Id).FirstOrDefault();
+        //        AspNetStudent Student =    db.AspNetStudents.Where(x => x.StudentID == User.Id).FirstOrDefault();
 
-                if(Student != null)
-                {
+        //        if(Student != null)
+        //        {
 
-                    if (Student.FingurePrintCode !=null )
-                    {
-                        VerifictionMsg = "Yes";
-                    }
-                    else
-                    {
-                        VerifictionMsg = "No";
-                    }
-
-
-                }
+        //            if (Student.FingurePrintCode !=null )
+        //            {
+        //                VerifictionMsg = "Yes";
+        //            }
+        //            else
+        //            {
+        //                VerifictionMsg = "No";
+        //            }
 
 
+        //        }
 
-            }
+        //    }
 
 
-            return Json(VerifictionMsg, JsonRequestBehavior.AllowGet);
+        //    return Json(VerifictionMsg, JsonRequestBehavior.AllowGet);
 
 
 
-            return View();
-        }
+        //    return View();
+        //}
 
 
 
