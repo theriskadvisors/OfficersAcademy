@@ -1,25 +1,29 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<head>
-    <style>
-        li.nav-item.start.active.open {
-            border-bottom: 0px solid white !important;
-        }
-     
-.page-sidebar-menu.page-sidebar-menu-hover-submenu>li:hover>.sub-menu {
-    margin-left: 183px;
-    margin-top: -77px;
-}
-.box.box-primary {
-    border-top-color: #5170a3;
-}
-.page-container-bg-solid .page-content {
-     background: #d0cfcf2e; 
-}
+    <head>
 
 
-    </style>
+        <style>
+            li.nav-item.start.active.open {
+                border-bottom: 0px solid white !important;
+            }
+
+            .page-sidebar-menu.page-sidebar-menu-hover-submenu > li:hover > .sub-menu {
+                margin-left: 183px;
+                margin-top: -77px;
+            }
+
+            .box.box-primary {
+                border-top-color: #5170a3;
+            }
+
+            .page-container-bg-solid .page-content {
+                background: #d0cfcf2e;
+            }
+        </style>
+
+
 
     </head>
 <div class="page-sidebar navbar-collapse collapse">
@@ -30,52 +34,61 @@
     <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
     <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
     <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-    <ul id="layout_navbar_toogle" class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenu " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="1">
-        <li class="nav-item start active open">
+    <ul id="layout_navbar_toogle" class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenu page-sidebar-menu-closed" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="1">
+        <li class="nav-item start " id="item0">
             <a href="@Url.Action("Dashboard", "Admin_Dashboard")" class="nav-link nav-toggle">
                 <i class="icon-home"></i>
                 <span class="title">Home</span>
             </a>
         </li>
 
-        <li class="nav-item">
+        <li id="Item1" class="nav-item">
             <a href="@Url.Action("StudentsIndex", "AspNetUser")" class="nav-link nav-toggle">
                 <i class="fa fa-user"></i>
                 <span class="title">Students</span>
             </a>
         </li>
 
-        <li class="nav-item  ">
+        <li id="Item2" class="nav-item  ">
             <a href="@Url.Action("TeachersIndex", "AspNetUser")" class="nav-link nav-toggle">
                 <i class="fa fa-graduation-cap"></i>
                 <span class="title">Teachers</span>
             </a>
         </li>
-        <li class="nav-item  ">
+
+
+        @*<li id="TeacherSubjects" class="nav-item  ">
+            <a href="@Url.Action("TeacherSubjects", "AspNetSubject")" class="nav-link nav-toggle">
+                <i class="fa fa-graduation-cap"></i>
+                <span class="title">Teachers Subjects</span>
+            </a>
+        </li>*@
+
+        <li id="Item3" class="nav-item  ">
             <a href="@Url.Action("Index", "AspNetTimeslots")" class="nav-link nav-toggle">
                 <i class="fa fa-tasks"></i>
                 <span class="title">Room Slot</span>
             </a>
         </li>
-        <li class="nav-item  ">
+        <li class="nav-item" id="Item4">
             <a href="@Url.Action("Index", "AspNetTimeTable")" class="nav-link nav-toggle">
                 <i class="fa fa-tasks"></i>
                 <span class="title">Time Table</span>
             </a>
         </li>
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item5">
             <a href="@Url.Action("Index", "Expense")" class="nav-link nav-toggle">
                 <i class="fa fa-users"></i>
                 <span class="title">Expense</span>
             </a>
         </li>
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item6">
             <a href="@Url.Action("Report", "Expense")" class="nav-link nav-toggle">
                 <i class="fa fa-users"></i>
-                <span class="title">Expense Report</span>
+                <span class="title">Daily Account Sheet</span>
             </a>
         </li>
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item7">
             <a href="@Url.Action("Teacher_Attendance", "AspNetAttendance")" class="nav-link nav-toggle">
                 <i class="fa fa-users"></i>
                 <span class="title">Teachers Attendance</span>
@@ -89,26 +102,39 @@
             </a>
         </li>*@
 
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item8">
             <a href="@Url.Action("AccountantIndex", "AspNetUser")" class="nav-link nav-toggle">
                 <i class="fa fa-bar-chart"></i>
                 <span class="title">Accountant</span>
             </a>
         </li>
 
-        <li class="nav-item  ">
+
+
+
+        <li class="nav-item  " id="Item9">
             <a href="@Url.Action("Index", "AspNetEmployees")" class="nav-link nav-toggle">
                 <i class="fa fa-users"></i>
                 <span class="title">Employees</span>
             </a>
         </li>
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item10">
             <a href="@Url.Action("StudentFee", "GrandTotal")" class="nav-link nav-toggle">
                 <i class="fa fa-users"></i>
                 <span class="title">Student Fee</span>
             </a>
         </li>
-        <li class="nav-item  ">
+
+
+        <li class="nav-item  " id="StudentMonthlyFee">
+            <a href="@(Url.Action("MonthlyFeeStudent", "Admin_Dashboard"))">
+                <i style="color:#b8c7ce;font-size:13px" class="fa fa-times-circle"></i>
+                <span class="title" style="color:#b8c7ce !important"> Fee Status</span>
+            </a>
+        </li>
+
+
+        <li class="nav-item  " id="Item11">
             <a href="@Url.Action("Index", "AspNetSession")" class="nav-link nav-toggle">
                 <i class="fa fa-exchange"></i>
                 <span class="title">Session</span>
@@ -169,18 +195,19 @@
             </a>
         </li>*@
 
-        <li class="nav-item">
+        <li class="nav-item" id="Item12">
             <a href="@Url.Action("ClassIndex", "AspNetSubject")" class="nav-link nav-toggle">
                 <i class="fa fa-list-ul"></i>
                 <span class="title">Subject</span>
             </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" id="Item13">
             <a href="@Url.Action("Index", "AspNetNotes")" class="nav-link nav-toggle">
                 <i class="fa fa-sticky-note"></i>
                 <span class="title">Notes</span>
             </a>
         </li>
+
 
         @*<li class="nav-item  ">
             <a href="@Url.Action("ViewLogs", "AspNetLogs")" class="nav-link nav-toggle">
@@ -189,7 +216,7 @@
             </a>
         </li>*@
 
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item14">
             <a href="@Url.Action("View_Attendance", "Admin_Dashboard")" class="nav-link nav-toggle">
                 <i class="fa fa-eye"></i>
                 <span class="title">Student Attendance Module</span>
@@ -203,14 +230,17 @@
             </a>
         </li>*@
 
-        <li class="nav-item  ">
+
+        <li class="nav-item" id="Item15">
             <a href="@(Url.Action("Inbox", "AspNetMessages"))" class="nav-link nav-toggle">
                 <i class="fa fa-envelope"></i>
                 <span class="title">MailBox</span>
             </a>
         </li>
 
-        <li class="nav-item  ">
+
+
+        <li class="nav-item  " id="Item16">
             <a href="https://smartereduanalytics.on.spiceworks.com/portal/tickets" class="nav-link nav-toggle">
                 <i class="fa fa-support"></i>
                 <span class="title">Support</span>
@@ -232,3 +262,23 @@
     </div>
     <!-- END CONTENT BODY -->
 </div>
+
+<script>
+
+    $(document).ready(function () {
+
+        //$("#layout_navbar_toogle").click(function () {
+        //    debugger
+        //    alert("123");
+            
+        //})
+
+  //      $("#layout_navbar_toogle").on("click","li", function(){
+
+  //         $(this).addClass("active");
+  //});
+
+
+    })
+
+</script>

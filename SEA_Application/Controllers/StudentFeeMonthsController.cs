@@ -17,7 +17,7 @@ namespace SEA_Application.Controllers
         // GET: StudentFeeMonths
         public ActionResult Index()
         {
-
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             return View();
         }
         //public ActionResult GetStudentFeeMonth()
@@ -47,10 +47,42 @@ namespace SEA_Application.Controllers
         {
             var list = (from fee in db.StudentFeeMonths
                         join std in db.AspNetStudents on fee.StudentId equals std.Id
-                        select new { fee.Id, std.AspNetUser.Name, fee.IssueDate, fee.Months, fee.Status,
-                                     fee.FeePayable, fee.InstalmentAmount, fee.Multiplier }).ToList();
+
+
+                        select new { fee.Id, std.AspNetUser.Name,std.AspNetUser.UserName, fee.IssueDate, fee.Months, fee.Status,fee.Discount,fee.FeeReceived,fee.FeeType,
+                                     fee.FeePayable, fee.InstalmentAmount }).OrderBy(x=>x.IssueDate).ToList();
             return Json(list, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult StudentFeeByClass(int id)
+        {
+            int? SessionId =   db.AspNetClasses.Where(x => x.Id == id).FirstOrDefault().SessionID;
+
+            var list = (from fee in db.StudentFeeMonths
+                        join std in db.AspNetStudents on fee.StudentId equals std.Id
+                        where (fee.SessionId== SessionId)
+                        select new
+                        {
+                            fee.Id,
+                            std.AspNetUser.Name,
+                            std.AspNetUser.UserName,
+                            fee.IssueDate,
+                            fee.Months,
+                            fee.Status,
+                            fee.Discount,
+                            fee.FeeReceived,
+                            fee.FeeType,
+                            fee.FeePayable,
+                            fee.InstalmentAmount
+                        }).OrderBy(x => x.IssueDate).ToList();
+
+
+            return Json(list, JsonRequestBehavior.AllowGet);
+
+        }
+
+
+
         public ActionResult GetStudentDetailDDL(string Month, string Status)
         {
 

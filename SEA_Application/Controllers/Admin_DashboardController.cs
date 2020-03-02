@@ -1763,8 +1763,7 @@ namespace SEA_Application.Controllers
 
                     var roleStore = new RoleStore<IdentityRole>(context);
                     var roleManager = new RoleManager<IdentityRole>(roleStore);
-
-                    var userStore = new UserStore<ApplicationUser>(context);
+                   var userStore = new UserStore<ApplicationUser>(context);
                     var userManager = new UserManager<ApplicationUser>(userStore);
 
 
@@ -2003,6 +2002,55 @@ namespace SEA_Application.Controllers
 
 
 
+
+        public ActionResult BiometricRegistration(string RollNo, string Success)
+        {
+            ViewBag.RollNo = RollNo;
+            ViewBag.Success = Success;
+
+            return View();
+        }
+
+        public ActionResult CheckVerifiction(string RollNo)
+        {
+
+            AspNetUser User =   db.AspNetUsers.Where(x => x.UserName == RollNo).FirstOrDefault();
+            string VerifictionMsg = "";
+                
+            if( User !=null)
+            {
+
+                AspNetStudent Student =    db.AspNetStudents.Where(x => x.StudentID == User.Id).FirstOrDefault();
+
+                if(Student != null)
+                {
+
+                    if (Student.FingurePrintCode !=null )
+                    {
+                        VerifictionMsg = "Yes";
+                    }
+                    else
+                    {
+                        VerifictionMsg = "No";
+                    }
+
+
+                }
+
+
+
+            }
+
+
+            return Json(VerifictionMsg, JsonRequestBehavior.AllowGet);
+
+
+
+            return View();
+        }
+
+
+
         /*******************************************************************************************************************
          * 
          *                                    Student's Functions
@@ -2145,8 +2193,6 @@ namespace SEA_Application.Controllers
                     //    selectedsubjects.AddRange( Request.Form["CSSSubjects1"].Split(',').ToList());
                     //}
 
-
-
                     var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Name = model.Name, PhoneNumber = Request.Form["cellNo"] };
                     var result = await UserManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
@@ -2259,6 +2305,8 @@ namespace SEA_Application.Controllers
                         string Error = "Student successfully saved.";
 
                         StudentFeeMonth studentFeeMonth = new StudentFeeMonth();
+                       
+                        
                         string NotesCategory = Request.Form["NotesCategory"];
                         string FeeType = Request.Form["FeeType"];
                         double NotesFee = 0;
@@ -2319,6 +2367,7 @@ namespace SEA_Application.Controllers
                         voucher.Name = "Student Fee Creation of student " + model.Name + " Session Name " + SessionName; ;
                         voucher.Notes = "Account Receiveable, discount, and revenue is updated";
                         voucher.Date = DateTime.Now;
+                        voucher.StudentId = student.Id;
 
                         voucher.CreatedBy = username;
                         voucher.SessionID = SessionIdOfSelectedStudent;
@@ -2349,6 +2398,9 @@ namespace SEA_Application.Controllers
                         Leadger.CurrentBalance = AfterBalance;
                         db.VoucherRecords.Add(voucherRecord);
                         db.SaveChanges();
+
+
+
 
                         if (NotesCategory == "WithNotes")
                         {
@@ -2422,7 +2474,11 @@ namespace SEA_Application.Controllers
                             db.VoucherRecords.Add(voucherRecord3);
                             db.SaveChanges();
                         }
+
+                        //  return RedirectToAction("BiometricRegistration", "Admin_Dashboard", new { RollNo = model.UserName, Success = Error });
+
                         return RedirectToAction("StudentIndex", "AspNetUser", new { Error });
+
                     }
                     else
                     {
@@ -3272,6 +3328,88 @@ namespace SEA_Application.Controllers
                 context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
             }
         }
+
+        public ActionResult MonthlyFeeStudent()
+        {
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+            return View();
+        }
+
+
+        public ActionResult GetStudentFeeMonth()
+        {
+            var list = (from fee in db.StudentFeeMonths
+                        join std in db.AspNetStudents on fee.StudentId equals std.Id
+
+
+                        select new
+                        {
+                            fee.Id,
+                            std.AspNetUser.Name,
+                            std.AspNetUser.UserName,
+                            fee.IssueDate,
+                            fee.Months,
+                            fee.Status,
+                            fee.Discount,
+                            fee.FeeReceived,
+                            fee.FeeType,
+                            fee.FeePayable,
+                            fee.InstalmentAmount
+                        }).OrderBy(x => x.IssueDate).ToList();
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult StudentFeeByClass(int id)
+        {
+            int? SessionId = db.AspNetClasses.Where(x => x.Id == id).FirstOrDefault().SessionID;
+
+            var list = (from fee in db.StudentFeeMonths
+                        join std in db.AspNetStudents on fee.StudentId equals std.Id
+                        where (fee.SessionId == SessionId)
+                        select new
+                        {
+                            fee.Id,
+                            std.AspNetUser.Name,
+                            std.AspNetUser.UserName,
+                            fee.IssueDate,
+                            fee.Months,
+                            fee.Status,
+                            fee.Discount,
+                            fee.FeeReceived,
+                            fee.FeeType,
+                            fee.FeePayable,
+                            fee.InstalmentAmount
+                        }).OrderBy(x => x.IssueDate).ToList();
+
+
+            return Json(list, JsonRequestBehavior.AllowGet);
+
+
+
+
+
+        }
+
+        public class StudentMonthlyFee
+        {
+            public int Id { get; set; }
+            public string Date { get; set; }
+            public string Name { get; set; }
+            public string Month { get; set; }
+            public string Status { get; set; }
+            public double? MonthlyFee { get; set; }
+            public double? PayableFee { get; set; }
+            public double? Multiplier { get; set; }
+
+        }
+
+
+
+
+
+
+
+
         #endregion
 
 

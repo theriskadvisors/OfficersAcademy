@@ -60,6 +60,7 @@ namespace SEA_Application.Controllers
                              GrandTotal = Notes.GrandTotal,
                              PhotoCopier = Notes.PhotoCopierPrice,
                              NameOfStudent = User.Name,
+                             StudentId = Student.Id,
                              
                              TotalPhotoCopierPrice = (Notes.PhotoCopierPrice * OrderNotes.Quantity)
                          };
@@ -83,6 +84,7 @@ namespace SEA_Application.Controllers
             voucher.Name = "Notes paid by Student " + NameOfStudent +" Session Name "+SessionName;
             voucher.Notes = "Cash received for notes";
             voucher.Date = DateTime.Now;
+            voucher.StudentId = result.FirstOrDefault().StudentId;
 
             voucher.CreatedBy = username;
             voucher.SessionID = SessionID;
@@ -90,9 +92,7 @@ namespace SEA_Application.Controllers
 
             voucher.VoucherNo = Convert.ToInt32(VoucherObj) + 1;
             db.Vouchers.Add(voucher);
-
             db.SaveChanges();
-
 
             if (OrderType == "Postpaid")
             {

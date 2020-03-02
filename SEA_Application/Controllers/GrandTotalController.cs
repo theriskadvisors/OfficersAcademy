@@ -522,9 +522,74 @@ namespace SEA_Application.Controllers
         public ActionResult StudentFeeDetail(int id)
         {
             var studentFeeDetails = db.StudentFeeMonths.Where(x => x.StudentId == id).OrderByDescending(x => x.IssueDate).FirstOrDefault();
-          
+
+            var CountStudentFee = db.StudentFeeMonths.Where(x => x.StudentId == id).Count();
+            var FeeCount ="";
+
+            if(CountStudentFee ==1)
+            {
+                FeeCount = "1st";
+
+            }
+            else if (CountStudentFee == 2)
+            {
+                FeeCount = "2nd";
+
+            }
+            else if (CountStudentFee == 3)
+            {
+                FeeCount = "3rd";
+
+            }
+            else if (CountStudentFee == 4)
+            {
+                FeeCount = "4th";
+
+            }
+            else if (CountStudentFee == 5)
+            {
+                FeeCount = "5th";
+
+            }
+            else if (CountStudentFee == 6)
+            {
+                FeeCount = "6th";
+
+            }
+
+            else if (CountStudentFee == 7)
+            {
+                FeeCount = "7th";
+
+            }
+
+            else if (CountStudentFee == 8)
+            {
+                FeeCount = "8th";
+
+            }
+
+            else if (CountStudentFee == 9)
+            {
+                FeeCount = "9th";
+
+            }
+
+            else if (CountStudentFee == 10)
+            {
+                FeeCount = "10th";
+
+            }
+
+            else 
+            {
+                FeeCount = "";
+
+            }
+
             return Json(new
             {
+                ReceiptNo = FeeCount,
                 Id = studentFeeDetails.Id,
                 TotalFee = studentFeeDetails.TotalFee,
                 FeePayable = studentFeeDetails.FeePayable,
@@ -580,9 +645,8 @@ namespace SEA_Application.Controllers
 
             voucher.Name = "Fee Received by Admin of Student " + StudentName +" Session Name "+ SessionName;
             voucher.Notes = "Fee Received by Admin " + StudentName + " Session Name " + SessionName;
-
+            voucher.StudentId = studenfee.StudentId;
             voucher.Date = DateTime.Now;
-
             voucher.CreatedBy = username;
             voucher.SessionID = SessionID;
             int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);

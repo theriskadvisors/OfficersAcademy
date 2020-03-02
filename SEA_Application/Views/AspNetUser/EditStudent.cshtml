@@ -56,10 +56,96 @@
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 <script type="text/javascript">
     var selectedClass;
+    //  var SelectedClassValueFirst;
+      var SelectedClassValueFirst;
     $(document).ready(function () {
 
 
-    
+       debugger
+        var VoucherExist = $("#VoucherExist").val();
+
+        if (VoucherExist == "1") {
+
+
+            $("#FeeDetailDiv").css("display", 'block');
+
+
+        }
+
+        else {
+
+
+            $("#FeeDetailDiv").css("display", 'none');
+
+        }
+
+
+        var FeeTypeOfStudent = $("#FeeTypeOfStudent").val();
+        if (FeeTypeOfStudent != "") {
+
+         $("#FeeType option[value='" + FeeTypeOfStudent + "']").prop('selected', true);
+
+
+        }
+
+
+        var NotesFeeOfStudent = $("#NotesAmount").val();
+
+        if (NotesFeeOfStudent == "") {
+
+                 $("#NotesCategoryDiv input[value='WithOutNotes']").prop('checked', true);
+
+        }
+        else {
+
+
+                   $("#NotesCategoryDiv input[value='WithNotes']").prop('checked', true);
+                   // $('#WithNotes').click();
+
+                    var NotesAmountHidden  =   $("#NotesAmountHidden").val();
+
+                    $("#NotesAmount").val(NotesAmountHidden);
+
+            
+                    $("#FeeType  option[value='PerMonth']").remove();
+                   $("#NotesAmount").prop('required', true);
+
+                    $('#NotesID').show();
+                 
+
+
+        }
+
+
+            
+
+
+        $("#ClassID").change(function () {
+
+           // $('#CalculateFee').click();
+            $("#TotalFee").val("");
+            $("#MandatorySubjects").removeAttr('checked');
+
+            var ClassId = $(this).val();
+
+            if (ClassId != "") {
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin_Dashboard/GetSessionFee",
+                data: { "SelectedClassId": ClassId },
+                success: function (data) {
+
+
+                        $("#SessionFee").val(data);
+
+                    }
+
+            })
+            }
+
+        })
+
 
         $("#UserName").bind('blur', function () {
             var userName = $("#UserName").val();
@@ -81,6 +167,28 @@
             });
 
         });
+
+        $('#WithOutNotes').click(function () {
+            $('#NotesID').hide();
+            $('#NotesAmount').val("");
+            $("#TotalFee").val("");
+            //alert("Without note");
+            //$('#FeeType').append('<option value="PerMonth">PerMonth</option>');
+           $("#NotesAmount").prop('required', false);
+        });
+        $('#WithNotes').click(function () {
+
+            //$("#FeeType  option[value='PerMonth']").remove();
+           $("#NotesAmount").prop('required', true);
+            $('#NotesAmount').val(16000);
+            $('#NotesID').show();
+            $("#TotalFee").val("");
+
+
+        });
+
+
+    
 
     //    $("#ClassID").change(function () {
 
@@ -217,14 +325,19 @@
 
       //  $('#CourseType option[value="' + CourseType + '"]').prop('selected', true);
         $("input[value ='" + CourseType + "' ]").prop('checked', true);
-
+        var SelectedClassValueFirst;
         var selectedStudent = '@Model.Id';
         $.get('@Url.Action("StudentClass")',
 
             { id: selectedStudent }, function (data) {
-                selectedClass = data;
+                selectedClass = data.ClassIDNAMEv;
 
-                $('#ClassID').val(data);
+                SelectedClassValueFirst = data.ClassIDNAMEv;
+              //  SelectedClassValueFirst = data;
+
+                $('#ClassID').val(data.ClassIDNAMEv);
+                $("#SessionFee").val(data.SessionFeeOfSession);
+
                 $.get('@Url.Action("SubjectsByClass")',
 
 
@@ -718,10 +831,14 @@
 
             }
 
+
+
+          
+
       });
 
 
-            
+
 
 
         $("#BirthDate").bind('blur', function () {
@@ -794,6 +911,39 @@
     function onSave() {
         $('#FormSubmit').click();
     }
+
+
+    function Calc() {
+
+        var SessionFee = $("#SessionFee").val();
+        var FeeType = $("#FeeType").val();
+        var Discount = $("#Discount").val();
+        var NotesAmount = $("#NotesAmount").val();
+        if (SessionFee == "")
+               SessionFee = 0;
+        if (Discount == "")
+               Discount = 0;
+        if (NotesAmount == "")
+               NotesAmount = 0;
+
+        if (FeeType == "Installment" && FeeType != "")
+                     {
+                       $('#TotalFee').val(parseInt(SessionFee) + 6000 + parseInt(NotesAmount) - parseInt(Discount));
+                     }
+                else if (FeeType == "PerMonth" && FeeType != "")
+                {
+                    $('#TotalFee').val(parseInt(SessionFee) + 12000 + parseInt(NotesAmount) - parseInt(Discount));
+                }
+                else if (FeeType == "FullFee" && FeeType != "")
+                   {
+                    $('#TotalFee').val(parseInt(SessionFee)  + parseInt(NotesAmount) - parseInt(Discount));
+                }
+                else
+                {
+                    return false;
+                }
+
+    }
 </script>
 
 <label>@Html.ActionLink("Home", "Dashboard", "Account") > @Html.ActionLink("Student", "StudentsIndex", "AspNetUser") > <span class="text-primary"><b>Edit</b></span></label>
@@ -823,6 +973,10 @@
 
                 <div class="row">
                     <div class="col-md-5">
+
+                        <input type="hidden" id="VoucherExist" name="VoucherExist" value="@ViewBag.VoucherExist" />
+                        <input type="hidden" name="VoucherId" id="VoucherId" value="@ViewBag.VoucherId " />
+                        
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                         @Html.HiddenFor(model => model.Id)
 
@@ -842,21 +996,21 @@
                                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                             </div>
                         </div>
-                        <div class="form-group">
+                        @*<div class="form-group">
                             <label class="control-label col-md-2 col-lg-2">Address</label>
                             <div class="col-md-10">
                                 @Html.EditorFor(model => model.AspNetStudents.FirstOrDefault().Address, new { htmlAttributes = new { @class = "form-control" } })
                                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                             </div>
-                        </div>
+                        </div>*@
 
-                        <div class="form-group">
+                        @*<div class="form-group">
                             <label class="control-label col-md-2 col-lg-2">Age</label>
                             <div class="col-md-10">
                                 @Html.EditorFor(model => model.AspNetStudents.FirstOrDefault().Age, new { htmlAttributes = new { @class = "form-control", required = "required" } })
                                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                             </div>
-                        </div>
+                        </div>*@
                         <div class="form-group">
                             <label class="control-label col-md-2 col-lg-2">Section Timings </label>
                             <div class="col-md-10">
@@ -1338,13 +1492,142 @@
 
                         </div>
 
+                    </div>
+                </div>
+
+                <div class="box box-primary" id="FeeDetailDiv" style="display:none">
+                    @*<div class="box-title"></div>*@
+                    <div class="box-header with-border"><h3 class="orange">Fee Details</h3></div>
+                    <div class="box-body">
+
+                        <div class="form-group">
+                            <label for="CourseType" class="col-md-2 col-lg-2 control-label"><b>Notes Catergory:</b> <span class="red-mark">*</span></label>
+                            <div class="col-md-6">
+
+                                <div class="form-group RadioButtonPadding">
+                                    <div class="checkbox" id="NotesCategoryDiv">
+
+                                        <label><input type="radio" name="NotesCategory" value="WithOutNotes" id="WithOutNotes">Without Notes</label>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <label><input type="radio" name="NotesCategory" value="WithNotes" id="WithNotes">With Notes</label>
+
+                                    </div>
+
+                                </div>
+                                <span id="Phone-Error" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                        <div class="form-group" style="display:none" id="NotesID">
+                            <label class="col-md-2 col-lg-2 control-label"><b>Notes Amount:</b><span class="red-mark">*</span></label>
+                            <div class="col-md-6">
+
+
+
+                                @if (ViewBag.NotesFee != null)
+                                {
+                                    <input type="hidden" value="@ViewBag.NotesFee" id="NotesAmountHidden" />
+
+                                    <input value="@ViewBag.NotesFee" type="number" class="form-control round-border" name="NotesAmount" id="NotesAmount" />
+
+
+                                }
+                                else
+                                {
+                                    <input type="number" class="form-control round-border" name="NotesAmount" id="NotesAmount" />
+
+                                }
+
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 col-lg-2 control-label"><b>Session Fee:</b><span class="red-mark">*</span></label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control round-border" name="SessionFee" id="SessionFee" value="0" readonly />
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-md-2 col-lg-2 control-label"><b>Discount Amount:</b></label>
+                            <div class="col-md-6">
+
+                                @if (ViewBag.Discount != null)
+                                {
+                                    <input type="number" value="@ViewBag.Discount" class="form-control round-border" name="Discount" id="Discount" />
+
+                                }
+
+                                else
+                                {
+
+                                    <input type="number" value="0" class="form-control round-border" name="Discount" id="Discount" />
+
+                                }
+
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label class="col-md-2 col-lg-2 control-label"><b>Fee Type</b><span class="red-mark">*</span></label>
+                            <div class="col-md-6">
+
+                                <input type="hidden" id="FeeTypeOfStudent" name="name" value="@ViewBag.FeeType" />
+
+                                <select name="FeeType" id="FeeType" class="form-control text_box_style">
+                                    <option value=""  selected>   Select One</option>
+                                    <option value="FullFee" >Full Fee</option>
+                                    <option value="Installment">Installment</option>
+                                    <option value="PerMonth">Per Month</option>
+
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 col-lg-2 control-label"></label>
+                            <div class="col-md-6">
+                                <button id="CalculateFee" type="button" onclick="Calc()" class="btn btn-primary ">Calculate Fee</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 col-lg-2 control-label"><b>Total Fee:</b></label>
+                            <div class="col-md-6">
+
+                                @if (ViewBag.FeePayAbleAsTotalFee != null)
+                                {
+
+
+                                    <input type="text" value="@ViewBag.FeePayAbleAsTotalFee" required class="form-control text_box_style" name="TotalFee" id="TotalFee" readonly />
+
+
+                                }
+                                else
+
+                                {
+
+                                    <input type="text" required class="form-control text_box_style" name="TotalFee" id="TotalFee" readonly />
+
+
+                                }
+
+
+                            </div>
+                        </div>
+
 
 
 
                     </div>
                 </div>
 
-                <hr />
+
+
+
                 <div class="form-group">
                     <div class="col-md-offset-1 col-lg-offset-1 col-md-5">
                         <button type="submit" class="btn btn-primary" value="Register" id="FormSubmit">Update</button>
@@ -1421,7 +1704,7 @@
 
         }
 
-        
+
         $("#MandatorySubjectsCSS").on('change', ".CheckboxCSSMandatory", function () {
             debugger
 
@@ -1463,7 +1746,7 @@
                 $("input[name='PMSSubjects0']").prop("checked", false);
 
             }
-            })
+        })
 
     })
 

@@ -1,106 +1,109 @@
 ﻿@model IEnumerable<SEA_Application.Models.StudentFeeMonth>
 
 
-    @{
-        ViewBag.Title = "Index";
+@{
+    ViewBag.Title = "MonthlyFeeStudent";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+
+
+}
+
+<style>
+    #updatestatus:hover {
+        background-color: #21cd54 !important;
+        color: #ffffff !important;
     }
 
-    <style>
-        #updatestatus:hover {
-            background-color: #21cd54 !important;
-            color: #ffffff !important;
+    #refresh:hover {
+        background-color: #21cd54 !important;
+        color: #ffffff !important;
+    }
+
+    #example tr > :nth-child(1) {
+        display: none;
+    }
+
+    input[type='checkbox'] {
+        -webkit-appearance: none;
+        width: 30px;
+        height: 30px;
+        background: white;
+        border-radius: 5px;
+        border: 2px solid #555;
+    }
+    /* Base for label styling */
+    [type="checkbox"]:not(:checked),
+    [type="checkbox"]:checked {
+        position: absolute;
+        left: -9999px;
+    }
+
+        [type="checkbox"]:not(:checked) + label,
+        [type="checkbox"]:checked + label {
+            position: relative;
+            padding-left: 1.95em;
+            cursor: pointer;
         }
 
-        #refresh:hover {
-            background-color: #21cd54 !important;
-            color: #ffffff !important;
-        }
-
-        #example tr > :nth-child(1) {
-            display: none;
-        }
-
-        input[type='checkbox'] {
-            -webkit-appearance: none;
-            width: 30px;
-            height: 30px;
-            background: white;
-            border-radius: 5px;
-            border: 2px solid #555;
-        }
-        /* Base for label styling */
-        [type="checkbox"]:not(:checked),
-        [type="checkbox"]:checked {
-            position: absolute;
-            left: -9999px;
-        }
-
-            [type="checkbox"]:not(:checked) + label,
-            [type="checkbox"]:checked + label {
-                position: relative;
-                padding-left: 1.95em;
-                cursor: pointer;
+            /* checkbox aspect */
+            [type="checkbox"]:not(:checked) + label:before,
+            [type="checkbox"]:checked + label:before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 1.25em;
+                height: 1.25em;
+                border: 2px solid #ccc;
+                background: #fff;
+                border-radius: 4px;
+                box-shadow: inset 0 1px 3px rgba(0,0,0,.1);
+            }
+            /* checked mark aspect */
+            [type="checkbox"]:not(:checked) + label:after,
+            [type="checkbox"]:checked + label:after {
+                content: '\2713\0020';
+                position: absolute;
+                top: .15em;
+                left: .22em;
+                font-size: 1.3em;
+                line-height: 0.8;
+                color: #09ad7e;
+                transition: all .2s;
+                font-family: 'Lucida Sans Unicode', 'Arial Unicode MS', Arial;
+            }
+            /* checked mark aspect changes */
+            [type="checkbox"]:not(:checked) + label:after {
+                opacity: 0;
+                transform: scale(0);
             }
 
-                /* checkbox aspect */
-                [type="checkbox"]:not(:checked) + label:before,
-                [type="checkbox"]:checked + label:before {
-                    content: '';
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    width: 1.25em;
-                    height: 1.25em;
-                    border: 2px solid #ccc;
-                    background: #fff;
-                    border-radius: 4px;
-                    box-shadow: inset 0 1px 3px rgba(0,0,0,.1);
-                }
-                /* checked mark aspect */
-                [type="checkbox"]:not(:checked) + label:after,
-                [type="checkbox"]:checked + label:after {
-                    content: '\2713\0020';
-                    position: absolute;
-                    top: .15em;
-                    left: .22em;
-                    font-size: 1.3em;
-                    line-height: 0.8;
-                    color: #09ad7e;
-                    transition: all .2s;
-                    font-family: 'Lucida Sans Unicode', 'Arial Unicode MS', Arial;
-                }
-                /* checked mark aspect changes */
-                [type="checkbox"]:not(:checked) + label:after {
-                    opacity: 0;
-                    transform: scale(0);
-                }
+            [type="checkbox"]:checked + label:after {
+                opacity: 1;
+                transform: scale(1);
+            }
+    /* disabled checkbox */
+    [type="checkbox"]:disabled:not(:checked) + label:before,
+    [type="checkbox"]:disabled:checked + label:before {
+        box-shadow: none;
+        border-color: #bbb;
+        background-color: #ddd;
+    }
 
-                [type="checkbox"]:checked + label:after {
-                    opacity: 1;
-                    transform: scale(1);
-                }
-        /* disabled checkbox */
-        [type="checkbox"]:disabled:not(:checked) + label:before,
-        [type="checkbox"]:disabled:checked + label:before {
-            box-shadow: none;
-            border-color: #bbb;
-            background-color: #ddd;
-        }
+    [type="checkbox"]:disabled:checked + label:after {
+        color: #999;
+    }
 
-        [type="checkbox"]:disabled:checked + label:after {
-            color: #999;
-        }
+    [type="checkbox"]:disabled + label {
+        color: #aaa;
+    }
+    /* accessibility */
+    [type="checkbox"]:checked:focus + label:before,
+    [type="checkbox"]:not(:checked):focus + label:before {
+        border: 2px dotted blue;
+    }
 
-        [type="checkbox"]:disabled + label {
-            color: #aaa;
-        }
-        /* accessibility */
-        [type="checkbox"]:checked:focus + label:before,
-        [type="checkbox"]:not(:checked):focus + label:before {
-            border: 2px dotted blue;
-        }
-
-        /* hover style just for information *   /
+    /* hover style just for information *   /
     label:hover:before {
         border: 2px solid #4778d9 !important;
     }
@@ -108,33 +111,30 @@
 
     /* Useless styles, just for demo design */
 
-        body {
-            font-family: "Open sans", "Segoe UI", "Segoe WP", Helvetica, Arial, sans-serif;
-            color: #777;
+    body {
+        font-family: "Open sans", "Segoe UI", "Segoe WP", Helvetica, Arial, sans-serif;
+        color: #777;
+    }
+
+
+
+    .txtcenter {
+        margin-top: 4em;
+        font-size: .9em;
+        text-align: center;
+        color: #aaa;
+    }
+
+    .copy {
+        margin-top: 2em;
+    }
+
+        .copy a {
+            text-decoration: none;
+            color: #4778d9;
         }
-
-
-
-        .txtcenter {
-            margin-top: 4em;
-            font-size: .9em;
-            text-align: center;
-            color: #aaa;
-        }
-
-        .copy {
-            margin-top: 2em;
-        }
-
-            .copy a {
-                text-decoration: none;
-                color: #4778d9;
-            }
- 
-
-
-    </style>
-    <script>
+</style>
+<script>
      //   var d = new Date();
 
 
@@ -147,7 +147,7 @@
                 return false;
             $.ajax({
                 type: "POST",
-                url: "/StudentFeeMonths/GetStatusRecord?StatusRecord=" + _Mnh,
+                url: "/Admin_Dashboard/GetStatusRecord?StatusRecord=" + _Mnh,
                 success: function (data) {
                     $('.eeniart0017').css("display", "none");
                     if (data != "error") {
@@ -165,9 +165,10 @@
 
 
  function StudentFeeByClass(selectedClass) {
-       // alert("test");
+ //    alert("test");
+     debugger
         $('.eeniart0017').css("display", "block");
-        $.get('@Url.Action("StudentFeeByClass", "StudentFeeMonths")',
+        $.get('@Url.Action("StudentFeeByClass", "Admin_Dashboard")',
            { id: selectedClass }, function (data) {
                console.log(data);
                table.fnClearTable();
@@ -198,7 +199,7 @@
 
                             if (item.FeeReceived == null) {
 
-                             
+
                                 table.fnAddData([item.Id, item.Name,item.UserName, item.FeePayable, "-", item.FeeType, item.Discount, dat, item.Months]);
                             }
 
@@ -221,13 +222,14 @@
 
 
         function class_click(item) {
-       //     alert(item.value);
+            //    alert(item.value);
+            debugger
         if (item.value != "0")
             StudentFeeByClass(item.value);
         else {
             LoadRecord();
         }
-             
+
     }
 
 
@@ -235,7 +237,7 @@
             debugger
             $.ajax({
                 type: "POST",
-                url: "/StudentFeeMonths/GetStudentFeeMonth",
+                url: "/Admin_Dashboard/GetStudentFeeMonth",
                 success: function (data) {
                     debugger;
 
@@ -253,7 +255,7 @@
                         //var checkbox = '<input type="checkbox"   value="' + item.Id + '"class="check_class"  name="printcheck" id="test' + item.Id + '" /><label for="test' + item.Id + '"></label>';
                          // table.fnAddData([item.Id, item.Name, item.Date, item.Month, item.Status, item.PayableFee, item.MonthlyFee, item.Multiplier, checkbox]);
 
-                     
+
 
                         if (item.IssueDate == null) {
 
@@ -280,13 +282,13 @@
 
                             if (item.FeeReceived == null) {
 
-                             
+
                                 table.fnAddData([item.Id, item.Name,item.UserName, item.FeePayable, "-", item.FeeType, item.Discount, dat, item.Months]);
                             }
 
                             else {
 
-                                
+
 
                                 table.fnAddData([item.Id, item.Name,item.UserName, item.FeePayable, item.FeeReceived, item.FeeType, item.Discount, dat, item.Months]);
 
@@ -295,7 +297,7 @@
 
                         }
 
-                       
+
                         //else {
                         //    table.fnAddData([item.Id, item.Name, item.FeePayable, item.FeeReceived, item.Discount, item.IssueDate, item.Months]);
 
@@ -360,7 +362,7 @@
 
                     $.ajax({
                         type: "POST",
-                        url: "/StudentFeeMonths/GetStudentDetailDDL?Month=" + Month,
+                        url: "/Admin_Dashboard/GetStudentDetailDDL?Month=" + Month,
                         success: function (data) {
                             $('.eeniart0017').css("display", "none");
 
@@ -383,7 +385,7 @@
                 var Status = $(this).val();
                 $.ajax({
                     type: "POST",
-                    url: "/StudentFeeMonths/GetStudentDetailDDL?Status=" + Status + "&&Month=" + Month,
+                    url: "/Admin_Dashboard/GetStudentDetailDDL?Status=" + Status + "&&Month=" + Month,
                     success: function (data) {
                         $('.eeniart0017').css("display", "none");
                         table.fnClearTable();
@@ -436,10 +438,10 @@
 
                 '</div>' +
 
-                    
-                   
+
+
                       '<div class="col-md-2 pull-right">' +
-          
+
               '</div>'
               //+
               //  '<div class="col-md-2 pull-right !important">' +
@@ -455,53 +457,54 @@
         function Refresh() {
             window.location.href = "";
         }
-    </script>
-    <h2>Student Fee Months</h2>
-    <input type="hidden" name="counter" id="counter" />
+</script>
+<h2>Student Fee Months</h2>
+<input type="hidden" name="counter" id="counter" />
 
-    <div class="box box-primary">
-        <div class="box-body">
-            <div style="display: none">
-                @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control" })
-            </div>
-            <table class="table table-bordered" id="example">
-                <thead>
-                    <tr>
-
-                        <th>Id</th>
-                        <th>
-                            Name
-                        </th>
-                        <th>
-                            Roll No
-                        </th>
-                        <th>
-                            Fee Payable
-                        </th>
-
-                        <th>
-                            Fee Received
-                        </th>
-                        <th>
-                            Fee Type
-                        </th>
-                       
-                        <th>
-                            Discount
-                        </th>
-                        <th>
-                            Date
-                        </th>
-                        <th>
-                            Month
-                        </th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-
+<div class="box box-primary">
+    <div class="box-body">
+        <div style="display: none">
+            @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control" })
         </div>
+        <table class="table table-bordered" id="example">
+            <thead>
+                <tr>
+
+                    <th>Id</th>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Roll No
+                    </th>
+                    <th>
+                        Fee Payable
+                    </th>
+
+                    <th>
+                        Fee Received
+                    </th>
+                    <th>
+                        Fee Type
+                    </th>
+
+                    <th>
+                        Discount
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Month
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
     </div>
+</div>
+
 

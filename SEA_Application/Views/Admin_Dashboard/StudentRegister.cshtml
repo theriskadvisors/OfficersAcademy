@@ -12,15 +12,12 @@
 <style>
 
 
-      .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-           
-            height: 4000px !important;
-        
-     
-            }
+    .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 4000px !important;
+    }
 
 
     /*#SubjectsList {
@@ -92,31 +89,43 @@
     table th, td {
         width: 200px;
     }
-    .font_style
-    {
-      color:black;
 
+    .font_style {
+        color: black;
     }
-    .RadioButtonsInline
-    {
-        display:inline-block;
-        padding-right:20px;
+
+    .RadioButtonsInline {
+        display: inline-block;
+        padding-right: 20px;
     }
-     input[type=radio]:hover
-     {
-         cursor:pointer;
-     }
-     .box
-     {
-         margin-bottom:0;
-     }
-     b{
-         font-family: OpenSans,Arial,sans-serif;
-     }
-    
+
+    input[type=radio]:hover {
+        cursor: pointer;
+    }
+
+    .box {
+        margin-bottom: 0;
+    }
+
+    b {
+        font-family: OpenSans,Arial,sans-serif;
+    }
+
+    #StudentPhoto {
+        cursor: pointer;
+        padding: 8px;
+        background: #337ab7;
+        border-color: #2e6da4;
+        color: white !important;
+    }
+
+        #StudentPhoto:hover {
+            background: #204d74;
+            border-color: #122b40;
+        }
 </style>
 
-<label>@Html.ActionLink("Home", "Dashboard", "Account") > @Html.ActionLink("Student", "StudentsIndex", "AspNetUser") > <span class="text-primary">Create</span></label>
+@*<label>@Html.ActionLink("Home", "Dashboard", "Account") > @Html.ActionLink("Student", "StudentsIndex", "AspNetUser") > <span class="text-primary">Create</span></label>*@
 
 <script>
     $(document).ready(function () {
@@ -126,7 +135,14 @@
 
         $("#ClassID").change(function () {
 
-            $('#CalculateFee').click();
+
+            $("#TotalFee").val("");
+            $("#Discount").val(0);
+            $("#DiscountPercentage").val("");
+            $("#RemainingAmount").val("");
+
+
+          //  $('#CalculateFee').click();
             $("#MandatorySubjects").removeAttr('checked');
 
             var ClassId = $(this).val();
@@ -290,19 +306,20 @@
 
         $('#WithOutNotes').click(function () {
             $('#NotesID').hide();
-            $('#NotesAmount').val(0);
+            $('#NotesAmount').val("");
             $("#TotalFee").val("");
             //alert("Without note");
-            $('#FeeType').append('<option value="PerMonth">PerMonth</option>');
+            //$('#FeeType').append('<option value="PerMonth">PerMonth</option>');
            $("#NotesAmount").prop('required', false);
         });
         $('#WithNotes').click(function () {
 
-            $("#FeeType  option[value='PerMonth']").remove();
-           $("#NotesAmount").prop('required', true);
-
+            //$("#FeeType  option[value='PerMonth']").remove();
+            $("#NotesAmount").prop('required', true);
             $('#NotesID').show();
             $("#TotalFee").val("");
+            $('#NotesAmount').val(16000);
+
 
 
         });
@@ -415,6 +432,21 @@
                $("#ClassID").click();
 
         })
+          $("form").submit(function(){
+
+                  $("#FormSubmit").attr("disabled", true);
+
+
+
+
+          });
+
+        $("input,select").click(function () {
+
+            $("#FormSubmit").attr("disabled", false);
+
+        })
+
 
 
         $("#ClassID").click(function () {
@@ -523,8 +555,6 @@
                                 else {
 
                                 }
-
-
 
                             })
 
@@ -657,6 +687,43 @@
 
         })
 
+
+         $("#DiscountPercentage").bind('keyup mouseup', function () {    
+
+             $('#FormSubmit').prop('disabled', false);
+
+          //  Calculations();
+             $("#RemainingAmount").val("");
+             $("#Discount").val(0);
+             var SessionFee = $("#SessionFee").val();
+             var Discount = $("#DiscountPercentage").val();
+             var DiscountedAmount;
+
+             if (SessionFee != null && Discount != null && Discount>0 ) {
+
+                 DiscountedAmount = SessionFee * (parseFloat(Discount) / 100);
+
+                 var RemainingSessionFee = parseFloat(SessionFee) - parseFloat(DiscountedAmount);
+
+                 $("#Discount").val(DiscountedAmount);
+                 $("#RemainingAmount").val(RemainingSessionFee);
+
+                 if (RemainingSessionFee < 0) {
+
+                    $('#FormSubmit').prop('disabled', true);
+                 }
+
+
+             }
+
+
+             
+         });
+
+
+        //$("#")
+
+
   //      $("#FeeType").change(function () {
   //          var SessionFee = $("#SessionFee").val();
 
@@ -753,7 +820,8 @@
                 });
         });*@
 
-
+        
+       
 
           $('#framework').multiselect({
           nonSelectedText: 'Select Framework',
@@ -794,11 +862,12 @@
                Discount = 0;
         if (NotesAmount == "")
                NotesAmount = 0;
+            debugger
 
         if (FeeType == "Installment" && FeeType != "")
-                     {
-                       $('#TotalFee').val(parseInt(SessionFee) + 6000 + parseInt(NotesAmount) - parseInt(Discount));
-                     }
+        {
+                  $('#TotalFee').val(parseInt(SessionFee) + 6000 + parseInt(NotesAmount) - parseInt(Discount));
+           }
                 else if (FeeType == "PerMonth" && FeeType != "")
                 {
                     $('#TotalFee').val(parseInt(SessionFee) + 12000 + parseInt(NotesAmount) - parseInt(Discount));
@@ -863,12 +932,14 @@
 <div class="row">
     <div class="col-md-12">
         <div class="nav-tabs-custom">
+
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#tab_1" data-toggle="tab">Add Student</a></li>
                 <li><a href="#tab_2" data-toggle="tab">Upload Excel File</a></li>
             </ul>
 
-            <div class="tab-content" style="        background-color: #ECF0F5;
+            <div class="tab-content" style="
+        background-color: #ECF0F5;
         padding: 10px 0px 0px 0px;
     ">
                 <div class="tab-pane active" id="tab_1">
@@ -878,7 +949,7 @@
                         {
                             @Html.AntiForgeryToken()
 
-                            <div class="box box-primary" >
+                            <div class="box box-primary">
                                 <div class="box-header with-border"><h3 class="orange">User Information<span class="red-mark">*</span></h3></div>
                                 <div class="box-body row">
 
@@ -891,7 +962,7 @@
                                                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
 
 
-                                                <span>@ViewBag.ErrorMsg</span>  
+                                                <span>@ViewBag.ErrorMsg</span>
                                                 <br />
 
                                             </div>
@@ -900,9 +971,15 @@
                                             <label class="col-md-2 col-lg-2" for="Name"><b>Profile Photo:</b></label>
                                             <div class="col-md-6">
 
-                                                    <img src="/Content/Images/StudentDummy.png" id="imgPreview" height="150" width="150" />
-                                                    <input title="Upload a product image" style="" id="UploadImg" type="file" name="image" />
-                                           
+                                                <img src="/Content/Images/StudentDummy3.png" id="imgPreview" height="150" width="150" />
+                                                <br>
+                                                <br>
+                                                @*<input title="Upload a product image" id="UploadImg" type="file" name="image" />*@
+                                                <label for="UploadImg" id="StudentPhoto" class="custom-file-upload">
+                                                    Browse
+                                                </label>
+                                                <input style="display:none;" id="UploadImg" type="file" name="image" />
+
                                                 <br />
 
                                             </div>
@@ -915,19 +992,20 @@
                                                 <input type="text" class="form-control  text_box_style" id="Father_Name" name="Father_Name">
                                             </div>
                                         </div>
-                                        <div class="form-group">
+                                        @*<div class="form-group">
                                             <label class="col-md-2 col-lg-2 control-label" for="Address"><b>Address:</b></label>
                                             <div class="col-md-6">
                                                 <input type="text" class="form-control text_box_style" id="Address" name="Address">
                                             </div>
-                                        </div>
-                                        <div class="form-group">
+                                        </div>*@
+
+                                        @*<div class="form-group">
                                             <label class="col-md-2 col-lg-2 control-label" for="Name"><b>Age: </b><span class="red-mark"></span></label>
                                             <div class="col-md-6">
                                                 <input type="number" class="form-control text_box_style" id="Age" name="Age" min="15" max="60" T>
 
                                             </div>
-                                        </div>
+                                        </div>*@
 
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-md-2 col-lg-2 control-label"><b>Cell No:</b> </label>
@@ -950,28 +1028,28 @@
 
 
 
-                                        <div class="form-group">
-                                            <label for="CourseType" class="col-md-2 col-lg-2 control-label"><b>Course Type:</b> <span class="red-mark">*</span></label>
-                                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="CourseType" class="col-md-2 col-lg-2 control-label"><b>Course Type:</b> <span class="red-mark">*</span></label>
+                                    <div class="col-md-6">
 
-                                                <div class="form-group RadioButtonPadding" >
-                                                    <div class="radio RadioButtonsInline">
+                                        <div class="form-group RadioButtonPadding">
+                                            <div class="radio RadioButtonsInline">
 
-                                                        <label ><input   type="radio" name="CourseType" id="CssCourse" value="CSS" checked> CSS</label>
-                                                    </div>
-                                                    <div class="radio RadioButtonsInline">
-
-                                                        <label  ><input type="radio"  name="CourseType" id="PmsCourse" value="PMS"> PMS </label>
-                                                    </div>
-                                                    <div class="radio RadioButtonsInline">
-
-                                                        <label  ><input type="radio"  name="CourseType" id="OnePaper" value="OnePaper"> One Paper </label>
-                                                    </div>
-
-                                                </div>
-                                                <span id="Phone-Error" class="text-danger"></span>
+                                                <label><input type="radio" name="CourseType" id="CssCourse" value="CSS" checked> CSS</label>
                                             </div>
+                                            <div class="radio RadioButtonsInline">
+
+                                                <label><input type="radio" name="CourseType" id="PmsCourse" value="PMS"> PMS </label>
+                                            </div>
+                                            <div class="radio RadioButtonsInline">
+
+                                                <label><input type="radio" name="CourseType" id="OnePaper" value="OnePaper"> One Paper </label>
+                                            </div>
+
                                         </div>
+                                        <span id="Phone-Error" class="text-danger"></span>
+                                    </div>
+                                </div>
 
 
                                     </div>
@@ -980,9 +1058,9 @@
                             </div>
 
 
-                            <div class="box box-primary" @*style="border:0"*@ >
+                            <div class="box box-primary" @*style="border:0"*@>
 
-                                <div class="box-header with-border" ><h3 class="orange">Account Information</h3></div>
+                                <div class="box-header with-border"><h3 class="orange">Account Information</h3></div>
                                 <div class="box-body">
 
                                     <div class="form-group">
@@ -1020,6 +1098,7 @@
                                     <br />
                                 </div>
                             </div>
+
 
 
 
@@ -1323,7 +1402,7 @@
                                         </div>
                                     </div>
                             -->
-                            <div class="box box-primary" >
+                            <div class="box box-primary">
 
                                 <div class="box-header with-border"><h3 class="orange">Subject Details</h3></div>
                                 <div class="box-body">
@@ -1472,17 +1551,13 @@
                                 </div>
                             </div>
 
-
-
-
-
                             <div class="box box-primary">
                                 @*<div class="box-title"></div>*@
                                 <div class="box-header with-border"><h3 class="orange">Fee Details</h3></div>
                                 <div class="box-body">
 
 
-                                    <div class="form-group" >
+                                    <div class="form-group">
                                         <label for="CourseType" class="col-md-2 col-lg-2 control-label"><b>Notes Catergory:</b> <span class="red-mark">*</span></label>
                                         <div class="col-md-6">
 
@@ -1515,12 +1590,25 @@
 
 
                                     <div class="form-group">
-                                        <label class="col-md-2 col-lg-2 control-label"><b>Discount Amount:</b></label>
+                                        <label class="col-md-2 col-lg-2 control-label"><b>Discount %</b></label>
                                         <div class="col-md-6">
-                                            <input type="number" value="0" class="form-control round-border" name="Discount" id="Discount" />
+                                            <input type="number" value="0" class="form-control round-border" name="DiscountPercentage" id="DiscountPercentage" />
                                         </div>
                                     </div>
 
+
+                                    <div class="form-group">
+                                        <label class="col-md-2 col-lg-2 control-label"><b>Discount Amount</b></label>
+                                        <div class="col-md-6">
+                                            <input type="number" value="0" class="form-control round-border" name="Discount" id="Discount" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 col-lg-2 control-label"><b>Remaining Amount </b></label>
+                                        <div class="col-md-6">
+                                            <input type="number" value="0" class="form-control round-border" name="RemainingAmount" id="RemainingAmount" readonly />
+                                        </div>
+                                    </div>
 
 
                                     <div class="form-group">
@@ -1553,6 +1641,10 @@
 
                                     <div class="form-group">
                                         <div class="col-md-offset-1 col-lg-offset-1 col-md-5">
+
+
+                                            @*<button  class="btn btn-primary" id="VerifyButton"> Thumb Verification   </button>*@
+
                                             <button type="submit" class="btn btn-primary" value="Register" id="FormSubmit">Register</button>
                                             <button type="button" id="cancel" class="btn btn-default">Cancel</button>
                                         </div>
@@ -1593,9 +1685,9 @@
                                 <br />
 
                                 @*<div id="ErrorDiv">
-                <span class="newlines" style="color:red"> @TempData["ErrorMsg"]</span>
+                                        <span class="newlines" style="color:red"> @TempData["ErrorMsg"]</span>
 
-            </div>*@
+                                    </div>*@
 
 
                                 <div id="ErrorDiv">
@@ -1650,11 +1742,44 @@
 
 <script>
     $(document).ready(function () {
+
+
+        //$("#VerifyButton").click(function () {
+
+
+        //     alert("usama");
+        //                 WshShell = new ActiveXObject("Wscript.Shell"); //Create WScript Object
+        //        WshShell.run("C:\Program Files (x86)\Default Company Name\Biometric\zk4500.exe");
+
+
+        //})
+
+        /*
+        document.dispatchEvent(new CustomEvent('funcIntraLaunch',
+       {
+          'detail': { task: 'run',
+                   program: 'C:\\Program Files (x86)\\Default Company Name\\Bimetric\\zk4500.exe',
+             workingfolder: '',
+                  switches: '%MY_DOCUMENTS%\\switch.txt',
+               windowstate: 'max',
+                 recallapp: '',
+                   options: '',
+                       log: '',
+                 playsound: 'http://www.yourdomain.com/sound.wav',
+                showerrors: 'true'
+                    } }));
+
+
+        */
+
+
+
         $("#UploadImg").change(function () {
 
 
             readURL(this);
         });
+
 
         function readURL(input) {
             if (input.files && input.files[0]) {
@@ -1711,6 +1836,8 @@
 
 
         })
+
+        //  MyObject = new ActiveXObject( "WScript.Shell" )
 
 
     })

@@ -4,10 +4,18 @@
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 <style>
+
+    .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height:1500px !important;
+    }
+
+
     #error-tag {
         color: red;
     }
-
 
     body {
         font-family: "Open sans", "Segoe UI", "Segoe WP", Helvetica, Arial, sans-serif;
@@ -172,7 +180,6 @@
 
                     $.ajax({
 
-
                         type: "POST",
                         url: "/GrandTotal/StudentFeeDetail/",
                         data: { "id": selectedStudentId },
@@ -183,7 +190,11 @@
                             $("#TotalFee").val(data.TotalFee)
                             $("#PayableFee").val(data.FeePayable);
 
-                            $("#FeeType").val(data.FeeType);
+                            $("#FeeType").val(data.ReceiptNo +"("+ data.FeeType +")");
+
+                            $("#AdminCopyReceiptNo").text(data.ReceiptNo);
+                            $("#StudentCopyReceiptNo").text(data.ReceiptNo);
+
 
                             $("#ChallanForm").attr('name', data.Id);
                             $("#btnPrint").attr('name', data.Id);
@@ -314,25 +325,25 @@
 
                 <b>Cashier:</b> @ViewBag.UserName <span>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Admin Copy</b>
-                </span>
+                    <b>Admin Copy - </b><span id="AdminCopyReceiptNo"> </span>
+    </span>
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="description" colspan="2">Challan Information</th>
+    <table>
+        <thead>
+            <tr>
+                <th class="description" colspan="2">Challan Information</th>
 
-                        </tr>
+            </tr>
 
 
-                    </thead>
-                    <tbody id="billbody" style="border: 1px solid black">
-                    </tbody>
-                </table>
-                <p class="centered">
-                    <br>Developed by : TheRiskAdvisors
-                </p>
-            </div>
+        </thead>
+        <tbody id="billbody" style="border: 1px solid black">
+        </tbody>
+    </table>
+    <p class="centered">
+        <br>Developed by : TheRiskAdvisors
+    </p>
+</div>
 
 
         </div>
@@ -358,8 +369,7 @@
                 </p>
 
                 <b>Cashier:</b> @ViewBag.UserName <span>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Student Copy</b>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Student Copy - </b><span id="StudentCopyReceiptNo"> </span>
                 </span>
 
 
@@ -398,6 +408,7 @@
         $("#CashReceived").bind('keyup mouseup', function () {
             $("#bill").css('display', 'none');
             $("#btnPrint").css('display', 'none');
+                 $("#bill1").css('display', 'none');
             var payableFee = $("#PayableFee").val();
 
             var cashReceived = $(this).val();
@@ -434,6 +445,7 @@
         $("#Discount").bind('keyup mouseup', function () {
             $("#bill").css('display', 'none');
             $("#btnPrint").css('display', 'none');
+               $("#bill1").css('display', 'none');
 
             var payableFee = $("#PayableFee").val();
             var discount = $(this).val();
@@ -477,6 +489,14 @@
             var Discount = $("#Discount").val();
             var cashReceived = $("#CashReceived").val();
             var remainingBalance = parseInt($("#RemainingBalance").val());
+
+            var FeeType = $("#FeeType").val();
+
+
+
+
+
+         //   alert(FeeType);
             var status = "";
             if (remainingBalance == 0) {
                 status = "Paid";
@@ -488,12 +508,12 @@
             var TableRow
             if (Discount != "") {
 
-                TableRow = "<tr>  <td class='description'>Student Name</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + student + "</td></tr><tr>  <td class='description'>Student Session</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + session + "</td></tr><tr>  <td class='description'>Fee Month</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + monthNames[d.getMonth()] + "</td></tr><tr>  <td class='description'>Total Fee</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + $("#TotalFee").val() + "</td></tr><tr>  <td class='description'>Cash Received</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + cashReceived + "</td></tr>  <tr>  <td class='description'>Discount</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + Discount + "</td></tr> <tr>  <td class='description'>Remaining Balance</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + remainingBalance + "</td></tr>    <tr>  <td class='description'>Status</td> <td class='quantity' >&nbsp;&nbsp;&nbsp; " + status + " </td></tr>    "
+                TableRow = "<tr>  <td class='description'>Student Name</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + student + "</td></tr><tr>  <td class='description'>Student Session</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + session + "</td></tr><tr>  <td class='description'>Fee Month</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + monthNames[d.getMonth()] + "</td></tr>  <tr>  <td class='description'>Total Fee</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + $("#TotalFee").val() + "</td></tr><tr>  <td class='description'>Cash Received</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + cashReceived + "</td></tr>  <tr>  <td class='description'>Discount</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + Discount + "</td></tr> <tr>  <td class='description'>Remaining Balance</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + remainingBalance + "</td></tr>    <tr>  <td class='description'>Status</td> <td class='quantity' >&nbsp;&nbsp;&nbsp; " + status + " </td></tr>    "
 
 
             }
             else {
-                TableRow = "<tr>  <td class='description'>Student Name</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + student + "</td></tr><tr>  <td class='description'>Student Session</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + session + "</td></tr><tr>  <td class='description'>Fee Month</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + monthNames[d.getMonth()] + "</td></tr><tr>  <td class='description'>Total Fee</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + $("#TotalFee").val() + "</td></tr><tr>  <td class='description'>Cash Received</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + cashReceived + "</td></tr>   <tr>  <td class='description'>Remaining Balance</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + remainingBalance + "</td></tr>    <tr>  <td class='description'>Status</td> <td class='quantity' >&nbsp;&nbsp;&nbsp; " + status + " </td></tr>    "
+                TableRow = "<tr>  <td class='description'>Student Name</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + student + "</td></tr><tr>  <td class='description'>Student Session</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + session + "</td></tr><tr>  <td class='description'>Fee Month</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + monthNames[d.getMonth()] + "</td></tr>    <tr>  <td class='description'>Total Fee</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + $("#TotalFee").val() + "</td></tr><tr>  <td class='description'>Cash Received</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + cashReceived + "</td></tr>   <tr>  <td class='description'>Remaining Balance</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + remainingBalance + "</td></tr>    <tr>  <td class='description'>Status</td> <td class='quantity' >&nbsp;&nbsp;&nbsp; " + status + " </td></tr>    "
 
             }
 

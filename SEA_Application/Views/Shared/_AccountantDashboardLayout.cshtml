@@ -1,19 +1,24 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<head>
-    <style>
-        li.nav-item.start.active.open {
-            border-bottom: 0px solid white !important;
-        }
+    <head>
 
-        .page-sidebar-menu.page-sidebar-menu-hover-submenu > li:hover > .sub-menu {
-            margin-left: 183px;
-            margin-top: -77px;
-        }
-    </style>
 
-</head>
+        <style>
+            li.nav-item.start.active.open {
+                border-bottom: 0px solid white !important;
+            }
+
+            .page-sidebar-menu.page-sidebar-menu-hover-submenu > li:hover > .sub-menu {
+                margin-left: 183px;
+                margin-top: -77px;
+            }
+        </style>
+
+
+
+
+    </head>
 <div class="page-sidebar navbar-collapse collapse">
     <!-- BEGIN SIDEBAR MENU -->
     <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
@@ -22,35 +27,35 @@
     <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
     <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
     <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-    <ul id="layout_navbar_toogle" class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenu " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="1">
+    <ul id="layout_navbar_toogle" class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenu page-sidebar-menu-closed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="1">
         @*start active open*@
-        <li class="nav-item">
+        <li class="nav-item" id="Item17">
             <a href="@Url.Action("Index", "FinanceSummary")" class="nav-link nav-toggle">
                 <i style="color:#b8c7ce;font-size:13px" class="icon-home"></i>
                 <span class="title">Home</span>
             </a>
         </li>
 
-        <li class="nav-item">
+        <li class="nav-item" id="Item18">
             <a href="@Url.Action("StudentsIndex", "AspNetUser")">
                 <i style="color:#b8c7ce;font-size:13px" class="fa fa-user"></i>
                 <span style="color:#b8c7ce !important" class="title">Students</span>
             </a>
         </li>
 
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item19">
             <a href="@Url.Action("Index", "AspNetEmployees")">
                 <i style="color:#b8c7ce;font-size:13px" class="fa fa-users"></i>
                 <span style="color:#b8c7ce !important" class="title">Employees</span>
             </a>
         </li>
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item20">
             <a href="@(Url.Action("Summary", "FinanceSummary"))">
                 <i style="color:#b8c7ce;font-size:13px" class="fa fa-table"></i>
                 <span style="color:#b8c7ce !important" class="title">Summary</span>
             </a>
         </li>
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item21">
             <a href="@(Url.Action("LedgerList", "LedgerGroups"))">
                 <i style="color:#b8c7ce;font-size:13px" class="fa fa-object-group"></i>
                 <span style="color:#b8c7ce !important" class="title">Ledger Group</span>
@@ -64,42 +69,42 @@
             </a>
         </li>*@
 
-        <li class="nav-item">
+        <li class="nav-item" id="Item22">
             <a href="@(Url.Action("LedgerList", "Ledgers"))">
                 <i style="color:#b8c7ce;font-size:13px" class="fa fa-list-ol"></i>
                 <span style="color:#b8c7ce !important" class="title">Ledger</span>
             </a>
         </li>
 
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item23">
             <a href="@(Url.Action("CashIndex", "FinanceSummary"))">
                 <i style="color:#b8c7ce;font-size:13px" class="fa fa-money"></i>
                 <span style="color:#b8c7ce !important" class="title">Cash</span>
             </a>
         </li>
 
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item24">
             <a href="@(Url.Action("BankIndex", "FinanceSummary"))">
                 <i style="color:#b8c7ce;font-size:13px" class="fa fa-bank"></i>
                 <span style="color:#b8c7ce !important" class="title">Bank</span>
             </a>
         </li>
 
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item25">
             <a href="@(Url.Action("Voucher", "Vouchers"))">
                 <i style="color:#b8c7ce;font-size:13px" class="fa fa-pagelines"></i>
                 <span style="color:#b8c7ce !important" class="title">Journal Entry</span>
             </a>
         </li>
 
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item26">
             <a href="@(Url.Action("InterTransaction", "FinanceSummary"))">
                 <i style="color:#b8c7ce;font-size:13px" class="fa fa-exchange"></i>
                 <span class="title" style="color:#b8c7ce !important">Inter Account Transfer</span>
             </a>
         </li>
 
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item27">
             <a href="@(Url.Action("ChartsOf_Accounts", "ChartOfAccounts"))">
                 <i style="color:#b8c7ce;font-size:13px" class="fa fa-line-chart"></i>
                 <span class="title" style="color:#b8c7ce !important">Chart of Accounts</span>
@@ -152,10 +157,10 @@
             </ul>
         </li>*@
 
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item28">
             <a href="@(Url.Action("Index", "StudentFeeMonths"))">
                 <i style="color:#b8c7ce;font-size:13px" class="fa fa-times-circle"></i>
-                <span class="title" style="color:#b8c7ce !important">Monthly Fee</span>
+                <span class="title" style="color:#b8c7ce !important">Fee Status</span>
             </a>
         </li>
 
@@ -180,28 +185,28 @@
             </a>
         </li>*@
 
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item29">
             <a href="@(Url.Action("StudentDiscountIndex", "StudentDiscounts"))">
                 <i style="color:#b8c7ce;font-size:13px" class="fa fa-minus-circle"></i>
                 <span class="title" style="color:#b8c7ce !important">Student Discount</span>
             </a>
         </li>
 
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item30">
             <a href="@(Url.Action("FeeDiscountIndex", "FeeDiscounts"))">
                 <i style="color:#b8c7ce;font-size:13px" class="fa fa-minus-square"></i>
                 <span class="title" style="color:#b8c7ce !important">Discount Type</span>
             </a>
         </li>
 
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item31">
             <a href="@(Url.Action("Index", "EmployeeSalaryRecord"))">
                 <i style="color:#b8c7ce;font-size:13px" class="fa fa-minus-circle"></i>
                 <span class="title" style="color:#b8c7ce !important">Employee Salary Record</span>
             </a>
         </li>
 
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item32">
             <a href="@(Url.Action("Index", "EmployeeSalaries"))">
                 <i style="color:#b8c7ce;font-size:13px" class="fa fa-minus-circle"></i>
                 <span class="title" style="color:#b8c7ce !important">Employee Salary</span>

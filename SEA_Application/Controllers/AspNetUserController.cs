@@ -29,7 +29,7 @@ namespace SEA_Application.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private SEA_DatabaseEntities db = new SEA_DatabaseEntities();
-         int SessionID =  Int32.Parse(SessionIDStaticController.GlobalSessionID);
+        int SessionID = Int32.Parse(SessionIDStaticController.GlobalSessionID);
         public AspNetUserController()
         {
 
@@ -204,7 +204,7 @@ namespace SEA_Application.Controllers
             StSu.Subjects = sub;
 
             var students = (from student in db.AspNetStudents
-                            where student.ClassID == id && student.AspNetUser.Status!="False"
+                            where student.ClassID == id && student.AspNetUser.Status != "False"
                             select new { student.AspNetUser.PhoneNumber, student.AspNetUser.Email, student.AspNetUser.UserName, student.AspNetUser.Name, student.AspNetClass.ClassName }).Distinct().ToList();
 
             StSu.Students = new List<Students>();
@@ -222,7 +222,7 @@ namespace SEA_Application.Controllers
 
             if (id == 0)
             {
-                var Students = db.AspNetStudents.Where(x => x.AspNetUser.Status != "False" && x.AspNetStudent_Session_class.Any(z=> z.SessionID == SessionID)).Select(x => new
+                var Students = db.AspNetStudents.Where(x => x.AspNetUser.Status != "False" && x.AspNetStudent_Session_class.Any(z => z.SessionID == SessionID)).Select(x => new
                 {
                     x.AspNetUser.Name,
                     x.AspNetUser.Email,
@@ -287,7 +287,7 @@ namespace SEA_Application.Controllers
                                         join StudentSubject in db.AspNetStudent_Subject on Subject.Id equals StudentSubject.SubjectID
                                         where StudentSubject.StudentID == id && Subject.CourseType == coursetype && Subject.IsManadatory == true
                                         select Subject;
-                                       
+
 
 
 
@@ -351,7 +351,7 @@ namespace SEA_Application.Controllers
         }
 
 
-      
+
 
         [HttpGet]
         public JsonResult StudentsBySubject(int id)
@@ -379,8 +379,8 @@ namespace SEA_Application.Controllers
 
             var teachers = (from teacher in db.AspNetUsers.Where(x => x.Status != "False")
                             join t2 in db.AspNetUsers_Session
-                            on teacher.Id equals t2.UserID 
-                            where teacher.AspNetRoles.Select(y => y.Name).Contains("Teacher") &&  t2.AspNetSession.AspNetClasses.Any(x => x.Id == id) /*&& db.AspNetChapters.Any(x=>x.Id==id)*/
+                            on teacher.Id equals t2.UserID
+                            where teacher.AspNetRoles.Select(y => y.Name).Contains("Teacher") && t2.AspNetSession.AspNetClasses.Any(x => x.Id == id) /*&& db.AspNetChapters.Any(x=>x.Id==id)*/
                             select new
                             {
                                 teacher.Id,
@@ -412,10 +412,11 @@ namespace SEA_Application.Controllers
         }
 
         public JsonResult AllTeachers()
-        { 
+        {
 
-            var teachers = (from teacher in db.AspNetUsers.Where(x => x.Status != "False") join t2 in db.AspNetUsers_Session
-                            on teacher.Id  equals t2.UserID 
+            var teachers = (from teacher in db.AspNetUsers.Where(x => x.Status != "False")
+                            join t2 in db.AspNetUsers_Session
+on teacher.Id equals t2.UserID
                             where teacher.AspNetRoles.Select(y => y.Name).Contains("Teacher")
                             select new
                             {
@@ -426,6 +427,7 @@ namespace SEA_Application.Controllers
                                 teacher.PhoneNumber,
                                 teacher.UserName,
                                 teacher.Name,
+
 
                             }).ToList();
 
@@ -464,8 +466,8 @@ namespace SEA_Application.Controllers
             {
                 var parent = new parent();
                 // var parentuser = db.AspNetUsers.Where(x => x.Id == item.ParentID & x.Status != "False").Select(x => x).FirstOrDefault();
-             //   var parentuser = db.AspNetUsers.Where(x => x.Id == item.ParentID & x.Status != "False").Select(x => x).FirstOrDefault();
-                var parentuser = (from usr in db.AspNetUsers.Where(x => x.Id == item.ParentID & x.Status != "False") join t2 in db.AspNetUsers_Session.Where(x=>x.SessionID == SessionID) on usr.Id equals t2.UserID select usr).FirstOrDefault();
+                //   var parentuser = db.AspNetUsers.Where(x => x.Id == item.ParentID & x.Status != "False").Select(x => x).FirstOrDefault();
+                var parentuser = (from usr in db.AspNetUsers.Where(x => x.Id == item.ParentID & x.Status != "False") join t2 in db.AspNetUsers_Session.Where(x => x.SessionID == SessionID) on usr.Id equals t2.UserID select usr).FirstOrDefault();
                 try
                 {
                     parent.Id = parentuser.Id;
@@ -502,18 +504,19 @@ namespace SEA_Application.Controllers
             //var subID = db.AspNetStudent_Subject.FirstOrDefault(x => x.StudentID == id);
             //if(subID!= null)
             //{
-                //Modified by shahazad
-                //var classidcheck = db.AspNetSubjects.FirstOrDefault(x => x.Id == subID.SubjectID);
-                //var ClassIDscheck = db.AspNetClasses.FirstOrDefault(x => x.Id == classidcheck.ClassID);
-                //var ClassIDNAMEv = ClassIDscheck.Id;
-                
+            //Modified by shahazad
+            //var classidcheck = db.AspNetSubjects.FirstOrDefault(x => x.Id == subID.SubjectID);
+            //var ClassIDscheck = db.AspNetClasses.FirstOrDefault(x => x.Id == classidcheck.ClassID);
+            //var ClassIDNAMEv = ClassIDscheck.Id;
+
+            var Classid = db.AspNetStudents.Where(x => x.StudentID == id).FirstOrDefault().ClassID;
+
+            var SessionId = db.AspNetClasses.Where(x => x.Id == Classid).FirstOrDefault().SessionID;
+
+            var SessionFee = db.AspNetSessions.Where(x => x.Id == SessionId).FirstOrDefault().Total_Fee;
 
 
-                var ClassIDNAMEv = db.AspNetStudents.Where(x => x.StudentID == id).FirstOrDefault().ClassID;
-
-
-
-                return Json(ClassIDNAMEv, JsonRequestBehavior.AllowGet);
+            return Json(new { ClassIDNAMEv = Classid, SessionFeeOfSession = SessionFee }, JsonRequestBehavior.AllowGet);
             //}
             //else
             //{
@@ -528,11 +531,11 @@ namespace SEA_Application.Controllers
 
         public JsonResult TeacherClass(string id)
         {
-           
 
 
-            var SessionId = db.AspNetUsers_Session.Where(x => x.UserID== id).FirstOrDefault().SessionID;
-            var ClassId  = db.AspNetClasses.Where(x => x.SessionID== SessionId).FirstOrDefault().Id;
+
+            var SessionId = db.AspNetUsers_Session.Where(x => x.UserID == id).FirstOrDefault().SessionID;
+            var ClassId = db.AspNetClasses.Where(x => x.SessionID == SessionId).FirstOrDefault().Id;
 
 
 
@@ -549,7 +552,6 @@ namespace SEA_Application.Controllers
         // GET: AspNetUser/Edit/5
         public ActionResult EditStudent(string id)
         {
-             
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -563,12 +565,48 @@ namespace SEA_Application.Controllers
             ViewBag.CourseType = employee.CourseType;
             ViewBag.ClassTiming = employee.ClassTimings;
             ViewBag.employee = employee;
+
             //ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+
+            int VoucherExist = 0;
+            int TotalVoucher = db.Vouchers.Where(x => x.StudentId == employee.Id).Count();
+
+            if (TotalVoucher == 1)
+            {
+                StudentFeeMonth StudentFeeMonth = db.StudentFeeMonths.Where(x => x.StudentId == employee.Id).Select(x => x).FirstOrDefault();
+
+                var voucherId = db.Vouchers.Where(x => x.StudentId == employee.Id).FirstOrDefault().Id;
+
+                if (StudentFeeMonth != null)
+                {
+                    ViewBag.VoucherId = voucherId;
+                    ViewBag.FeePayAbleAsTotalFee = StudentFeeMonth.FeePayable;
+                    ViewBag.Discount = StudentFeeMonth.Discount;
+                    ViewBag.NotesFee = StudentFeeMonth.NotesFee;
+                    ViewBag.FeeType = StudentFeeMonth.FeeType;
+                    VoucherExist = 1;
+
+                }
+            }
+
+            else
+            {
+
+                ViewBag.VoucherId = null;
+                ViewBag.FeePayAbleAsTotalFee = null;
+                ViewBag.Discount = null;
+                ViewBag.NotesFee = null;
+                ViewBag.FeeType = null;
+            }
+
+            ViewBag.VoucherExist = VoucherExist;
+
             if (aspNetUser == null)
             {
                 return HttpNotFound();
             }
+
             return View(aspNetUser);
         }
 
@@ -622,7 +660,7 @@ namespace SEA_Application.Controllers
                 emp.ProvidedFund = Convert.ToInt32(Request.Form["ProvidedFund"]);
                 emp.Tax = Convert.ToInt32(Request.Form["Tax"]);
                 emp.EOP = Convert.ToInt32(Request.Form["EOP"]);
-                if(Request.Form["appliedFor"]=="Admin" || Request.Form["appliedFor"] == "Principal")
+                if (Request.Form["appliedFor"] == "Admin" || Request.Form["appliedFor"] == "Principal")
                 {
                     emp.VirtualRoleId = db.AspNetVirtualRoles.Where(x => x.Name == "Directive Staff").Select(x => x.Id).FirstOrDefault();
 
@@ -653,12 +691,12 @@ namespace SEA_Application.Controllers
             return View(model);
         }
 
-    public ActionResult GetRollNumber()
+        public ActionResult GetRollNumber()
         {
-           int Roll_Number = 0;
-/////
-           // List<RollNumberList> rl = new List<RollNumberList>();
-           string Max = db.GetRollNumbers().FirstOrDefault().ToString();
+            int Roll_Number = 0;
+            /////
+            // List<RollNumberList> rl = new List<RollNumberList>();
+            string Max = db.GetRollNumbers().FirstOrDefault().ToString();
             if (Max != null)
             {
                 int MAX_RollNumber = Int32.Parse(Max);
@@ -668,7 +706,7 @@ namespace SEA_Application.Controllers
             {
                 Roll_Number = 1000;
             }
-      
+
             return Content(Roll_Number.ToString());
         }
 
@@ -676,7 +714,7 @@ namespace SEA_Application.Controllers
 
 
 
- public JsonResult GetUserName(string userName)
+        public JsonResult GetUserName(string userName)
         {
             check Check = new check();
             Check.count = 0;
@@ -703,7 +741,7 @@ namespace SEA_Application.Controllers
 
         public class check
         {
-            public int count {  get; set; }
+            public int count { get; set; }
             public string by { get; set; }
         }
 
@@ -734,6 +772,12 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditStudent([Bind(Include = "Id,Email,PasswordHash,SecurityStamp,PhoneNumber,UserName,Name")] AspNetUser aspNetUser, HttpPostedFileBase image)
         {
+
+        
+
+
+
+
             var dbTransaction = db.Database.BeginTransaction();
             try
             {
@@ -753,7 +797,6 @@ namespace SEA_Application.Controllers
                         aspNetUser.Email = "oa" + aspNetUser.UserName + "@gmail.com";
 
                     }
-
 
                     ApplicationDbContext context = new ApplicationDbContext();
                     //IEnumerable<string> selectedsubjects;
@@ -840,7 +883,11 @@ namespace SEA_Application.Controllers
                     }
 
                     string selectedClass = Request.Form["ClassID"];
-                   
+
+                    int ClassInt  =    Convert.ToInt32(selectedClass);
+
+                   int? SessionIdOfSelectedStudent = db.AspNetClasses.Where(x => x.Id == ClassInt).FirstOrDefault().SessionID;
+
                     AspNetStudent_Subject stu_sub_rem = new AspNetStudent_Subject();
                     do
                     {
@@ -848,9 +895,9 @@ namespace SEA_Application.Controllers
                         try
                         {
                             db.AspNetStudent_Subject.Remove(stu_sub_rem);
-                       
-                            
-                            
+
+
+
                             db.SaveChanges();
                         }
                         catch
@@ -878,20 +925,20 @@ namespace SEA_Application.Controllers
 
                         student.StudentIMG = image.FileName;
                     }
-                     db.SaveChanges();
+                    db.SaveChanges();
 
 
                     if (selectedsubjects != null)
                     {
 
                         foreach (var item in selectedsubjects)
-                    {
-                        AspNetStudent_Subject stu_sub = new AspNetStudent_Subject();
-                        stu_sub.StudentID = aspNetUser.Id;
-                        stu_sub.SubjectID = Convert.ToInt32(item);
-                        db.AspNetStudent_Subject.Add(stu_sub);
-                        db.SaveChanges();
-                    }
+                        {
+                            AspNetStudent_Subject stu_sub = new AspNetStudent_Subject();
+                            stu_sub.StudentID = aspNetUser.Id;
+                            stu_sub.SubjectID = Convert.ToInt32(item);
+                            db.AspNetStudent_Subject.Add(stu_sub);
+                            db.SaveChanges();
+                        }
                     }
                     //db.Entry(aspNetUser).State = EntityState.Modified;
 
@@ -908,6 +955,245 @@ namespace SEA_Application.Controllers
                     db1.Entry(aspNetUser).Property(x => x.SecurityStamp).IsModified = false;
 
                     db1.SaveChanges();
+
+               
+
+                    var VoucherExist = Request.Form["VoucherExist"];
+
+
+                    if (VoucherExist == "1")
+                    {
+
+                        var VoucherId = Request.Form["VoucherId"];
+
+                        int VoucherIdToInt = Convert.ToInt32(VoucherId);
+
+                        List<VoucherRecord> VoucherRecordExists = db.VoucherRecords.Where(x => x.VoucherId == VoucherIdToInt).ToList();
+
+                        foreach (var VoucherRecord in VoucherRecordExists)
+                        {
+
+                            var VoucherRecordAmount = VoucherRecord.Amount;
+                            var VoucherRecordLedgerId = VoucherRecord.LedgerId;
+                            var Ledger = db.Ledgers.Where(x => x.Id == VoucherRecordLedgerId).FirstOrDefault();
+                            var CurrentBalanceofLedger = Ledger.CurrentBalance;
+
+                            Ledger.CurrentBalance = CurrentBalanceofLedger - VoucherRecordAmount;
+
+                            db.SaveChanges();
+
+                        }
+
+                        db.VoucherRecords.RemoveRange(VoucherRecordExists);
+                        db.SaveChanges();
+
+
+                        var VoucherToDelete = db.Vouchers.Where(x => x.Id == VoucherIdToInt).FirstOrDefault();
+
+                        db.Vouchers.Remove(VoucherToDelete);
+                        db.SaveChanges();
+
+                        var StudentFeeMonthToDelete =  db.StudentFeeMonths.Where(x => x.StudentId == student.Id).FirstOrDefault();
+
+                        db.StudentFeeMonths.Remove(StudentFeeMonthToDelete);
+                        db.SaveChanges();
+
+                        //Ledgers Manipulation//
+
+
+                        var Discount = Request.Form["Discount"];
+
+                        double discount = 0;
+                        if (Request.Form["Discount"] == "")
+                        {
+                            discount = 0;
+                        }
+                        else
+                        {
+                            discount = Convert.ToDouble(Request.Form["Discount"]);
+                        }
+
+
+
+                        StudentFeeMonth studentFeeMonth = new StudentFeeMonth();
+
+                        string NotesCategory = Request.Form["NotesCategory"];
+                        string FeeType = Request.Form["FeeType"];
+                        double NotesFee = 0;
+
+                        double Total = Convert.ToDouble(Request.Form["SessionFee"]);
+                        double studentFee = Convert.ToDouble(Request.Form["SessionFee"]);
+
+                        if (FeeType == "Installment")
+                        {
+
+                            Total = Total + 6000;
+                            studentFee = studentFee + 6000;
+                        }
+                        else if (FeeType == "PerMonth")
+                        {
+                            Total = Total + 12000;
+
+                            studentFee = studentFee + 12000;
+                        }
+                        else
+                        {
+                            Total = Total + 0;
+                            studentFee = studentFee + 0;
+                        }
+
+
+                        if (NotesCategory == "WithNotes")
+                        {
+
+                            NotesFee = Convert.ToDouble(Request.Form["NotesAmount"]);
+                            studentFeeMonth.TotalFee = Total + Convert.ToDouble(Request.Form["NotesAmount"]);
+                            studentFeeMonth.NotesFee = Convert.ToDouble(Request.Form["NotesAmount"]);
+
+                        }
+                        else
+                        {
+                            studentFeeMonth.TotalFee = Total;
+                        }
+
+                        var Month = DateTime.Now.ToString("MMMM");
+                        studentFeeMonth.Months = Month;
+                        studentFeeMonth.IssueDate = DateTime.Now;
+                        studentFeeMonth.FeePayable = Convert.ToDouble(Request.Form["TotalFee"]);
+                        studentFeeMonth.Discount = discount;
+                        studentFeeMonth.FeeType = Request.Form["FeeType"];
+                        studentFeeMonth.SessionId = SessionIdOfSelectedStudent;
+                        studentFeeMonth.StudentId = student.Id;
+                        studentFeeMonth.Status = "Pending";
+
+                        db.StudentFeeMonths.Add(studentFeeMonth);
+                        db.SaveChanges();
+
+
+
+                        var id = User.Identity.GetUserId();
+                        var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
+                        Voucher voucher = new Voucher();
+                        var SessionName = db.AspNetSessions.Where(x => x.Id == SessionIdOfSelectedStudent).FirstOrDefault().SessionName;
+                        voucher.Name = "Student Fee Creation of student " + aspNetUser.Name + " Session Name " + SessionName; 
+                        voucher.Notes = "Account Receiveable, discount, and revenue is updated";
+                        voucher.Date = DateTime.Now;
+                        voucher.StudentId = student.Id;
+
+                        voucher.CreatedBy = username;
+                        voucher.SessionID = SessionIdOfSelectedStudent;
+                        int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);
+
+                        voucher.VoucherNo = Convert.ToInt32(VoucherObj) + 1;
+                        db.Vouchers.Add(voucher);
+                        db.SaveChanges();
+
+                        //Voucher Record
+
+                        var Leadger = db.Ledgers.Where(x => x.Name == "Account Receiveable").FirstOrDefault();
+                        int AdminDrawerId = Leadger.Id;
+                        decimal? CurrentBalance = Leadger.CurrentBalance;
+
+                        VoucherRecord voucherRecord = new VoucherRecord();
+                        decimal? AfterBalance = CurrentBalance + Convert.ToDecimal(studentFeeMonth.FeePayable);
+                        voucherRecord.LedgerId = AdminDrawerId;
+                        voucherRecord.Type = "Dr";
+                        voucherRecord.Amount = Convert.ToDecimal(studentFeeMonth.FeePayable);
+                        voucherRecord.CurrentBalance = CurrentBalance;
+
+                        voucherRecord.AfterBalance = AfterBalance;
+                        voucherRecord.VoucherId = voucher.Id;
+
+                        voucherRecord.Description = "Fee added of student (" + aspNetUser.Name + ") (" + SessionName + ")";
+
+
+                        Leadger.CurrentBalance = AfterBalance;
+                        db.VoucherRecords.Add(voucherRecord);
+                        db.SaveChanges();
+
+
+
+                        if (NotesCategory == "WithNotes")
+                        {
+
+
+                            VoucherRecord voucherRecord1 = new VoucherRecord();
+
+                            var LeadgerNotes = db.Ledgers.Where(x => x.Name == "Notes").FirstOrDefault();
+
+                            decimal? CurrentBalanceOfNotes = LeadgerNotes.CurrentBalance;
+                            decimal? AfterBalanceOfNotes = CurrentBalanceOfNotes + Convert.ToDecimal(NotesFee);
+                            voucherRecord1.LedgerId = LeadgerNotes.Id;
+                            voucherRecord1.Type = "Cr";
+                            voucherRecord1.Amount = Convert.ToDecimal(NotesFee);
+                            voucherRecord1.CurrentBalance = CurrentBalanceOfNotes;
+                            voucherRecord1.AfterBalance = AfterBalanceOfNotes;
+                            voucherRecord1.VoucherId = voucher.Id;
+                            voucherRecord1.Description = "Notes against student with notes of (" + aspNetUser.Name + ") (" + SessionName + ")";
+                            LeadgerNotes.CurrentBalance = AfterBalanceOfNotes;
+
+                            db.VoucherRecords.Add(voucherRecord1);
+                            db.SaveChanges();
+                        }
+                         VoucherRecord voucherRecord2 = new VoucherRecord();
+
+                        var IdofLedger = from Ledger in db.Ledgers
+                                         join LedgerHd in db.LedgerHeads on Ledger.LedgerHeadId equals LedgerHd.Id
+                                         where LedgerHd.Name == "Income" && Ledger.Name == "Student Fee"
+                                         select new
+                                         {
+                                             Ledger.Id
+
+                                         };
+
+                        int studentFeeId = Convert.ToInt32(IdofLedger.FirstOrDefault().Id);
+                        var studentFeeL = db.Ledgers.Where(x => x.Id == studentFeeId).FirstOrDefault();
+
+                        decimal? CurrentBalanceOfStudentFee = studentFeeL.CurrentBalance;
+                        decimal? AfterBalanceOfStudentFee = CurrentBalanceOfStudentFee + Convert.ToDecimal(studentFee);
+                        voucherRecord2.LedgerId = studentFeeL.Id;
+                        voucherRecord2.Type = "Cr";
+                        voucherRecord2.Amount = Convert.ToDecimal(studentFee);
+                        voucherRecord2.CurrentBalance = CurrentBalanceOfStudentFee;
+                        voucherRecord2.AfterBalance = AfterBalanceOfStudentFee;
+                        voucherRecord2.VoucherId = voucher.Id;
+                        // voucherRecord2.Description = "Credit in Student Fee(income)";
+                        voucherRecord2.Description = "Fee added of student (" + aspNetUser.Name + ") (" + SessionName + ")";
+                        studentFeeL.CurrentBalance = AfterBalanceOfStudentFee;
+                        db.VoucherRecords.Add(voucherRecord2);
+
+                        db.SaveChanges();
+                        if (discount != 0)
+                        {
+
+                            VoucherRecord voucherRecord3 = new VoucherRecord();
+
+                            var LeadgerDiscount = db.Ledgers.Where(x => x.Name == "Discount").FirstOrDefault();
+
+                            decimal? CurrentBalanceOfDiscount = LeadgerDiscount.CurrentBalance;
+                            decimal? AfterBalanceOfDiscount = CurrentBalanceOfDiscount + Convert.ToDecimal(discount);
+                            voucherRecord3.LedgerId = LeadgerDiscount.Id;
+                            voucherRecord3.Type = "Dr";
+                            voucherRecord3.Amount = Convert.ToDecimal(discount);
+                            voucherRecord3.CurrentBalance = CurrentBalanceOfDiscount;
+                            voucherRecord3.AfterBalance = AfterBalanceOfDiscount;
+                            voucherRecord3.VoucherId = voucher.Id;
+                            voucherRecord3.Description = "Discount given to student  (" + aspNetUser.Name + ") (" + SessionName + ") on payable fee " + Convert.ToDouble(Request.Form["TotalFee"]);
+                            LeadgerDiscount.CurrentBalance = AfterBalanceOfDiscount;
+
+                            db.VoucherRecords.Add(voucherRecord3);
+                            db.SaveChanges();
+                        }
+
+                    }
+
+                    else
+                    {
+
+                    }
+
+
+
                 }
                 dbTransaction.Commit();
                 return RedirectToAction("StudentsIndex");
@@ -916,16 +1202,16 @@ namespace SEA_Application.Controllers
 
             return View("StudentsIndex");
         }
-   
+
         public ActionResult StudentDetail(string userName)
         {
             AspNetUser aspNetUser = db.AspNetUsers.Where(x => x.UserName == userName).Select(x => x).FirstOrDefault();
-           var studentimg=  db.AspNetStudents.Where(x => x.StudentID == aspNetUser.Id).FirstOrDefault().StudentIMG;
+            var studentimg = db.AspNetStudents.Where(x => x.StudentID == aspNetUser.Id).FirstOrDefault().StudentIMG;
             var employ = db.AspNetStudents.Where(x => x.StudentID == aspNetUser.Id).Select(x => x).FirstOrDefault();
 
 
 
-            ViewBag.StudentImage =  studentimg;
+            ViewBag.StudentImage = studentimg;
 
             AspNetStudent employee = new AspNetStudent();
             employee.Id = employ.Id;
@@ -936,7 +1222,7 @@ namespace SEA_Application.Controllers
             employee.CourseType = employ.CourseType;
             employee.StudentIMG = employ.StudentIMG;
 
-          
+
 
 
             var niio = DateTime.Now;
@@ -946,9 +1232,9 @@ namespace SEA_Application.Controllers
             var yea = niio.Year;
 
             string datooo = "";
-           // var empl = employ.BirthDate;//.Replace("/", "-");
-           // var tyuio = empl.Replace("/", "-");
-           // var diib = employ.BirthDate.Split('-');
+            // var empl = employ.BirthDate;//.Replace("/", "-");
+            // var tyuio = empl.Replace("/", "-");
+            // var diib = employ.BirthDate.Split('-');
             //if(diib[0].Length == 4)
             //{
             //    datooo = employ.BirthDate;
@@ -969,9 +1255,9 @@ namespace SEA_Application.Controllers
 
 
             //employee.BirthDate = datooo;
-          //  employee.Nationality = employ.Nationality;
-           // employee.Religion = employ.Religion;
-          //  employee.Gender = employ.Gender;
+            //  employee.Nationality = employ.Nationality;
+            // employee.Religion = employ.Religion;
+            //  employee.Gender = employ.Gender;
 
             employee.PhoneNumber = employ.PhoneNumber;
 
@@ -1013,7 +1299,7 @@ namespace SEA_Application.Controllers
             //}
 
 
-           // ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+            // ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
 
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             return View();
@@ -1036,18 +1322,20 @@ namespace SEA_Application.Controllers
 
 
 
-            var students =(from std in  db.AspNetStudents.Where(x => x.AspNetUser.Status != "False") join t2 in
-                               db.AspNetStudent_Session_class on std.Id equals t2.StudentID
-                          select new {
-                              
-                std.AspNetUser.Name,
-                std.AspNetUser.Email,
-                std.AspNetUser.PhoneNumber,
-                std.AspNetClass.ClassName,
-                std.AspNetUser.UserName
-            }).ToList();
+            var students = (from std in db.AspNetStudents.Where(x => x.AspNetUser.Status != "False")
+                            join t2 in
+db.AspNetStudent_Session_class on std.Id equals t2.StudentID
+                            select new
+                            {
 
-       
+                                std.AspNetUser.Name,
+                                std.AspNetUser.Email,
+                                std.AspNetUser.PhoneNumber,
+                                std.AspNetClass.ClassName,
+                                std.AspNetUser.UserName
+                            }).ToList();
+
+
 
             return Json(students, JsonRequestBehavior.AllowGet);
 
@@ -1056,8 +1344,8 @@ namespace SEA_Application.Controllers
 
         public ViewResult StudentIndex(string Error)
         {
-         
-           // ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+
+            // ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
 
             ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
             ViewBag.Error = Error;
@@ -1093,9 +1381,9 @@ namespace SEA_Application.Controllers
             //  db.AspNetEmployees.Where(x => x.Aspnet_Employee_Session.Select(y => y.Session_Id.ToString()).Contains(GetSessionID)).ToList();
             //var data =  db.GetAccountantListingData("17").ToList(); 
             var data2 = db.AspNetUsers.Where(x => x.AspNetRoles.Select(y => y.Name).Contains("Accountant") && x.Status != "False").ToList();
-            var rr =   db.GetAccountantListingData(SessionID.ToString()).ToList();
+            var rr = db.GetAccountantListingData(SessionID.ToString()).ToList();
             List<GetAccountantListingData_Result> list = new List<GetAccountantListingData_Result>();
-            
+
             return View("Index", db.AspNetUsers.Where(x => x.AspNetRoles.Select(y => y.Name).Contains("Accountant") && x.Status != "False").ToList());
         }
 
@@ -1172,7 +1460,7 @@ namespace SEA_Application.Controllers
 
         public ViewResult ParentIndex()
         {
-          //  ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+            //  ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
 
             ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.SessionID == SessionID), "Id", "ClassName");
             ViewBag.data = "Parent";
@@ -1419,7 +1707,7 @@ namespace SEA_Application.Controllers
             ws.Cells["H1"].Value = "Employeer";
             ws.Cells["I1"].Value = "Mother Name";
             ws.Cells["J1"].Value = "Cell No";
-            ws.Cells["K1"].Value = "Email";       
+            ws.Cells["K1"].Value = "Email";
             ws.Cells["L1"].Value = "Mother Occupation";
             ws.Cells["M1"].Value = "Mother Employer";
             ws.Cells["N1"].Value = "Child1 ID";
@@ -1433,7 +1721,7 @@ namespace SEA_Application.Controllers
             {
                 ws.Cells[string.Format("A{0}", rowStart)].Value = item.AspNetUser.Email;
                 ws.Cells[string.Format("B{0}", rowStart)].Value = item.AspNetUser.Name;
-                ws.Cells[string.Format("C{0}", rowStart)].Value = item.AspNetUser.UserName;          
+                ws.Cells[string.Format("C{0}", rowStart)].Value = item.AspNetUser.UserName;
                 ws.Cells[string.Format("D{0}", rowStart)].Value = item.FatherName;
                 ws.Cells[string.Format("E{0}", rowStart)].Value = item.FatherCellNo;
                 ws.Cells[string.Format("F{0}", rowStart)].Value = item.FatherEmail;
@@ -1448,17 +1736,17 @@ namespace SEA_Application.Controllers
                 ws.Cells[string.Format("O{0}", rowStart)].Value = "-";
                 ws.Cells[string.Format("P{0}", rowStart)].Value = "-";
                 ws.Cells[string.Format("Q{0}", rowStart)].Value = "-";
-                var child = db.AspNetParent_Child.Where(x => x.ParentID==item.UserID).Select(x => x.AspNetUser.UserName).ToList();
-                for(int i=0;i<child.Count;i++)
+                var child = db.AspNetParent_Child.Where(x => x.ParentID == item.UserID).Select(x => x.AspNetUser.UserName).ToList();
+                for (int i = 0; i < child.Count; i++)
                 {
-                    if(i==0)
-                    ws.Cells[string.Format("N{0}", rowStart)].Value = child[i];
-                    if(i==1)
-                    ws.Cells[string.Format("O{0}", rowStart)].Value = child[i];
-                    if(i==2)
-                    ws.Cells[string.Format("P{0}", rowStart)].Value = child[i];
-                    if(i==3)
-                    ws.Cells[string.Format("Q{0}", rowStart)].Value = child[i];
+                    if (i == 0)
+                        ws.Cells[string.Format("N{0}", rowStart)].Value = child[i];
+                    if (i == 1)
+                        ws.Cells[string.Format("O{0}", rowStart)].Value = child[i];
+                    if (i == 2)
+                        ws.Cells[string.Format("P{0}", rowStart)].Value = child[i];
+                    if (i == 3)
+                        ws.Cells[string.Format("Q{0}", rowStart)].Value = child[i];
                 }
                 rowStart++;
             }
@@ -1477,7 +1765,7 @@ namespace SEA_Application.Controllers
         {
             //ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
-            
+
             return View();
         }
 
@@ -1869,8 +2157,8 @@ namespace SEA_Application.Controllers
 
             try
             {
-              
-             
+
+
                 if (type != "Student" && type != "Parent")
                 {
                     var employee = db.AspNetEmployees.Where(x => x.UserId == User.Id).Select(x => x).FirstOrDefault();
@@ -1901,14 +2189,14 @@ namespace SEA_Application.Controllers
                     return RedirectToAction("ParentIndex");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                if(type=="Student")
+                if (type == "Student")
                 {
                     ModelState.AddModelError("", e.Message);
                     return RedirectToAction("StudentDetail", new { userName = User.UserName });
                 }
-                else if(type=="Teacher")
+                else if (type == "Teacher")
                 {
                     ModelState.AddModelError("", e.Message);
                     return RedirectToAction("TeacherDetail", new { userName = User.UserName });
@@ -2237,7 +2525,7 @@ namespace SEA_Application.Controllers
 
         protected override void Dispose(bool disposing)
         {
-           if (disposing)
+            if (disposing)
             {
                 db.Dispose();
             }
