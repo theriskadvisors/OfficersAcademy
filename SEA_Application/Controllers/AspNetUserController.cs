@@ -571,7 +571,7 @@ on teacher.Id equals t2.UserID
 
             int VoucherExist = 0;
             int TotalVoucher = db.Vouchers.Where(x => x.StudentId == employee.Id).Count();
-
+            
             if (TotalVoucher == 1)
             {
                 StudentFeeMonth StudentFeeMonth = db.StudentFeeMonths.Where(x => x.StudentId == employee.Id).Select(x => x).FirstOrDefault();
@@ -586,9 +586,8 @@ on teacher.Id equals t2.UserID
                     ViewBag.NotesFee = StudentFeeMonth.NotesFee;
                     ViewBag.FeeType = StudentFeeMonth.FeeType;
                     VoucherExist = 1;
-
-                }
-            }
+                    }
+               }
 
             else
             {
@@ -772,11 +771,7 @@ on teacher.Id equals t2.UserID
         [ValidateAntiForgeryToken]
         public ActionResult EditStudent([Bind(Include = "Id,Email,PasswordHash,SecurityStamp,PhoneNumber,UserName,Name")] AspNetUser aspNetUser, HttpPostedFileBase image)
         {
-
-        
-
-
-
+                    
 
             var dbTransaction = db.Database.BeginTransaction();
             try
@@ -798,6 +793,9 @@ on teacher.Id equals t2.UserID
 
                     }
 
+                    var StudentId =     db.AspNetStudents.Where(x => x.StudentID == aspNetUser.Id).FirstOrDefault().Id;
+
+
                     ApplicationDbContext context = new ApplicationDbContext();
                     //IEnumerable<string> selectedsubjects;
                     //if (Request.Form["subjects"] != null)
@@ -815,6 +813,41 @@ on teacher.Id equals t2.UserID
                     //{
                     //    ViewBag.SubError = "Please select subjects";
                     //}
+
+                    int VoucherExist1 = 0;
+                    int TotalVoucher = db.Vouchers.Where(x => x.StudentId == StudentId).Count();
+
+                    if (TotalVoucher == 1)
+                    {
+                        StudentFeeMonth StudentFeeMonth = db.StudentFeeMonths.Where(x => x.StudentId == StudentId).Select(x => x).FirstOrDefault();
+
+                        var voucherId = db.Vouchers.Where(x => x.StudentId == StudentId).FirstOrDefault().Id;
+
+                        if (StudentFeeMonth != null)
+                        {
+                            ViewBag.VoucherId = voucherId;
+                            ViewBag.FeePayAbleAsTotalFee = StudentFeeMonth.FeePayable;
+                            ViewBag.Discount = StudentFeeMonth.Discount;
+                            ViewBag.NotesFee = StudentFeeMonth.NotesFee;
+                            ViewBag.FeeType = StudentFeeMonth.FeeType;
+                            VoucherExist1 = 1;
+
+                        }
+                    }
+
+                    else
+                    {
+
+                        ViewBag.VoucherId = null;
+                        ViewBag.FeePayAbleAsTotalFee = null;
+                        ViewBag.Discount = null;
+                        ViewBag.NotesFee = null;
+                        ViewBag.FeeType = null;
+                    }
+
+                    ViewBag.VoucherExist = VoucherExist1;
+
+
 
                     List<string> selectedsubjects = new List<string>();
 
