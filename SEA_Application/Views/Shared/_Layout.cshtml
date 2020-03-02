@@ -1,11 +1,11 @@
 ﻿@using Microsoft.AspNet.Identity
 @using System.Security.Claims;
 @{
-//   var cp = (ClaimsPrincipal)User;
+    //   var cp = (ClaimsPrincipal)User;
 
-//   var nameClaim = cp.FindFirst(ClaimTypes.Name);
+    //   var nameClaim = cp.FindFirst(ClaimTypes.Name);
 
-//   ViewBag.Name = nameClaim.Value;
+    //   ViewBag.Name = nameClaim.Value;
 }
 
 <!DOCTYPE html>
@@ -34,54 +34,75 @@ License: You must have a valid license purchased only from themeforest(the above
 
     <style>
 
-        .page-header.navbar .page-logo {
-     background: #26344b !important; 
-}
-        .page-header.navbar .page-top {
-    box-shadow: 0 1px 10px 0 rgba(50,50,50,.2);
-    background: #17C4BB !important;
-}
+          
 
-        .page-header.navbar .top-menu .navbar-nav>li.dropdown .dropdown-toggle:hover {
-       background-color: #73d4cf !important;
-}
+        body {
+            background: white;
+        }
+
+
+        .page-sidebar-wrapper {
+        }
+
+        .page-header.navbar .page-logo {
+            background: #26344b !important;
+        }
+
+        .page-header.navbar .page-top {
+            box-shadow: 0 1px 10px 0 rgba(50,50,50,.2);
+            background: #17C4BB !important;
+        }
+
+        .page-header.navbar .top-menu .navbar-nav > li.dropdown .dropdown-toggle:hover {
+            background-color: #73d4cf !important;
+        }
         /*.page-header.navbar .top-menu .navbar-nav>li.dropdown.open .dropdown-toggle {
-    background-color: #73d4cf !important;
-}*/
-        .page-header.navbar .top-menu .navbar-nav>li.dropdown .dropdown-toggle .badge.badge-default {
-    background-color: #ffffff !important;
-    color: #17c4bb !important;
-}
-        .page-header.navbar .top-menu .navbar-nav>li.dropdown .dropdown-toggle>i {
-    color: #ffffff !important;
-}
-       .page-content-wrapper .page-content {
-    margin-left: 195px;
-    margin-top: 0;
-    min-height: 600px;
-    padding: 0 !important;
-} 
+            background-color: #73d4cf !important;
+        }*/
+        .page-header.navbar .top-menu .navbar-nav > li.dropdown .dropdown-toggle .badge.badge-default {
+            background-color: #ffffff !important;
+            color: #17c4bb !important;
+        }
+
+        .page-header.navbar .top-menu .navbar-nav > li.dropdown .dropdown-toggle > i {
+            color: #ffffff !important;
+        }
+
+        .page-content-wrapper .page-content {
+            margin-left: 195px;
+            margin-top: 0;
+            min-height: 600px;
+            padding: 0 !important;
+        }
+
         .form_padding_20 {
             padding-left: 20px;
         }
 
         .page-footer {
-    padding: 0px !important;
-    font-size: 12px;
-     height: 0px !important; 
-}
+            padding: 0px !important;
+            font-size: 12px;
+            height: 0px !important;
+        }
+
         .page-sidebar .page-sidebar-menu {
-    margin-bottom: 10px !important;
-}
-div#page-content {
-    min-height: 0px !important;
-}
-img.logo-default{
+            margin-bottom: 10px !important;
+        }
+
+        div#page-content {
+            min-height: 0px !important;
+        }
+
+        img.logo-default {
             height: 43px !important;
-    width: 123px !important;
-    margin-top: 16px !important;
-    margin-left: -14px !important;
-}
+            width: 123px !important;
+            margin-top: 16px !important;
+            margin-left: -14px !important;
+        }
+
+        body {
+            color: #FFFFFF;
+        }
     </style>
 
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
@@ -159,6 +180,8 @@ img.logo-default{
 
     <script>
     $(document).ready(function () {
+        //$("#menu_toggler_sidebar_toggler").click();
+        //$("#menu_toggler_sidebar_toggler").click();
 
         $.get('@Url.Action("GetNotifications","AspNetPushNotifications")', function (data) {
             if (data.length == 0) {
@@ -177,6 +200,10 @@ img.logo-default{
 
             });
         });
+
+
+
+
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -197,18 +224,37 @@ img.logo-default{
             });
         });
 
-        var width = $('#layout_navbar_toogle').outerWidth();
-        $('#page_logo_id').outerWidth(width);
-        $('#page-content').css({ "margin-left": width });
-
-        $('#menu_toggler_sidebar_toggler').click(function () {
-
-            setTimeout(function () {
                 var width = $('#layout_navbar_toogle').outerWidth();
+            
                 $('#page_logo_id').outerWidth(width);
-            }, 10);
 
-        });
+                $('#menu_toggler_sidebar_toggler').click(function () {
+
+                setTimeout(function () {
+                    var width = $('#layout_navbar_toogle').outerWidth();
+
+                    $('#page_logo_id').outerWidth(width);
+
+                }, 10);
+
+
+            });
+
+
+
+
+         $("#layout_navbar_toogle").on("click","li", function(){
+
+
+
+
+             localStorage.ElementToActiveAfterPageLoad = $(this).attr('id');
+                   });
+
+
+                  $("#" + localStorage.ElementToActiveAfterPageLoad).addClass('active');
+
+
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -216,10 +262,9 @@ img.logo-default{
     </script>
 </head>
 
-
 <!-- END HEAD -->
 
-<body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
+<body class="page-header-fixed page-header-fixed page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid page-sidebar-closed">
     <!-- BEGIN HEADER -->
     <div class="page-header navbar navbar-fixed-top">
         <!-- BEGIN HEADER INNER -->
@@ -229,7 +274,7 @@ img.logo-default{
                 <a href="Dashboard">
                     <img src="~/Content/Images/logo SEA_1.PNG" alt="logo" class="logo-default" height="44" width="98" style="height: 35px;width: 100px;margin-top: 20px;">
                 </a>
-             
+
                 <div id="menu_toggler_sidebar_toggler" class="menu-toggler sidebar-toggler">
                     <!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
                 </div>
@@ -307,9 +352,9 @@ img.logo-default{
                         <!-- DOC: Remove "dropdown-hoverable" and add data-toggle="dropdown" data-hover="dropdown" data-close-others="true" attributes to the below A element with dropdown-toggle class -->
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
                             @*<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                <i class="icon-bell"></i>
-                                <span id="notification_numbers" class="badge badge-default"> </span>
-                            </a>*@
+                                    <i class="icon-bell"></i>
+                                    <span id="notification_numbers" class="badge badge-default"> </span>
+                                </a>*@
                             <ul id="notification_Dropdown_area" class="dropdown-menu">
                                 <li class="external">
                                     <h3>
@@ -445,7 +490,15 @@ img.logo-default{
                                                     </span>
                                                 </a>
                                             </li>
-                                        </ul><div class="slimScrollBar" style="background: rgb(99, 114, 131); width: 7px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px;"></div><div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(234, 234, 234); opacity: 0.2; z-index: 90; right: 1px;"></div>
+                                        </ul><div class="slimScrollBar" style="        background: rgb(99, 114, 131);
+        width: 7px;
+        position: absolute;
+        top: 0px;
+        opacity: 0.4;
+        display: block;
+        border-radius: 7px;
+        z-index: 99;
+        right: 1px;"></div><div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(234, 234, 234); opacity: 0.2; z-index: 90; right: 1px;"></div>
                                     </div>
                                 </li>
                             </ul>
