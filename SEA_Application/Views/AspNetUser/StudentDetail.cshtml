@@ -36,6 +36,9 @@
                         $('#FormSubmit').prop('disabled', true);
                     }
 
+
+
+
                 }
             });
 
@@ -80,8 +83,8 @@
         var selectedStudent = '@Model.Id';
         $.get('@Url.Action("StudentClass")',
             { id: selectedStudent }, function (data) {
-                selectedClass = data;
-                $('#ClassID').val(data);
+                selectedClass = data.ClassIDNAMEv;
+                $('#ClassID').val(data.ClassIDNAMEv);
                 $.get('@Url.Action("SubjectsByClass")',
                  { id: $('#ClassID').val(), coursetype: CourseType }, function (data) {
                      $('#subjects').html('');

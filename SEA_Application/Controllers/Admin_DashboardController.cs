@@ -2062,6 +2062,7 @@ namespace SEA_Application.Controllers
             ViewBag.SessionFee = db.AspNetSessions.Where(x => x.Id == SessionID).FirstOrDefault().Total_Fee;
             // ViewBag.ClassID2 = db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault();
             return View();
+
         }
 
         [HttpPost]
@@ -2099,8 +2100,7 @@ namespace SEA_Application.Controllers
                 model.Email = "oa" + model.UserName + "@gmail.com";
 
             }
-
-
+            
             var dbTransaction = db.Database.BeginTransaction();
             try
             {
@@ -2330,8 +2330,6 @@ namespace SEA_Application.Controllers
                             studentFee = studentFee + 0;
                         }
 
-
-
                         if (NotesCategory == "WithNotes")
                         {
 
@@ -2397,13 +2395,8 @@ namespace SEA_Application.Controllers
                         db.VoucherRecords.Add(voucherRecord);
                         db.SaveChanges();
 
-
-
-
                         if (NotesCategory == "WithNotes")
                         {
-
-
                             VoucherRecord voucherRecord1 = new VoucherRecord();
 
                             var LeadgerNotes = db.Ledgers.Where(x => x.Name == "Notes").FirstOrDefault();

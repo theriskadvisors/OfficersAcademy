@@ -33,6 +33,7 @@ namespace SEA_Application.Controllers
         public AspNetUserController()
         {
 
+
         }
 
         public AspNetUserController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -571,11 +572,10 @@ on teacher.Id equals t2.UserID
 
             int VoucherExist = 0;
             int TotalVoucher = db.Vouchers.Where(x => x.StudentId == employee.Id).Count();
-            
+
             if (TotalVoucher == 1)
             {
                 StudentFeeMonth StudentFeeMonth = db.StudentFeeMonths.Where(x => x.StudentId == employee.Id).Select(x => x).FirstOrDefault();
-
                 var voucherId = db.Vouchers.Where(x => x.StudentId == employee.Id).FirstOrDefault().Id;
 
                 if (StudentFeeMonth != null)
@@ -586,8 +586,9 @@ on teacher.Id equals t2.UserID
                     ViewBag.NotesFee = StudentFeeMonth.NotesFee;
                     ViewBag.FeeType = StudentFeeMonth.FeeType;
                     VoucherExist = 1;
-                    }
-               }
+
+                }
+            }
 
             else
             {
@@ -771,7 +772,7 @@ on teacher.Id equals t2.UserID
         [ValidateAntiForgeryToken]
         public ActionResult EditStudent([Bind(Include = "Id,Email,PasswordHash,SecurityStamp,PhoneNumber,UserName,Name")] AspNetUser aspNetUser, HttpPostedFileBase image)
         {
-                    
+
 
             var dbTransaction = db.Database.BeginTransaction();
             try
@@ -793,7 +794,7 @@ on teacher.Id equals t2.UserID
 
                     }
 
-                    var StudentId =     db.AspNetStudents.Where(x => x.StudentID == aspNetUser.Id).FirstOrDefault().Id;
+                    var StudentId = db.AspNetStudents.Where(x => x.StudentID == aspNetUser.Id).FirstOrDefault().Id;
 
 
                     ApplicationDbContext context = new ApplicationDbContext();
@@ -917,9 +918,9 @@ on teacher.Id equals t2.UserID
 
                     string selectedClass = Request.Form["ClassID"];
 
-                    int ClassInt  =    Convert.ToInt32(selectedClass);
+                    int ClassInt = Convert.ToInt32(selectedClass);
 
-                   int? SessionIdOfSelectedStudent = db.AspNetClasses.Where(x => x.Id == ClassInt).FirstOrDefault().SessionID;
+                    int? SessionIdOfSelectedStudent = db.AspNetClasses.Where(x => x.Id == ClassInt).FirstOrDefault().SessionID;
 
                     AspNetStudent_Subject stu_sub_rem = new AspNetStudent_Subject();
                     do
@@ -989,7 +990,7 @@ on teacher.Id equals t2.UserID
 
                     db1.SaveChanges();
 
-               
+
 
                     var VoucherExist = Request.Form["VoucherExist"];
 
@@ -1026,7 +1027,7 @@ on teacher.Id equals t2.UserID
                         db.Vouchers.Remove(VoucherToDelete);
                         db.SaveChanges();
 
-                        var StudentFeeMonthToDelete =  db.StudentFeeMonths.Where(x => x.StudentId == student.Id).FirstOrDefault();
+                        var StudentFeeMonthToDelete = db.StudentFeeMonths.Where(x => x.StudentId == student.Id).FirstOrDefault();
 
                         db.StudentFeeMonths.Remove(StudentFeeMonthToDelete);
                         db.SaveChanges();
@@ -1108,7 +1109,7 @@ on teacher.Id equals t2.UserID
                         var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
                         Voucher voucher = new Voucher();
                         var SessionName = db.AspNetSessions.Where(x => x.Id == SessionIdOfSelectedStudent).FirstOrDefault().SessionName;
-                        voucher.Name = "Student Fee Creation of student " + aspNetUser.Name + " Session Name " + SessionName; 
+                        voucher.Name = "Student Fee Creation of student " + aspNetUser.Name + " Session Name " + SessionName;
                         voucher.Notes = "Account Receiveable, discount, and revenue is updated";
                         voucher.Date = DateTime.Now;
                         voucher.StudentId = student.Id;
@@ -1168,7 +1169,7 @@ on teacher.Id equals t2.UserID
                             db.VoucherRecords.Add(voucherRecord1);
                             db.SaveChanges();
                         }
-                         VoucherRecord voucherRecord2 = new VoucherRecord();
+                        VoucherRecord voucherRecord2 = new VoucherRecord();
 
                         var IdofLedger = from Ledger in db.Ledgers
                                          join LedgerHd in db.LedgerHeads on Ledger.LedgerHeadId equals LedgerHd.Id
@@ -1357,7 +1358,7 @@ on teacher.Id equals t2.UserID
 
             var students = (from std in db.AspNetStudents.Where(x => x.AspNetUser.Status != "False")
                             join t2 in
-db.AspNetStudent_Session_class on std.Id equals t2.StudentID
+                db.AspNetStudent_Session_class on std.Id equals t2.StudentID
                             select new
                             {
 
