@@ -112,7 +112,7 @@ namespace SEA_Application.Controllers
             Class.Class = CurrentSession.SessionName;
             Class.SessionID = CurrentSession.Id;
             db.AspNetClasses.Add(Class);
-         //   db.SaveChanges();
+            db.SaveChanges();
 
             //Create Subjects to New Session
 
