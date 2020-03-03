@@ -49,75 +49,28 @@
             </a>
         </li>
 
+
         <li id="Item2" class="nav-item  ">
             <a href="@Url.Action("TeachersIndex", "AspNetUser")" class="nav-link nav-toggle">
                 <i class="fa fa-graduation-cap"></i>
                 <span class="title">Teachers</span>
             </a>
         </li>
-
-
-        @*<li id="TeacherSubjects" class="nav-item  ">
-            <a href="@Url.Action("TeacherSubjects", "AspNetSubject")" class="nav-link nav-toggle">
-                <i class="fa fa-graduation-cap"></i>
-                <span class="title">Teachers Subjects</span>
-            </a>
-        </li>*@
-
-        <li id="Item3" class="nav-item  ">
-            <a href="@Url.Action("Index", "AspNetTimeslots")" class="nav-link nav-toggle">
-                <i class="fa fa-tasks"></i>
-                <span class="title">Room Slot</span>
-            </a>
-        </li>
-        <li class="nav-item" id="Item4">
-            <a href="@Url.Action("Index", "AspNetTimeTable")" class="nav-link nav-toggle">
-                <i class="fa fa-tasks"></i>
-                <span class="title">Time Table</span>
-            </a>
-        </li>
-        <li class="nav-item  " id="Item5">
-            <a href="@Url.Action("Index", "Expense")" class="nav-link nav-toggle">
-                <i class="fa fa-users"></i>
-                <span class="title">Expense</span>
-            </a>
-        </li>
-        <li class="nav-item  " id="Item6">
-            <a href="@Url.Action("Report", "Expense")" class="nav-link nav-toggle">
-                <i class="fa fa-users"></i>
-                <span class="title">Daily Account Sheet</span>
-            </a>
-        </li>
-        <li class="nav-item  " id="Item7">
-            <a href="@Url.Action("Teacher_Attendance", "AspNetAttendance")" class="nav-link nav-toggle">
-                <i class="fa fa-users"></i>
-                <span class="title">Teachers Attendance</span>
-            </a>
-        </li>
-
-        @*<li class="nav-item">
-            <a href="@Url.Action("ParentIndex", "AspNetUser")" class="nav-link nav-toggle">
-                <i class="fa fa-female"></i>
-                <span class="title">Parents</span>
-            </a>
-        </li>*@
-
         <li class="nav-item  " id="Item8">
             <a href="@Url.Action("AccountantIndex", "AspNetUser")" class="nav-link nav-toggle">
                 <i class="fa fa-bar-chart"></i>
                 <span class="title">Accountant</span>
             </a>
         </li>
-
-
-
-
         <li class="nav-item  " id="Item9">
             <a href="@Url.Action("Index", "AspNetEmployees")" class="nav-link nav-toggle">
                 <i class="fa fa-users"></i>
                 <span class="title">Employees</span>
             </a>
         </li>
+
+
+
         <li class="nav-item  " id="Item10">
             <a href="@Url.Action("StudentFee", "GrandTotal")" class="nav-link nav-toggle">
                 <i class="fa fa-users"></i>
@@ -133,6 +86,37 @@
             </a>
         </li>
 
+        <li class="nav-item  " id="Item5">
+            <a href="@Url.Action("Index", "Expense")" class="nav-link nav-toggle">
+                <i class="fa fa-users"></i>
+                <span class="title">Expense</span>
+            </a>
+        </li>
+        <li class="nav-item  " id="Item6">
+            <a href="@Url.Action("Report", "Expense")" class="nav-link nav-toggle">
+                <i class="fa fa-users"></i>
+                <span class="title">Daily Account Sheet</span>
+            </a>
+        </li>
+
+        <li class="nav-item" id="Item12">
+            <a href="@Url.Action("ClassIndex", "AspNetSubject")" class="nav-link nav-toggle">
+                <i class="fa fa-list-ul"></i>
+                <span class="title">Subject</span>
+            </a>
+        </li>
+        <li class="nav-item" id="Item13">
+            <a href="@Url.Action("Index", "AspNetNotes")" class="nav-link nav-toggle">
+                <i class="fa fa-sticky-note"></i>
+                <span class="title">Notes</span>
+            </a>
+        </li>
+        <li class="nav-item" id="Item4">
+            <a href="@Url.Action("Index", "AspNetTimeTable")" class="nav-link nav-toggle">
+                <i class="fa fa-tasks"></i>
+                <span class="title">Time Table</span>
+            </a>
+        </li>
 
         <li class="nav-item  " id="Item11">
             <a href="@Url.Action("Index", "AspNetSession")" class="nav-link nav-toggle">
@@ -140,6 +124,42 @@
                 <span class="title">Session</span>
             </a>
         </li>
+
+
+        @*<li id="TeacherSubjects" class="nav-item  ">
+            <a href="@Url.Action("TeacherSubjects", "AspNetSubject")" class="nav-link nav-toggle">
+                <i class="fa fa-graduation-cap"></i>
+                <span class="title">Teachers Subjects</span>
+            </a>
+        </li>*@
+
+        @*<li id="Item3" class="nav-item  ">
+            <a href="@Url.Action("Index", "AspNetTimeslots")" class="nav-link nav-toggle">
+                <i class="fa fa-tasks"></i>
+                <span class="title">Room Slot</span>
+            </a>
+        </li>*@
+
+
+        <li class="nav-item  " id="Item7">
+            <a href="@Url.Action("Teacher_Attendance", "AspNetAttendance")" class="nav-link nav-toggle">
+                <i class="fa fa-users"></i>
+                <span class="title">Teachers Attendance</span>
+            </a>
+        </li>
+
+        @*<li class="nav-item">
+            <a href="@Url.Action("ParentIndex", "AspNetUser")" class="nav-link nav-toggle">
+                <i class="fa fa-female"></i>
+                <span class="title">Parents</span>
+            </a>
+        </li>*@
+
+
+
+
+
+
 
 
 
@@ -195,18 +215,6 @@
             </a>
         </li>*@
 
-        <li class="nav-item" id="Item12">
-            <a href="@Url.Action("ClassIndex", "AspNetSubject")" class="nav-link nav-toggle">
-                <i class="fa fa-list-ul"></i>
-                <span class="title">Subject</span>
-            </a>
-        </li>
-        <li class="nav-item" id="Item13">
-            <a href="@Url.Action("Index", "AspNetNotes")" class="nav-link nav-toggle">
-                <i class="fa fa-sticky-note"></i>
-                <span class="title">Notes</span>
-            </a>
-        </li>
 
 
         @*<li class="nav-item  ">
