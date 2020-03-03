@@ -1,30 +1,31 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<style>
-    li.nav-item.start.active.open {
+    <style>
+        li.nav-item.start.active.open {
+            border-bottom: 0px solid white !important;
+        }
 
-        border-bottom: 0px solid white !important;
-}
-    
-.page-sidebar-menu.page-sidebar-menu-hover-submenu>li:hover>.sub-menu {
-    margin-left: 170px;
-    margin-top: -77px;
-}
+        .page-sidebar-menu.page-sidebar-menu-hover-submenu > li:hover > .sub-menu {
+            margin-left: 170px;
+            margin-top: -77px;
+        }
 
-.page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        height: 750px !important;
-    }
-.box.box-primary {
-    border-top-color: #5170a3;
-}
-.page-container-bg-solid .page-content {
-     background: #d0cfcf2e; 
-}
-</style>
+        .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            height: 750px !important;
+        }
+
+        .box.box-primary {
+            border-top-color: #5170a3;
+        }
+
+        .page-container-bg-solid .page-content {
+            background: #d0cfcf2e;
+        }
+    </style>
 <div class="page-sidebar navbar-collapse collapse">
     <!-- BEGIN SIDEBAR MENU -->
     <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
@@ -33,8 +34,9 @@
     <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
     <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
     <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-    <ul id="layout_navbar_toogle" class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenu " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="1">
-        <li class="nav-item" style="/* border-bottom: 4px solid white; */">
+    <ul id="layout_navbar_toogle" class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="1">
+     
+        <li class="nav-item" id="Item33" style="/* border-bottom: 4px solid white; */">
             @*start active open*@
             <a href="@Url.Action("Dashboard", "Teacher_Dashboard")" class="nav-link nav-toggle">
                 <i class="icon-home"></i>
@@ -49,7 +51,7 @@
             </a>
         </li>*@
 
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item34">
             <a href="@(Url.Action("Index", "AspNetProject"))">
                 <i class="fa fa-product-hunt"></i>
                 <span class="title">Topics Course Study Material</span>
@@ -64,13 +66,13 @@
         </li>*@
 
 
-        <li class="nav-item">
+        <li class="nav-item" id="Item35">
             <a href="#" class="nav-link nav-toggle">
                 <i class="fa fa-list-ul"></i>
                 <span class="title">Subjects</span>
             </a>
 
-            <ul class="sub-menu">
+            <ul class="sub-menu" style="z-index:10000">
                 <li class="nav-item  ">
                     <a href="@(Url.Action("Teacher_Subject","Teacher_Dashboard"))">
                         <i class="fa fa-circle-o"></i>
@@ -94,7 +96,7 @@
             </a>
         </li>*@
 
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item36">
             <a href="@(Url.Action("View_Attendance", "Teacher_Dashboard"))">
                 <i class="fa fa-clock-o"></i>
                 <span class="title">Teacher Attendance</span>
@@ -146,14 +148,14 @@
             </ul>
         </li>*@
 
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item37">
             <a href="@(Url.Action("Inbox", "AspNetMessages"))">
                 <i class="fa fa-envelope"></i>
                 <span class="title">MailBox</span>
             </a>
         </li>
 
-        <li class="nav-item  ">
+        <li class="nav-item  " id="Item38">
             <a href="https://smartereduanalytics.on.spiceworks.com/portal/tickets">
                 <i class="fa fa-support"></i>
                 <span class="title">Support</span>

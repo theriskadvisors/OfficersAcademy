@@ -3,7 +3,6 @@
 }
     <head>
 
-
         <style>
             li.nav-item.start.active.open {
                 border-bottom: 0px solid white !important;
@@ -13,10 +12,13 @@
                 margin-left: 183px;
                 margin-top: -77px;
             }
+
+            @@media (min-width: 992px) {
+                .page-content-wrapper .page-content {
+                    margin-left: 175px !important;
+                }
+            }
         </style>
-
-
-
 
     </head>
 <div class="page-sidebar navbar-collapse collapse">
@@ -27,7 +29,7 @@
     <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
     <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
     <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-    <ul id="layout_navbar_toogle" class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenu page-sidebar-menu-closed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="1">
+    <ul id="layout_navbar_toogle" class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="1">
         @*start active open*@
         <li class="nav-item" id="Item17">
             <a href="@Url.Action("Index", "FinanceSummary")" class="nav-link nav-toggle">
