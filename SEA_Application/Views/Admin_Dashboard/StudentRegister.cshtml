@@ -310,7 +310,12 @@
             $("#TotalFee").val("");
             //alert("Without note");
             //$('#FeeType').append('<option value="PerMonth">PerMonth</option>');
-           $("#NotesAmount").prop('required', false);
+            $("#NotesAmount").prop('required', false);
+
+               $("#DiscountPercentage").val(0);
+            $("#Discount").val(0);
+            $("#RemainingAmount").val(0);
+            $("#Fee").val(0);
         });
         $('#WithNotes').click(function () {
 
@@ -320,7 +325,10 @@
             $("#TotalFee").val("");
             $('#NotesAmount').val(16000);
 
-
+            $("#DiscountPercentage").val(0);
+            $("#Discount").val(0);
+            $("#RemainingAmount").val(0);
+            $("#Fee").val(0);
 
         });
 
@@ -447,6 +455,19 @@
 
         })
 
+        $("#FeeType").change(function () {
+            debugger    
+
+            $("#Fee").val(0);
+         //   $("#FeeType").val(0);
+            $("#DiscountPercentage").val(0);
+            $("#Discount").val(0);
+            $("#RemainingAmount").val(0);
+
+            $("#TotalFee").val("");
+
+
+        })
 
 
         $("#ClassID").click(function () {
@@ -604,7 +625,7 @@
 
                                 }
                                 else if (value1.SubjectGroup == "3") {
-
+                                    
                                     $("#SubjectPMSGroup3TableBody").append('<tr> <td>' + value1.SubjectName + '</td > <td align="center">'+value1.Points+'</td><td align="center"><input onclick=' + "group(this,'.CheckboxPMSGroup3')" + '  type="radio" id=' + value1.Id + ' value=' + value1.Id + ' name="PMSSubjects3"></td></tr>');
 
 
@@ -915,9 +936,6 @@
 
           })
 
-
-
-
          $("#DiscountPercentage").bind('keyup mouseup', function () {    
 
              $('#FormSubmit').prop('disabled', false);
@@ -925,20 +943,36 @@
           //  Calculations();
              $("#RemainingAmount").val("");
              $("#Discount").val(0);
+             $("#TotalFee").val("");
+              var FeeType = $("#FeeType").val();
              var SessionFee = $("#SessionFee").val();
-             var Discount = $("#DiscountPercentage").val();
+             var FeeAfterFeeType = $("#Fee").val();
+
+             var DiscountPercentage = $("#DiscountPercentage").val();
+                var NotesAmount = $("#NotesAmount").val();
              var DiscountedAmount;
+             var TotalFee;
 
-             if (SessionFee != null && Discount != null && Discount>0 ) {
+             debugger
+             if (NotesAmount == "")
+                 NotesAmount = 0;
 
-                 DiscountedAmount = SessionFee * (parseFloat(Discount) / 100);
+             if ( FeeType !="" &&  FeeAfterFeeType != 0 && DiscountPercentage != 0 && DiscountPercentage>0 ) {
 
-                 var RemainingSessionFee = parseFloat(SessionFee) - parseFloat(DiscountedAmount);
+                 DiscountedAmount = parseFloat(FeeAfterFeeType) * (parseFloat(DiscountPercentage) / 100);
+
+                 var RemainingFeeAfterFeeType = parseFloat(FeeAfterFeeType) - parseFloat(DiscountedAmount);
 
                  $("#Discount").val(DiscountedAmount);
-                 $("#RemainingAmount").val(RemainingSessionFee);
 
-                 if (RemainingSessionFee < 0) {
+                 
+                 $("#RemainingAmount").val(RemainingFeeAfterFeeType);
+                 
+                 TotalFee = parseFloat(RemainingFeeAfterFeeType) + parseFloat(NotesAmount);
+
+                 $("#TotalFee").val(TotalFee);
+
+                 if (RemainingFeeAfterFeeType < 0) {
 
                     $('#FormSubmit').prop('disabled', true);
                  }
@@ -1050,9 +1084,6 @@
                 });
         });*@
 
-        
-       
-
           $('#framework').multiselect({
           nonSelectedText: 'Select Framework',
           enableFiltering: true,
@@ -1080,37 +1111,60 @@
          });
 
     });
+
     function Calc() {
+
+
+           //   $("#Fee").val(0);
+         //   $("#FeeType").val(0);
+
+
+            $("#DiscountPercentage").val(0);
+            $("#Discount").val(0);
+            $("#RemainingAmount").val(0);
+
+          //  $("#TotalFee").val("");
+
 
         var SessionFee = $("#SessionFee").val();
         var FeeType = $("#FeeType").val();
-        var Discount = $("#Discount").val();
+      //  var Discount = $("#Discount").val();
         var NotesAmount = $("#NotesAmount").val();
         if (SessionFee == "")
-               SessionFee = 0;
-        if (Discount == "")
-               Discount = 0;
+            SessionFee = 0;
+
+        //if (Discount == "")
+        //       Discount = 0;
+
         if (NotesAmount == "")
                NotesAmount = 0;
             debugger
 
-        if (FeeType == "Installment" && FeeType != "")
-        {
-                  $('#TotalFee').val(parseInt(SessionFee) + 6000 + parseInt(NotesAmount) - parseInt(Discount));
-           }
+                if (FeeType == "Installment" && FeeType != "")
+                {
+                    $('#Fee').val(parseInt(SessionFee) + 6000 /*+ parseInt(NotesAmount) - parseInt(Discount)*/);
+                    $('#TotalFee').val(parseInt(SessionFee) + 6000 + parseInt(NotesAmount));
+
+                  }
                 else if (FeeType == "PerMonth" && FeeType != "")
                 {
-                    $('#TotalFee').val(parseInt(SessionFee) + 12000 + parseInt(NotesAmount) - parseInt(Discount));
+                    $('#Fee').val(parseInt(SessionFee) + 12000 /*+ parseInt(NotesAmount) - parseInt(Discount)*/);
+                    $('#TotalFee').val(parseInt(SessionFee) + 12000 + parseInt(NotesAmount));
                 }
                 else if (FeeType == "FullFee" && FeeType != "")
-                   {
-                    $('#TotalFee').val(parseInt(SessionFee)  + parseInt(NotesAmount) - parseInt(Discount));
+                {
+                    $('#Fee').val(parseInt(SessionFee)  /*+ parseInt(NotesAmount) - parseInt(Discount)*/);
+                    $('#TotalFee').val(parseInt(SessionFee) + parseInt(NotesAmount) );
                 }
+
                 else
                 {
                     return false;
                 }
 
+
+
+        $("#DiscountDiv").css('display', 'block');
     }
 
 
@@ -1823,26 +1877,7 @@
                                     </div>
 
 
-                                    <div class="form-group">
-                                        <label class="col-md-2 col-lg-2 control-label"><b>Discount %</b></label>
-                                        <div class="col-md-6">
-                                            <input type="number" value="0" class="form-control round-border" name="DiscountPercentage" id="DiscountPercentage" />
-                                        </div>
-                                    </div>
 
-
-                                    <div class="form-group">
-                                        <label class="col-md-2 col-lg-2 control-label"><b>Discount Amount</b></label>
-                                        <div class="col-md-6">
-                                            <input type="number" value="0" class="form-control round-border" name="Discount" id="Discount" readonly />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-2 col-lg-2 control-label"><b>Remaining Amount </b></label>
-                                        <div class="col-md-6">
-                                            <input type="number" value="0" class="form-control round-border" name="RemainingAmount" id="RemainingAmount" readonly />
-                                        </div>
-                                    </div>
 
 
                                     <div class="form-group">
@@ -1863,6 +1898,38 @@
                                             <button id="CalculateFee" type="button" onclick="Calc()" class="btn btn-primary ">Calculate Fee</button>
                                         </div>
                                     </div>
+
+
+                                    <div class="form-group">
+                                        <label class="col-md-2 col-lg-2 control-label"><b>Fee:</b></label>
+                                        <div class="col-md-6">
+                                            <input type="text" required class="form-control text_box_style" name="Fee" id="Fee" readonly />
+                                        </div>
+                                    </div>
+                                    <div id="DiscountDiv">
+
+                                        <div class="form-group">
+                                            <label class="col-md-2 col-lg-2 control-label"><b>Discount %</b></label>
+                                            <div class="col-md-6">
+                                                <input type="number" value="0" class="form-control round-border" name="DiscountPercentage" id="DiscountPercentage" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-md-2 col-lg-2 control-label"><b>Discount Amount</b></label>
+                                            <div class="col-md-6">
+                                                <input type="number" value="0" class="form-control round-border" name="Discount" id="Discount" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-2 col-lg-2 control-label"><b>Remaining Amount </b></label>
+                                            <div class="col-md-6">
+                                                <input type="number" value="0" class="form-control round-border" name="RemainingAmount" id="RemainingAmount" readonly />
+                                            </div>
+                                        </div>
+                                    </div>
+
+
                                     <div class="form-group">
                                         <label class="col-md-2 col-lg-2 control-label"><b>Total Fee:</b></label>
                                         <div class="col-md-6">
