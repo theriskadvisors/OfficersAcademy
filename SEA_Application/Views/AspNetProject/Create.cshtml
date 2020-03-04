@@ -22,50 +22,66 @@
         $('#cancel').click(function () {
             window.location.href = '@Url.Action("Dashboard", "Account")';
         });
+
+
         $("#ClassID").change(function () {
 
             var selectedClass = $("#ClassID").val();
-            $.ajax({
-                type: "POST",
-                cache: false,
-                url: "/AspNetStudentPerformanceReport/GetSubjects?ClassID=" + selectedClass,
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    debugger;
-                    var sch = JSON.parse(data);
-                    debugger;
-                    var $el = $(".SubjectIdDDL");
-                    $el.empty();
-                    if (sch.length > 0) {
-                        $el.append($("<option></option>")
-                                     .attr("value", 0).text('Select Subject'));
-                        for (i = 0; i < sch.length; i++) {
+            if (selectedClass != "") {
+
+
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/AspNetStudentPerformanceReport/GetSubjects?ClassID=" + selectedClass,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        debugger;
+                        var sch = JSON.parse(data);
+                        debugger;
+                        var $el = $(".SubjectIdDDL");
+                        $el.empty();
+                        if (sch.length > 0) {
                             $el.append($("<option></option>")
+                                .attr("value", 0).text('Select Subject'));
+                            for (i = 0; i < sch.length; i++) {
+                                $el.append($("<option></option>")
                                     .attr("value", sch[i].Value).text(sch[i].Text));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select'));
                         }
                     }
-                    else {
-                        $el.append($("<option></option>")
-                                   .attr("value", '').text('Select'));
-                    }
-                }
-            });
 
-
-
-
-
-            $.get('@Url.Action("SubjectsByClass", "Teacher_Dashboard")',
-                { id: selectedClass }, function (data) {
-
-                    $('#SubjectID').html('');
-
-                    $.each(data, function (i, item) {
-                        $('#SubjectID').append('<option value=' + item.Id + '>' + item.SubjectName + '</option>');
-                    });
 
                 });
+
+
+
+
+
+                @*$.get('@Url.Action("SubjectsByClass", "Teacher_Dashboard")',
+                    { id: selectedClass }, function (data) {
+
+                        $('#SubjectID').html('');
+                        debugger
+                        $.each(data, function (i, item) {
+                            $('#SubjectID').append('<option value=' + item.Id + '>' + item.SubjectName + '</option>');
+                        });
+
+                    });*@
+
+            }
+
+            else {
+                debugger
+                  $('#SubjectId').html('');
+
+            }
         });
        
     });
@@ -95,6 +111,7 @@
                     <div class="form-group">
                         <label class="col-md-1 col-lg-1">Subject Name:</label>
                         <div class="col-md-6">
+
                             <select class="form-control SubjectIdDDL" id="SubjectId" name="SubjectId"></select>
                         </div>
                     </div>

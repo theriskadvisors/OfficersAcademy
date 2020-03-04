@@ -28,10 +28,15 @@ namespace SEA_Application.Controllers
         // GET: AspNetProject
         public ActionResult Index()
         {
+
+
             if (User.IsInRole("Teacher"))
             {
-                ViewBag.ClassID = new SelectList(db.AspNetSubjects.Where(x => x.TeacherID == TeacherID && x.AspNetClass.AspNetSession.Id == SessionID).Select(x => x.AspNetClass).Distinct(), "Id", "ClassName");
+
+                // ViewBag.ClassID = new SelectList(db.AspNetSubjects.Where(x => x.TeacherID == TeacherID && x.AspNetClass.AspNetSession.Id == SessionID).Select(x => x.AspNetClass).Distinct(), "Id", "ClassName");
+                ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             }
+
             else
             {
                 ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x=> x.SessionID == SessionID), "Id", "ClassName");
@@ -69,7 +74,9 @@ namespace SEA_Application.Controllers
         // GET: AspNetProject/Create
         public ActionResult Create()
         {
-            ViewBag.ClassID = new SelectList(db.AspNetSubjects.Where(x => x.TeacherID == TeacherID && x.AspNetClass.SessionID == SessionID).Select(x => x.AspNetClass).Distinct(), "Id", "ClassName");
+            //ViewBag.ClassID = new SelectList(db.AspNetSubjects.Where(x => x.TeacherID == TeacherID).Select(x => x.AspNetClass).Distinct(), "Id", "ClassName");
+
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             ViewBag.SubjectID = new SelectList(db.AspNetSubjects.Where(x=> x.AspNetClass.SessionID == SessionID), "Id", "SubjectName");
             return View();
         }
@@ -111,6 +118,7 @@ namespace SEA_Application.Controllers
                     student_project.SubmissionStatus = false;
                     student_project.SubmittedFileName = "-/-";
                     db.AspNetStudent_Project.Add(student_project);
+
                     db.SaveChanges();
                 }
            /////////////////////////////////////////////////NOTIFICATION/////////////////////////////////////
@@ -298,16 +306,31 @@ namespace SEA_Application.Controllers
 
         public JsonResult ProjectBySubject(int subjectID)
         {
+          var StudentId =  User.Identity.GetUserId();
             db.Configuration.ProxyCreationEnabled = false;
             db.Configuration.LazyLoadingEnabled = false;
+            if (User.IsInRole("Teacher"))
+            {
+                var projects = (from project in db.AspNetProjects
+                                join t4 in db.AspNetSubjects on project.SubjectID equals t4.Id
+                                where project.SubjectID == subjectID && t4.AspNetClass.SessionID == SessionID 
+                                select project).ToList();
+                return Json(projects, JsonRequestBehavior.AllowGet);
+            }
+
+           else
+          {
+
             var projects = (from project in db.AspNetProjects
                             join t4 in db.AspNetSubjects on project.SubjectID equals t4.Id
-                           
-
-                             where project.SubjectID == subjectID && t4.AspNetClass.SessionID == SessionID
+                            join studentproject in db.AspNetStudent_Project  on project.Id equals studentproject.ProjectID
+                                where project.SubjectID == subjectID && t4.AspNetClass.SessionID == SessionID  && studentproject.StudentID == StudentId
                             select project).ToList();
 
-            return Json(projects, JsonRequestBehavior.AllowGet);
+                return Json(projects, JsonRequestBehavior.AllowGet);
+            }
+
+        
         }
 
         public FileResult downloadProjectFile(int id)

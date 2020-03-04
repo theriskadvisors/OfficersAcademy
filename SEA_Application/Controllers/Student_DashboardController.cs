@@ -53,6 +53,8 @@ namespace SEA_Application.Controllers
                                     select student_subject.SubjectID).ToList();
 
             ViewBag.SubjectID = new SelectList(db.AspNetSubjects.Where(x => subjectIDs.Contains(x.Id)), "Id", "SubjectName");
+            
+
             return View();
         }
 

@@ -84,6 +84,7 @@
 
       
         $("#ClassID").click(function () {
+            
             var selectedClass = $("#ClassID").val();
             $.get('@Url.Action("SubjectsByClass", "Teacher_Dashboard")',
                 { id: selectedClass }, function (data) {
