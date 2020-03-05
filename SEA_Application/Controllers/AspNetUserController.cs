@@ -553,6 +553,7 @@ on teacher.Id equals t2.UserID
         // GET: AspNetUser/Edit/5
         public ActionResult EditStudent(string id)
         {
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -572,7 +573,12 @@ on teacher.Id equals t2.UserID
 
             int VoucherExist = 0;
             int TotalVoucher = db.Vouchers.Where(x => x.StudentId == employee.Id).Count();
-
+            string FeeType="";
+            double?  Discount =0;
+            double StudentFeeOfFeeType=0;
+            double? RemainingAmount = 0;
+            double? DiscountPercentage = 0;
+            
             if (TotalVoucher == 1)
             {
                 StudentFeeMonth StudentFeeMonth = db.StudentFeeMonths.Where(x => x.StudentId == employee.Id).Select(x => x).FirstOrDefault();
@@ -580,11 +586,44 @@ on teacher.Id equals t2.UserID
 
                 if (StudentFeeMonth != null)
                 {
+                 
+                    FeeType = StudentFeeMonth.FeeType;
+                    Discount = StudentFeeMonth.Discount;
+
+                    int? SessionFee = db.AspNetSessions.Where(x => x.Id == StudentFeeMonth.SessionId).FirstOrDefault().Total_Fee;
+                    double SessionFeeOfTypeDouble = Convert.ToDouble(SessionFee);
+                  
+                    if (FeeType == "PerMonth")
+                    {
+                        StudentFeeOfFeeType = SessionFeeOfTypeDouble + 12000;
+                    }
+                    else if (FeeType == "Installment")
+                    {
+                        StudentFeeOfFeeType = SessionFeeOfTypeDouble + 6000;
+                    }
+                    else
+                    {
+                        StudentFeeOfFeeType = SessionFeeOfTypeDouble + 0;
+
+                    }
+
+                   if(Discount !=0 )
+                    {
+                        RemainingAmount = StudentFeeOfFeeType - Discount;
+                        DiscountPercentage = Discount * (100 / StudentFeeOfFeeType);
+              
+                    }
+
+                    ViewBag.DiscountPercentage = DiscountPercentage;
+                    ViewBag.StudentFeeOfFeeType = StudentFeeOfFeeType;
+
+                    ViewBag.RemainingAmount = RemainingAmount;
                     ViewBag.VoucherId = voucherId;
                     ViewBag.FeePayAbleAsTotalFee = StudentFeeMonth.FeePayable;
-                    ViewBag.Discount = StudentFeeMonth.Discount;
+                    ViewBag.Discount = Discount;
                     ViewBag.NotesFee = StudentFeeMonth.NotesFee;
                     ViewBag.FeeType = StudentFeeMonth.FeeType;
+                    
                     VoucherExist = 1;
 
                 }
@@ -592,12 +631,16 @@ on teacher.Id equals t2.UserID
 
             else
             {
-
                 ViewBag.VoucherId = null;
                 ViewBag.FeePayAbleAsTotalFee = null;
                 ViewBag.Discount = null;
                 ViewBag.NotesFee = null;
                 ViewBag.FeeType = null;
+                ViewBag.StudentFeeOfFeeType = null;
+                ViewBag.DiscountPercentage = null;
+                ViewBag.RemainingAmount = null;
+
+             //   ViewBag.StudentFeeOfFeeType = null;
             }
 
             ViewBag.VoucherExist = VoucherExist;
@@ -815,22 +858,60 @@ on teacher.Id equals t2.UserID
                     //    ViewBag.SubError = "Please select subjects";
                     //}
 
+                    //This Block
                     int VoucherExist1 = 0;
-                    int TotalVoucher = db.Vouchers.Where(x => x.StudentId == StudentId).Count();
+                    int TotalVoucher1 = db.Vouchers.Where(x => x.StudentId == StudentId).Count();
+                    string FeeType1 = "";
+                    double? Discount1 = 0;
+                    double StudentFeeOfFeeType1 = 0;
+                    double? RemainingAmount1 = 0;
+                    double? DiscountPercentage1 = 0;
 
-                    if (TotalVoucher == 1)
+                    if (TotalVoucher1 == 1)
                     {
                         StudentFeeMonth StudentFeeMonth = db.StudentFeeMonths.Where(x => x.StudentId == StudentId).Select(x => x).FirstOrDefault();
-
                         var voucherId = db.Vouchers.Where(x => x.StudentId == StudentId).FirstOrDefault().Id;
 
                         if (StudentFeeMonth != null)
                         {
+
+                            FeeType1 = StudentFeeMonth.FeeType;
+                            Discount1 = StudentFeeMonth.Discount;
+
+                            int? SessionFee = db.AspNetSessions.Where(x => x.Id == StudentFeeMonth.SessionId).FirstOrDefault().Total_Fee;
+                            double SessionFeeOfTypeDouble = Convert.ToDouble(SessionFee);
+
+                            if (FeeType1 == "PerMonth")
+                            {
+                                StudentFeeOfFeeType1 = SessionFeeOfTypeDouble + 12000;
+                            }
+                            else if (FeeType1 == "Installment")
+                            {
+                                StudentFeeOfFeeType1 = SessionFeeOfTypeDouble + 6000;
+                            }
+                            else
+                            {
+                                StudentFeeOfFeeType1 = SessionFeeOfTypeDouble + 0;
+
+                            }
+
+                            if (Discount1 != 0)
+                            {
+                                RemainingAmount1 = StudentFeeOfFeeType1 - Discount1;
+                                DiscountPercentage1 = Discount1 * (100 / StudentFeeOfFeeType1);
+
+                            }
+
+                            ViewBag.DiscountPercentage = DiscountPercentage1;
+                            ViewBag.StudentFeeOfFeeType = StudentFeeOfFeeType1;
+
+                            ViewBag.RemainingAmount = RemainingAmount1;
                             ViewBag.VoucherId = voucherId;
                             ViewBag.FeePayAbleAsTotalFee = StudentFeeMonth.FeePayable;
-                            ViewBag.Discount = StudentFeeMonth.Discount;
+                            ViewBag.Discount = Discount1;
                             ViewBag.NotesFee = StudentFeeMonth.NotesFee;
                             ViewBag.FeeType = StudentFeeMonth.FeeType;
+
                             VoucherExist1 = 1;
 
                         }
@@ -838,16 +919,23 @@ on teacher.Id equals t2.UserID
 
                     else
                     {
-
                         ViewBag.VoucherId = null;
                         ViewBag.FeePayAbleAsTotalFee = null;
                         ViewBag.Discount = null;
                         ViewBag.NotesFee = null;
                         ViewBag.FeeType = null;
+                        ViewBag.StudentFeeOfFeeType = null;
+                        ViewBag.DiscountPercentage = null;
+                        ViewBag.RemainingAmount = null;
+
+                        //   ViewBag.StudentFeeOfFeeType = null;
                     }
+
 
                     ViewBag.VoucherExist = VoucherExist1;
 
+
+                    //block
 
 
                     List<string> selectedsubjects = new List<string>();

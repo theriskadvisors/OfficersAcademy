@@ -138,8 +138,13 @@
 
             $("#TotalFee").val("");
             $("#Discount").val(0);
-            $("#DiscountPercentage").val("");
-            $("#RemainingAmount").val("");
+            $("#DiscountPercentage").val(0);
+          //  $("#RemainingAmount").val("");
+
+          
+            $("#Discount").val(0);
+            $("#RemainingAmount").val(0);
+            $("#Fee").val(0);
 
 
           //  $('#CalculateFee').click();
@@ -312,7 +317,7 @@
             //$('#FeeType').append('<option value="PerMonth">PerMonth</option>');
             $("#NotesAmount").prop('required', false);
 
-               $("#DiscountPercentage").val(0);
+             $("#DiscountPercentage").val(0);
             $("#Discount").val(0);
             $("#RemainingAmount").val(0);
             $("#Fee").val(0);
@@ -443,9 +448,6 @@
           $("form").submit(function(){
 
                   $("#FormSubmit").attr("disabled", true);
-
-
-
 
           });
 

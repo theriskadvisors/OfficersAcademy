@@ -117,13 +117,83 @@
 
 
             
+           $("#FeeType").change(function () {
+            debugger    
 
+            $("#Fee").val(0);
+         //   $("#FeeType").val(0);
+            $("#DiscountPercentage").val(0);
+            $("#Discount").val(0);
+            $("#RemainingAmount").val(0);
+
+            $("#TotalFee").val("");
+
+
+           })
+
+         $("#DiscountPercentage").bind('keyup mouseup', function () {    
+
+             $('#FormSubmit').prop('disabled', false);
+
+          //  Calculations();
+             $("#RemainingAmount").val("");
+             $("#Discount").val(0);
+             $("#TotalFee").val("");
+              var FeeType = $("#FeeType").val();
+             var SessionFee = $("#SessionFee").val();
+             var FeeAfterFeeType = $("#Fee").val();
+
+             var DiscountPercentage = $("#DiscountPercentage").val();
+                var NotesAmount = $("#NotesAmount").val();
+             var DiscountedAmount;
+             var TotalFee;
+
+             debugger
+             if (NotesAmount == "")
+                 NotesAmount = 0;
+
+             if ( FeeType !="" &&  FeeAfterFeeType != 0 && DiscountPercentage != 0 && DiscountPercentage>0 ) {
+
+                 DiscountedAmount = parseFloat(FeeAfterFeeType) * (parseFloat(DiscountPercentage) / 100);
+
+                 var RemainingFeeAfterFeeType = parseFloat(FeeAfterFeeType) - parseFloat(DiscountedAmount);
+
+                 $("#Discount").val(DiscountedAmount);
+
+                 
+                 $("#RemainingAmount").val(RemainingFeeAfterFeeType);
+                 
+                 TotalFee = parseFloat(RemainingFeeAfterFeeType) + parseFloat(NotesAmount);
+
+                 $("#TotalFee").val(TotalFee);
+
+                 if (RemainingFeeAfterFeeType < 0) {
+
+                    $('#FormSubmit').prop('disabled', true);
+                 }
+
+
+             }
+
+
+             
+         });
 
         $("#ClassID").change(function () {
 
            // $('#CalculateFee').click();
             $("#TotalFee").val("");
             $("#MandatorySubjects").removeAttr('checked');
+
+             
+            $("#Discount").val(0);
+            $("#DiscountPercentage").val(0);
+          //  $("#RemainingAmount").val("");
+
+          
+            $("#Discount").val(0);
+            $("#RemainingAmount").val(0);
+            $("#Fee").val(0);
 
             var ClassId = $(this).val();
 
@@ -167,24 +237,58 @@
 
         });
 
-        $('#WithOutNotes').click(function () {
+                //old
+        //$('#WithOutNotes').click(function () {
+        //    $('#NotesID').hide();
+        //    $('#NotesAmount').val("");
+        //    $("#TotalFee").val("");
+        //    //alert("Without note");
+        //    //$('#FeeType').append('<option value="PerMonth">PerMonth</option>');
+        //   $("#NotesAmount").prop('required', false);
+        //});
+        //$('#WithNotes').click(function () {
+
+        //    //$("#FeeType  option[value='PerMonth']").remove();
+        //   $("#NotesAmount").prop('required', true);
+        //    $('#NotesAmount').val(16000);
+        //    $('#NotesID').show();
+        //    $("#TotalFee").val("");
+
+
+        //});
+
+
+            $('#WithOutNotes').click(function () {
             $('#NotesID').hide();
             $('#NotesAmount').val("");
             $("#TotalFee").val("");
             //alert("Without note");
             //$('#FeeType').append('<option value="PerMonth">PerMonth</option>');
-           $("#NotesAmount").prop('required', false);
+            $("#NotesAmount").prop('required', false);
+
+               $("#DiscountPercentage").val(0);
+            $("#Discount").val(0);
+            $("#RemainingAmount").val(0);
+            $("#Fee").val(0);
         });
         $('#WithNotes').click(function () {
 
             //$("#FeeType  option[value='PerMonth']").remove();
-           $("#NotesAmount").prop('required', true);
-            $('#NotesAmount').val(16000);
+            $("#NotesAmount").prop('required', true);
             $('#NotesID').show();
             $("#TotalFee").val("");
-
+            $('#NotesAmount').val(16000);
+            $("#DiscountPercentage").val(0);
+            $("#Discount").val(0);
+            $("#RemainingAmount").val(0);
+            $("#Fee").val(0);
 
         });
+
+
+
+
+
 
 
     
@@ -908,37 +1012,61 @@
     }
 
 
-    function Calc() {
+      function Calc() {
+
+           //   $("#Fee").val(0);
+         //   $("#FeeType").val(0);
+
+
+            $("#DiscountPercentage").val(0);
+            $("#Discount").val(0);
+            $("#RemainingAmount").val(0);
+
+          //  $("#TotalFee").val("");
+
 
         var SessionFee = $("#SessionFee").val();
         var FeeType = $("#FeeType").val();
-        var Discount = $("#Discount").val();
+      //  var Discount = $("#Discount").val();
         var NotesAmount = $("#NotesAmount").val();
         if (SessionFee == "")
-               SessionFee = 0;
-        if (Discount == "")
-               Discount = 0;
+            SessionFee = 0;
+
+        //if (Discount == "")
+        //       Discount = 0;
+
         if (NotesAmount == "")
                NotesAmount = 0;
+            debugger
 
-        if (FeeType == "Installment" && FeeType != "")
-                     {
-                       $('#TotalFee').val(parseInt(SessionFee) + 6000 + parseInt(NotesAmount) - parseInt(Discount));
-                     }
+                if (FeeType == "Installment" && FeeType != "")
+                {
+                    $('#Fee').val(parseInt(SessionFee) + 6000 /*+ parseInt(NotesAmount) - parseInt(Discount)*/);
+                    $('#TotalFee').val(parseInt(SessionFee) + 6000 + parseInt(NotesAmount));
+
+                  }
                 else if (FeeType == "PerMonth" && FeeType != "")
                 {
-                    $('#TotalFee').val(parseInt(SessionFee) + 12000 + parseInt(NotesAmount) - parseInt(Discount));
+                    $('#Fee').val(parseInt(SessionFee) + 12000 /*+ parseInt(NotesAmount) - parseInt(Discount)*/);
+                    $('#TotalFee').val(parseInt(SessionFee) + 12000 + parseInt(NotesAmount));
                 }
                 else if (FeeType == "FullFee" && FeeType != "")
-                   {
-                    $('#TotalFee').val(parseInt(SessionFee)  + parseInt(NotesAmount) - parseInt(Discount));
+                {
+                    $('#Fee').val(parseInt(SessionFee)  /*+ parseInt(NotesAmount) - parseInt(Discount)*/);
+                    $('#TotalFee').val(parseInt(SessionFee) + parseInt(NotesAmount) );
                 }
+
                 else
                 {
                     return false;
                 }
 
+
+
+        $("#DiscountDiv").css('display', 'block');
     }
+
+
 </script>
 
 <label>@Html.ActionLink("Home", "Dashboard", "Account") > @Html.ActionLink("Student", "StudentsIndex", "AspNetUser") > <span class="text-primary"><b>Edit</b></span></label>
@@ -1356,7 +1484,7 @@
                         <div class="form-group">
                             <label class="col-md-1 col-lg-1 control-label">Select Section</label>
                             <div class="col-md-6">
-                                @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control", @readonly="readonly" })
                                 <br />
                                 <span style="color:red"> @ViewBag.SubjectsErrorMsg</span>
                             </div>
@@ -1527,6 +1655,7 @@
 
 
                                 }
+
                                 else
                                 {
                                     <input type="number" class="form-control round-border" name="NotesAmount" id="NotesAmount" />
@@ -1536,6 +1665,7 @@
 
                             </div>
                         </div>
+
                         <div class="form-group">
                             <label class="col-md-2 col-lg-2 control-label"><b>Session Fee:</b><span class="red-mark">*</span></label>
                             <div class="col-md-6">
@@ -1543,27 +1673,6 @@
                             </div>
                         </div>
 
-
-                        <div class="form-group">
-                            <label class="col-md-2 col-lg-2 control-label"><b>Discount Amount:</b></label>
-                            <div class="col-md-6">
-
-                                @if (ViewBag.Discount != null)
-                                {
-                                    <input type="number" value="@ViewBag.Discount" class="form-control round-border" name="Discount" id="Discount" />
-
-                                }
-
-                                else
-                                {
-
-                                    <input type="number" value="0" class="form-control round-border" name="Discount" id="Discount" />
-
-                                }
-
-
-                            </div>
-                        </div>
 
 
 
@@ -1574,8 +1683,8 @@
                                 <input type="hidden" id="FeeTypeOfStudent" name="name" value="@ViewBag.FeeType" />
 
                                 <select name="FeeType" id="FeeType" class="form-control text_box_style">
-                                    <option value=""  selected>   Select One</option>
-                                    <option value="FullFee" >Full Fee</option>
+                                    <option value="" selected>   Select One</option>
+                                    <option value="FullFee">Full Fee</option>
                                     <option value="Installment">Installment</option>
                                     <option value="PerMonth">Per Month</option>
 
@@ -1590,15 +1699,54 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-md-2 col-lg-2 control-label"><b>Fee:</b></label>
+                            <div class="col-md-6">
+                                <input type="text" value="@ViewBag.StudentFeeOfFeeType" required class="form-control text_box_style" name="Fee" id="Fee" readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-2 col-lg-2 control-label"><b>Discount %</b></label>
+                            <div class="col-md-6">
+                                <input type="number"  value="@ViewBag.DiscountPercentage" class="form-control round-border"  name="DiscountPercentage" id="DiscountPercentage" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-2 col-lg-2 control-label"><b>Discount Amount:</b></label>
+                            <div class="col-md-6">
+
+                                @if (ViewBag.Discount != null)
+                                {
+                                    <input type="number" readonly value="@ViewBag.Discount" class="form-control round-border" name="Discount" id="Discount" />
+
+                                }
+
+                                else
+                                {
+
+                                    <input type="number" readonly value="0" class="form-control round-border" name="Discount" id="Discount" />
+
+                                }
+
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-2 col-lg-2 control-label"><b>Remaining Amount </b></label>
+                            <div class="col-md-6">
+                                <input type="number" value="@ViewBag.RemainingAmount" class="form-control round-border" name="RemainingAmount" id="RemainingAmount" readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="col-md-2 col-lg-2 control-label"><b>Total Fee:</b></label>
                             <div class="col-md-6">
 
                                 @if (ViewBag.FeePayAbleAsTotalFee != null)
                                 {
-
-
                                     <input type="text" value="@ViewBag.FeePayAbleAsTotalFee" required class="form-control text_box_style" name="TotalFee" id="TotalFee" readonly />
-
 
                                 }
                                 else
@@ -1669,7 +1817,13 @@
     $(document).ready(function () {
 
          $("form").submit(function(){
-        debugger
+             debugger
+             var TotalFee  = $("#TotalFee").val();
+
+             if (TotalFee == "") {
+                 return false;
+             }
+
 
             $("#FormSubmit").attr("disabled", true);
 

@@ -2306,7 +2306,6 @@ namespace SEA_Application.Controllers
 
                         StudentFeeMonth studentFeeMonth = new StudentFeeMonth();
                        
-                        
                         string NotesCategory = Request.Form["NotesCategory"];
                         string FeeType = Request.Form["FeeType"];
                         double NotesFee = 0;
