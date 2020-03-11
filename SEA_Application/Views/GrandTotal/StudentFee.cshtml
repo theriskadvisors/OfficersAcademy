@@ -9,13 +9,13 @@
         list-style: none;
         margin: 0;
         padding: 0;
-        height:1500px !important;
+        height: 1500px !important;
     }
-
 
     #error-tag {
         color: red;
     }
+
 
     body {
         font-family: "Open sans", "Segoe UI", "Segoe WP", Helvetica, Arial, sans-serif;
@@ -190,11 +190,20 @@
                             $("#TotalFee").val(data.TotalFee)
                             $("#PayableFee").val(data.FeePayable);
 
+
+
                             $("#FeeType").val(data.ReceiptNo +"("+ data.FeeType +")");
 
-                            $("#AdminCopyReceiptNo").text(data.ReceiptNo);
-                            $("#StudentCopyReceiptNo").text(data.ReceiptNo);
+                            if (data.FeeType == "FullFee") {
 
+                                $("#FeeType").val(data.ReceiptNo + "(Lumsum)");
+                            }
+
+                            else {
+                                   $("#FeeType").val(data.ReceiptNo +"("+ data.FeeType +")");
+                            }
+
+                           // $("#FeeTypeHidden").val(data.FeeType);
 
                             $("#ChallanForm").attr('name', data.Id);
                             $("#btnPrint").attr('name', data.Id);
@@ -227,188 +236,273 @@
     });
 
 </script>
-<div class="box box-primary">
-    <div class="box-body">
-        <h4>Session  Fee</h4>
-        @if (ViewBag.ErrorMessage != null)
-        {
-            <div style="margin-top:10px">
-                <span class="text-danger">@ViewBag.ErrorMessage</span>
-            </div>
-        }
-        @using (Html.BeginForm("AddData", "StudentRecurringFees", FormMethod.Post, new { @class = "forms form-horizontal", role = "form" }))
-        {
-            @Html.AntiForgeryToken()
 
-            <div class="form-horizontal">
-                <hr />
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+<h4>&nbsp;&nbsp;Student Fee</h4>
+
+<div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#tab_1" data-toggle="tab">
+                Student
+                Fee
+            </a>
+        </li>
+        <li><a href="#tab_2" data-toggle="tab">Defaulter Students</a></li>
+    </ul>
+</div>
+
+
+<div class="tab-content" style="  background-color: #f7f6f6; padding: 10px 0px 0px 0px; ">
+    <div class="tab-pane active" id="tab_1">
+        <div class="box box-primary">
+            <div class="box-body">
+                <h4>Session  Fee</h4>
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <div style="margin-top:10px">
+                        <span class="text-danger">@ViewBag.ErrorMessage</span>
+                    </div>
+                }
+                @using (Html.BeginForm("AddData", "StudentRecurringFees", FormMethod.Post, new { @class = "forms form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        <hr />
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            <span class="col-md-2">Session</span>
+                            <div class="col-md-6">
+
+                                <input type="hidden" name="FeeTypeHidden" value="" id="FeeTypeHidden" />
+                                @Html.DropDownList("ClassId", null, " Select One", htmlAttributes: new { @class = "form-control", @id = "ClassId" })
+                                @Html.ValidationMessageFor(model => model.ClassId, "", new { @class = "text-danger" })
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2 col-lg-2">Students: <span class="red-mark">*</span></label>
+                            <div class="col-md-6">
+                                <select class="form-control" id="students" name="students" required>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-2 col-lg-2">Total Fee <span class="red-mark">*</span></label>
+                            <div class="col-md-6">
+                                <input type="number" name="TotalFee" class="form-control" value="" id="TotalFee" readonly />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2 col-lg-2">Payable Fee <span class="red-mark">*</span></label>
+                            <div class="col-md-6">
+                                <input type="number" name="PayableFee" class="form-control" value="" id="PayableFee" readonly />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2 col-lg-2"> Fee Type <span class="red-mark">*</span></label>
+                            <div class="col-md-6">
+                                <input type="text" name="FeeType" class="form-control" value="" id="FeeType" readonly />
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="control-label col-md-2 col-lg-2">Cash Received <span class="red-mark">*</span></label>
+                            <div class="col-md-6">
+                                <input required type="number" name="CashReceived" class="form-control" value="" id="CashReceived" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-2 col-lg-2">Discount<span class="red-mark">*</span></label>
+                            <div class="col-md-6">
+                                <input type="number" name="Discount" class="form-control" value="" id="Discount" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-2 col-lg-2">Remaining Balance <span class="red-mark">*</span></label>
+                            <div class="col-md-6">
+                                <input type="number" name="RemainingBalance" min="0" class="form-control" value="" id="RemainingBalance" readonly />
+                            </div>
+                        </div>
+                        <input class="btn btn-primary" type="button" id="ChallanForm" value=" Get challan" />
+                    </div>
+                }
+                <br />
+
+
+
+                <div id="bill" style="margin-left:30px">
+
+                    <div class="ticket" id="ticket">
+                        <br>
+                        <center>
+                            <img src="/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/logo.PNG" />
+
+                        </center>
+
+
+                        <p class="centered">
+                            Officer's Academy
+                            <br><span id="Recipt">Recipt#<span id="challanNo"></span> </span>
+                            <br><span id="DateTime"></span>
+                        </p>
+
+
+                        <b>Cashier:</b> @ViewBag.UserName <span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Admin Copy</b>
+                        </span>
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="description" colspan="2">Challan Information</th>
+
+                                </tr>
+
+
+                            </thead>
+                            <tbody id="billbody" style="border: 1px solid black">
+                            </tbody>
+                        </table>
+                        <p class="centered">
+                            <br>Developed by : TheRiskAdvisors
+                        </p>
+                    </div>
+
+
+                </div>
+
+                <br />
+
+
+                <!--slip 2-->
+                <div id="bill1" style="margin-left:30px">
+
+                    <div class="ticket" id="ticket">
+                        <br>
+                        <center>
+                            <img src="/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/logo.PNG" />
+
+                        </center>
+
+
+                        <p class="centered">
+                            Officer's Academy
+                            <br><span id="Recipt1">Recipt#<span id="challanNo1"></span> </span>
+                            <br><span id="DateTime1"></span>
+                        </p>
+
+                        <b>Cashier:</b> @ViewBag.UserName <span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Student Copy</b>
+                        </span>
+
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="description" colspan="2">Challan Information</th>
+
+                                </tr>
+
+
+                            </thead>
+                            <tbody id="billbody1" style="border: 1px solid black">
+                            </tbody>
+                        </table>
+                        <p class="centered">
+                            <br>Developed by : TheRiskAdvisors
+                        </p>
+                    </div>
+
+
+                </div>
+
+                <button id="btnPrint" style="display:none;margin-left:30px;" class="hidden-print">Print</button>
+
+
+            </div>
+        </div>
+    </div><!--tab 1-->
+
+
+    <div class="tab-pane" id="tab_2">
+
+        <div class="box box-primary">
+            <div class="box-title"></div>
+            <div class="box-body">
+
                 <div class="form-group">
                     <span class="col-md-2">Session</span>
                     <div class="col-md-6">
-                        @Html.DropDownList("ClassId", null, " Select One", htmlAttributes: new { @class = "form-control", @id = "ClassId" })
-                        @Html.ValidationMessageFor(model => model.ClassId, "", new { @class = "text-danger" })
+
+
+                        @Html.DropDownList("ClassId1", null, "All", htmlAttributes: new { @class = "form-control", @id = "ClassId1" })
 
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="control-label col-md-2 col-lg-2">Students: <span class="red-mark">*</span></label>
-                    <div class="col-md-6">
-                        <select class="form-control" id="students" name="students" required>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label col-md-2 col-lg-2">Total Fee <span class="red-mark">*</span></label>
-                    <div class="col-md-6">
-                        <input type="number" name="TotalFee" class="form-control" value="" id="TotalFee" readonly />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-md-2 col-lg-2">Payable Fee <span class="red-mark">*</span></label>
-                    <div class="col-md-6">
-                        <input type="number" name="PayableFee" class="form-control" value="" id="PayableFee" readonly />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-md-2 col-lg-2"> Fee Type <span class="red-mark">*</span></label>
-                    <div class="col-md-6">
-                        <input type="text" name="FeeType" class="form-control" value="" id="FeeType" readonly />
-                    </div>
-                </div>
 
 
-                <div class="form-group">
-                    <label class="control-label col-md-2 col-lg-2">Cash Received <span class="red-mark">*</span></label>
-                    <div class="col-md-6">
-                        <input required type="number" name="CashReceived" class="form-control" value="" id="CashReceived" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label col-md-2 col-lg-2">Discount<span class="red-mark">*</span></label>
-                    <div class="col-md-6">
-                        <input type="number" name="Discount" class="form-control" value="" id="Discount" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label col-md-2 col-lg-2">Remaining Balance <span class="red-mark">*</span></label>
-                    <div class="col-md-6">
-                        <input type="number" name="RemainingBalance" min="0" class="form-control" value="" id="RemainingBalance" readonly />
-                    </div>
-                </div>
-                <input class="btn btn-primary" type="button" id="ChallanForm" value=" Get challan" />
-            </div>
-        }
-        <br />
+                <br />
+                <br />
 
 
-
-        <div id="bill" style="margin-left:30px">
-
-            <div class="ticket" id="ticket">
-                <br>
-                <center>
-                    <img src="/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/logo.PNG" />
-
-                </center>
-
-
-                <p class="centered">
-                    Officer's Academy
-                    <br><span id="Recipt">Recipt#<span id="challanNo"></span> </span>
-                    <br><span id="DateTime"></span>
-                </p>
-
-
-                <b>Cashier:</b> @ViewBag.UserName <span>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <b>Admin Copy - </b><span id="AdminCopyReceiptNo"> </span>
-    </span>
-
-    <table>
-        <thead>
-            <tr>
-                <th class="description" colspan="2">Challan Information</th>
-
-            </tr>
-
-
-        </thead>
-        <tbody id="billbody" style="border: 1px solid black">
-        </tbody>
-    </table>
-    <p class="centered">
-        <br>Developed by : TheRiskAdvisors
-    </p>
-</div>
-
-
-        </div>
-
-        <br />
-
-
-        <!--slip 2-->
-        <div id="bill1" style="margin-left:30px">
-
-            <div class="ticket" id="ticket">
-                <br>
-                <center>
-                    <img src="/Content/print-receipt-thermal-printer-master/print-receipt-thermal-printer-master/logo.PNG" />
-
-                </center>
-
-
-                <p class="centered">
-                    Officer's Academy
-                    <br><span id="Recipt1">Recipt#<span id="challanNo1"></span> </span>
-                    <br><span id="DateTime1"></span>
-                </p>
-
-                <b>Cashier:</b> @ViewBag.UserName <span>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Student Copy - </b><span id="StudentCopyReceiptNo"> </span>
-                </span>
-
-
-                <table>
+                <table class="table" id="datatable">
                     <thead>
                         <tr>
-                            <th class="description" colspan="2">Challan Information</th>
+
+                            <th>
+                                Student Name
+                            </th>
+                            <th>
+                                Roll No
+                            </th>
+                            <th>
+                                Session Name
+                            </th>
+                            <th>
+                                Course Type
+                            </th>
+                            <th>
+                                Fee Payable
+                            </th>
 
                         </tr>
-
-
                     </thead>
-                    <tbody id="billbody1" style="border: 1px solid black">
+                    <tbody id="DefaulterStudents">
                     </tbody>
                 </table>
-                <p class="centered">
-                    <br>Developed by : TheRiskAdvisors
-                </p>
+
+
+
             </div>
-
-
         </div>
 
-        <button id="btnPrint" style="display:none;margin-left:30px;" class="hidden-print">Print</button>
 
+    </div><!--tab 2-->
 
-    </div>
-</div>
+</div><!--tab Content-->
+
 
 
 <script>
 
     $(document).ready(function () {
 
+        var table = $('#datatable').dataTable({});
+
+
 
         $("#CashReceived").bind('keyup mouseup', function () {
             $("#bill").css('display', 'none');
             $("#btnPrint").css('display', 'none');
-                 $("#bill1").css('display', 'none');
+            $("#bill1").css('display', 'none');
             var payableFee = $("#PayableFee").val();
 
             var cashReceived = $(this).val();
@@ -445,7 +539,7 @@
         $("#Discount").bind('keyup mouseup', function () {
             $("#bill").css('display', 'none');
             $("#btnPrint").css('display', 'none');
-               $("#bill1").css('display', 'none');
+            $("#bill1").css('display', 'none');
 
             var payableFee = $("#PayableFee").val();
             var discount = $(this).val();
@@ -492,11 +586,7 @@
 
             var FeeType = $("#FeeType").val();
 
-
-
-
-
-         //   alert(FeeType);
+            //   alert(FeeType);
             var status = "";
             if (remainingBalance == 0) {
                 status = "Paid";
@@ -505,15 +595,15 @@
                 status = "Pending";
 
             }
-            var TableRow
+            var TableRow;
             if (Discount != "") {
 
-                TableRow = "<tr>  <td class='description'>Student Name</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + student + "</td></tr><tr>  <td class='description'>Student Session</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + session + "</td></tr><tr>  <td class='description'>Fee Month</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + monthNames[d.getMonth()] + "</td></tr>  <tr>  <td class='description'>Total Fee</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + $("#TotalFee").val() + "</td></tr><tr>  <td class='description'>Cash Received</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + cashReceived + "</td></tr>  <tr>  <td class='description'>Discount</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + Discount + "</td></tr> <tr>  <td class='description'>Remaining Balance</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + remainingBalance + "</td></tr>    <tr>  <td class='description'>Status</td> <td class='quantity' >&nbsp;&nbsp;&nbsp; " + status + " </td></tr>    "
+                TableRow = "<tr>  <td class='description'>Student Name</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + student + "</td></tr><tr>  <td class='description'>Student Session</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + session + "</td></tr><tr>  <td class='description'>Fee Month</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + monthNames[d.getMonth()] + "</td></tr>  <tr><td  class='description'> FeeType</td> <td class='quantity'>&nbsp;&nbsp;&nbsp;" + FeeType + "</td> </tr>  <tr>  <td class='description'>Total Fee</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + $("#TotalFee").val() + "</td></tr><tr>  <td class='description'>Cash Received</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + cashReceived + "</td></tr>  <tr>  <td class='description'>Discount</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + Discount + "</td></tr> <tr>  <td class='description'>Remaining Balance</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + remainingBalance + "</td></tr>    <tr>  <td class='description'>Status</td> <td class='quantity' >&nbsp;&nbsp;&nbsp; " + status + " </td></tr>    "
 
 
             }
             else {
-                TableRow = "<tr>  <td class='description'>Student Name</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + student + "</td></tr><tr>  <td class='description'>Student Session</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + session + "</td></tr><tr>  <td class='description'>Fee Month</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + monthNames[d.getMonth()] + "</td></tr>    <tr>  <td class='description'>Total Fee</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + $("#TotalFee").val() + "</td></tr><tr>  <td class='description'>Cash Received</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + cashReceived + "</td></tr>   <tr>  <td class='description'>Remaining Balance</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + remainingBalance + "</td></tr>    <tr>  <td class='description'>Status</td> <td class='quantity' >&nbsp;&nbsp;&nbsp; " + status + " </td></tr>    "
+                TableRow = "<tr>  <td class='description'>Student Name</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + student + "</td></tr><tr>  <td class='description'>Student Session</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + session + "</td></tr><tr>  <td class='description'>Fee Month</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + monthNames[d.getMonth()] + "</td></tr>   <tr> <td class='description'> FeeType  </td> <td class='quantity'>&nbsp;&nbsp;&nbsp;" + FeeType + "</td></tr>  <tr>  <td class='description'>Total Fee</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + $("#TotalFee").val() + "</td></tr><tr>  <td class='description'>Cash Received</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + cashReceived + "</td></tr>   <tr>  <td class='description'>Remaining Balance</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + remainingBalance + "</td></tr>    <tr>  <td class='description'>Status</td> <td class='quantity' >&nbsp;&nbsp;&nbsp; " + status + " </td></tr>    "
 
             }
 
@@ -602,6 +692,7 @@
         })
 
 
+
         $("#ClassId").change(function () {
 
             $("#ChallanForm").css('display', 'none');
@@ -626,6 +717,117 @@
             $("#bill1").css('display', 'none');
         })
 
-    })
+        AllDefaulterStudents();
+
+        function AllDefaulterStudents() {
+
+            $.ajax({
+
+                type: "POST",
+                url: '/GrandTotal/AllDefaulterStudents',
+                success: function (data) {
+                    table.fnClearTable();
+
+
+                    $.each(data, function (index) {
+                        debugger
+
+                        table.fnAddData([data[index].Name, data[index].UserName, data[index].ClassName, data[index].CourseType, data[index].FeePayable]);
+
+                    })
+
+                    table.fnDraw();
+                }
+
+
+            })
+        }
+
+
+
+
+        //Class1 Change
+
+
+        $("#ClassId1").change(function () {
+
+
+            var SelectedOptionText = $("#ClassId1 option:selected").html();
+
+            if (SelectedOptionText == "All") {
+                AllDefaulterStudents();
+            }
+
+            else {
+                $.ajax({
+
+                    type: "POST",
+                    url: '/GrandTotal/DefaulterStudentsByClass',
+                    data: { "ClassName": SelectedOptionText },
+                    success: function (data) {
+                        table.fnClearTable();
+
+
+                        $.each(data, function (index) {
+                            debugger
+
+                            table.fnAddData([data[index].Name, data[index].UserName, data[index].ClassName, data[index].CourseType, data[index].FeePayable]);
+
+                        })
+
+                        table.fnDraw();
+                    }
+
+
+                })
+
+
+            }   //end of else block
+
+
+
+        })
+
+
+
+    })//end of document ready
+
+
+
+    function drawTable() {
+        $('#example_filter').addClass("form-group");
+        $('#example_filter').addClass("has-feedback");
+        $('#example_length').addClass("col-lg-9 col-md-8 col-sm-12 col-xs-12");
+        //$('#example_filter').css("col-lg-9 col-md-8 col-sm-12 col-xs-12");
+
+        $('#example_wrapper').css("text-align", "left");
+        $('#example_length').css("text-align", "left");
+        $('#example_length label').addClass("col-md-3 col-sm-12 col-lg-2");
+        $("#example_length label").css("text-align", "left");
+        $('#example_length label').addClass("col-md-2 col-lg-2 col-sm-12");
+        // // $('#example_length label select').addClass("col-md-3 col-sm-8 col-lg-3"); : auto;
+        $('#example_filter input').css({ "border": "1px solid #ddd", "border-radius": "40px", "height": "30px", "margin-top": "-5px", "outline": "none", "padding-left": "10px", "color": "#000000 !important" });
+        //$('#example_length').css({ "overflow": "auto" });
+        $('#example_filter input').addClass("add");
+        $('#example_filter').append('<span  class="glyphicon glyphicon-search  form-control-feedback" style="margin-top: -33px; color: #666;"></span>');
+        var list = $("#ClassID").html();
+        $('#example_length').append(
+
+            '<div class="col-md-1 col-lg-1" style="width:0%; padding-left:1px;">' +
+            '<div class="d-bar"></div>' +
+            '</div>'
+            +
+
+            '<div class="col-md-3 col-lg-3">' +
+            '<div class="col-md-1 col-sm-3 col-xs-3" style="padding-left:0px"><a href=""><i class="glyphicon glyphicon-repeat" data-toggle="tooltip" title="Refresh" data-placement="bottom"></i></a></div>' +
+            '<div class="col-md-1 col-sm-3 col-xs-3"><a href="/Admin_Dashboard/StudentRegister"><i class="glyphicon glyphicon-edit" data-placement="bottom"></i></a></div>' +
+            '<div class="col-md-1 col-sm-3 col-xs-3"><a href="/AspNetUser/DisableStudentIndex"><i class="fa fa-ban" data-placement="bottom"></i>' + '</a></div>' +
+            '<div class="col-md-1 col-sm-3 col-xs-3"><a href=""><i onclick="download()"class="glyphicon glyphicon-download-alt" onclick="download()" data-placement="bottom"></i></a></div>' +
+            '<div class="col-md-1" padding-left:0px;">' +
+            '<div class="d-bar"></div>' +
+            '</div>' +
+            '</div>');
+        //$("#Class").prepend("<option value='0'>Select One</option>");
+    }
 
 </script>

@@ -73,7 +73,99 @@ namespace SEA_Application.Controllers
 
         }
 
+        public JsonResult AllDefaulterStudents()
+        {
+            //List<int?> DefaulterStudentIds = new List<int?>();
 
+            //var StudentsIds = from student in db.StudentFeeMonths
+
+            //                  group student by student.StudentId into grp
+            //                  where grp.Count() == 1 && grp.Any(x => x.FeePayable != 0)
+            //                  select grp.Key;
+
+            //var result1 = (from std in db.AspNetStudents
+            //               join usr in db.AspNetUsers on std.StudentID equals usr.Id
+            //               join fee_mon in db.StudentFeeMonths on std.Id equals fee_mon.StudentId
+
+            //               where StudentsIds.Contains(fee_mon.StudentId)
+
+            //               select new
+            //               {
+            //                   usr.Name,
+            //                   usr.PhoneNumber,
+            //                   usr.Email,
+            //                   usr.UserName,
+            //                   std.AspNetClass.ClassName,
+            //                   fee_mon.Months,
+            //                   fee_mon.Status,
+            //                   fee_mon.FeePayable,
+            //                   fee_mon.StudentId,
+
+            //               }).ToList();
+
+
+
+            //var FindDefaulterStudent = db.DefaulterStudents().ToList();
+
+            //DefaulterStudentIds.AddRange(StudentsIds);
+
+
+            //foreach (var student in FindDefaulterStudent)
+            //{
+
+
+            //    DateTime studentDateTime = Convert.ToDateTime(student.IssueDate);
+
+            //    int TotalDays = DateTime.Now.Subtract(studentDateTime).Days;
+
+
+            //    if (TotalDays > 30)
+            //    {
+
+            //        DefaulterStudentIds.Add(student.StudentId);
+
+            //    }
+
+
+            //}
+
+
+            //var DefaulterStudentsData = (from std in db.AspNetStudents
+            //               join usr in db.AspNetUsers on std.StudentID equals usr.Id
+            //               join fee_mon in db.StudentFeeMonths on std.Id equals fee_mon.StudentId
+            //                where DefaulterStudentIds.Contains(fee_mon.StudentId)
+            //                group fee_mon by fee_mon.StudentId into grp
+
+            //               select new
+            //               {
+            //                  grp 
+            //               }).ToList();
+
+            //db.AspNetStudents.Where(x=> x.c)
+
+
+            //  var min_payable = result1.Where(x => x.FeePayable = min(x.FeePayable));
+
+
+
+            // var results = DefaulterStudentsData.GroupBy(x => x.StudentId).Select(x => x);
+
+            //var StudentsIdsMoreThanOne = from student in db.StudentFeeMonths
+
+            //  group student by student.StudentId into grp
+            //  where grp.Count() < 1 && grp.Any(x => x.FeePayable != 0)
+            //  select grp.Key;
+
+
+
+            //   return Json(result1, JsonRequestBehavior.AllowGet);
+
+            var result = db.AllDefaulterStudents().ToList();
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+
+
+        }
 
         public ActionResult StudentFee()
         {
@@ -81,7 +173,9 @@ namespace SEA_Application.Controllers
             ViewBag.SessionId = new SelectList(db.AspNetSessions, "Id", "SessionName");
             //  ViewBag.ClassId = new SelectList(db.AspNetClasses, "Id", "ClassName");
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
-            
+
+            ViewBag.ClassID1 = new SelectList(db.AspNetClasses, "Id", "ClassName");
+
 
             var UserId = User.Identity.GetUserId();
             var username = db.AspNetUsers.Where(x => x.Id == UserId).Select(x => x.Name).FirstOrDefault();
@@ -91,7 +185,14 @@ namespace SEA_Application.Controllers
             return View();
         }
 
-       
+       public JsonResult DefaulterStudentsByClass (string ClassName )
+        {
+
+            var AllDefaulterStudent = db.AllDefaulterStudents().Where(x=>x.ClassName == ClassName).ToList();
+            return Json(AllDefaulterStudent, JsonRequestBehavior.AllowGet);
+        }
+
+
 
 
         public void FeeChallan_ExcelReport(string month)
@@ -531,9 +632,9 @@ namespace SEA_Application.Controllers
             var studentFeeDetails = db.StudentFeeMonths.Where(x => x.StudentId == id).OrderByDescending(x => x.IssueDate).FirstOrDefault();
 
             var CountStudentFee = db.StudentFeeMonths.Where(x => x.StudentId == id).Count();
-            var FeeCount ="";
+            var FeeCount = "";
 
-            if(CountStudentFee ==1)
+            if (CountStudentFee == 1)
             {
                 FeeCount = "1st";
 
@@ -588,7 +689,7 @@ namespace SEA_Application.Controllers
 
             }
 
-            else 
+            else
             {
                 FeeCount = "";
 
@@ -612,7 +713,7 @@ namespace SEA_Application.Controllers
             int? sessionId = db.AspNetClasses.Where(x => x.Id == ClassId).FirstOrDefault().SessionID;
 
             // db.AspNetSessions.Where(x=>x.Id==)
-           var SessionName =  db.AspNetSessions.Where(x => x.Id == sessionId).FirstOrDefault().SessionName;
+            var SessionName = db.AspNetSessions.Where(x => x.Id == sessionId).FirstOrDefault().SessionName;
 
             var studenfee = db.StudentFeeMonths.Where(x => x.Id == id).FirstOrDefault();
 
@@ -631,7 +732,7 @@ namespace SEA_Application.Controllers
                 stdFeeMonth.Status = "Paid";
             }
             else
-            { 
+            {
 
                 stdFeeMonth.Status = "Pending";
             }
@@ -649,7 +750,7 @@ namespace SEA_Application.Controllers
 
             var StudentName = db.AspNetUsers.Where(x => x.Id == UsrId).FirstOrDefault().Name;
 
-            voucher.Name = "Fee Received by Admin of Student " + StudentName +" Session Name "+ SessionName;
+            voucher.Name = "Fee Received by Admin of Student " + StudentName + " Session Name " + SessionName;
             voucher.Notes = "Fee Received by Admin " + StudentName + " Session Name " + SessionName;
             voucher.StudentId = studenfee.StudentId;
             voucher.Date = GetLocalDateTime.GetLocalDateTimeFunction();
@@ -685,7 +786,7 @@ namespace SEA_Application.Controllers
             voucherRecord.AfterBalance = AfterBalance;
             voucherRecord.VoucherId = voucher.Id;
             voucherRecord.Description = "Fee received of Student (" + StudentName + ") (" + SessionName + ") ";
-            
+
             Leadger.CurrentBalance = AfterBalance;
 
             db.VoucherRecords.Add(voucherRecord);
@@ -727,7 +828,7 @@ namespace SEA_Application.Controllers
                 voucherRecord3.CurrentBalance = CurrentBalanceOfDiscount;
                 voucherRecord3.AfterBalance = AfterBalanceOfDiscount;
                 voucherRecord3.VoucherId = voucher.Id;
-                voucherRecord3.Description = "Discount given to student (" + StudentName + ") (" + SessionName + ")  on payable fee "+FeePayable;
+                voucherRecord3.Description = "Discount given to student (" + StudentName + ") (" + SessionName + ")  on payable fee " + FeePayable;
                 LeadgerDiscount.CurrentBalance = AfterBalanceOfDiscount;
 
                 db.VoucherRecords.Add(voucherRecord3);
