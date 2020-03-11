@@ -1199,7 +1199,7 @@ on teacher.Id equals t2.UserID
                         var SessionName = db.AspNetSessions.Where(x => x.Id == SessionIdOfSelectedStudent).FirstOrDefault().SessionName;
                         voucher.Name = "Student Fee Creation of student " + aspNetUser.Name + " Session Name " + SessionName;
                         voucher.Notes = "Account Receiveable, discount, and revenue is updated";
-                        voucher.Date = DateTime.Now;
+                        voucher.Date = GetLocalDateTime.GetLocalDateTimeFunction();
                         voucher.StudentId = student.Id;
 
                         voucher.CreatedBy = username;

@@ -83,7 +83,7 @@ namespace SEA_Application.Controllers
 
             voucher.Name = "Notes paid by Student " + NameOfStudent +" Session Name "+SessionName;
             voucher.Notes = "Cash received for notes";
-            voucher.Date = DateTime.Now;
+            voucher.Date = GetLocalDateTime.GetLocalDateTimeFunction();
             voucher.StudentId = result.FirstOrDefault().StudentId;
 
             voucher.CreatedBy = username;

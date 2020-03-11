@@ -73,12 +73,16 @@ namespace SEA_Application.Controllers
 
         }
 
+
+
         public ActionResult StudentFee()
         {
 
             ViewBag.SessionId = new SelectList(db.AspNetSessions, "Id", "SessionName");
             //  ViewBag.ClassId = new SelectList(db.AspNetClasses, "Id", "ClassName");
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+            
+
             var UserId = User.Identity.GetUserId();
             var username = db.AspNetUsers.Where(x => x.Id == UserId).Select(x => x.Name).FirstOrDefault();
 
@@ -86,6 +90,9 @@ namespace SEA_Application.Controllers
 
             return View();
         }
+
+       
+
 
         public void FeeChallan_ExcelReport(string month)
         {
@@ -456,7 +463,7 @@ namespace SEA_Application.Controllers
             Voucher voucher = new Voucher();
             voucher.Name = "Student Fee Clear";
             voucher.Notes = "Student Fee Clear";
-            voucher.Date = DateTime.Now;
+            voucher.Date = GetLocalDateTime.GetLocalDateTimeFunction();
             voucher.CreatedBy = username;
             voucher.SessionID = SessionID;
 
@@ -621,7 +628,6 @@ namespace SEA_Application.Controllers
             stdFeeMonth.FeeReceived = CashReceived;
             if (RemainingFee == 0)
             {
-
                 stdFeeMonth.Status = "Paid";
             }
             else
@@ -646,7 +652,7 @@ namespace SEA_Application.Controllers
             voucher.Name = "Fee Received by Admin of Student " + StudentName +" Session Name "+ SessionName;
             voucher.Notes = "Fee Received by Admin " + StudentName + " Session Name " + SessionName;
             voucher.StudentId = studenfee.StudentId;
-            voucher.Date = DateTime.Now;
+            voucher.Date = GetLocalDateTime.GetLocalDateTimeFunction();
             voucher.CreatedBy = username;
             voucher.SessionID = SessionID;
             int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);

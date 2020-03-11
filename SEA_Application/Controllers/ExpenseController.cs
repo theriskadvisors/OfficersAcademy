@@ -95,8 +95,9 @@ namespace SEA_Application.Controllers
 
                     var date = Vouchers.Time + " " + time[1] + " " + time[2];
 
-                    DateTime dt = DateTime.ParseExact(date, "dd/MM/yyyy hh:mm:ss tt", CultureInfo.InvariantCulture);
-                    v.Date = dt;
+                  //  DateTime dt = //DateTime.ParseExact(date, "dd/MM/yyyy hh:mm:ss tt", CultureInfo.InvariantCulture);
+
+                    v.Date = GetLocalDateTime.GetLocalDateTimeFunction();
                     v.Notes = Vouchers.Narration;
                     v.VoucherNo = Vouchers.VoucherNo;
                     v.Name = Vouchers.VoucherName;
@@ -248,7 +249,7 @@ namespace SEA_Application.Controllers
         public ActionResult Report()
         {
 
-
+         
             return View();
         }
         public ActionResult ReportRecords()

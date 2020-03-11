@@ -2011,42 +2011,39 @@ namespace SEA_Application.Controllers
             return View();
         }
 
-        //public ActionResult CheckVerifiction(string RollNo)
-        //{
+        public ActionResult CheckVerifiction(string RollNo)
+        {
 
-        //    AspNetUser User =   db.AspNetUsers.Where(x => x.UserName == RollNo).FirstOrDefault();
-        //    string VerifictionMsg = "";
-                
-        //    if( User !=null)
-        //    {
-
-        //        AspNetStudent Student =    db.AspNetStudents.Where(x => x.StudentID == User.Id).FirstOrDefault();
-
-        //        if(Student != null)
-        //        {
-
-        //            if (Student.FingurePrintCode !=null )
-        //            {
-        //                VerifictionMsg = "Yes";
-        //            }
-        //            else
-        //            {
-        //                VerifictionMsg = "No";
-        //            }
-
-
-        //        }
-
-        //    }
-
-
-        //    return Json(VerifictionMsg, JsonRequestBehavior.AllowGet);
-
-
-
-        //    return View();
-        //}
+            AspNetUser User = db.AspNetUsers.Where(x => x.UserName == RollNo).FirstOrDefault();
+          
             
+            string VerifictionMsg = "";
+
+            if (User != null)
+            {
+
+                    if (User.FingerPrintCode != null)
+                    {
+                        VerifictionMsg = "Yes";
+                    }
+                    else
+                    {
+                        VerifictionMsg = "No";
+                    }
+
+
+               
+
+            }
+
+
+            return Json(VerifictionMsg, JsonRequestBehavior.AllowGet);
+
+
+
+            return View();
+        }
+
 
 
 
@@ -2363,7 +2360,7 @@ namespace SEA_Application.Controllers
                         var SessionName = db.AspNetSessions.Where(x => x.Id == SessionIdOfSelectedStudent).FirstOrDefault().SessionName;
                         voucher.Name = "Student Fee Creation of student " + model.Name + " Session Name " + SessionName; ;
                         voucher.Notes = "Account Receiveable, discount, and revenue is updated";
-                        voucher.Date = DateTime.Now;
+                        voucher.Date = GetLocalDateTime.GetLocalDateTimeFunction();
                         voucher.StudentId = student.Id;
 
                         voucher.CreatedBy = username;
@@ -2467,9 +2464,9 @@ namespace SEA_Application.Controllers
                             db.SaveChanges();
                         }
 
-                        //  return RedirectToAction("BiometricRegistration", "Admin_Dashboard", new { RollNo = model.UserName, Success = Error });
+                          return RedirectToAction("BiometricRegistration", "Admin_Dashboard", new { RollNo = model.UserName, Success = Error });
 
-                        return RedirectToAction("StudentIndex", "AspNetUser", new { Error });
+                       // return RedirectToAction("StudentIndex", "AspNetUser", new { Error });
 
                     }
                     else
