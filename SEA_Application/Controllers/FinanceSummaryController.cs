@@ -8,7 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 
 namespace SEA_Application.Controllers
-{
+{   
     [Authorize(Roles = "Accountant")]
     public class FinanceSummaryController : Controller
     {
@@ -570,25 +570,31 @@ namespace SEA_Application.Controllers
             }
 
         }
-        //public ActionResult CashIndex()
-        //{
-        //    return View();
-        //}
-        //public ActionResult GetCash()
-        //{
-        //    var result = db.Vouchers.ToList();
-        //    List<Voucher_list> list = new List<Voucher_list>();
-        //    foreach (var item in result)
-        //    {
-        //        Voucher_list vl = new Voucher_list();
-        //        vl.Name = item.Name;
-        //        vl.Notes = item.Notes;
-        //        vl.Date = item.Date;
-        //        vl.CreatedBy = item.CreatedBy;
-        //        list.Add(vl);
-        //    }
-        //    return Json(list, JsonRequestBehavior.AllowGet);
-        //}
+        public ActionResult CashIndex()
+        {
+            return View();
+        }
+
+        public ActionResult Cash()
+         {
+            return View();
+        }
+
+        public ActionResult GetCash()
+        {
+            var result = db.Vouchers.ToList();
+            List<Voucher_list> list = new List<Voucher_list>();
+            foreach (var item in result)
+            {
+                Voucher_list vl = new Voucher_list();
+                vl.Name = item.Name;
+                vl.Notes = item.Notes;
+                vl.Date = item.Date;
+                vl.CreatedBy = item.CreatedBy;
+                list.Add(vl);
+            }
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult InterTransaction()
         {
             return View();
