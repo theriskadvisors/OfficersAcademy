@@ -1,4 +1,4 @@
-﻿﻿@model SEA_Application.Models.FeesData
+﻿@model SEA_Application.Models.FeesData
 @{
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
@@ -15,8 +15,6 @@
     #error-tag {
         color: red;
     }
-
-
     body {
         font-family: "Open sans", "Segoe UI", "Segoe WP", Helvetica, Arial, sans-serif;
         color: #777;
@@ -329,12 +327,24 @@
                                 <input type="number" name="RemainingBalance" min="0" class="form-control" value="" id="RemainingBalance" readonly />
                             </div>
                         </div>
+
+
+
+                        <div class="form-group">
+                            <label class="col-md-2 col-lg-2 control-label">Due Date <span class="red-mark">*</span></label>
+                            <div class="col-md-6">
+                                <input type="date" id="DueDate" name="DueDate" class="form-control" required>
+                                <span id="DueDateError" class="text-danger"></span>
+
+                            </div>
+                        </div>
+
+
+
                         <input class="btn btn-primary" type="button" id="ChallanForm" value=" Get challan" />
                     </div>
                 }
                 <br />
-
-
 
                 <div id="bill" style="margin-left:30px">
 
@@ -364,7 +374,6 @@
                                     <th class="description" colspan="2">Challan Information</th>
 
                                 </tr>
-
 
                             </thead>
                             <tbody id="billbody" style="border: 1px solid black">
@@ -473,6 +482,10 @@
                                 Fee Payable
                             </th>
 
+                            <th>
+                                Due Date
+                            </th>
+
                         </tr>
                     </thead>
                     <tbody id="DefaulterStudents">
@@ -497,9 +510,53 @@
 
         var table = $('#datatable').dataTable({});
 
+        $("#DueDate").bind('change', function () {
 
+            debugger
+            var dob = $("#DueDate").val();
+            var dob = dob.split("-");
+            var date = new Date();
+
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+
+            if (dob[0] >= year) {
+                $('#ChallanForm').prop('disabled', false);
+
+
+
+                $('#DueDateError').html(" ");
+                if (dob[0] == year) {
+                    if (dob[1] >= month) {
+                        $('#ChallanForm').prop('disabled', false);
+                        $('#DueDateError').html(" ");
+                        if (dob[1] == month) {
+                            if (dob[2] > day) {
+                                $('#ChallanForm').prop('disabled', false);
+                                $('#DueDateError').html(" ");
+                            } else {
+                                $('#ChallanForm').prop('disabled', true);
+                                $('#DueDateError').html("DueDate Should greater than today");
+                            }
+                        } else if (dob[1] < month) {
+                            $('#ChallanForm').prop('disabled', true);
+                            $('#DueDateError').html("DueDate Should greater than today");
+                        }
+                    } else {
+                        $('#ChallanForm').prop('disabled', true);
+                        $('#DueDateError').html("DueDate Should greater than today");
+                    }
+                }
+            } else {
+                $('#ChallanForm').prop('disabled', true);
+                $('#DueDate').html("DueDate Should greater than today");
+            }
+
+        });
 
         $("#CashReceived").bind('keyup mouseup', function () {
+
             $("#bill").css('display', 'none');
             $("#btnPrint").css('display', 'none');
             $("#bill1").css('display', 'none');
@@ -512,14 +569,29 @@
                 remaining = parseFloat(payableFee) - parseFloat(cashReceived) - parseFloat(discount);
             }
             else {
+
                 remaining = parseFloat(payableFee) - parseFloat(cashReceived);
+
             }
-
-
 
             $("#RemainingBalance").val(remaining);
 
+            if (remaining == 0) {
 
+                document.getElementById('DueDate').valueAsDate = new Date();
+
+                $("#DueDate").prop("readonly", true);
+                $('#ChallanForm').prop('disabled', false);
+                $('#DueDateError').html(" ");
+
+            }
+            else {
+
+                $("#DueDate").val("");
+                $("#DueDate").prop("readonly", false);
+                $('#ChallanForm').prop('disabled', true);
+                $('#DueDateError').html(" ");
+            }
 
             var remainingB = $("#RemainingBalance").val();
             if (remainingB == "" || cashReceived == 0 || remaining < 0 || cashReceived < 0 || discount < 0) {
@@ -559,16 +631,35 @@
                 $("#btnPrint").css('display', 'none');
                 $("#ChallanForm").css('display', 'none');
                 $("#bill").css('display', 'none');
-
             }
             else {
                 //$("#btnPrint").css('display', 'block');
                 $("#ChallanForm").css('display', 'block');
             }
 
+            if (remaining == 0) {
+
+                document.getElementById('DueDate').valueAsDate = new Date();
+
+                $("#DueDate").prop("readonly", true);
+
+                $('#ChallanForm').prop('disabled', false);
+                $('#DueDateError').html(" ");
+            }
+            else {
+
+                $("#DueDate").val("");
+                $("#DueDate").prop("readonly", false);
+                $('#ChallanForm').prop('disabled', true);
+                $('#DueDateError').html("");
+            }
+
         })
 
         $("#ChallanForm").click(function () {
+
+            var DueDate = document.getElementById("DueDate").value;
+
             $('#billbody').html("");
             $('#billbody1').html("");
             var student = $("#students option:selected").text();
@@ -598,12 +689,10 @@
             var TableRow;
             if (Discount != "") {
 
-                TableRow = "<tr>  <td class='description'>Student Name</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + student + "</td></tr><tr>  <td class='description'>Student Session</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + session + "</td></tr><tr>  <td class='description'>Fee Month</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + monthNames[d.getMonth()] + "</td></tr>  <tr><td  class='description'> FeeType</td> <td class='quantity'>&nbsp;&nbsp;&nbsp;" + FeeType + "</td> </tr>  <tr>  <td class='description'>Total Fee</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + $("#TotalFee").val() + "</td></tr><tr>  <td class='description'>Cash Received</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + cashReceived + "</td></tr>  <tr>  <td class='description'>Discount</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + Discount + "</td></tr> <tr>  <td class='description'>Remaining Balance</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + remainingBalance + "</td></tr>    <tr>  <td class='description'>Status</td> <td class='quantity' >&nbsp;&nbsp;&nbsp; " + status + " </td></tr>    "
-
-
+                TableRow = "<tr>  <td class='description'>Student Name</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + student + "</td></tr><tr>  <td class='description'>Student Session</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + session + "</td></tr><tr>  <td class='description'>Fee Month</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + monthNames[d.getMonth()] + "</td></tr>  <tr><td  class='description'> FeeType</td> <td class='quantity'>&nbsp;&nbsp;&nbsp;" + FeeType + "</td> </tr>  <tr>  <td class='description'>Total Fee</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + $("#TotalFee").val() + "</td></tr><tr>  <td class='description'>Cash Received</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + cashReceived + "</td></tr>  <tr>  <td class='description'>Discount</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + Discount + "</td></tr> <tr>  <td class='description'>Remaining Balance</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + remainingBalance + "</td></tr>    <tr>  <td class='description'>Status</td> <td class='quantity' >&nbsp;&nbsp;&nbsp; " + status + " </td></tr>  <tr>  <td class='description'>Due Date</td> <td class='quantity' >&nbsp;&nbsp;&nbsp; " + DueDate + " </td></tr> "
             }
             else {
-                TableRow = "<tr>  <td class='description'>Student Name</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + student + "</td></tr><tr>  <td class='description'>Student Session</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + session + "</td></tr><tr>  <td class='description'>Fee Month</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + monthNames[d.getMonth()] + "</td></tr>   <tr> <td class='description'> FeeType  </td> <td class='quantity'>&nbsp;&nbsp;&nbsp;" + FeeType + "</td></tr>  <tr>  <td class='description'>Total Fee</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + $("#TotalFee").val() + "</td></tr><tr>  <td class='description'>Cash Received</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + cashReceived + "</td></tr>   <tr>  <td class='description'>Remaining Balance</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + remainingBalance + "</td></tr>    <tr>  <td class='description'>Status</td> <td class='quantity' >&nbsp;&nbsp;&nbsp; " + status + " </td></tr>    "
+                TableRow = "<tr>  <td class='description'>Student Name</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + student + "</td></tr><tr>  <td class='description'>Student Session</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + session + "</td></tr><tr>  <td class='description'>Fee Month</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + monthNames[d.getMonth()] + "</td></tr>   <tr> <td class='description'> FeeType  </td> <td class='quantity'>&nbsp;&nbsp;&nbsp;" + FeeType + "</td></tr>  <tr>  <td class='description'>Total Fee</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + $("#TotalFee").val() + "</td></tr><tr>  <td class='description'>Cash Received</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + cashReceived + "</td></tr>   <tr>  <td class='description'>Remaining Balance</td> <td class='quantity' >&nbsp;&nbsp;&nbsp;" + remainingBalance + "</td></tr>    <tr>  <td class='description'>Status</td> <td class='quantity' >&nbsp;&nbsp;&nbsp; " + status + " </td></tr>  <tr>  <td class='description'>Due Date</td> <td class='quantity' >&nbsp;&nbsp;&nbsp; " + DueDate + " </td></tr>    "
 
             }
 
@@ -627,8 +716,6 @@
             $("#bill").css('display', 'block');
             $("#bill1").css('display', 'block');
             $("#btnPrint").css('display', 'block');
-
-
 
         })
         $("#btnPrint").click(function () {
@@ -660,6 +747,8 @@
             var remainingfee = $("#RemainingBalance").val();
             var Discount = parseFloat($("#Discount").val());
             var CashReceived = parseFloat($("#CashReceived").val());
+
+            var DueDate = document.getElementById("DueDate").value;
             // CashReceived
 
             if (isNaN(Discount)) {
@@ -678,7 +767,7 @@
 
                 type: "POST",
                 url: '/GrandTotal/StudentFeeUpdate',
-                data: { "Id": id, "RemainingFee": remainingfee, "Discount": Discount, "CashReceived": CashReceived, "ClassId": classId },
+                data: { "Id": id, "RemainingFee": remainingfee, "Discount": Discount, "CashReceived": CashReceived, "ClassId": classId, "DueDate": DueDate },
                 success: function () {
 
                     // alert("success");
@@ -688,10 +777,7 @@
 
             })
 
-
         })
-
-
 
         $("#ClassId").change(function () {
 
@@ -707,13 +793,11 @@
         })
 
         $("#students").change(function () {
-            $("#ChallanForm").css('display', 'none');
 
+            $("#ChallanForm").css('display', 'none');
             $("#bill").css('display', 'none');
             $("#btnPrint").css('display', 'none');
-
             $("#ChallanForm1").css('display', 'none');
-
             $("#bill1").css('display', 'none');
         })
 
@@ -731,22 +815,21 @@
 
                     $.each(data, function (index) {
                         debugger
-
-                        table.fnAddData([data[index].Name, data[index].UserName, data[index].ClassName, data[index].CourseType, data[index].FeePayable]);
+                        var value = new Date(parseInt(data[index].DueDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                        var dat = value.getMonth() +
+                            1 +
+                            "/" +
+                            value.getDate() +
+                            "/" +
+                            value.getFullYear();
+                        table.fnAddData([data[index].Name, data[index].UserName, data[index].ClassName, data[index].CourseType, data[index].FeePayable, dat]);
 
                     })
 
                     table.fnDraw();
                 }
-
-
             })
         }
-
-
-
-
-        //Class1 Change
 
 
         $("#ClassId1").change(function () {
@@ -767,24 +850,26 @@
                     success: function (data) {
                         table.fnClearTable();
 
-
                         $.each(data, function (index) {
-                            debugger
 
-                            table.fnAddData([data[index].Name, data[index].UserName, data[index].ClassName, data[index].CourseType, data[index].FeePayable]);
+                            var value = new Date(parseInt(data[index].DueDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                            var dat = value.getMonth() +
+                                1 +
+                                "/" +
+                                value.getDate() +
+                                "/" +
+                                value.getFullYear();
+
+                            table.fnAddData([data[index].Name, data[index].UserName, data[index].ClassName, data[index].CourseType, data[index].FeePayable, dat]);
 
                         })
 
                         table.fnDraw();
                     }
-
-
                 })
 
 
             }   //end of else block
-
-
 
         })
 

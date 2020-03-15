@@ -16,7 +16,7 @@
         list-style: none;
         margin: 0;
         padding: 0;
-        height: 4000px !important;
+        height: 4200px !important;
     }
 
 
@@ -133,15 +133,18 @@
             window.location.href = '@Url.Action("StudentsIndex", "AspNetUser")';
         });
 
+     
+
         $("#ClassID").change(function () {
 
+          $("#DiscountInAmount").val(0);
 
             $("#TotalFee").val("");
             $("#Discount").val(0);
             $("#DiscountPercentage").val(0);
           //  $("#RemainingAmount").val("");
 
-          
+
             $("#Discount").val(0);
             $("#RemainingAmount").val(0);
             $("#Fee").val(0);
@@ -291,7 +294,7 @@
 
         $("#subjects option[value='']").remove();
 
-        
+
         //$("#subjects").change(function () {
 
         //    var selectedClass = $("#subjects").val();
@@ -317,26 +320,68 @@
             //$('#FeeType').append('<option value="PerMonth">PerMonth</option>');
             $("#NotesAmount").prop('required', false);
 
-             $("#DiscountPercentage").val(0);
+            $("#DiscountPercentage").val(0);
             $("#Discount").val(0);
             $("#RemainingAmount").val(0);
             $("#Fee").val(0);
+            $("#DiscountInAmount").val(0);
         });
+
         $('#WithNotes').click(function () {
 
             //$("#FeeType  option[value='PerMonth']").remove();
             $("#NotesAmount").prop('required', true);
             $('#NotesID').show();
             $("#TotalFee").val("");
-            $('#NotesAmount').val(16000);
-
+            $('#NotesAmount').val(16000); 
             $("#DiscountPercentage").val(0);
             $("#Discount").val(0);
             $("#RemainingAmount").val(0);
             $("#Fee").val(0);
+            $("#DiscountInAmount").val(0);
 
         });
 
+        
+        $("#DueDate").bind('blur', function () {
+            var dob = $("#DueDate").val();
+            var dob = dob.split("-");
+            var date = new Date();
+
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+
+            if (dob[0] >= year) {
+                $('#FormSubmit').prop('disabled', false);
+                $('#DueDateError').html(" ");
+                if (dob[0] == year) {
+                    if (dob[1] >= month) {
+                        $('#FormSubmit').prop('disabled', false);
+                        $('#DueDateError').html(" ");
+                        if (dob[1] == month) {
+                            if (dob[2] >= day) {
+                                $('#FormSubmit').prop('disabled', false);
+                                $('#DueDateError').html(" ");
+                            } else {
+                                $('#FormSubmit').prop('disabled', true);
+                                $('#DueDateError').html("DueDate Should be today or greater than today");
+                            }
+                        } else if (dob[1] < month) {
+                            $('#FormSubmit').prop('disabled', true);
+                            $('#DueDateError').html("DueDate Should be today or greater than today");
+                        }
+                    } else {
+                        $('#FormSubmit').prop('disabled', true);
+                        $('#DueDateError').html("DueDate Should be today or greater than today");
+                    }
+                }
+            } else {
+                $('#FormSubmit').prop('disabled', true);
+                $('#DueDateError').html("DueDate Should be today or greater than today");
+            }
+
+        });
 
         $("#birthDate").bind('blur', function () {
             var dob = $("#birthDate").val();
@@ -458,16 +503,46 @@
         })
 
         $("#FeeType").change(function () {
-            debugger    
+            debugger
+
+          $("#DiscountInAmount").val(0);
 
             $("#Fee").val(0);
-         //   $("#FeeType").val(0);
+         // $("#FeeType").val(0);
             $("#DiscountPercentage").val(0);
             $("#Discount").val(0);
             $("#RemainingAmount").val(0);
 
             $("#TotalFee").val("");
 
+
+        })
+
+        $("#DiscountInPercentageRadio").click(function () {
+
+            $("#DiscountAmountDiv").css('display', 'none');
+            $("#DiscountPercentageDiv").css('display', 'block');
+
+         $("#RemainingAmount").val(0);
+            $("#TotalFee").val("");
+            $("#Discount").val(0);
+
+            $("#DiscountReadOnlyDiv").css('display', 'block');
+            
+            $("#DiscountInAmount").val(0);
+        })
+
+        $("#DiscountAmountRadio").click(function () {
+
+            $("#DiscountPercentageDiv").css('display', 'none');
+            $("#DiscountAmountDiv").css('display', 'block');
+             $("#RemainingAmount").val(0);
+            $("#TotalFee").val("");
+            $("#Discount").val(0);
+
+
+            $("#DiscountReadOnlyDiv").css('display', 'none');
+            $("#DiscountPercentage").val(0);
 
         })
 
@@ -627,7 +702,7 @@
 
                                 }
                                 else if (value1.SubjectGroup == "3") {
-                                    
+
                                     $("#SubjectPMSGroup3TableBody").append('<tr> <td>' + value1.SubjectName + '</td > <td align="center">'+value1.Points+'</td><td align="center"><input onclick=' + "group(this,'.CheckboxPMSGroup3')" + '  type="radio" id=' + value1.Id + ' value=' + value1.Id + ' name="PMSSubjects3"></td></tr>');
 
 
@@ -668,7 +743,7 @@
 
 
 
-       
+
 
         $("#MandatorySubjectsCSS").on('change', "#CheckboxCSSMandatory", function () {
             debugger
@@ -714,7 +789,7 @@
 
         })
                $("#SubjectCSSGroup1").on('change', ".CheckboxCSSGroup1", function () {
-            
+
             if ($(this).is(':checked')) {
 
                 $("input[name='CSSSubjects1']:first").prop("checked", true);
@@ -733,7 +808,7 @@
 
 
           $("#SubjectCSSGroup2").on('change', ".CheckboxCSSGroup2", function () {
-            
+
             if ($(this).is(':checked')) {
 
                 $("input[name='CSSSubjects2']:first").prop("checked", true);
@@ -750,9 +825,9 @@
 
         })
 
-        
+
           $("#SubjectCSSGroup3").on('change', ".CheckboxCSSGroup3", function () {
-            
+
             if ($(this).is(':checked')) {
 
                 $("input[name='CSSSubjects3']:first").prop("checked", true);
@@ -769,9 +844,9 @@
 
         })
 
-        
+
           $("#SubjectCSSGroup4").on('change', ".CheckboxCSSGroup4", function () {
-            
+
             if ($(this).is(':checked')) {
 
                 $("input[name='CSSSubjects4']:first").prop("checked", true);
@@ -788,9 +863,9 @@
 
         })
 
-        
+
           $("#SubjectCSSGroup5").on('change', ".CheckboxCSSGroup5", function () {
-            
+
             if ($(this).is(':checked')) {
 
                 $("input[name='CSSSubjects5']:first").prop("checked", true);
@@ -807,9 +882,9 @@
 
         })
 
-        
+
           $("#SubjectCSSGroup6").on('change', ".CheckboxCSSGroup6", function () {
-            
+
             if ($(this).is(':checked')) {
 
                 $("input[name='CSSSubjects6']:first").prop("checked", true);
@@ -826,9 +901,9 @@
 
         })
 
-        
+
           $("#SubjectCSSGroup7").on('change', ".CheckboxCSSGroup7", function () {
-            
+
             if ($(this).is(':checked')) {
 
                 $("input[name='CSSSubjects7']:first").prop("checked", true);
@@ -847,9 +922,9 @@
 
 
 
-        
+
           $("#SubjectPMSGroup1").on('change', ".CheckboxPMSGroup1", function () {
-            
+
             if ($(this).is(':checked')) {
 
                 $("input[name='PMSSubjects1']:first").prop("checked", true);
@@ -865,9 +940,9 @@
             }
 
           })
-        
+
           $("#SubjectPMSGroup2").on('change', ".CheckboxPMSGroup2", function () {
-            
+
             if ($(this).is(':checked')) {
 
                 $("input[name='PMSSubjects2']:first").prop("checked", true);
@@ -883,9 +958,9 @@
             }
 
           })
-        
+
           $("#SubjectPMSGroup3").on('change', ".CheckboxPMSGroup3", function () {
-            
+
             if ($(this).is(':checked')) {
 
                 $("input[name='PMSSubjects3']:first").prop("checked", true);
@@ -901,9 +976,9 @@
             }
 
           })
-        
+
           $("#SubjectPMSGroup4").on('change', ".CheckboxPMSGroup4", function () {
-            
+
             if ($(this).is(':checked')) {
 
                 $("input[name='PMSSubjects4']:first").prop("checked", true);
@@ -921,7 +996,7 @@
           })
 
           $("#SubjectPMSGroup5").on('change', ".CheckboxPMSGroup5", function () {
-            
+
             if ($(this).is(':checked')) {
 
                 $("input[name='PMSSubjects5']:first").prop("checked", true);
@@ -938,14 +1013,31 @@
 
           })
 
-         $("#DiscountPercentage").bind('keyup mouseup', function () {    
+        $("#NotesAmount").bind('keyup mouseup', function () {
+
+
+             $("#DiscountInAmount").val(0);
+             $("#RemainingAmount").val(0);
+             $("#Discount").val(0);
+             $("#TotalFee").val("");
+             $("#DiscountPercentage").val(0);
+
+        })
+
+
+         $("#DiscountPercentage").bind('keyup mouseup', function () {
 
              $('#FormSubmit').prop('disabled', false);
 
           //  Calculations();
+
+
+             $("#DiscountInAmount").val(0);
              $("#RemainingAmount").val("");
              $("#Discount").val(0);
              $("#TotalFee").val("");
+
+
               var FeeType = $("#FeeType").val();
              var SessionFee = $("#SessionFee").val();
              var FeeAfterFeeType = $("#Fee").val();
@@ -960,16 +1052,15 @@
                  NotesAmount = 0;
 
              if ( FeeType !="" &&  FeeAfterFeeType != 0 && DiscountPercentage != 0 && DiscountPercentage>0 ) {
-
+                
                  DiscountedAmount = parseFloat(FeeAfterFeeType) * (parseFloat(DiscountPercentage) / 100);
 
                  var RemainingFeeAfterFeeType = parseFloat(FeeAfterFeeType) - parseFloat(DiscountedAmount);
 
                  $("#Discount").val(DiscountedAmount);
 
-                 
-                 $("#RemainingAmount").val(RemainingFeeAfterFeeType);
-                 
+                  $("#RemainingAmount").val(RemainingFeeAfterFeeType);
+
                  TotalFee = parseFloat(RemainingFeeAfterFeeType) + parseFloat(NotesAmount);
 
                  $("#TotalFee").val(TotalFee);
@@ -978,13 +1069,66 @@
 
                     $('#FormSubmit').prop('disabled', true);
                  }
-
-
              }
 
 
-             
+
+
          });
+
+
+        $("#DiscountInAmount").bind('keyup mouseup', function () {
+
+             $('#FormSubmit').prop('disabled', false);
+
+            $("#RemainingAmount").val(0);
+             $("#Discount").val(0);
+            $("#TotalFee").val("");
+            $("#DiscountPercentage").val(0);
+
+              var FeeType = $("#FeeType").val();
+              var SessionFee = $("#SessionFee").val();
+              var FeeAfterFeeType = $("#Fee").val();
+
+           //  var DiscountPercentage = $("#DiscountPercentage").val();
+
+                var DiscountInAmount = $("#DiscountInAmount").val();
+                var NotesAmount = $("#NotesAmount").val();
+
+                var DiscountedAmount;
+                var TotalFee;
+
+             debugger
+             if (NotesAmount == "")
+                NotesAmount = 0;
+
+
+
+              if ( FeeType !="" &&  FeeAfterFeeType != 0 && DiscountInAmount != 0 && DiscountInAmount>0 ) {
+
+
+                   DiscountedAmount = parseFloat(DiscountInAmount);
+                   var RemainingFeeAfterFeeType = parseFloat(FeeAfterFeeType) - parseFloat(DiscountInAmount);
+                   $("#Discount").val(DiscountedAmount);
+
+                 $("#RemainingAmount").val(RemainingFeeAfterFeeType);
+
+                 TotalFee = parseFloat(RemainingFeeAfterFeeType) + parseFloat(NotesAmount);
+
+                 $("#TotalFee").val(TotalFee);
+
+                 if (RemainingFeeAfterFeeType < 0) {
+
+                    $('#FormSubmit').prop('disabled', true);
+                 }
+             }
+
+
+
+
+
+        })
+
 
 
         //$("#")
@@ -1120,7 +1264,7 @@
            //   $("#Fee").val(0);
          //   $("#FeeType").val(0);
 
-
+          $("#DiscountInAmount").val(0);
             $("#DiscountPercentage").val(0);
             $("#Discount").val(0);
             $("#RemainingAmount").val(0);
@@ -1283,19 +1427,19 @@
                                             </div>
                                         </div>
                                         @*<div class="form-group">
-                                            <label class="col-md-2 col-lg-2 control-label" for="Address"><b>Address:</b></label>
-                                            <div class="col-md-6">
-                                                <input type="text" class="form-control text_box_style" id="Address" name="Address">
-                                            </div>
-                                        </div>*@
+                                                <label class="col-md-2 col-lg-2 control-label" for="Address"><b>Address:</b></label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control text_box_style" id="Address" name="Address">
+                                                </div>
+                                            </div>*@
 
                                         @*<div class="form-group">
-                                            <label class="col-md-2 col-lg-2 control-label" for="Name"><b>Age: </b><span class="red-mark"></span></label>
-                                            <div class="col-md-6">
-                                                <input type="number" class="form-control text_box_style" id="Age" name="Age" min="15" max="60" T>
+                                                <label class="col-md-2 col-lg-2 control-label" for="Name"><b>Age: </b><span class="red-mark"></span></label>
+                                                <div class="col-md-6">
+                                                    <input type="number" class="form-control text_box_style" id="Age" name="Age" min="15" max="60" T>
 
-                                            </div>
-                                        </div>*@
+                                                </div>
+                                            </div>*@
 
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-md-2 col-lg-2 control-label"><b>Cell No:</b> </label>
@@ -1318,28 +1462,28 @@
 
 
 
-                                <div class="form-group">
-                                    <label for="CourseType" class="col-md-2 col-lg-2 control-label"><b>Course Type:</b> <span class="red-mark">*</span></label>
-                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="CourseType" class="col-md-2 col-lg-2 control-label"><b>Course Type:</b> <span class="red-mark">*</span></label>
+                                            <div class="col-md-6">
 
-                                        <div class="form-group RadioButtonPadding">
-                                            <div class="radio RadioButtonsInline">
+                                                <div class="form-group RadioButtonPadding">
+                                                    <div class="radio RadioButtonsInline">
 
-                                                <label><input type="radio" name="CourseType" id="CssCourse" value="CSS" checked> CSS</label>
+                                                        <label><input type="radio" name="CourseType" id="CssCourse" value="CSS" checked> CSS</label>
+                                                    </div>
+                                                    <div class="radio RadioButtonsInline">
+
+                                                        <label><input type="radio" name="CourseType" id="PmsCourse" value="PMS"> PMS </label>
+                                                    </div>
+                                                    <div class="radio RadioButtonsInline">
+
+                                                        <label><input type="radio" name="CourseType" id="OnePaper" value="OnePaper"> One Paper </label>
+                                                    </div>
+
+                                                </div>
+                                                <span id="Phone-Error" class="text-danger"></span>
                                             </div>
-                                            <div class="radio RadioButtonsInline">
-
-                                                <label><input type="radio" name="CourseType" id="PmsCourse" value="PMS"> PMS </label>
-                                            </div>
-                                            <div class="radio RadioButtonsInline">
-
-                                                <label><input type="radio" name="CourseType" id="OnePaper" value="OnePaper"> One Paper </label>
-                                            </div>
-
                                         </div>
-                                        <span id="Phone-Error" class="text-danger"></span>
-                                    </div>
-                                </div>
 
 
                                     </div>
@@ -1894,12 +2038,37 @@
 
                                         </div>
                                     </div>
+
+
                                     <div class="form-group">
                                         <label class="col-md-2 col-lg-2 control-label"></label>
                                         <div class="col-md-6">
                                             <button id="CalculateFee" type="button" onclick="Calc()" class="btn btn-primary ">Calculate Fee</button>
                                         </div>
                                     </div>
+
+
+                                    <div class="form-group">
+                                        <label for="CourseType" class="col-md-2 col-lg-2 control-label"><b>Discount:</b> </label>
+                                        <div class="col-md-6">
+
+                                            <div class="form-group RadioButtonPadding">
+                                                <div class="checkbox">
+
+                                                    <label><input type="radio" name="DiscountRadioGroup" value="DiscountInPercentageRadio" id="DiscountInPercentageRadio" checked>Discount Percentage</label>
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;
+
+                                                    <label><input type="radio" name="DiscountRadioGroup" value="DiscountAmount" id="DiscountAmountRadio">Discount Amount</label>
+
+                                                </div>
+
+                                            </div>
+                                            <span id="Phone-Error" class="text-danger"></span>
+                                        </div>
+
+                                    </div>
+
+
 
 
                                     <div class="form-group">
@@ -1910,19 +2079,30 @@
                                     </div>
                                     <div id="DiscountDiv">
 
-                                        <div class="form-group">
+                                        <div class="form-group" id="DiscountPercentageDiv">
                                             <label class="col-md-2 col-lg-2 control-label"><b>Discount %</b></label>
                                             <div class="col-md-6">
                                                 <input type="number" value="0" class="form-control round-border" name="DiscountPercentage" id="DiscountPercentage" />
                                             </div>
                                         </div>
 
-                                        <div class="form-group">
+
+                                        <div class="form-group" id="DiscountAmountDiv" style="display:none">
+                                            <label class="col-md-2 col-lg-2 control-label"><b>Discount Amount</b></label>
+                                            <div class="col-md-6">
+                                                <input type="number" value="0" class="form-control round-border" name="DiscountInAmount" id="DiscountInAmount" />
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group" id="DiscountReadOnlyDiv">
                                             <label class="col-md-2 col-lg-2 control-label"><b>Discount Amount</b></label>
                                             <div class="col-md-6">
                                                 <input type="number" value="0" class="form-control round-border" name="Discount" id="Discount" readonly />
                                             </div>
                                         </div>
+
+
                                         <div class="form-group">
                                             <label class="col-md-2 col-lg-2 control-label"><b>Remaining Amount </b></label>
                                             <div class="col-md-6">
@@ -1940,8 +2120,19 @@
                                     </div>
 
 
-                                    <hr />
+                                    <div class="form-group">
+                                      
+                                        <label class="col-md-2 col-lg-2 control-label"><b>Due Date </b><span class="red-mark">*</span></label>
+                                        <div class="col-md-6">
+                                            <input type="date" id="DueDate" name="DueDate" class="form-control" required>
+                                            <span id="DueDateError" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                 
 
+
+                                    <hr />
+                                    <br />
                                     <div class="form-group">
                                         <div class="col-md-offset-1 col-lg-offset-1 col-md-5">
 

@@ -417,17 +417,17 @@ namespace SEA_Application.Controllers
 
             var teachers = (from teacher in db.AspNetUsers.Where(x => x.Status != "False")
                             join t2 in db.AspNetUsers_Session
-on teacher.Id equals t2.UserID
+                             on teacher.Id equals t2.UserID
                             where teacher.AspNetRoles.Select(y => y.Name).Contains("Teacher")
-                            select new
-                            {
-                                teacher.Id,
-                                Class = t2.AspNetSession.SessionName,
-                                Subject = "-",
-                                teacher.Email,
-                                teacher.PhoneNumber,
-                                teacher.UserName,
-                                teacher.Name,
+                                select new
+                                {
+                                    teacher.Id,
+                                    Class = t2.AspNetSession.SessionName,
+                                    Subject = "-",
+                                    teacher.Email,
+                                    teacher.PhoneNumber,
+                                    teacher.UserName,
+                                    teacher.Name,
 
 
                             }).ToList();
@@ -753,10 +753,6 @@ on teacher.Id equals t2.UserID
             return Content(Roll_Number.ToString());
         }
 
-
-
-
-
         public JsonResult GetUserName(string userName)
         {
             check Check = new check();
@@ -911,7 +907,6 @@ on teacher.Id equals t2.UserID
                             ViewBag.Discount = Discount1;
                             ViewBag.NotesFee = StudentFeeMonth.NotesFee;
                             ViewBag.FeeType = StudentFeeMonth.FeeType;
-
                             VoucherExist1 = 1;
 
                         }
@@ -1018,8 +1013,6 @@ on teacher.Id equals t2.UserID
                         {
                             db.AspNetStudent_Subject.Remove(stu_sub_rem);
 
-
-
                             db.SaveChanges();
                         }
                         catch
@@ -1069,8 +1062,6 @@ on teacher.Id equals t2.UserID
                     SEA_DatabaseEntities db1 = new SEA_DatabaseEntities();
 
                     db1.AspNetUsers.Attach(aspNetUser);
-
-
                     db1.Entry(aspNetUser).State = EntityState.Modified;
 
                     db1.Entry(aspNetUser).Property(x => x.PasswordHash).IsModified = false;
@@ -1117,11 +1108,15 @@ on teacher.Id equals t2.UserID
 
                         var StudentFeeMonthToDelete = db.StudentFeeMonths.Where(x => x.StudentId == student.Id).FirstOrDefault();
 
+                        DateTime? DueDateOfStudent = StudentFeeMonthToDelete.DueDate;
+
                         db.StudentFeeMonths.Remove(StudentFeeMonthToDelete);
                         db.SaveChanges();
 
-                        //Ledgers Manipulation//
+                       
+                
 
+                        //Ledgers Manipulation//
 
                         var Discount = Request.Form["Discount"];
 
@@ -1164,14 +1159,12 @@ on teacher.Id equals t2.UserID
                             studentFee = studentFee + 0;
                         }
 
-
                         if (NotesCategory == "WithNotes")
                         {
 
                             NotesFee = Convert.ToDouble(Request.Form["NotesAmount"]);
                             studentFeeMonth.TotalFee = Total + Convert.ToDouble(Request.Form["NotesAmount"]);
                             studentFeeMonth.NotesFee = Convert.ToDouble(Request.Form["NotesAmount"]);
-
                         }
                         else
                         {
@@ -1187,7 +1180,8 @@ on teacher.Id equals t2.UserID
                         studentFeeMonth.SessionId = SessionIdOfSelectedStudent;
                         studentFeeMonth.StudentId = student.Id;
                         studentFeeMonth.Status = "Pending";
-
+                        studentFeeMonth.DueDate = DueDateOfStudent;
+                        
                         db.StudentFeeMonths.Add(studentFeeMonth);
                         db.SaveChanges();
 

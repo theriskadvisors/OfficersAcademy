@@ -142,12 +142,7 @@ namespace SEA_Application.Controllers
             //               }).ToList();
 
             //db.AspNetStudents.Where(x=> x.c)
-
-
             //  var min_payable = result1.Where(x => x.FeePayable = min(x.FeePayable));
-
-
-
             // var results = DefaulterStudentsData.GroupBy(x => x.StudentId).Select(x => x);
 
             //var StudentsIdsMoreThanOne = from student in db.StudentFeeMonths
@@ -156,11 +151,9 @@ namespace SEA_Application.Controllers
             //  where grp.Count() < 1 && grp.Any(x => x.FeePayable != 0)
             //  select grp.Key;
 
-
-
             //   return Json(result1, JsonRequestBehavior.AllowGet);
 
-            var result = db.AllDefaulterStudents().ToList();
+            var result = db.DefaulterStudents().ToList();
 
             return Json(result, JsonRequestBehavior.AllowGet);
 
@@ -188,7 +181,7 @@ namespace SEA_Application.Controllers
        public JsonResult DefaulterStudentsByClass (string ClassName )
         {
 
-            var AllDefaulterStudent = db.AllDefaulterStudents().Where(x=>x.ClassName == ClassName).ToList();
+            var AllDefaulterStudent = db.DefaulterStudents().Where(x=>x.ClassName == ClassName).ToList();
             return Json(AllDefaulterStudent, JsonRequestBehavior.AllowGet);
         }
 
@@ -707,7 +700,7 @@ namespace SEA_Application.Controllers
 
         }
 
-        public ActionResult StudentFeeUpdate(int id, int ClassId, double RemainingFee = 0, double Discount = 0, double CashReceived = 0)
+        public ActionResult StudentFeeUpdate(int id, int ClassId, double RemainingFee = 0, double Discount = 0, double CashReceived = 0,string DueDate = null)
         {
             var FeePayable = RemainingFee + Discount + CashReceived;
             int? sessionId = db.AspNetClasses.Where(x => x.Id == ClassId).FirstOrDefault().SessionID;
@@ -727,6 +720,10 @@ namespace SEA_Application.Controllers
             stdFeeMonth.FeeType = studenfee.FeeType;
             stdFeeMonth.SessionId = sessionId;
             stdFeeMonth.FeeReceived = CashReceived;
+        
+            DateTime Date = Convert.ToDateTime(DueDate);
+            stdFeeMonth.DueDate = Date;
+
             if (RemainingFee == 0)
             {
                 stdFeeMonth.Status = "Paid";

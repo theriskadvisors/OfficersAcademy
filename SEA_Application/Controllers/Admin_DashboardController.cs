@@ -2000,9 +2000,6 @@ namespace SEA_Application.Controllers
             return RedirectToAction("TeachersIndex", "AspNetUser");
         }
 
-
-
-
         public ActionResult BiometricRegistration(string RollNo, string Success)
         {
             ViewBag.RollNo = RollNo;
@@ -2031,9 +2028,6 @@ namespace SEA_Application.Controllers
                         VerifictionMsg = "No";
                     }
 
-
-               
-
             }
 
 
@@ -2043,8 +2037,6 @@ namespace SEA_Application.Controllers
 
             return View();
         }
-
-
 
 
 
@@ -2350,6 +2342,7 @@ namespace SEA_Application.Controllers
                         studentFeeMonth.SessionId = SessionIdOfSelectedStudent;
                         studentFeeMonth.StudentId = student.Id;
                         studentFeeMonth.Status = "Pending";
+                        studentFeeMonth.DueDate = Convert.ToDateTime(Request.Form["DueDate"]);
 
                         db.StudentFeeMonths.Add(studentFeeMonth);
                         db.SaveChanges();

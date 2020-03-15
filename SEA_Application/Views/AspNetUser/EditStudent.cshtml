@@ -8,7 +8,7 @@
         list-style: none;
         margin: 0;
         padding: 0;
-        height: 4000px !important;
+        height: 4200px !important;
     }
 
     /*#SubjectsList {
@@ -937,6 +937,17 @@
       });
 
 
+          $("#NotesAmount").bind('keyup mouseup', function () {
+
+
+             $("#DiscountInAmount").val(0);
+             $("#RemainingAmount").val(0);
+             $("#Discount").val(0);
+             $("#TotalFee").val("");
+             $("#DiscountPercentage").val(0);
+
+        })
+
 
 
 
@@ -981,6 +992,8 @@
         });
 
     });
+
+    
 
     function checkPhone(phone) {
         //var phone = $("#inputEmail3").val();
