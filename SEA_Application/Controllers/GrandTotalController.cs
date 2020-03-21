@@ -700,7 +700,7 @@ namespace SEA_Application.Controllers
 
         }
 
-        public ActionResult StudentFeeUpdate(int id, int ClassId, double RemainingFee = 0, double Discount = 0, double CashReceived = 0,string DueDate = null)
+        public ActionResult StudentFeeUpdate(int id, int ClassId, double RemainingFee = 0, double Discount = 0, double CashReceived = 0,string DueDate = null, string IssueDate = null)
         {
             var FeePayable = RemainingFee + Discount + CashReceived;
             int? sessionId = db.AspNetClasses.Where(x => x.Id == ClassId).FirstOrDefault().SessionID;
@@ -711,7 +711,6 @@ namespace SEA_Application.Controllers
             var studenfee = db.StudentFeeMonths.Where(x => x.Id == id).FirstOrDefault();
 
             StudentFeeMonth stdFeeMonth = new StudentFeeMonth();
-
             stdFeeMonth.StudentId = studenfee.StudentId;
             stdFeeMonth.IssueDate = DateTime.Now;
             stdFeeMonth.TotalFee = studenfee.TotalFee;
@@ -722,6 +721,8 @@ namespace SEA_Application.Controllers
             stdFeeMonth.FeeReceived = CashReceived;
         
             DateTime Date = Convert.ToDateTime(DueDate);
+            DateTime IssueDate1 = Convert.ToDateTime(IssueDate);
+            stdFeeMonth.IssueDate = IssueDate1;
             stdFeeMonth.DueDate = Date;
 
             if (RemainingFee == 0)
@@ -769,15 +770,15 @@ namespace SEA_Application.Controllers
             if (Discount != 0)
             {
 
-                AfterBalance = CurrentBalance - Convert.ToDecimal(CashReceived) - Convert.ToDecimal(Discount);
+                AfterBalance = CurrentBalance - Convert.ToDecimal(CashReceived) - Math.Round( Convert.ToDecimal(Discount));
             }
             else
             {
-                AfterBalance = CurrentBalance - Convert.ToDecimal(CashReceived);
+                AfterBalance = CurrentBalance -  Convert.ToDecimal(CashReceived);
             }
             voucherRecord.LedgerId = AccountReceiveableId;
             voucherRecord.Type = "Cr";
-            voucherRecord.Amount = Convert.ToDecimal(CashReceived) + Convert.ToDecimal(Discount);
+            voucherRecord.Amount = Convert.ToDecimal(CashReceived) + Math.Round( Convert.ToDecimal(Discount));
             voucherRecord.CurrentBalance = CurrentBalance;
 
             voucherRecord.AfterBalance = AfterBalance;
@@ -785,11 +786,18 @@ namespace SEA_Application.Controllers
             voucherRecord.Description = "Fee received of Student (" + StudentName + ") (" + SessionName + ") ";
 
             Leadger.CurrentBalance = AfterBalance;
+            try
+            {
 
-            db.VoucherRecords.Add(voucherRecord);
-            db.SaveChanges();
 
+                db.VoucherRecords.Add(voucherRecord);
+                db.SaveChanges();
 
+            }
+            catch(Exception ex)
+            {
+               var a =  ex.Message;
+            }
 
             var LeadgerAD = db.Ledgers.Where(x => x.Name == "Admin Drawer").FirstOrDefault();
             int AdminDrawerId = LeadgerAD.Id;
@@ -818,10 +826,10 @@ namespace SEA_Application.Controllers
                 var LeadgerDiscount = db.Ledgers.Where(x => x.Name == "Discount").FirstOrDefault();
 
                 decimal? CurrentBalanceOfDiscount = LeadgerDiscount.CurrentBalance;
-                decimal? AfterBalanceOfDiscount = CurrentBalanceOfDiscount + Convert.ToDecimal(Discount);
+                decimal? AfterBalanceOfDiscount = CurrentBalanceOfDiscount + Math.Round( Convert.ToDecimal(Discount));
                 voucherRecord3.LedgerId = LeadgerDiscount.Id;
                 voucherRecord3.Type = "Dr";
-                voucherRecord3.Amount = Convert.ToDecimal(Discount);
+                voucherRecord3.Amount = Math.Round( Convert.ToDecimal(Discount));
                 voucherRecord3.CurrentBalance = CurrentBalanceOfDiscount;
                 voucherRecord3.AfterBalance = AfterBalanceOfDiscount;
                 voucherRecord3.VoucherId = voucher.Id;

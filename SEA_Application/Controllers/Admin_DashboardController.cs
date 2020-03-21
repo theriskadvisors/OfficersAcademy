@@ -2212,8 +2212,6 @@ namespace SEA_Application.Controllers
                         student.Religion = Request.Form["Religion"];
                         //   student.Gender = Request.Form["Gender"];
 
-
-
                         student.CreationDate = DateTime.Now;
                         if (image != null)
                         {
@@ -2333,9 +2331,13 @@ namespace SEA_Application.Controllers
                         {
                             studentFeeMonth.TotalFee = Total;
                         }
-                        var Month = DateTime.Now.ToString("MMMM");
+
+
+                        DateTime ConvertIssueDate =   Convert.ToDateTime(Request.Form["IssueDate"]);
+                        var Month = ConvertIssueDate.ToString("MMMM");
                         studentFeeMonth.Months = Month;
-                        studentFeeMonth.IssueDate = DateTime.Now;
+
+                        studentFeeMonth.IssueDate = Convert.ToDateTime(Request.Form["IssueDate"]);
                         studentFeeMonth.FeePayable = Convert.ToDouble(Request.Form["TotalFee"]);
                         studentFeeMonth.Discount = discount;
                         studentFeeMonth.FeeType = Request.Form["FeeType"];
@@ -2457,9 +2459,9 @@ namespace SEA_Application.Controllers
                             db.SaveChanges();
                         }
 
-                          return RedirectToAction("BiometricRegistration", "Admin_Dashboard", new { RollNo = model.UserName, Success = Error });
+                      //    return RedirectToAction("BiometricRegistration", "Admin_Dashboard", new { RollNo = model.UserName, Success = Error });
 
-                       // return RedirectToAction("StudentIndex", "AspNetUser", new { Error });
+                       return RedirectToAction("StudentIndex", "AspNetUser", new { Error });
 
                     }
                     else
@@ -2488,7 +2490,7 @@ namespace SEA_Application.Controllers
         //    return Json(new { MandatorySubjects = MandatorySubjectsList , AllSubjects = AllSubjectList }, JsonRequestBehavior.AllowGet);
         //}
 
-        public ActionResult GetSessionFee(int SelectedClassId)
+        public JsonResult GetSessionFee(int SelectedClassId)
         {
             int? SessionId = db.AspNetClasses.Where(x => x.Id == SelectedClassId).FirstOrDefault().SessionID;
 
