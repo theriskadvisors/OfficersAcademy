@@ -2333,10 +2333,16 @@ namespace SEA_Application.Controllers
                         }
 
 
-                        DateTime ConvertIssueDate =   Convert.ToDateTime(Request.Form["IssueDate"]);
-                        var Month = ConvertIssueDate.ToString("MMMM");
-                        studentFeeMonth.Months = Month;
+                        //DateTime ConvertIssueDate =   Convert.ToDateTime(Request.Form["IssueDate"]);
 
+
+                        // var Month = ConvertIssueDate.ToString("MMMM");
+
+
+
+                        studentFeeMonth.IssueDate = DateTime.Now;
+                        var Month = DateTime.Now.ToString("MMMM");
+                        studentFeeMonth.Months = Month;
                         studentFeeMonth.IssueDate = Convert.ToDateTime(Request.Form["IssueDate"]);
                         studentFeeMonth.FeePayable = Convert.ToDouble(Request.Form["TotalFee"]);
                         studentFeeMonth.Discount = discount;

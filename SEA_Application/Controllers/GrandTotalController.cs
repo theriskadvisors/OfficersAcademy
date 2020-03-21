@@ -700,7 +700,7 @@ namespace SEA_Application.Controllers
 
         }
 
-        public ActionResult StudentFeeUpdate(int id, int ClassId, double RemainingFee = 0, double Discount = 0, double CashReceived = 0,string DueDate = null, string IssueDate = null)
+        public ActionResult StudentFeeUpdate(int id, int ClassId, double RemainingFee = 0, double Discount = 0, double CashReceived = 0,string DueDate = null)
         {
             var FeePayable = RemainingFee + Discount + CashReceived;
             int? sessionId = db.AspNetClasses.Where(x => x.Id == ClassId).FirstOrDefault().SessionID;
@@ -712,7 +712,10 @@ namespace SEA_Application.Controllers
 
             StudentFeeMonth stdFeeMonth = new StudentFeeMonth();
             stdFeeMonth.StudentId = studenfee.StudentId;
+            
             stdFeeMonth.IssueDate = DateTime.Now;
+
+
             stdFeeMonth.TotalFee = studenfee.TotalFee;
             stdFeeMonth.FeePayable = RemainingFee;
             stdFeeMonth.Discount = Discount;
@@ -721,10 +724,7 @@ namespace SEA_Application.Controllers
             stdFeeMonth.FeeReceived = CashReceived;
         
             DateTime Date = Convert.ToDateTime(DueDate);
-            DateTime IssueDate1 = Convert.ToDateTime(IssueDate);
-            stdFeeMonth.IssueDate = IssueDate1;
-            stdFeeMonth.DueDate = Date;
-
+            
             if (RemainingFee == 0)
             {
                 stdFeeMonth.Status = "Paid";
