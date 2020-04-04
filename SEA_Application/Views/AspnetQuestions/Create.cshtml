@@ -1,0 +1,206 @@
+﻿@model SEA_Application.Models.QuestionAnswerViewModel
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<h2>Create</h2>
+
+<style>
+
+    input[type='checkbox'] {
+        width: 20px;
+        height: 20px;
+    }
+</style>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>AspnetQuestion</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.QuestionName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.QuestionName, new { htmlAttributes = new { id = "textareastyle", @class = "form-control", @required = true } })
+                @Html.ValidationMessageFor(model => model.QuestionName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.LessonId, "LessonId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("LessonId", null,"Select One", htmlAttributes: new { @class = "form-control", @required = true })
+                @Html.ValidationMessageFor(model => model.LessonId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.QuestionnCreatedBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.QuestionnCreatedBy, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.QuestionnCreatedBy, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.QuestionIsQuiz, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.QuestionIsQuiz)
+                    @Html.ValidationMessageFor(model => model.QuestionIsQuiz, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.QuestionIsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.QuestionIsActive)
+                    @Html.ValidationMessageFor(model => model.QuestionIsActive, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.QuestionType, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.QuestionType, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.QuestionType, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.QuestionType, htmlAttributes: new { @class = "control-label col-md-2" })
+
+            <select id="QuestionType" name = "QuestionType" required>
+
+                <option value="">Select One</option>
+                <option value="MCQ">MCQ</option>
+                <option value="TF">TF</option>
+                <option value="Fill">Fill</option>
+
+            </select>
+
+
+        </div>
+        <div id="OptionsBlock" style="display:none;">
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.OptionNameOne, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.OptionNameOne, new { htmlAttributes = new { @class = "form-control", @required = true } })
+                    @Html.ValidationMessageFor(model => model.OptionNameOne, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.QuestionNameTwo, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.QuestionNameTwo, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.QuestionNameTwo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.QuestionNameThree, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.QuestionNameThree, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.QuestionNameThree, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.QuesitonNameFour, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.QuesitonNameFour, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.QuesitonNameFour, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Answer, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                <select id="Answer" name="Answer" required>
+
+                    <option value="">Select One</option>
+                    <option value="a">a</option>
+                    <option value="b">b</option>
+                    <option value="c">c</option>
+                    <option value="c">d</option>
+
+                </select>
+            </div>
+        </div>
+
+
+
+        <div class="form-group" id="FillAnswerBlock" style="display:none">
+            <div class="control-label col-md-2">Enter Answer </div>
+            <div class="col-md-10" >
+
+                <input  class ="form-control"type="text" id="FillAnswer" name="FillAnswer" />
+
+
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#QuestionType").change(function () {
+
+
+            var QuestionType = $(this).val();
+
+            if (QuestionType == "MCQ" || QuestionType == "TF") {
+
+                $("#OptionsBlock").css('display', 'block');
+                $("#FillAnswerBlock").css('display', 'none');
+
+                $("#OptionsBlock input,select").prop('required', true);
+                $("#FillAnswer").prop('required', false);
+                $("#FillAnswer").val("");
+
+            }
+            else {
+
+                $("#OptionsBlock input").val("");
+              
+
+                $("#OptionsBlock").css('display', 'none');
+                $("#FillAnswerBlock").css('display', 'block');
+
+                 $("#OptionsBlock input,select").prop('required', false);
+                  $("#FillAnswer").prop('required', true);
+
+
+            }
+
+
+
+        })
+
+
+
+    })
+
+</script>
