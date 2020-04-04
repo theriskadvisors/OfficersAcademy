@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 using SEA_Application.Models;
 
 namespace SEA_Application.Controllers
@@ -38,6 +39,8 @@ namespace SEA_Application.Controllers
         // GET: AspnetQuizs/Create
         public ActionResult Create()
         {
+            ViewBag.TopicId = new SelectList(db.AspnetSubjectTopics, "Id", "Name");
+
             return View();
         }
 
@@ -46,16 +49,79 @@ namespace SEA_Application.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Description,Start_Date,Due_Date,Created_By,CreationDate")] AspnetQuiz aspnetQuiz)
+        public ActionResult Create(AspnetQuiz aspnetQuiz)
         {
-            if (ModelState.IsValid)
+
+            var id = User.Identity.GetUserId();
+            var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
+
+            aspnetQuiz.CreationDate = DateTime.Now;
+            aspnetQuiz.Created_By = username;
+            db.AspnetQuizs.Add(aspnetQuiz);
+            db.SaveChanges();
+            string[] QuestionIDs = Request.Form["QuestionID"].Split(',');
+            foreach (var a in QuestionIDs)
             {
-                db.AspnetQuizs.Add(aspnetQuiz);
+
+                int Questionid = Convert.ToInt32(a);
+                int SubjectTopicId = db.AspnetQuestions.Where(x => x.Id == Questionid).Select(x => x.AspnetLesson).Select(x => x.AspnetSubjectTopic.Id).FirstOrDefault();
+                Quiz_Topic_Questions QuizTopicQuestions = new Quiz_Topic_Questions();
+                QuizTopicQuestions.QuestionId = Questionid;
+                QuizTopicQuestions.QuizId = aspnetQuiz.Id;
+                QuizTopicQuestions.TopicId = SubjectTopicId;
+                db.Quiz_Topic_Questions.Add(QuizTopicQuestions);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+
             }
 
-            return View(aspnetQuiz);
+            return RedirectToAction("Index");
+        }
+
+
+        public ActionResult QuizAllQuestions(int QuizID)
+        {
+
+            var QuestionNames = from Quiz in db.AspnetQuizs
+                               join QuizTopicQuestion in db.Quiz_Topic_Questions on Quiz.Id equals QuizTopicQuestion.QuizId
+                               join Question in db.AspnetQuestions on QuizTopicQuestion.QuestionId equals Question.Id
+                               where QuizTopicQuestion.QuizId == QuizID
+                               select new
+                               {
+                                   Question.Name
+                               };
+
+
+
+            return Json(QuestionNames, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult QuestionsByTopics(int[] bdoIds)
+        {
+
+            List<AspnetSubjectTopic> AllTopics = (from topic in db.AspnetSubjectTopics
+                                                  where bdoIds.Contains(topic.Id)
+                                                  select topic).ToList();
+
+            //var AllQuestions =   AllTopics.Select(x => x.AspnetLessons.Select(y => y.AspnetQuestions).Select(y => y)).ToList();
+
+
+            var AllQuestion = (from topic in db.AspnetSubjectTopics
+                               join lesson in db.AspnetLessons on topic.Id equals lesson.TopicId
+                               join question in db.AspnetQuestions on lesson.Id equals question.LessonId
+
+                               where bdoIds.Contains(topic.Id)
+                               select new
+                               {
+                                   question.Id,
+                                   question.Name
+
+                               }).ToList();
+
+
+
+
+
+            return Json(AllQuestion, JsonRequestBehavior.AllowGet);
         }
 
         // GET: AspnetQuizs/Edit/5

@@ -35,7 +35,7 @@
     <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
     <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
     <ul id="layout_navbar_toogle" class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="1">
-     
+
         <li class="nav-item" id="Item33" style="/* border-bottom: 4px solid white; */">
             @*start active open*@
             <a href="@Url.Action("Dashboard", "Teacher_Dashboard")" class="nav-link nav-toggle">
@@ -102,6 +102,40 @@
                 <span class="title">Teacher Attendance</span>
             </a>
         </li>
+
+        <li class="nav-item" id="Item12">
+            <a href="@Url.Action("Index", "AspnetSubjectTopics")" class="nav-link nav-toggle">
+                <i class="fa fa-list-ul"></i>
+                <span class="title">Topic</span>
+            </a>
+        </li>
+        <li class="nav-item" id="Item12">
+            <a href="@Url.Action("Index", "AspnetLessons")" class="nav-link nav-toggle">
+                <i class="fa fa-list-ul"></i>
+                <span class="title">Lesson</span>
+            </a>
+        </li>
+
+        <li class="nav-item" id="Item12">
+            <a href="@Url.Action("Index", "AspnetQuestions")" class="nav-link nav-toggle">
+                <i class="fa fa-list-ul"></i>
+                <span class="title">Questions Answers</span>
+            </a>
+        </li>
+
+
+
+        <li class="nav-item" id="Item12">
+            <a href="@Url.Action("Index", "AspnetQuizs")" class="nav-link nav-toggle">
+                <i class="fa fa-list-ul"></i>
+                <span class="title">Quiz</span>
+            </a>
+        </li>
+
+
+
+
+
 
         @*<li class="nav-item  ">
             <a href="@(Url.Action("Teacher_Announcement", "Teacher_Dashboard"))">
