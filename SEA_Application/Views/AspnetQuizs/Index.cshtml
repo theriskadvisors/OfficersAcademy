@@ -64,11 +64,11 @@
                         </td>
                         <td>
 
-                            <input type="button" class="btn btn-sm btn-primary ViewQuestionBtn" name="@item.Id" value="View Questions" />    |
+                            @*<input type="button" class="btn btn-sm btn-primary ViewQuestionBtn" name="@item.Id" value="View Questions" />    |*@
 
                             @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                            @Html.ActionLink("Details", "Details", new { id = item.Id }) 
+                            @*@Html.ActionLink("Delete", "Delete", new { id = item.Id })*@
                         </td>
                     </tr>
                 }
@@ -105,7 +105,10 @@
                       debugger
                     //$('#modal0').html("");
 
-                    $.each(data, function (index) {
+                      $.each(data, function (index) {
+
+
+
                     //    $('#modal0').append('<div > Title Name : ' + data[index].Title + ' </div>  <div> Price : ' + data[index].Price + ' </div> <div> Quantity : ' + data[index].Quantity + ' </div> <div> Total : ' + data[index].Total + ' </div>  <div> Total Photo Copier Price : ' + data[index].PhotoCopierPrice + '</div><div> Total OA Price : ' + data[index].OAPrice + '</div>  <br>  ');
                     });
                 }

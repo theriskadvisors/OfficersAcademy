@@ -33,6 +33,28 @@ namespace SEA_Application.Controllers
             {
                 return HttpNotFound();
             }
+
+            var AllTopicIDs = db.Quiz_Topic_Questions.Where(x => x.QuizId == id).Select(x => x.TopicId).ToList();
+
+
+            var AllTopic = from topic in db.AspnetSubjectTopics
+                           where AllTopicIDs.Contains(topic.Id)
+                           select topic;
+            ViewBag.TopicId = new SelectList(AllTopic, "Id", "Name");
+
+
+            //All Questions To Display
+
+            var AllQuestionIDS = db.Quiz_Topic_Questions.Where(x => x.QuizId == id).Select(x => x.QuestionId).ToList();
+
+            var AllQuestion = from Question in db.AspnetQuestions
+                           where AllQuestionIDS.Contains(Question.Id)
+                           select Question;
+            ViewBag.QuestionID = new SelectList(AllQuestion, "Id", "Name");
+
+
+
+
             return View(aspnetQuiz);
         }
 
@@ -40,6 +62,8 @@ namespace SEA_Application.Controllers
         public ActionResult Create()
         {
             ViewBag.TopicId = new SelectList(db.AspnetSubjectTopics, "Id", "Name");
+
+
 
             return View();
         }
@@ -82,13 +106,13 @@ namespace SEA_Application.Controllers
         {
 
             var QuestionNames = from Quiz in db.AspnetQuizs
-                               join QuizTopicQuestion in db.Quiz_Topic_Questions on Quiz.Id equals QuizTopicQuestion.QuizId
-                               join Question in db.AspnetQuestions on QuizTopicQuestion.QuestionId equals Question.Id
-                               where QuizTopicQuestion.QuizId == QuizID
-                               select new
-                               {
-                                   Question.Name
-                               };
+                                join QuizTopicQuestion in db.Quiz_Topic_Questions on Quiz.Id equals QuizTopicQuestion.QuizId
+                                join Question in db.AspnetQuestions on QuizTopicQuestion.QuestionId equals Question.Id
+                                where QuizTopicQuestion.QuizId == QuizID
+                                select new
+                                {
+                                    Question.Name
+                                };
 
 
 

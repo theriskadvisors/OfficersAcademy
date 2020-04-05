@@ -5,6 +5,16 @@
     Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
 }
 
+<style>
+
+    .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 1000px !important;
+    }
+</style>
+
 <h2>Create</h2>
 
 @using (Html.BeginForm())
@@ -65,11 +75,11 @@
 
                 @*<select name="SubjectId" id="SubjectId">
 
-                    <option value=""> Select One </option>
+                        <option value=""> Select One </option>
 
 
 
-                </select>*@
+                    </select>*@
 
 
 
