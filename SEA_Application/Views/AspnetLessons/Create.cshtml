@@ -5,110 +5,139 @@
     Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
 }
 
-<h2>Create</h2>
 <style>
+    .help-block
+    {
+        color:red;
+    }
 
-    .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    height: 1500px !important;
-}
+       .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 1700px !important;
+    }
+       #TextAreaBox
+       {
+           height:400px;
+           width:600px;
+
+
+       }
+
+
 </style>
 
-<div class="box box-primary">
+<div class="box ">
 
-    <div class="box-header with-border"><h3 class="orange">Create Lesson<span class="red-mark">*</span></h3></div>
+    @*<div class=""><h3 class="orange">Lesson Basic Info<span class="red-mark">*</span></h3></div>*@
     <div class="box-body">
 
         @using (Html.BeginForm("Create", "AspnetLessons", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
-
-            @Html.AntiForgeryToken()
-
-            <div class="form-horizontal">
-              
-               
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                <div class="form-group">
-                    @Html.LabelFor(model => model.LessonName, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-6">
-                        @Html.EditorFor(model => model.LessonName, new { htmlAttributes = new { @class = "form-control", @required = true } })
-                        @Html.ValidationMessageFor(model => model.LessonName, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.LessonVideoURL, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-6">
-                        @Html.EditorFor(model => model.LessonVideoURL, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.LessonVideoURL, "", new { @class = "text-danger" })
-                    </div>
-                </div>
+        <div class="form-horizontal">
 
 
-                <div class="form-group">
-                    @Html.LabelFor(model => model.LessonDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div  class="col-md-6">
-                        @Html.EditorFor(model => model.LessonDescription, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.LessonDescription, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.TopicId, "TopicId", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div  class="col-md-6">
-                        @Html.DropDownList("TopicId", null, "Select One", htmlAttributes: new { @class = "form-control", @required = true })
-                        @Html.ValidationMessageFor(model => model.TopicId, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.LessonDuration, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div  class="col-md-6">
-                        <input type="time" class="form-control" name="LessonDuration" value="" id="LessonDuration" required />
-                        @Html.ValidationMessageFor(model => model.LessonDuration, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.AssignmentName, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-6">
-                        @Html.EditorFor(model => model.AssignmentName, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.AssignmentName, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.AssignmentDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div  class="col-md-6">
-                        @Html.EditorFor(model => model.AssignmentDescription, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.AssignmentDescription, "", new { @class = "text-danger" })
-                    </div>
-                </div>
+            <div class="box box-primary">
+                <div class="box-header with-border"><h3 class="orange">Lesson Basic Info<span class="red-mark">*</span></h3></div>
+                <div class="box-body row">
 
 
-                <div class="form-group">
 
-                    <label class="control-label col-md-2"> Student Assigment</label>
 
-                    <div class="col-md-6">
+                    @Html.AntiForgeryToken()
 
-                        <div class="btn btn-default btn-file ">
-                            <i class="fa fa-paperclip"></i> Assignment:
-                            <input type="file" id="Assignment" name="Assignment">
+
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.LessonName, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.LessonName, new { htmlAttributes = new { @class = "form-control", @required = true } })
+                            @Html.ValidationMessageFor(model => model.LessonName, "", new { @class = "text-danger" })
                         </div>
-                        <div class="">
-                            <p class="help-block">Max. 32MB</p>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.LessonVideoURL, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.LessonVideoURL, new { htmlAttributes = new {  @placeholder = "Provide only one link at a time. Only Allow youtube videos",@class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.LessonVideoURL, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.LessonDescription, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.LessonDescription, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.LessonDescription, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.TopicId, "TopicId", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-6">
+                            @Html.DropDownList("TopicId", null, "Select One", htmlAttributes: new { @class = "form-control", @required = true })
+                            @Html.ValidationMessageFor(model => model.TopicId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.LessonDuration, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-6">
+                            <input type="time" class="form-control" name="LessonDuration" value="" id="LessonDuration" required />
+                            @Html.ValidationMessageFor(model => model.LessonDuration, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="box box-primary">
+                <div class="box-header with-border"><h3 class="orange">Student Assignment</h3></div>
+                <div class="box-body row">
+
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.AssignmentName, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.AssignmentName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.AssignmentName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.AssignmentDescription, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-6">
+                            @Html.TextAreaFor(model => model.AssignmentDescription, new { htmlAttributes = new { id = "TextAreaBox",@class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.AssignmentDescription, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label class="control-label col-md-2"> Student Assigment</label>
+
+                        <div class="col-md-6">
+
+                            <div class="btn btn-default btn-file ">
+                                <i class="fa fa-paperclip"></i> Choose File Option:
+                                <input type="file" id="Assignment" name="Assignment">
+                            </div>
+                            <div class="">
+                                <p class="help-block">Max. 32MB. (File Name Should be unique)  </p>
+                            </div>
+
                         </div>
 
                     </div>
 
-                </div>
-
-                <div class="form-group">
+                    @*<div class="form-group">
                     @Html.LabelFor(model => model.AssignmentDueDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div  class="col-md-6">
+                    <div class="col-md-6">
 
                         <input type="date" name="AssignmentDueDate" id="AssignmentDueDate" value="" class="form-control" />
 
@@ -116,128 +145,148 @@
 
 
                     </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.AttachmentName1, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div  class="col-md-6">
-                        @Html.EditorFor(model => model.AttachmentName1, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.AttachmentName1, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-
-                <div class="form-group">
-
-                    <label class="control-label col-md-2"> Student Attachment</label>
-
-                    <div class="col-md-6">
-
-
-                        <div class="btn btn-default btn-file ">
-                            <i class="fa fa-paperclip"></i> Attachment:
-                            <input type="file" id="Attachment1" name="Attachment1">
-                        </div>
-
-                        <div >
-                            <p class="help-block">Max. 32MB</p>
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.AttachmentName2, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-6">
-                        @Html.EditorFor(model => model.AttachmentName2, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.AttachmentName2, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-
-                <div class="form-group">
-
-                    <label class="control-label col-md-2"> Student Attachment</label>
-                    <div class="col-md-6">
-
-                        <div class="btn btn-default btn-file ">
-                            <i class="fa fa-paperclip"></i> Attachment:
-                            <input type="file" id="Attachment2" name="Attachment2">
-                        </div>
-
-                        <div >
-                            <p class="help-block">Max. 32MB</p>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.AttachmentName3, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-6">
-                        @Html.EditorFor(model => model.AttachmentName3, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.AttachmentName3, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-
-                <div class="form-group">
-
-                    <label class="control-label col-md-2"> Student Attachment</label>
-                    <div class="col-md-6">
-
-                        <div class="btn btn-default btn-file ">
-                            <i class="fa fa-paperclip"></i> Attachment:
-                            <input type="file" id="Attachment3" name="Attachment3">
-                        </div>
-
-                        <div class="    ">
-                            <p class="help-block">Max. 32MB</p>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.LinkUrl1, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-6">
-                        @Html.EditorFor(model => model.LinkUrl1, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.LinkUrl1, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.LinkUrl2, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div  class="col-md-6">
-                        @Html.EditorFor(model => model.LinkUrl2, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.LinkUrl2, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-
-
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.LinkUrl3, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div  class="col-md-6">
-                        @Html.EditorFor(model => model.LinkUrl3, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.LinkUrl3, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-6">
-                        <input type="submit" value="Create" class="btn btn-default" />
-                    </div>
+                </div>*@
                 </div>
             </div>
-        }
+
+            <div class="box box-primary">
+                <div class="box-header with-border"><h3 class="orange">Reading Material</h3></div>
+                <div class="box-body row">
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.AttachmentName1, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.AttachmentName1, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.AttachmentName1, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
 
 
-    </div>
-</div>
+                    <div class="form-group">
+
+                        <label class="control-label col-md-2"> Attach File-1</label>
+
+                        <div class="col-md-6">
+
+
+                            <div class="btn btn-default btn-file ">
+                                <i class="fa fa-paperclip"></i> Choose File Option:
+                                <input type="file" id="Attachment1" name="Attachment1">
+                            </div>
+
+                            <div>
+                                <p class="help-block">Max. 32MB. (File Name Should be unique) </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.AttachmentName2, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.AttachmentName2, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.AttachmentName2, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label class="control-label col-md-2"> Attach File-2</label>
+                        <div class="col-md-6">
+
+                            <div class="btn btn-default btn-file ">
+                                <i class="fa fa-paperclip"></i> Choose File Optioin:
+                                <input type="file" id="Attachment2" name="Attachment2">
+                            </div>
+
+                            <div>
+                                <p class="help-block">Max. 32MB. (File Name Should be unique) </p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.AttachmentName3, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.AttachmentName3, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.AttachmentName3, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label class="control-label col-md-2"> Attach File-3</label>
+                        <div class="col-md-6">
+
+                            <div class="btn btn-default btn-file ">
+                                <i class="fa fa-paperclip"></i> Choose File Option:
+                                <input type="file" id="Attachment3" name="Attachment3">
+                            </div>
+
+                            <div class="    ">
+                                <p class="help-block">Max. 32MB. (File Name Should be unique) </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="box box-primary">
+                <div class="box-header with-border"><h3 class="orange">Material Links (URL) </h3></div>
+                <div class="box-body row">
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.LinkUrl1, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.LinkUrl1, new { htmlAttributes = new { @placeholder = "Enter Data Must be a URL",@class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.LinkUrl1, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.LinkUrl2, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.LinkUrl2, new { htmlAttributes = new { @placeholder = "Enter Data Must be a URL", @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.LinkUrl2, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.LinkUrl3, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.LinkUrl3, new { htmlAttributes = new {@placeholder = "Enter Data Must be a URL", @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.LinkUrl3, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-6">
+                            <input type="submit" value="Create" class="btn btn-default" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+                }
+
+
+            </div>
+        </div>

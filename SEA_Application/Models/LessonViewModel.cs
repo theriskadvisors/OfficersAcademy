@@ -42,12 +42,12 @@ namespace SEA_Application.Models
         public DateTime AssignmentDueDate { get; set; }
 
 
-        [Display(Name = "Attachment Name")]
+        [Display(Name = "Attachment Name-1")]
         public string AttachmentName1 { get; set; }
-        [Display(Name = "Attachment Name")]
+        [Display(Name = "Attachment Name-2")]
 
         public string AttachmentName2 { get; set; }
-        [Display(Name = "Attachment Name")]
+        [Display(Name = "Attachment Name-3")]
         
         
         public string AttachmentName3 { get; set; }
@@ -55,20 +55,20 @@ namespace SEA_Application.Models
         [Display(Name = "Link Name")]
 
         public string LinkName1 { get; set; }
-        [Display(Name = "Link Url")]
+        [Display(Name = "Material Link 1")]
 
         public string LinkUrl1 { get; set; }
         [Display(Name = "Link Name")]
 
         public string LinkName2 { get; set; }
 
-        [Display(Name = "Link Url")]
+        [Display(Name = "Material Link 2")]
 
         public string LinkUrl2 { get; set; }
         [Display(Name = "Link Name")]
 
         public string LinkName3 { get; set; }
-        [Display(Name = "Link Url")]
+        [Display(Name = "Material Link 3")]
 
         public string LinkUrl3 { get; set; }
 

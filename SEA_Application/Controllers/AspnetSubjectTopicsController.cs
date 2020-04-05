@@ -45,7 +45,7 @@ namespace SEA_Application.Controllers
             ViewBag.SubjectId = new SelectList(db.AspNetSubjects, "Id", "SubjectName");
 
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
-         
+
             return View();
         }
 
@@ -54,8 +54,11 @@ namespace SEA_Application.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Description,StartDate,EndDate,SubjectId,FAQ")] AspnetSubjectTopic aspnetSubjectTopic)
+        public ActionResult Create([Bind(Include = "Id,Name,Description,SubjectId,FAQ")] AspnetSubjectTopic aspnetSubjectTopic)
         {
+            aspnetSubjectTopic.StartDate = null;
+            aspnetSubjectTopic.EndDate = null;
+
             if (ModelState.IsValid)
             {
                 db.AspnetSubjectTopics.Add(aspnetSubjectTopic);
@@ -68,16 +71,16 @@ namespace SEA_Application.Controllers
         }
 
 
-        public JsonResult StudentByClass(int id)
-        {
-            var result1 = db.AspNetSubjects.Where(x => x.ClassID == id).ToList();
-            var obj = JsonConvert.SerializeObject(result1);
+        //public JsonResult StudentByClass(int id)
+        //{
+        //    var result1 = db.AspNetSubjects.Where(x => x.ClassID == id).ToList();
+        //    var obj = JsonConvert.SerializeObject(result1);
+        //       return Json(obj, JsonRequestBehavior.AllowGet);
+
+        //}
 
 
 
-            return Json(obj, JsonRequestBehavior.AllowGet);
-
-        }
 
 
         // GET: AspnetSubjectTopics/Edit/5
@@ -148,6 +151,16 @@ namespace SEA_Application.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+
+        public ActionResult GetSubjectsByClass(int ClassID)
+        {
+           var SubjectsByClass = db.AspNetSubjects.Where(x => x.ClassID == ClassID).ToList();
+
+
+            return Json(SubjectsByClass, JsonRequestBehavior.AllowGet);
+
         }
     }
 }

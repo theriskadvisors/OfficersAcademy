@@ -49,11 +49,11 @@ namespace SEA_Application.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create( LessonViewModel LessonViewModel)
+        public ActionResult Create(LessonViewModel LessonViewModel)
         {
 
             AspnetLesson Lesson = new AspnetLesson();
-            
+
             Lesson.Name = LessonViewModel.LessonName;
             Lesson.Video_Url = LessonViewModel.LessonVideoURL;
             Lesson.TopicId = LessonViewModel.TopicId;
@@ -63,29 +63,46 @@ namespace SEA_Application.Controllers
             Lesson.CreationDate = DateTime.Now;
             db.AspnetLessons.Add(Lesson);
             db.SaveChanges();
-           
+
 
             HttpPostedFileBase Assignment = Request.Files["Assignment"];
             HttpPostedFileBase Attachment1 = Request.Files["Attachment1"];
-            HttpPostedFileBase Attachment2 = Request.Files["Attachment2"]; 
+            HttpPostedFileBase Attachment2 = Request.Files["Attachment2"];
             HttpPostedFileBase Attachment3 = Request.Files["Attachment3"];
 
             if (Assignment.ContentLength > 0)
             {
                 var fileName = Path.GetFileName(Assignment.FileName);
-                Assignment.SaveAs(Server.MapPath("~/Content/StudentAssignments/") + fileName);
-
+                // Assignment.SaveAs(Server.MapPath("~/Content/StudentAssignments/") + fileName);
                 AspnetStudentAssignment studentAssignment = new AspnetStudentAssignment();
 
                 studentAssignment.FileName = fileName;
 
                 studentAssignment.Name = LessonViewModel.AssignmentName;
-                studentAssignment.DueDate = LessonViewModel.AssignmentDueDate;
+
+
+                //string DueDate = Convert.ToString(LessonViewModel.AssignmentDueDate);
+
+
+                //if (DueDate == "1/1/0001 12:00:00 AM")
+                //{
+                //    studentAssignment.DueDate = null;
+
+                //}
+                //else
+                //{
+
+                //studentAssignment.DueDate = LessonViewModel.AssignmentDueDate;
+
+                //}
+
+                studentAssignment.DueDate = null;
                 studentAssignment.Description = LessonViewModel.AssignmentDescription;
                 studentAssignment.CreationDate = DateTime.Now;
                 studentAssignment.LessonId = Lesson.Id;
                 db.AspnetStudentAssignments.Add(studentAssignment);
                 db.SaveChanges();
+
 
             }
 
@@ -95,7 +112,7 @@ namespace SEA_Application.Controllers
                 Attachment1.SaveAs(Server.MapPath("~/Content/StudentAttachments/") + fileName);
 
                 AspnetStudentAttachment studentAttachment1 = new AspnetStudentAttachment();
-                
+
                 studentAttachment1.Name = LessonViewModel.AttachmentName1;
                 studentAttachment1.Path = fileName;
                 studentAttachment1.CreationDate = DateTime.Now;
@@ -140,7 +157,7 @@ namespace SEA_Application.Controllers
 
             }
 
-            if(LessonViewModel.LinkUrl1 !=null)
+            if (LessonViewModel.LinkUrl1 != null)
             {
                 AspnetStudentLink link1 = new AspnetStudentLink();
 
@@ -177,7 +194,7 @@ namespace SEA_Application.Controllers
 
 
             return RedirectToAction("Index");
-          
+
         }
 
         // GET: AspnetLessons/Edit/5
