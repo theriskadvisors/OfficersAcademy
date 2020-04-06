@@ -49,6 +49,8 @@ namespace SEA_Application.Controllers
             return View();
         }
 
+        
+
         // POST: AspnetSubjectTopics/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
@@ -154,13 +156,15 @@ namespace SEA_Application.Controllers
         }
 
 
-        public ActionResult GetSubjectsByClass(int ClassID)
+        public JsonResult GetSubjectsByClass(int ClassID)
         {
            var SubjectsByClass = db.AspNetSubjects.Where(x => x.ClassID == ClassID).ToList();
-
+          //string status = Newtonsoft.Json.JsonConvert.SerializeObject(SubjectsByClass);
 
             return Json(SubjectsByClass, JsonRequestBehavior.AllowGet);
+      //    return Content(status);
 
         }
+    
     }
 }
