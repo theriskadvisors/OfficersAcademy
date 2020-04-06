@@ -5,6 +5,38 @@
     Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
 }
 
+<script>
+
+    $.ajax({
+        type: "POST",
+        cache: false,
+        url: "/AspnetLessons/LoadSectionIdDDL",
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            var sch = JSON.parse(data);
+
+            var $el = $(".SecIdDDL");
+            $el.empty();
+            if (sch.length > 0) {
+                $el.append($("<option></option>")
+                             .attr("value", 0).text('Select Section'));
+                for (i = 0; i < sch.length; i++) {
+                    $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].ClassName));
+                }
+            }
+            else {
+                $el.append($("<option></option>")
+                           .attr("value", '').text('Select'));
+            }
+        }
+    });
+
+
+    </script>
+
+
 <style>
     .help-block
     {
@@ -78,33 +110,29 @@
 
 
                     <div class="form-group">
-                        <span class= "col-md-2"> Section</span>
+                        <div class="col-md-2">
+                            <label>Section <span class="text-danger">*</span></label>
+                        </div>
                         <div class="col-md-6">
-                            <select>
-                                <option value="value">text</option>
-                            </select>
-                            @Html.ValidationMessageFor(model => model.TopicId, "", new { @class = "text-danger" })
+                            <select class="form-control SecIdDDL" id="SecId" name="SecId"></select>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <span class= "col-md-2">Course Type</span>
-                        <div >
-                            <select>
-                                <option value="value">text</option>
-                            </select>
-                            @Html.ValidationMessageFor(model => model.TopicId, "", new { @class = "text-danger" })
+                        <div class="col-md-2">
+                            <label>Course Type <span class="text-danger">*</span></label>
+                        </div>
+                        <div class="col-md-6">
+                            <select class="form-control CTIdDDL" id="CTId" name="CTId"></select>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <span class= "col-md-2">Subjects </span>
+                        <div class="col-md-2">
+                            <label>Subject <span class="text-danger">*</span></label>
+                        </div>
                         <div class="col-md-6">
-                            <select>
-                                <option value="value">text</option>
-                            </select>
-
-                            @Html.ValidationMessageFor(model => model.TopicId, "", new { @class = "text-danger" })
+                            <select class="form-control SubIdDDL" id="SubId" name="SubId"></select>
                         </div>
                     </div>
 

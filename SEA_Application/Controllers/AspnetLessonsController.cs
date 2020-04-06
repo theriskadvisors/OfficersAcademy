@@ -38,9 +38,23 @@ namespace SEA_Application.Controllers
         }
 
         // GET: AspnetLessons/Create
+
+        public ActionResult LoadSectionIdDDL()
+        {
+            var ClassList = db.AspNetClasses.ToList().Select(x => new { x.Id, x.ClassName });
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(ClassList);
+
+            // return Json(SubjectsByClass, JsonRequestBehavior.AllowGet);
+            return Content(status);
+
+        }
+        
         public ActionResult Create()
         {
             ViewBag.TopicId = new SelectList(db.AspnetSubjectTopics, "Id", "Name");
+            
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
             return View();
         }
 
