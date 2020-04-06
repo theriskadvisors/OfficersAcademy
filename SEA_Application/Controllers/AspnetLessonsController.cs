@@ -50,13 +50,12 @@ namespace SEA_Application.Controllers
 
         }
         
-
-
         public ActionResult Create()
         {
             ViewBag.TopicId = new SelectList(db.AspnetSubjectTopics, "Id", "Name");
             
-           return View();
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
+            return View();
         }
 
         // POST: AspnetLessons/Create
