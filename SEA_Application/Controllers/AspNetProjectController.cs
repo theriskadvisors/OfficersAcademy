@@ -35,6 +35,16 @@ namespace SEA_Application.Controllers
                return Content(status);
 
         }
+        public ActionResult GetTopic(int SubID)
+        {
+            var TopicList = db.AspnetSubjectTopics.Where(x => x.SubjectId == SubID ).ToList().Select(x => new { x.Id, x.Name });
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(TopicList);
+
+            // return Json(SubjectsByClass, JsonRequestBehavior.AllowGet);
+            return Content(status);
+
+        }
         // GET: AspNetProject
         public ActionResult Index()
         {
