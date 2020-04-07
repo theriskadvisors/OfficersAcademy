@@ -25,9 +25,9 @@ namespace SEA_Application.Controllers
 
             TeacherID = Convert.ToString(System.Web.HttpContext.Current.Session["TeacherID"]);
         }
-        public ActionResult GetSubjectsByClass(int ClassID)
+        public ActionResult GetSubjectsByClass(int ClassID,string CT)
         {
-            var SubjectsByClass = db.AspNetSubjects.Where(x => x.ClassID == ClassID).ToList().Select(x => new { x.Id,x.SubjectName});
+            var SubjectsByClass = db.AspNetSubjects.Where(x => x.ClassID == ClassID && x.CourseType == CT).ToList().Select(x => new { x.Id,x.SubjectName});
 
             string status = Newtonsoft.Json.JsonConvert.SerializeObject(SubjectsByClass);
 

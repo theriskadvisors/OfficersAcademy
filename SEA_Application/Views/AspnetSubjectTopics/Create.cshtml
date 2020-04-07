@@ -21,16 +21,51 @@
 </style>
 <script>
     $(document).ready(function () {
-     
-    
-        $('#ClassID').change(function () {
-        
-            var UserName = $(this).val();
-            
+       
+        var course = 'CSS';
+        var Class;
+        $('#CTId').change(function () {
+           
+            var crse = $(this).val();
+            console.log(crse);
+            course = crse;
             $.ajax({
                 type: "POST",
                 cache: false,
-                url: "/AspNetProject/GetSubjectsByClass?ClassID=" + UserName,
+                url: "/AspNetProject/GetSubjectsByClass?ClassID=" + Class + "&&CT=" + course,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    var sch = JSON.parse(data);
+                    console.log(sch);
+                    var $el = $(".SubIdDDL");
+                    $el.empty();
+                    if (sch.length > 0) {
+                        $el.append($("<option></option>")
+                                     .attr("value", 0).text('Select Subject'));
+                        for (i = 0; i < sch.length; i++) {
+
+                            $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].SubjectName));
+                        }
+                    }
+                    else {
+                        $el.append($("<option></option>")
+                                   .attr("value", '').text('Select'));
+                    }
+                }
+            });
+        });
+
+
+        $('#ClassID').change(function () {
+        
+            var UserName = $(this).val();
+            Class = UserName;
+            $.ajax({
+                type: "POST",
+                cache: false,
+                url: "/AspNetProject/GetSubjectsByClass?ClassID=" + UserName + "&&CT="+ course,
                 processData: false,
                 contentType: false,
                 success: function (data) {
@@ -130,7 +165,12 @@
                     <label>Course Type <span class="text-danger">*</span></label>
                 </div>
                 <div class="col-md-6">
-                    <select class="form-control CourseType" id="CourseType" name="SubId"></select>
+                    <select class="form-control CTIdDDL" id="CTId" name="CTId">
+                        <option value="CSS">CSS</option>
+                        <option value="PMS">PMS</option>
+
+                    </select>
+
                 </div>
             </div>
 
