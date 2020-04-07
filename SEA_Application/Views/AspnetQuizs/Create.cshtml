@@ -4,6 +4,150 @@
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
 }
+
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/AspnetLessons/LoadSectionIdDDL",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+
+                var $el = $(".SecIdDDL");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                                 .attr("value", 0).text('Select Section'));
+                    for (i = 0; i < sch.length; i++) {
+                        $el.append($("<option></option>")
+                                .attr("value", sch[i].Id).text(sch[i].ClassName));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                               .attr("value", '').text('Select'));
+                }
+            }
+        });
+
+
+        var course = 'CSS';
+        var Class;
+        $('#CTId').change(function () {
+
+            var crse = $(this).val();
+            console.log(crse);
+            course = crse;
+            $.ajax({
+                type: "POST",
+                cache: false,
+                url: "/AspNetProject/GetSubjectsByClass?ClassID=" + Class + "&&CT=" + course,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    var sch = JSON.parse(data);
+                    console.log(sch);
+                    var $el = $(".SubIdDDL");
+                    var $e2 = $(".TopIdDDL");
+                    $e2.empty();
+                    $el.empty();
+                    if (sch.length > 0) {
+                        $el.append($("<option></option>")
+                                     .attr("value", 0).text('Select Subject'));
+                        for (i = 0; i < sch.length; i++) {
+
+                            $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].SubjectName));
+                        }
+                    }
+                    else {
+                        $el.append($("<option></option>")
+                                   .attr("value", '').text('Select'));
+                    }
+                }
+            });
+        });
+
+
+        $('#SecId').change(function () {
+
+            var UserName = $(this).val();
+            console.log(UserName);
+            Class = UserName;
+            $.ajax({
+                type: "POST",
+                cache: false,
+                url: "/AspNetProject/GetSubjectsByClass?ClassID=" + UserName + "&&CT=" + course,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    var sch = JSON.parse(data);
+                    console.log(sch);
+                    var $el = $(".SubIdDDL");
+                    $el.empty();
+                    var $e2 = $(".TopIdDDL");
+                    $e2.empty();
+                    if (sch.length > 0) {
+                        $el.append($("<option></option>")
+                                     .attr("value", 0).text('Select Subject'));
+                        for (i = 0; i < sch.length; i++) {
+
+                            $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].SubjectName));
+                        }
+                    }
+                    else {
+                        $el.append($("<option></option>")
+                                   .attr("value", '').text('Select'));
+                    }
+                }
+            });
+
+        });
+
+
+        $('#SubId').change(function () {
+
+            var subid = $(this).val();
+            console.log(subid);
+
+            $.ajax({
+                type: "POST",
+                cache: false,
+                url: "/AspNetProject/GetTopic?SubID=" + subid,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    var sch = JSON.parse(data);
+                    console.log(sch);
+                    var $el = $(".TopIdDDL");
+                    $el.empty();
+                    if (sch.length > 0) {
+                        $el.append($("<option></option>")
+                                     .attr("value", 0).text('Select Topic'));
+                        for (i = 0; i < sch.length; i++) {
+
+                            $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                        }
+                    }
+                    else {
+                        $el.append($("<option></option>")
+                                   .attr("value", '').text('Select'));
+                    }
+                }
+            });
+
+        });
+
+    })
+</script>
+
+
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
@@ -52,15 +196,20 @@
                         <label>Section <span class="text-danger">*</span></label>
                     </div>
                     <div class="col-md-6">
-                        <select class="form-control SubIdDDL" id="SubId" name="SubId"></select>
+                        <select class="form-control SecIdDDL" id="SecId" name="SecId"></select>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-md-2">
-                        <label>CourseType <span class="text-danger">*</span></label>
+                        <label>Course Type <span class="text-danger">*</span></label>
                     </div>
                     <div class="col-md-6">
-                        <select class="form-control SubIdDDL" id="SubId" name="SubId"></select>
+                        <select class="form-control CTIdDDL" id="CTId" name="CTId">
+                            <option value="CSS">CSS</option>
+                            <option value="PMS">PMS</option>
+
+                        </select>
+
                     </div>
                 </div>
                 <div class="form-group">
