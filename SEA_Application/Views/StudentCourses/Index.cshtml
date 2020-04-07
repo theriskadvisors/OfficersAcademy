@@ -1,0 +1,86 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_StudentDashboardLayout.cshtml";
+}
+<style>
+
+    .SubjectBoxes {
+
+        height:200px;
+        width :200px;
+        border:1px solid silver;
+        display:inline-block;
+        text-align:center;
+        line-height:200px;
+        margin-left:10px;
+        margin-bottom:10px;
+        
+    
+    }
+
+    #SubjectBoxesDiv
+    {
+      
+    }
+
+    .SubjectNames
+    {
+      font-size:15px;
+    }
+
+</style>
+
+
+<div class="col-md-12">
+    <br />
+    <div class="well" style="text-align: center; align-content: normal"> <h3 style="margin:0"> Subjects List </h3> </div>
+
+</div>
+
+<div class="col-md-12" id="SubjectBoxesDiv" >
+   
+
+</div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+       // $("#SubjectBoxesDiv").append('<div class="SubjectBoxes"><h3> usama </h3> </div>')
+
+
+        $.ajax({
+
+
+            type: "POST",
+            url: "/StudentCourses/AllSubjectsOfStudent",
+            data: {},
+            success: function (data) {
+
+                $.each(data, function (key, value1) {
+
+                    $("#SubjectBoxesDiv").append('<div class="SubjectBoxes"><a href="/StudentCourses/SubjectTopics/' + value1.Id + '" class="SubjectNames"> ' + value1.SubjectName + ' </a>  </div>')
+
+                })
+
+
+            }
+
+
+
+
+
+        })
+
+
+
+    })
+
+
+
+</script>
+
+
