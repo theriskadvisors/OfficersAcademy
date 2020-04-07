@@ -52,7 +52,7 @@
                 console.log(sch);
                 var $el = $(".SubIdDDL");
                 $el.empty();
-                var $e2 = $(".TopIdDDL");
+                var $e2 = $(".TopicIdDDL");
                 $e2.empty();
                 if (sch.length > 0) {
                     $el.append($("<option></option>")
@@ -88,7 +88,7 @@
                 console.log(sch);
                 var $el = $(".SubIdDDL");
                 $el.empty();
-                var $e2 = $(".TopIdDDL");
+                var $e2 = $(".TopicIdDDL");
                 $e2.empty();
                 if (sch.length > 0) {
                     $el.append($("<option></option>")
@@ -123,7 +123,7 @@
             success: function (data) {
                 var sch = JSON.parse(data);
                 console.log(sch);
-                var $el = $(".TopIdDDL");
+                var $el = $(".TopicIdDDL");
                 $el.empty();
                 if (sch.length > 0) {
                     $el.append($("<option></option>")
@@ -256,7 +256,7 @@
                             <label>Topic <span class="text-danger">*</span></label>
                         </div>
                         <div class="col-md-6">
-                            <select class="form-control TopIdDDL" id="TopId" name="TopId"></select>
+                            <select class="form-control TopicIdDDL" id="TopicId" name="TopicId"></select>
                         </div>
                     </div>
 

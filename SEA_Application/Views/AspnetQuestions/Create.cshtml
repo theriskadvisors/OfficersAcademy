@@ -54,6 +54,8 @@
                     $el.empty();
                     var $e2 = $(".TopIdDDL");
                     $e2.empty();
+                    var $e3 = $(".LessIdDDL");
+                    $e3.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
                                      .attr("value", 0).text('Select Subject'));
@@ -90,6 +92,8 @@
                     $el.empty();
                     var $e2 = $(".TopIdDDL");
                     $e2.empty();
+                    var $e3 = $(".LessIdDDL");
+                    $e3.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
                                      .attr("value", 0).text('Select Subject'));
@@ -122,8 +126,9 @@
                 success: function (data) {
                     var sch = JSON.parse(data);
                     console.log(sch);
-                   var $el = $(".LessIdDDL");
-                  $el.empty();
+
+                    var $el = $(".LessIdDDL");
+                    $el.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
                                      .attr("value", 0).text('Select Lesson'));
@@ -159,6 +164,7 @@
                     console.log(sch);
                     var $el = $(".TopIdDDL");
                     $el.empty();
+
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
                                      .attr("value", 0).text('Select Topic'));
