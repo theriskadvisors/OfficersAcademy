@@ -67,11 +67,11 @@
         </li>
 
         @*<li class="nav-item  ">
-                <a href="@(Url.Action("Student_Announcement", "Student_Dashboard"))">
-                    <i class="fa fa-bullhorn"></i>
-                    <span class="title">Announcment</span>
-                </a>
-            </li>*@
+            <a href="@(Url.Action("Student_Announcement", "Student_Dashboard"))">
+                <i class="fa fa-bullhorn"></i>
+                <span class="title">Announcment</span>
+            </a>
+        </li>*@
         <li class="nav-item  " id="Item41">
             <a href="@(Url.Action("Index", "AspNetOrderNotes"))">
                 <i class="fa fa-hand-o-right"></i>
@@ -91,6 +91,23 @@
             </li>
         }
 
+        @*<li class="nav-item  " id="Item43">
+            <a href="@(Url.Action("Index", "AspNetFeeDetail"))">
+                <i class="fa fa-database"></i>
+                <span class="title">Online Courses</span>
+            </a>
+        </li>*@
+
+
+        <li class="nav-item  " id="MyCourses">
+            <a href="@(Url.Action("Index", "StudentCourses"))">
+                <i class="fa fa-list-ol"></i>
+                <span class="title">My Courses</span>
+            </a>
+        </li>
+
+
+
         <li class="nav-item  " id="Item43">
             <a href="@(Url.Action("Index", "AspNetFeeDetail"))">
                 <i class="fa fa-database"></i>
@@ -107,19 +124,20 @@
         </li>
 
 
-        @*<li class="nav-item  ">
-                <a href="@(Url.Action("Student_Dairy", "Student_Dashboard"))">
-                    <i class="fa fa-database"></i>
-                    <span class="title">Dairy</span>
-                </a>
-            </li>
 
-            <li class="nav-item  ">
-                <a href="@(Url.Action("StudentAssessment", "Student_Dashboard"))">
-                    <i class="fa fa-calendar"></i>
-                    <span class="title">Student Term Assessment</span>
-                </a>
-            </li>*@
+        @*<li class="nav-item  ">
+            <a href="@(Url.Action("Student_Dairy", "Student_Dashboard"))">
+                <i class="fa fa-database"></i>
+                <span class="title">Dairy</span>
+            </a>
+        </li>
+
+        <li class="nav-item  ">
+            <a href="@(Url.Action("StudentAssessment", "Student_Dashboard"))">
+                <i class="fa fa-calendar"></i>
+                <span class="title">Student Term Assessment</span>
+            </a>
+        </li>*@
 
         <li class="nav-item  " id="Item45">
             <a href="@(Url.Action("Inbox", "AspNetMessages"))">

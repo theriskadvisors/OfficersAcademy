@@ -1,0 +1,242 @@
+﻿
+@{
+    ViewBag.Title = "StudentLessons";
+    Layout = "~/Views/Shared/_StudentDashboardLayout.cshtml";
+}
+    <style>
+
+        .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            height: 1200px !important;
+        }
+
+
+        .TopicsAndLesson {
+            height: 50px;
+            width: 100%;
+            line-height: 50px;
+            display: inline-block;
+            cursor: pointer;
+            margin: auto;
+            padding-left: 10px;
+        }
+
+    #TopicList {
+        width: 70%;
+        height: auto;
+    }
+
+        #TopicList h3 {
+            display: inline-block;
+        }
+
+    .TopicDiv {
+        background: rgb(51, 70, 102);
+        color: white;
+    }
+
+      #tab_3 table td
+      {
+          width:20%;
+
+      }
+
+    </style>
+
+<div class="box box-primary">
+    <div class="box-title"></div>
+
+    <div class="box-body">
+
+        <h3 id="LessonName"></h3>
+
+        <input type="hidden" id="LessonID" name="name" value="@ViewBag.LessonID" />
+
+        <div id="LessonVideo" style="        margin-left: 100px;
+">
+            <iframe width="800" height="450" src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+
+
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab_1" data-toggle="tab">Course Content</a></li>
+                <li><a href="#tab_2" data-toggle="tab">OverView</a></li>
+                <li><a href="#tab_3" data-toggle="tab">Reading Material</a></li>
+                <li><a href="#tab_4" data-toggle="tab">Assignment</a></li>
+                <li><a href="#tab_5" data-toggle="tab">Q/A</a></li>
+            </ul>
+        </div>
+
+        <div class="tab-content" style="  background-color: #f7f6f6; padding: 10px 0px 0px 0px; ">
+
+            <div class="tab-pane active" id="tab_1">
+
+                <div class="col-md-12">
+
+
+                    <div id="TopicList" style=" margin: auto; ">
+
+
+                        <h3 style="color:black">Course Content</h3>
+
+                        <h3 style="float:right">Total Lessons &nbsp;&nbsp;<span id="TotalLessons"></span> </h3>
+
+
+                        <br />
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="tab-pane" id="tab_2">
+
+                <h3>Description</h3>
+                <p id="LessonDescription">
+
+                </p>
+
+            </div>
+
+            <div class="tab-pane" id="tab_3">
+
+
+                <div class="box ">
+                    <div class="box-title"></div>
+
+
+                    <div class="box-body">
+
+                        <table id="Attachment" style="width:40%;">
+                        </table>
+
+
+                        <table id="LinksTable" style="width:40%;">
+                        </table>
+
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane" id="tab_4">
+
+
+
+
+            </div>
+            <div class="tab-pane" id="tab_5">
+
+
+            </div>
+
+        </div>
+
+            </div>
+
+    <script>
+
+        $(document).ready(function () {
+
+            var LessonId = $("#LessonID").val();
+
+            $.ajax({
+
+
+                type: "POST",
+                url: "/StudentCourses/GetLessonVideo",
+                data: { "LessonID": LessonId },
+                success: function (data) {
+
+                    debugger
+
+                    $("iframe").attr('src', data.LessonVideo);
+                    $("#LessonName").text(data.LessonName);
+                    $("#LessonDescription").text(data.LessonDescription);
+
+                }
+
+
+            })
+
+
+            $.ajax({
+
+
+                type: "POST",
+                url: "/StudentCourses/ReadingMaterials",
+                data: { "LessonID": LessonId },
+                success: function (data) {
+
+                    debugger
+
+                    var Attachment = data.StuAttachment;
+                    var Links = data.StuLinks;
+                    $.each(Attachment, function (key, value1) {
+
+                        $("#Attachment").append('<tr><td>Attachment Name </td>  <td>' + value1.AttachmentName + '</td></tr>');
+                        $("#Attachment").append('<tr><td> Download Attach File  </td>  <td><a href ="/StudentCourses/DownloadFile/' + value1.AttachmentId + '">' + value1.AttachmentPath + '</a></td></tr>');
+
+
+                    })
+
+
+                    $.each(Links, function (key, value2) {
+
+                        $("#LinksTable").append('<tr><td>Link URL  </td>  <td><a href =' + value2.LinkUrl + ' target="_blank">' + value2.LinkUrl + '</a></td></tr>');
+
+
+
+                    })
+
+
+
+                }
+
+
+            })
+
+            $.ajax({
+
+                type: "POST",
+                url: "/StudentCourses/GetCourseContent",
+                data: { "LessonID": LessonId },
+                success: function (data) {
+
+
+                        $.each(data, function (key, value1) {
+
+                    debugger
+
+                    Count = value1.TotalLessons;
+
+                    var lessonlist = value1.LessonList;
+
+                    $("#TopicList").append('<div   class ="TopicsAndLesson TopicDiv" style="border:1px solid black"><b> ' + value1.TopicName + '</b> <b><span style ="float:right">' + value1.TotalLessons1 + '  Lesson </span></b></div>');
+
+                    $.each(lessonlist, function (key, lesson) {
+
+                        $("#TopicList").append('<div   class ="TopicsAndLesson" style="border:1px solid black"><a href = "/StudentCourses/StudentLessons/' + lesson.LessonId + '">' + lesson.LessonName + '</a></div>');
+
+
+                    })
+
+                })
+
+                $("#TotalLessons").text(Count);
+
+                }
+        })
+
+
+
+
+
+                })
+
+    </script>
