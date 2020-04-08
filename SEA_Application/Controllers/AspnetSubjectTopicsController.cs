@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
@@ -71,6 +72,8 @@ namespace SEA_Application.Controllers
             ViewBag.SubjectId = new SelectList(db.AspNetSubjects, "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
             return View(aspnetSubjectTopic);
         }
+
+     
 
 
         //public JsonResult StudentByClass(int id)

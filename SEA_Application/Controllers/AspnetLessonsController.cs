@@ -87,7 +87,7 @@ namespace SEA_Application.Controllers
             if (Assignment.ContentLength > 0)
             {
                 var fileName = Path.GetFileName(Assignment.FileName);
-                // Assignment.SaveAs(Server.MapPath("~/Content/StudentAssignments/") + fileName);
+                Assignment.SaveAs(Server.MapPath("~/Content/StudentAssignments/") + fileName);
                 AspnetStudentAssignment studentAssignment = new AspnetStudentAssignment();
 
                 studentAssignment.FileName = fileName;
@@ -95,25 +95,26 @@ namespace SEA_Application.Controllers
                 studentAssignment.Name = LessonViewModel.AssignmentName;
 
 
-                //string DueDate = Convert.ToString(LessonViewModel.AssignmentDueDate);
+                string DueDate = Convert.ToString(LessonViewModel.AssignmentDueDate);
 
 
-                //if (DueDate == "1/1/0001 12:00:00 AM")
-                //{
-                //    studentAssignment.DueDate = null;
+                if (DueDate == "1/1/0001 12:00:00 AM")
+                {
+                    studentAssignment.DueDate = null;
 
-                //}
-                //else
-                //{
+                }
+                else
+                {
 
-                //studentAssignment.DueDate = LessonViewModel.AssignmentDueDate;
+                    studentAssignment.DueDate = LessonViewModel.AssignmentDueDate;
 
-                //}
+                }
 
-                studentAssignment.DueDate = null;
+
                 studentAssignment.Description = LessonViewModel.AssignmentDescription;
                 studentAssignment.CreationDate = DateTime.Now;
                 studentAssignment.LessonId = Lesson.Id;
+
                 db.AspnetStudentAssignments.Add(studentAssignment);
                 db.SaveChanges();
 
@@ -211,6 +212,8 @@ namespace SEA_Application.Controllers
 
         }
 
+
+  
         // GET: AspnetLessons/Edit/5
         public ActionResult Edit(int? id)
         {

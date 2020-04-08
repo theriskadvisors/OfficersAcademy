@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using SEA_Application.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -76,9 +77,6 @@ namespace SEA_Application.Controllers
 
             return Json(new { LessonId = Lesson.Id, LessonName = Lesson.Name, LessonVideo = Lesson.Video_Url, LessonDescription = Lesson.Description }, JsonRequestBehavior.AllowGet);
         }
-
-
-
 
 
         public ActionResult GetSubjectTopicsAndLessons(int SubjectId)
@@ -205,6 +203,40 @@ namespace SEA_Application.Controllers
         }
 
 
+        public ActionResult StudentAssignment(int LessonID)
+        {
+
+            //AspnetStudentAssignment SA  =    db.AspnetStudentAssignments.Where(x => x.LessonId == LessonID).FirstOrDefault();
+            //    var AssignmentName = "";
+            //    var AssignmentDueDate = "";
+            //    int AssignmentId =;
+            //    if(SA !=null)
+            //    {
+
+            //        AssignmentName = SA.FileName;
+            //        AssignmentDueDate =  SA.DueDate.ToString();
+            //        AssignmentId = SA.Id;
+            //    }
+
+            //  new { StudentAssigmentName = AssignmentName, StudentAssignmentDueDate = AssignmentDueDate, StudentAssignmentId = AssignmentId }
+
+
+            var a = db.AspnetStudentAssignments.Where(x => x.LessonId == LessonID).Select(x => new { x.Id, x.FileName, x.DueDate }).FirstOrDefault();
+
+            var AssignmentSubmission = db.AspnetStudentAssignmentSubmissions.Where(x => x.LessonId == LessonID).FirstOrDefault();
+
+            var TeacherComments = "";
+            if (AssignmentSubmission != null)
+            {
+                TeacherComments = AssignmentSubmission.TeacherComments;
+            }
+
+
+
+            return Json(new { StudentAssigmentName = a.FileName, StudentAssignmentDueDate = a.DueDate, StudentAssignmentId = a.Id, TeacherComments = TeacherComments }, JsonRequestBehavior.AllowGet);
+        }
+
+
 
 
         public ActionResult ReadingMaterials(int LessonID)
@@ -227,6 +259,70 @@ namespace SEA_Application.Controllers
             return File(filepath, MimeMapping.GetMimeMapping(filepath), studentAttachment.Path);
 
 
+        }
+
+        public ActionResult DownloadFileOfAssignment(int id)
+        {
+
+            AspnetStudentAssignment studentAssignment = db.AspnetStudentAssignments.Find(id);
+
+            var filepath = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), studentAssignment.FileName);
+
+            return File(filepath, MimeMapping.GetMimeMapping(filepath), studentAssignment.FileName);
+
+
+        }
+
+        public ActionResult StudentAssignmentSubmission(int LessonID)
+        {
+
+            var File = Request.Files["file"];
+
+            var fileName = "";
+            if (File.ContentLength > 0)
+            {
+                fileName = Path.GetFileName(File.FileName);
+                File.SaveAs(Server.MapPath("~/Content/StudentAssignments/") + fileName);
+
+            }
+
+            AspnetStudentAssignmentSubmission AssignmentSubmission = new AspnetStudentAssignmentSubmission();
+
+            int? TopicId = db.AspnetLessons.Where(x => x.Id == LessonID).FirstOrDefault().TopicId;
+            int? SubjectId = db.AspnetSubjectTopics.Where(x => x.Id == TopicId).FirstOrDefault().SubjectId;
+
+            //  db.AspnetSubjectTopics.Where(x => x.Id == LessonID);
+
+            var Subject = db.AspNetSubjects.Where(x => x.Id == SubjectId).FirstOrDefault();
+
+            var id = User.Identity.GetUserId();
+            var UserId = db.AspNetUsers.Where(x => x.Id == id).FirstOrDefault().Id;
+
+            int StudentId = db.AspNetStudents.Where(x => x.StudentID == UserId).FirstOrDefault().Id;
+
+            var AssignmentDueDate = db.AspnetStudentAssignments.Where(x => x.LessonId == LessonID).FirstOrDefault().DueDate;
+
+
+            TimeZone time2 = TimeZone.CurrentTimeZone;
+            DateTime test = time2.ToUniversalTime(DateTime.Now);
+            var pakistan = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
+
+            DateTime pakistantime = TimeZoneInfo.ConvertTimeFromUtc(test, pakistan);
+            AssignmentSubmission.LessonId = LessonID;
+            AssignmentSubmission.TopicId = TopicId;
+            AssignmentSubmission.SubjectId = SubjectId;
+            AssignmentSubmission.ClassId = Subject.ClassID;
+            AssignmentSubmission.CourseType = Subject.CourseType;
+            AssignmentSubmission.StudentId = StudentId;
+            AssignmentSubmission.AssignmentSubmittedDate = pakistantime;
+            AssignmentSubmission.AssignmentDueDate = AssignmentDueDate;
+            AssignmentSubmission.AssignmentFileName = fileName;
+
+            db.AspnetStudentAssignmentSubmissions.Add(AssignmentSubmission);
+            db.SaveChanges();
+
+
+            return Json("Submitted Successfully", JsonRequestBehavior.AllowGet);
         }
 
 

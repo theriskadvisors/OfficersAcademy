@@ -3,25 +3,25 @@
     ViewBag.Title = "StudentLessons";
     Layout = "~/Views/Shared/_StudentDashboardLayout.cshtml";
 }
-    <style>
+<style>
 
-        .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            height: 1200px !important;
-        }
+    .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 1200px !important;
+    }
 
 
-        .TopicsAndLesson {
-            height: 50px;
-            width: 100%;
-            line-height: 50px;
-            display: inline-block;
-            cursor: pointer;
-            margin: auto;
-            padding-left: 10px;
-        }
+    .TopicsAndLesson {
+        height: 50px;
+        width: 100%;
+        line-height: 50px;
+        display: inline-block;
+        cursor: pointer;
+        margin: auto;
+        padding-left: 10px;
+    }
 
     #TopicList {
         width: 70%;
@@ -37,13 +37,10 @@
         color: white;
     }
 
-      #tab_3 table td
-      {
-          width:20%;
-
-      }
-
-    </style>
+    #tab_3 table td {
+        width: 20%;
+    }
+</style>
 
 <div class="box box-primary">
     <div class="box-title"></div>
@@ -88,11 +85,6 @@
                         <br />
                     </div>
 
-             
-                 
-                    
-
-
                 </div>
 
             </div>
@@ -132,17 +124,69 @@
             <div class="tab-pane" id="tab_4">
 
 
+                <table id="Assignment" style="width:40%;">
+                </table>
 
+                <br />
+
+
+                <br />
+                <div class="col-md-12">
+
+                    <div class="form-group">
+
+                        <label class="control-label col-md-2"> Teacher Comments  </label>
+
+                        <div id="" style="padding-left:80px" class="col-md-6">
+                            <textarea readonly id="TeacherComments" rows="4" cols="50">
+
+
+                            </textarea>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="col-md-12">
+
+                    <div class="form-group">
+
+                        <label class="control-label col-md-2"> Submit your Assignment </label>
+
+                        <i class="fa fa-paperclip" style="padding-left:80px"></i> Choose File
+                        <input type="file" style="padding-left:80px" id="SubmitAssignment" name="SubmitAssignment">
+                    </div>
+                    <div class="col-md-offset-2 col-lg-offset-2" style="padding-left:80px">
+                        <p class="help-block">Max. 32MB</p>
+                    </div>
+
+                    <input class="btn btn-default" type="button" id="AssignmentSubmitButton" name="" value="Submit" />
+
+                </div>
 
             </div>
+
+
+        </div>
+
+
+
+    </div>
+
+
+</div>
+
+
+    </div>
+
             <div class="tab-pane" id="tab_5">
 
 
             </div>
 
         </div>
-
-            </div>
 
     <script>
 
@@ -184,7 +228,7 @@
                     var Links = data.StuLinks;
                     $.each(Attachment, function (key, value1) {
                         var file = value1.AttachmentName.split('.').slice(0, -1).join('.');
-                       $("#Attachment").append('<tr><td>Attachment Name </td>  <td>' + file + '</td></tr>');
+                        $("#Attachment").append('<tr><td>Attachment Name </td>  <td>' + file + '</td></tr>');
                         $("#Attachment").append('<tr><td> Download Attach File  </td>  <td><a href ="/StudentCourses/DownloadFile/' + value1.AttachmentId + '">' + value1.AttachmentPath + '</a></td></tr>');
 
 
@@ -214,36 +258,87 @@
                 success: function (data) {
 
 
-                        $.each(data, function (key, value1) {
+                    $.each(data, function (key, value1) {
 
-                    debugger
+                        debugger
 
-                    Count = value1.TotalLessons;
+                        Count = value1.TotalLessons;
 
-                    var lessonlist = value1.LessonList;
+                        var lessonlist = value1.LessonList;
 
-                  $("#TopicList").append('<div   class ="TopicsAndLesson TopicDiv" style="border:1px solid black"><b> ' + value1.TopicName + '</b> <b><span style ="float:right">' + value1.TotalLessons1 + '  Lesson </span></b></div>');
+                        $("#TopicList").append('<div   class ="TopicsAndLesson TopicDiv" style="border:1px solid black"><b> ' + value1.TopicName + '</b> <b><span style ="float:right">' + value1.TotalLessons1 + '  Lesson </span></b></div>');
 
-                //    $("#TopicList").append('<div class="panel-group"> <div class="panel panel-default"> <div class="panel-heading"> <h4 class="panel-title"> <a data-toggle="collapse" href="#collapse1">Collapsible list group</a> </h4> </div> <div id="collapse1" class="panel-collapse collapse"> <ul class="list-group"> <li class="list-group-item">One</li> <li class="list-group-item">Two</li> <li class="list-group-item">Three</li> </ul> <div class="panel-footer">Footer</div> </div> </div> </div>');
+                        //    $("#TopicList").append('<div class="panel-group"> <div class="panel panel-default"> <div class="panel-heading"> <h4 class="panel-title"> <a data-toggle="collapse" href="#collapse1">Collapsible list group</a> </h4> </div> <div id="collapse1" class="panel-collapse collapse"> <ul class="list-group"> <li class="list-group-item">One</li> <li class="list-group-item">Two</li> <li class="list-group-item">Three</li> </ul> <div class="panel-footer">Footer</div> </div> </div> </div>');
 
-                    $.each(lessonlist, function (key, lesson) {
+                        $.each(lessonlist, function (key, lesson) {
 
-                        $("#TopicList").append('<div   class ="TopicsAndLesson" style="border:1px solid black"><a href = "/StudentCourses/StudentLessons/' + lesson.LessonId + '">' + lesson.LessonName + '</a></div>');
+                            $("#TopicList").append('<div   class ="TopicsAndLesson" style="border:1px solid black"><a href = "/StudentCourses/StudentLessons/' + lesson.LessonId + '">' + lesson.LessonName + '</a></div>');
 
+
+                        })
 
                     })
 
-                })
-
-                $("#TotalLessons").text(Count);
+                    $("#TotalLessons").text(Count);
 
                 }
+            })
+
+
+            $.ajax({
+
+
+                type: "POST",
+                url: "/StudentCourses/StudentAssignment",
+                data: { "LessonID": LessonId },
+                success: function (data) {
+
+
+                    var value = new Date(parseInt(data.StudentAssignmentDueDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                    var dat = value.getMonth() +
+                        1 +
+                        "/" +
+                        value.getDate() +
+                        "/" +
+                        value.getFullYear();
+
+                    $("#Assignment").append('<tr><td>Assignment Name </td>  <td>' + data.StudentAssigmentName + '</td></tr>');
+                    $("#Assignment").append('<tr><td> Download Attach File  </td>  <td><a href ="/StudentCourses/DownloadFileOfAssignment/' + data.StudentAssignmentId + '">' + data.StudentAssigmentName + '</a></td></tr>');
+                    $("#Assignment").append('<tr><td>Assignment DueDate </td>  <td>' + dat + '</td></tr>');
+                    $("#TeacherComments").text(data.TeacherComments);
+
+                }
+
+            })
+
+            $("#AssignmentSubmitButton").click(function (evt) {
+                var fileUpload = $("#SubmitAssignment").get(0).files;
+
+                var data = new FormData();
+                data.append('LessonID', LessonId);
+
+                if (fileUpload.length > 0) {
+                    data.append("file", fileUpload[0]);
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "/StudentCourses/StudentAssignmentSubmission",
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (message) {
+                        alert(message);
+                    },
+                    error: function () {
+                        alert("There was error uploading files!");
+                    }
+                });
+            });
+
+
+
+
+
         })
-
-
-
-
-
-                })
 
     </script>
