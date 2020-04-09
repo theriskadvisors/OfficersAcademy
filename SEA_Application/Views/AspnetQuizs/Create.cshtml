@@ -8,6 +8,13 @@
 
 <script>
     $(document).ready(function () {
+
+        $("#btnCancel").click(function () {
+
+            window.location.href = "/AspnetQuizs/Index";
+        })
+
+
         $.ajax({
             type: "POST",
             cache: false,
@@ -39,7 +46,7 @@
         var Class;
         $('#CTId').change(function () {
 
-                $('#TopicId').html('');
+            $('#TopicId').html('');
 
             var crse = $(this).val();
             console.log(crse);
@@ -76,7 +83,7 @@
 
 
         $('#SecId').change(function () {
-                $('#TopicId').html('');
+            $('#TopicId').html('');
 
 
             var UserName = $(this).val();
@@ -179,7 +186,9 @@
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Start_Date, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-2">
+                        Start Date
+                    </div>
                     <div class="col-md-6">
                         @Html.EditorFor(model => model.Start_Date, new { htmlAttributes = new { type = "date", @class = "form-control", @required = true } })
                         @Html.ValidationMessageFor(model => model.Start_Date, "", new { @class = "text-danger" })
@@ -187,7 +196,10 @@
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Due_Date, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                    <div class="col-md-2">
+                        Due Date
+                    </div>
                     <div class="col-md-6">
                         @Html.EditorFor(model => model.Due_Date, new { htmlAttributes = new { type = "date", @class = "form-control", @required = true } })
                         @Html.ValidationMessageFor(model => model.Due_Date, "", new { @class = "text-danger" })
@@ -268,7 +280,9 @@
 
                 <div class="form-group">
                     <div class="col-md-offset-1 col-md-10">
-                        <input type="submit" value="Create" class="btn btn-default" />
+                        <input type="submit" value="Create" class="btn btn-primary" />
+
+                        <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
                     </div>
                 </div>
 
@@ -282,9 +296,9 @@
 
     $(document).ready(function () {
 
-          $("#TopicId").click(function () {
-              var selectedTopic = $("#TopicId").val();
-              debugger
+        $("#TopicId").click(function () {
+            var selectedTopic = $("#TopicId").val();
+            debugger
             $.ajax({
                 url: '@Url.Action("QuestionsByTopics")',
                 type: 'GET',
@@ -299,38 +313,38 @@
                 $.each(response, function (i, item) {
 
                     debugger
-                   // var classname = $("#ClassID option[value='" + item.ClassID + "']").text();
+                    // var classname = $("#ClassID option[value='" + item.ClassID + "']").text();
                     $('#QuestionID').append('<option value=' + item.Id + '>' + item.Name + ' </option>');
                 });
             })
 
 
-          });
+        });
 
 
-               $("#SubId").change(function () {
+        $("#SubId").change(function () {
 
-                var SubjectId =   $("#SubId").val();
+            var SubjectId = $("#SubId").val();
 
-                 $.ajax({
+            $.ajax({
 
                 type: "POST",
                 url: "/AspnetQuizs/GetSubjectTopics",
                 data: { "SubjectId": SubjectId },
                 success: function (data) {
 
-                $('#TopicId').html('');
+                    $('#TopicId').html('');
 
-                 $.each(data, function (i, item) {
+                    $.each(data, function (i, item) {
 
-                    debugger
-                   // var classname = $("#ClassID option[value='" + item.ClassID + "']").text();
-                     $('#TopicId').append('<option value=' + item.Id + '>' + item.Name + ' </option>');
-
-
+                        debugger
+                        // var classname = $("#ClassID option[value='" + item.ClassID + "']").text();
+                        $('#TopicId').append('<option value=' + item.Id + '>' + item.Name + ' </option>');
 
 
-                });
+
+
+                    });
 
 
 
