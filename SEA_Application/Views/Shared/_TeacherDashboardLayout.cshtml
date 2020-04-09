@@ -1,31 +1,44 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-    <style>
-        li.nav-item.start.active.open {
-            border-bottom: 0px solid white !important;
-        }
+<style>
 
-        .page-sidebar-menu.page-sidebar-menu-hover-submenu > li:hover > .sub-menu {
-            margin-left: 170px;
-            margin-top: -77px;
-        }
 
-        .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            height: 750px !important;
-        }
 
-        .box.box-primary {
-            border-top-color: #5170a3;
-        }
+    @@media (min-width: 992px) {
 
-        .page-container-bg-solid .page-content {
-            background: #d0cfcf2e;
+        .page-content-wrapper .page-content {
+            margin-left: 200px;
+            margin-top: 0;
+            min-height: 600px;
+            padding: 25px 20px 10px;
         }
-    </style>
+    }   
+
+    li.nav-item.start.active.open {
+        border-bottom: 0px solid white !important;
+    }
+
+    .page-sidebar-menu.page-sidebar-menu-hover-submenu > li:hover > .sub-menu {
+        margin-left: 190px;
+        margin-top: -77px;
+    }
+
+    .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 1200px !important;
+    }
+
+    .box.box-primary {
+        border-top-color: #5170a3;
+    }
+
+    .page-container-bg-solid .page-content {
+        background: #d0cfcf2e;
+    }
+</style>
 <div class="page-sidebar navbar-collapse collapse">
     <!-- BEGIN SIDEBAR MENU -->
     <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
@@ -45,11 +58,11 @@
         </li>
 
         @*<li class="nav-item  ">
-            <a href="@(Url.Action("View_LessonPlan", "AspNetLessonPlan"))">
-                <i class="fa fa-graduation-cap"></i>
-                <span class="title">LessonPlan</span>
-            </a>
-        </li>*@
+                <a href="@(Url.Action("View_LessonPlan", "AspNetLessonPlan"))">
+                    <i class="fa fa-graduation-cap"></i>
+                    <span class="title">LessonPlan</span>
+                </a>
+            </li>*@
 
         <li class="nav-item  " id="Item34">
             <a href="@(Url.Action("Index", "AspNetProject"))">
@@ -59,11 +72,11 @@
         </li>
 
         @*<li class="nav-item  ">
-            <a href="@(Url.Action("Index", "AspNetStudentPerformanceReport"))">
-                <i class="fa fa-bullhorn"></i>
-                <span class="title">Progress Report</span>
-            </a>
-        </li>*@
+                <a href="@(Url.Action("Index", "AspNetStudentPerformanceReport"))">
+                    <i class="fa fa-bullhorn"></i>
+                    <span class="title">Progress Report</span>
+                </a>
+            </li>*@
 
 
         <li class="nav-item" id="Item35">
@@ -90,11 +103,11 @@
         </li>
 
         @*<li class="nav-item  ">
-            <a href="@(Url.Action("Index", "AspNetHomeworks"))">
-                <i class="fa fa-database"></i>
-                <span class="title">Diary</span>
-            </a>
-        </li>*@
+                <a href="@(Url.Action("Index", "AspNetHomeworks"))">
+                    <i class="fa fa-database"></i>
+                    <span class="title">Diary</span>
+                </a>
+            </li>*@
 
         <li class="nav-item  " id="Item36">
             <a href="@(Url.Action("View_Attendance", "Teacher_Dashboard"))">
@@ -103,7 +116,7 @@
             </a>
         </li>
 
-        <li class="nav-item" id="topic">
+        <li class="nav-item" id="StudentAssignment">
             <a href="@Url.Action("StudentAssignments", "StudentAssignmentSubmitted")" class="nav-link nav-toggle">
                 <i class="fa fa-list-ul"></i>
                 <span class="title">Student Assignments</span>
@@ -111,20 +124,20 @@
         </li>
 
 
-        <li class="nav-item" id="topic">
+        <li class="nav-item" id="studenttopic">
             <a href="@Url.Action("Index", "AspnetSubjectTopics")" class="nav-link nav-toggle">
                 <i class="fa fa-list-ul"></i>
                 <span class="title">Topic</span>
             </a>
         </li>
-        <li class="nav-item" id="lesson">
+        <li class="nav-item" id="studentlesson">
             <a href="@Url.Action("Index", "AspnetLessons")" class="nav-link nav-toggle">
                 <i class="fa fa-leaf"></i>
                 <span class="title">Lesson</span>
             </a>
         </li>
 
-        <li class="nav-item" id="QuestionAnswer">
+        <li class="nav-item" id="studentQuestionAnswer">
             <a href="@Url.Action("Index", "AspnetQuestions")" class="nav-link nav-toggle">
                 <i class="fa fa-book"></i>
                 <span class="title">Questions Answers</span>
@@ -133,7 +146,7 @@
 
 
 
-        <li class="nav-item" id="Quiz">
+        <li class="nav-item" id="studentQuiz">
             <a href="@Url.Action("Index", "AspnetQuizs")" class="nav-link nav-toggle">
                 <i class="fa fa-pencil-square-o"></i>
                 <span class="title">Quiz</span>
@@ -146,58 +159,58 @@
 
 
         @*<li class="nav-item  ">
-            <a href="@(Url.Action("Teacher_Announcement", "Teacher_Dashboard"))">
-                <i class="fa fa-bullhorn"></i>
-                <span class="title">Announcement</span>
-            </a>
-        </li>
+                <a href="@(Url.Action("Teacher_Announcement", "Teacher_Dashboard"))">
+                    <i class="fa fa-bullhorn"></i>
+                    <span class="title">Announcement</span>
+                </a>
+            </li>
 
-        <li class="nav-item  ">
-            <a href="@(Url.Action("Attendance", "Teacher_Dashboard"))">
-                <i class="fa fa-list-ol"></i>
-                <span class="title">Student Attendance</span>
-            </a>
-        </li>
+            <li class="nav-item  ">
+                <a href="@(Url.Action("Attendance", "Teacher_Dashboard"))">
+                    <i class="fa fa-list-ol"></i>
+                    <span class="title">Student Attendance</span>
+                </a>
+            </li>
 
-        <li class="nav-item">
-            <a href="@(Url.Action("ParentTeacherMeeting", "Teacher_Dashboard"))">
-                <i class="fa fa-users"></i>
-                <span class="title">Parent Teacher Meeting</span>
-            </a>
-        </li>
+            <li class="nav-item">
+                <a href="@(Url.Action("ParentTeacherMeeting", "Teacher_Dashboard"))">
+                    <i class="fa fa-users"></i>
+                    <span class="title">Parent Teacher Meeting</span>
+                </a>
+            </li>
 
 
-        <li class="nav-item">
-            <a href="#" class="nav-link nav-toggle">
-                <i class="fa fa-book"></i>
-                <span class="title">Assessment</span>
-            </a>
+            <li class="nav-item">
+                <a href="#" class="nav-link nav-toggle">
+                    <i class="fa fa-book"></i>
+                    <span class="title">Assessment</span>
+                </a>
 
-            <ul class="sub-menu">
-                <li class="nav-item  ">
-                    <a href="@(Url.Action("Subject_Assessment","Teacher_Dashboard"))">
-                        <i class="fa fa-circle-o"></i>
-                        <span class="title">Subject Assessment</span>
-                    </a>
-                </li>
+                <ul class="sub-menu">
+                    <li class="nav-item  ">
+                        <a href="@(Url.Action("Subject_Assessment","Teacher_Dashboard"))">
+                            <i class="fa fa-circle-o"></i>
+                            <span class="title">Subject Assessment</span>
+                        </a>
+                    </li>
 
-                <li class="nav-item  ">
-                    <a href="@(Url.Action("Class_Assessment", "Teacher_Dashboard"))">
-                        <i class="fa fa-circle-o"></i>
-                        <span class="title">Class Assessment</span>
-                    </a>
-                </li>
-            </ul>
-        </li>*@
+                    <li class="nav-item  ">
+                        <a href="@(Url.Action("Class_Assessment", "Teacher_Dashboard"))">
+                            <i class="fa fa-circle-o"></i>
+                            <span class="title">Class Assessment</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>*@
 
-        <li class="nav-item  " id="Item37">
+        <li class="nav-item  " id="mailboxitem">
             <a href="@(Url.Action("Inbox", "AspNetMessages"))">
                 <i class="fa fa-envelope"></i>
                 <span class="title">MailBox</span>
             </a>
         </li>
 
-        <li class="nav-item  " id="Item38">
+        <li class="nav-item  " id="support">
             <a href="https://smartereduanalytics.on.spiceworks.com/portal/tickets">
                 <i class="fa fa-support"></i>
                 <span class="title">Support</span>
