@@ -58,6 +58,140 @@ namespace SEA_Application.Controllers
             return View();
         }
 
+        public JsonResult Quiz_student_check()
+        {
+            var student_id = db.AspNetStudents.Where(x => x.StudentID == StudentID).Select(x => x.Id).FirstOrDefault();
+
+            var student_performed_quizes = db.Student_Quiz_Scoring.Where(x => x.StudentId == student_id).Select(x => x.AspnetQuiz.Id).Distinct().ToList();
+            var all_quizes = db.AspnetQuizs.Select(x => x.Id).ToList();
+
+            var Unperformed_quizes = all_quizes.Except(student_performed_quizes).ToList();
+
+            return Json(Unperformed_quizes, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public class option
+        {
+            public int id;
+            public string name;
+        }
+
+       public class question
+        {
+            public int id;
+            public string name;
+            public string type;
+            public List<option> options;
+        }
+
+        public ViewResult Quizes()
+        {
+            var today = DateTime.Today.Date;
+            var subjects_list = db.AspNetStudent_Subject.Where(x => x.StudentID == StudentID).Select(x => x.SubjectID).ToList();
+            //var quizes = db.AspnetQuizs.Where(x => x.Start_Date == today && today <= x.Due_Date && x.Quiz_Topic_Questions.Select(x=> x.AspnetQuestion.AspnetLesson.AspnetSubjectTopic.SubjectId).Contains(subjects_list))).ToList();
+            var quizes = db.AspnetQuizs.Where(x => x.Start_Date == today && today <= x.Due_Date ).ToList();
+            ViewBag.quizes = quizes;
+            return View();
+        }
+
+        //Question of a Quiz;
+        public ActionResult GetQuestions(int Id)
+        {
+            var questionList_MCQS = new List<question>();
+            var questionList_Fill = new List<question>();
+            var Quiz_Questions = db.Quiz_Topic_Questions.Where(x => x.QuizId == Id && x.AspnetQuestion.Type == "MCQ").ToList();
+
+            foreach (var item in Quiz_Questions)
+            {
+                var q = new question();
+                q.id = item.AspnetQuestion.Id;
+                q.name = item.AspnetQuestion.Name;
+                q.type = item.AspnetQuestion.Type;
+                q.options = new List<option>();
+                var op = db.AspnetOptions.Where(x => x.QuestionId == q.id).ToList();
+                foreach (var item1 in op)
+                {
+                    var op1 = new option();
+                    op1.id = item1.Id;
+                    op1.name = item1.Name;
+                    q.options.Add(op1);
+                }
+                questionList_MCQS.Add(q);
+            }
+
+            var Quiz_Questions_Fill = db.Quiz_Topic_Questions.Where(x => x.QuizId == Id && x.AspnetQuestion.Type == "Fill").ToList();
+
+            foreach (var item in Quiz_Questions_Fill)
+            {
+                var q = new question();
+                q.id = item.AspnetQuestion.Id;
+                q.name = item.AspnetQuestion.Name;
+                q.type = item.AspnetQuestion.Type;
+
+                questionList_Fill.Add(q);
+            }
+
+            ViewBag.questionList_MCQS = questionList_MCQS;
+            ViewBag.questionList_Fill = questionList_Fill;
+            ViewBag.QuizId = Id;
+            return View();
+        }
+
+        public ActionResult StartQuiz_Student(int QuizId)
+        {
+            try
+            {
+                var questions = db.Quiz_Topic_Questions.Where(x => x.QuizId == QuizId).Select(x => x.QuestionId).ToList();
+                var student_id = db.AspNetStudents.Where(x => x.StudentID == StudentID).Select(x => x.Id).FirstOrDefault();
+                foreach (var item in questions)
+                {
+                    var quiz_student = new Student_Quiz_Scoring();
+                    quiz_student.QuizId = QuizId;
+                    quiz_student.QuestionId = item;
+                    quiz_student.StudentId = student_id;
+                    db.Student_Quiz_Scoring.Add(quiz_student);
+                }
+                db.SaveChanges();
+                return Json("Success", JsonRequestBehavior.AllowGet);
+            }catch(Exception ex)
+            {
+                var logs = new AspNetLog();
+                logs.UserID = StudentID;
+                logs.Operation = "Error while starting the Quiz ->" + ex;
+                logs.Time = DateTime.Now;
+                db.AspNetLogs.Add(logs);
+                db.SaveChanges();
+                return Json("Something went Wrong", JsonRequestBehavior.AllowGet);
+            }
+            
+        }
+
+        public JsonResult submit_question(List<int> OptionId, int QuizId, List<int> QuestionId)
+        {
+            var student_id = db.AspNetStudents.Where(x => x.StudentID == StudentID).Select(x => x.Id).FirstOrDefault();
+            int score = 0;
+            var list = QuestionId.Zip(OptionId, (q, o) => new { Question = q, Option = o });
+
+            foreach (var item in list)
+            {
+                var record = db.Student_Quiz_Scoring.Where(x => x.QuizId == QuizId && x.QuestionId == item.Question && x.StudentId == student_id).FirstOrDefault();
+
+                if (item.Option == db.AspnetQuestions.Where(x => x.Id == item.Question).Select(x => x.AnswerId).FirstOrDefault())
+                {
+                    record.Score = "true";
+                    score++;
+                }
+                else
+                    record.Score = "false";
+
+                db.SaveChanges();
+            }
+            
+            return Json("Number of Correct Answer is " + score, JsonRequestBehavior.AllowGet);
+        }
+
+
         public ViewResult PerformanceReports()
         {
             List<int> subjectIDs = (from student_subject in db.AspNetStudent_Subject
