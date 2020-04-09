@@ -4,7 +4,8 @@
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
 }
-
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="~/Content/Toggle.js"></script>
 <script>
     $(document).ready(function () {
         $.ajax({
@@ -221,7 +222,7 @@
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="form-group">
                 @Html.LabelFor(model => model.QuestionName, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
+                <div class="col-md-6">
                     @Html.EditorFor(model => model.QuestionName, new { htmlAttributes = new { id = "textareastyle", @class = "form-control", @required = true } })
                     @Html.ValidationMessageFor(model => model.QuestionName, "", new { @class = "text-danger" })
                 </div>
@@ -294,7 +295,7 @@
             </div>
         </div>*@
 
-            <div class="form-group">
+            @*<div class="form-group">
                 @Html.LabelFor(model => model.QuestionIsQuiz, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-6">
                     <div class="checkbox col-md-6">
@@ -303,15 +304,16 @@
                         @Html.ValidationMessageFor(model => model.QuestionIsQuiz, "", new { @class = "text-danger" })
                     </div>
                 </div>
-            </div>
+            </div>*@
 
             <div class="form-group">
                 @Html.LabelFor(model => model.QuestionIsActive, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-6">
-                    <div class="checkbox">
+                    @*<div class="checkbox">
                         @Html.EditorFor(model => model.QuestionIsActive)
                         @Html.ValidationMessageFor(model => model.QuestionIsActive, "", new { @class = "text-danger" })
-                    </div>
+                    </div>*@
+                    <input type="checkbox" checked data-toggle="toggle">
                 </div>
             </div>
 
@@ -331,10 +333,7 @@
 
                     <select class="form-control" id="QuestionType" name="QuestionType" required>
 
-                        <option value="">Select One</option>
-                        <option value="MCQ">MCQ</option>
-                        <option value="TF">TF</option>
-                        <option value="Fill">Fill</option>
+                        <option value="MCQ" selected>MCQ</option>
 
                     </select>
 
@@ -375,7 +374,9 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Answer, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-2">
+                        Select Correct Answer
+                    </div>
                     <div class="col-md-6">
 
 
@@ -410,7 +411,8 @@
 
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Create" class="btn btn-default" />
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                    <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
                 </div>
             </div>
         </div>
@@ -421,10 +423,16 @@
 
     $(document).ready(function () {
 
-        $("#QuestionType").change(function () {
+        $("#btnCancel").click(function () {
+
+            window.location.href = "/AspnetQuestions/Index";
+        })
 
 
-            var QuestionType = $(this).val();
+    //    $("#QuestionType").change(function () {
+
+
+        var QuestionType = "MCQ";
 
             if (QuestionType == "MCQ" || QuestionType == "TF") {
 
@@ -452,7 +460,7 @@
 
 
 
-        })
+      //  })
 
 
 
