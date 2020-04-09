@@ -54,7 +54,7 @@
                     $el.empty();
                     var $e2 = $(".TopIdDDL");
                     $e2.empty();
-                    var $e3 = $(".LessIdDDL");
+                    var $e3 = $(".LessonIdDDL");
                     $e3.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
@@ -92,7 +92,7 @@
                     $el.empty();
                     var $e2 = $(".TopIdDDL");
                     $e2.empty();
-                    var $e3 = $(".LessIdDDL");
+                    var $e3 = $(".LessonIdDDL");
                     $e3.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
@@ -127,7 +127,7 @@
                     var sch = JSON.parse(data);
                     console.log(sch);
 
-                    var $el = $(".LessIdDDL");
+                    var $el = $(".LessonIdDDL");
                     $el.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
@@ -271,7 +271,7 @@
                     <label>Lesson <span class="text-danger">*</span></label>
                 </div>
                 <div class="col-md-6">
-                    <select class="form-control LessIdDDL" id="LessId" name="LessId"></select>
+                    <select class="form-control LessonIdDDL" id="LessonId" name="LessonId"></select>
                 </div>
             </div>
 
