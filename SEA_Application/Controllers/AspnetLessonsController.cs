@@ -72,7 +72,8 @@ namespace SEA_Application.Controllers
             Lesson.Name = LessonViewModel.LessonName;
             Lesson.Video_Url = LessonViewModel.LessonVideoURL;
             Lesson.TopicId = LessonViewModel.TopicId;
-            Lesson.Duration = LessonViewModel.LessonDuration;
+            Lesson.DurationMinutes = LessonViewModel.LessonDuration;
+            
             Lesson.CreationDate = LessonViewModel.CreationDate;
             Lesson.Description = LessonViewModel.LessonDescription;
             Lesson.CreationDate = DateTime.Now;
@@ -236,10 +237,14 @@ namespace SEA_Application.Controllers
             lessonViewModel.LessonDescription = aspnetLesson.Description;
             lessonViewModel.LessonVideoURL = aspnetLesson.Video_Url;
             lessonViewModel.LessonName = aspnetLesson.Name;
-            lessonViewModel.LessonDuration = aspnetLesson.Duration;
+            lessonViewModel.LessonDuration = aspnetLesson.DurationMinutes;
             int? TopicId = aspnetLesson.TopicId;
+
+
             int? SubjectId = db.AspnetSubjectTopics.Where(x => x.Id == TopicId).FirstOrDefault().SubjectId;
             AspNetSubject Subject = db.AspNetSubjects.Where(x => x.Id == SubjectId).FirstOrDefault();
+
+
             int? ClassId = Subject.ClassID;
             var CourseType = Subject.CourseType;
 
@@ -339,7 +344,7 @@ namespace SEA_Application.Controllers
             Lesson.Name = LessonViewModel.LessonName;
             Lesson.Video_Url = LessonViewModel.LessonVideoURL;
             Lesson.TopicId = LessonViewModel.TopicId;
-            Lesson.Duration = LessonViewModel.LessonDuration;
+            Lesson.DurationMinutes = LessonViewModel.LessonDuration;
             Lesson.Description = LessonViewModel.LessonDescription;
             db.SaveChanges();
 

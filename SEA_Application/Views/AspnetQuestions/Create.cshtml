@@ -5,7 +5,9 @@
     Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
 }
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-<script src="~/Content/Toggle.js"></script>
+@*<script src="~/Content/Toggle.js"></script>*@
+<script src="~/Content/JS/Toggle.js"></script>
+
 <script>
     $(document).ready(function () {
         $.ajax({
@@ -241,7 +243,7 @@
                     <label>Course Type <span class="text-danger">*</span></label>
                 </div>
                 <div class="col-md-6">
-                    <select class="form-control CTIdDDL" id="CTId" name="CTId">
+                    <select class="form-control CTIdDDL" id="CTId" name="CTId" required>
                         <option value="CSS">CSS</option>
                         <option value="PMS">PMS</option>
 
@@ -255,7 +257,7 @@
                     <label>Subject <span class="text-danger">*</span></label>
                 </div>
                 <div class="col-md-6">
-                    <select class="form-control SubIdDDL" id="SubId" name="SubId"></select>
+                    <select class="form-control SubIdDDL" id="SubId" name="SubId" required></select>
                 </div>
             </div>
 
@@ -264,7 +266,7 @@
                     <label>Topic <span class="text-danger">*</span></label>
                 </div>
                 <div class="col-md-6">
-                    <select class="form-control TopIdDDL" id="TopId" name="TopId"></select>
+                    <select class="form-control TopIdDDL" id="TopId" name="TopId" required></select>
                 </div>
             </div>
             <div class="form-group">
@@ -272,7 +274,7 @@
                     <label>Lesson <span class="text-danger">*</span></label>
                 </div>
                 <div class="col-md-6">
-                    <select class="form-control LessIdDDL" id="LessonId" name="LessonId"></select>
+                    <select class="form-control LessIdDDL" id="LessonId" name="LessonId" required></select>
                 </div>
             </div>
 
@@ -313,7 +315,7 @@
                         @Html.EditorFor(model => model.QuestionIsActive)
                         @Html.ValidationMessageFor(model => model.QuestionIsActive, "", new { @class = "text-danger" })
                     </div>*@
-                    <input type="checkbox" checked data-toggle="toggle">
+                    <input type="checkbox" id="IsMandatory" name="IsMandatory" checked data-toggle="toggle">
                 </div>
             </div>
 
@@ -386,7 +388,7 @@
                             <option value="a">(a)</option>
                             <option value="b">(b)</option>
                             <option value="c">(c)</option>
-                            <option value="c">(d)</option>
+                            <option value="d">(d)</option>
 
                         </select>
 

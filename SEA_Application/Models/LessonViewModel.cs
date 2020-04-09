@@ -21,7 +21,7 @@ namespace SEA_Application.Models
 
         [Display(Name = "Lesson Duration")]
 
-        public TimeSpan? LessonDuration { get; set; }
+        public decimal? LessonDuration { get; set; }
 
         [Display(Name = "Creation Date")]
 

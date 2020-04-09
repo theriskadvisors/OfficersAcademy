@@ -41,7 +41,7 @@ namespace SEA_Application.Controllers
         public ActionResult Create()
         {
             ViewBag.LessonId = new SelectList(db.AspnetLessons, "Id", "Name");
-             ViewBag.TeacherID = new SelectList(db.AspNetUsers.Where(x => x.AspNetRoles.Select(y => y.Name).Contains("Teacher")), "Id", "Name");
+            ViewBag.TeacherID = new SelectList(db.AspNetUsers.Where(x => x.AspNetRoles.Select(y => y.Name).Contains("Teacher")), "Id", "Name");
 
             return View();
         }
@@ -59,8 +59,20 @@ namespace SEA_Application.Controllers
 
             AspnetQuestion Question = new AspnetQuestion();
             Question.Name = QuestionAnswerViewModel.QuestionName;
-            Question.Is_Active = QuestionAnswerViewModel.QuestionIsActive;
-            Question.Is_Quiz = QuestionAnswerViewModel.QuestionIsQuiz;
+
+            string IsMandatory = Request.Form["IsMandatory"];
+            if (IsMandatory == "on")
+            {
+                Question.Is_Active = true;
+
+            }
+            else
+            {
+                Question.Is_Active = false;
+            }
+
+            // Question.Is_Active = QuestionAnswerViewModel.QuestionIsActive;
+            Question.Is_Quiz = null;
             Question.Type = QuestionAnswerViewModel.QuestionType;
             Question.LessonId = QuestionAnswerViewModel.LessonId;
             Question.AnswerId = null;
@@ -68,8 +80,8 @@ namespace SEA_Application.Controllers
             Question.CreationDate = DateTime.Now;
             db.AspnetQuestions.Add(Question);
             db.SaveChanges();
-             var QuestionType = QuestionAnswerViewModel.QuestionType;
-            if(QuestionType == "MCQ" || QuestionType =="TF")
+            var QuestionType = QuestionAnswerViewModel.QuestionType;
+            if (QuestionType == "MCQ" || QuestionType == "TF")
             {
                 AspnetOption Op1 = new AspnetOption();
                 Op1.Name = QuestionAnswerViewModel.OptionNameOne;
@@ -90,7 +102,7 @@ namespace SEA_Application.Controllers
                 Op3.CreationDate = DateTime.Now;
                 db.AspnetOptions.Add(Op3);
                 db.SaveChanges();
-                
+
                 AspnetOption Op4 = new AspnetOption();
                 Op4.Name = QuestionAnswerViewModel.QuesitonNameFour;
                 Op4.QuestionId = Question.Id;
@@ -100,19 +112,19 @@ namespace SEA_Application.Controllers
 
                 int AnswerId;
 
-                if(QuestionAnswerViewModel.Answer =="a" )
+                if (QuestionAnswerViewModel.Answer == "a")
                 {
 
                     AnswerId = Op1.Id;
                 }
 
-               else if (QuestionAnswerViewModel.Answer == "b")
+                else if (QuestionAnswerViewModel.Answer == "b")
                 {
                     AnswerId = Op2.Id;
 
                 }
 
-              else  if (QuestionAnswerViewModel.Answer == "c")
+                else if (QuestionAnswerViewModel.Answer == "c")
                 {
                     AnswerId = Op3.Id;
 

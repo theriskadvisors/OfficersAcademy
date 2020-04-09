@@ -13,14 +13,20 @@
         padding: 0;
         height: 1000px !important;
     }
+
     .form-horizontal {
-    background-color: #fff;
-    /* margin: 10px; */
-    margin-left: 5px;
-}
+        background-color: #fff;
+        /* margin: 10px; */
+        margin-left: 5px;
+    }
+
+    textarea {
+        width: 557px;
+        height: 126px;
+    }
 </style>
 <script>
-   
+
     $(document).ready(function () {
         $("#btnCancel").click(function () {
 
@@ -31,7 +37,7 @@
         var course = 'CSS';
         var Class;
         $('#CTId').change(function () {
-           
+
             var crse = $(this).val();
             console.log(crse);
             course = crse;
@@ -48,16 +54,16 @@
                     $el.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
-                                     .attr("value", 0).text('Select Subject'));
+                            .attr("value", 0).text('Select Subject'));
                         for (i = 0; i < sch.length; i++) {
 
                             $el.append($("<option></option>")
-                                    .attr("value", sch[i].Id).text(sch[i].SubjectName));
+                                .attr("value", sch[i].Id).text(sch[i].SubjectName));
                         }
                     }
                     else {
                         $el.append($("<option></option>")
-                                   .attr("value", '').text('Select'));
+                            .attr("value", '').text('Select'));
                     }
                 }
             });
@@ -65,13 +71,13 @@
 
 
         $('#ClassID').change(function () {
-        
+
             var UserName = $(this).val();
             Class = UserName;
             $.ajax({
                 type: "POST",
                 cache: false,
-                url: "/AspNetProject/GetSubjectsByClass?ClassID=" + UserName + "&&CT="+ course,
+                url: "/AspNetProject/GetSubjectsByClass?ClassID=" + UserName + "&&CT=" + course,
                 processData: false,
                 contentType: false,
                 success: function (data) {
@@ -81,16 +87,16 @@
                     $el.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
-                                     .attr("value", 0).text('Select Subject'));
+                            .attr("value", 0).text('Select Subject'));
                         for (i = 0; i < sch.length; i++) {
-                           
+
                             $el.append($("<option></option>")
-                                    .attr("value", sch[i].Id).text(sch[i].SubjectName));
+                                .attr("value", sch[i].Id).text(sch[i].SubjectName));
                         }
                     }
                     else {
                         $el.append($("<option></option>")
-                                   .attr("value", '').text('Select'));
+                            .attr("value", '').text('Select'));
                     }
                 }
             });
@@ -101,7 +107,7 @@
 
 </script>
 
-<div class="box-header with-border"><h3 class="orange">Create Topics<span class="red-mark">*</span></h3></div>
+<div class="box-header with-border"><h3 class="orange">Create Topic<span class="red-mark">*</span></h3></div>
 
 
 @using (Html.BeginForm())
@@ -116,7 +122,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-6">
-                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @required = true  } })
                     @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -130,20 +136,20 @@
             </div>
 
             @*<div class="form-group">
-            @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { type = "date", @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                    @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { type = "date", @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { type = "date", @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
+                <div class="form-group">
+                    @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { type = "date", @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>*@
 
             <div class="form-group">
                 <label class="col-md-2 col-lg-2 control-label"> Section:<span class="red-mark">*</span></label>
@@ -156,13 +162,13 @@
             </div>
 
             @*<div class="form-group">
-            @Html.LabelFor(model => model.SubjectId, "SubjectId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-6">
+                    @Html.LabelFor(model => model.SubjectId, "SubjectId", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
 
-                @Html.DropDownList("SubjectId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.SubjectId, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
+                        @Html.DropDownList("SubjectId", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SubjectId, "", new { @class = "text-danger" })
+                    </div>
+                </div>*@
 
 
 
@@ -185,7 +191,7 @@
                     <label>Subject <span class="text-danger">*</span></label>
                 </div>
                 <div class="col-md-6">
-                    <select class="form-control SubIdDDL" id="SubjectId" name="SubjectId"></select>
+                    <select class="form-control SubIdDDL" id="SubjectId" name="SubjectId" required></select>
                 </div>
             </div>
 
@@ -205,5 +211,5 @@
                 </div>
             </div>
         </div>
-        </div>
-        }
+    </div>
+}

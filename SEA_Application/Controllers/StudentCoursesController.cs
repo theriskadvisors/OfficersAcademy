@@ -225,15 +225,31 @@ namespace SEA_Application.Controllers
 
             var AssignmentSubmission = db.AspnetStudentAssignmentSubmissions.Where(x => x.LessonId == LessonID).FirstOrDefault();
 
+            var FileName = "";
+            var DueDate = "";
+            var AssignmentId = "";
+           
+            
+            if(a !=null)
+            {
+                FileName = a.FileName;
+
+                            
+                DueDate = Convert.ToString(a.DueDate.Value.Date);
+                AssignmentId = Convert.ToString( a.Id);
+
+
+            }
+
             var TeacherComments = "";
             if (AssignmentSubmission != null)
             {
                 TeacherComments = AssignmentSubmission.TeacherComments;
             }
+            
 
 
-
-            return Json(new { StudentAssigmentName = a.FileName, StudentAssignmentDueDate = a.DueDate, StudentAssignmentId = a.Id, TeacherComments = TeacherComments }, JsonRequestBehavior.AllowGet);
+            return Json(new { StudentAssigmentName = FileName, StudentAssignmentDueDate = DueDate, StudentAssignmentId = AssignmentId, TeacherComments = TeacherComments }, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -261,10 +277,11 @@ namespace SEA_Application.Controllers
 
         }
 
-        public ActionResult DownloadFileOfAssignment(int id)
+        public ActionResult DownloadFileOfAssignment(string id)
         {
+            int idd = Convert.ToInt32(id);
 
-            AspnetStudentAssignment studentAssignment = db.AspnetStudentAssignments.Find(id);
+            AspnetStudentAssignment studentAssignment = db.AspnetStudentAssignments.Find(idd);
 
             var filepath = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), studentAssignment.FileName);
 

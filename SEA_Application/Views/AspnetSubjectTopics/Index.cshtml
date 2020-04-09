@@ -9,17 +9,20 @@
         $("#example").dataTable();
 
         $('.table').on('click', 'tbody tr', function () {
+
+           
             var td = $(this).children("td");
             var userName = $(td[0]).children("input").val();
-            userName = userName.trim();
-            window.location.href = "/AspNetDiscountType/Details?id=" + userName;
+
+           //alert($(td[0]).html());    
+            var Id =  parseInt($(td[0]).html()) 
+           // alert(Id);
+            //userName = userName.trim();
+            window.location.href = "/AspnetSubjectTopics/Edit?id=" + Id;
         });
 
         DrawTable();
     })
-
-
-
 
     function DrawTable() {
         $('#example_filter').addClass("form-group");
@@ -76,6 +79,7 @@
                 <thead>
 
                     <tr>
+                        <th style="display:none">  11</th>  
                         <th>
                             @Html.DisplayNameFor(model => model.Name)
                         </th>
@@ -106,6 +110,11 @@
                     @foreach (var item in Model)
                     {
                         <tr>
+                            <td style="display:none">
+    
+                               @item.Id
+                            </td>  
+
                             <td>
                                 @Html.DisplayFor(modelItem => item.Name)
                             </td>

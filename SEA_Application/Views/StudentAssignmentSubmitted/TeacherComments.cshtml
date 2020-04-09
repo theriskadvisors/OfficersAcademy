@@ -29,7 +29,7 @@
                         <div class="col-md-6">
 
                             <input type="hidden" value="@ViewBag.Id" name="id" id="id" />
-                            <textarea id="TeacherComments" name="TeacherComments" rows="10" cols="50">
+                            <textarea required id="TeacherComments" name="TeacherComments" rows="10" cols="50">
     
                                 </textarea>
 
@@ -62,6 +62,9 @@
             var Id = $("#id").val();
 
             var TeacherComments = $("#TeacherComments").val();
+            alert(TeacherComments);
+            if (TeacherComments != "") {
+
 
             $.ajax({
 
@@ -76,6 +79,7 @@
                 }
 
             })
+            }
 
         })
 

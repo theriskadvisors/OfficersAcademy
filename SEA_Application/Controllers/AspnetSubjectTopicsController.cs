@@ -47,10 +47,12 @@ namespace SEA_Application.Controllers
 
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
 
+
+
             return View();
         }
 
-        
+
 
         // POST: AspnetSubjectTopics/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -73,7 +75,7 @@ namespace SEA_Application.Controllers
             return View(aspnetSubjectTopic);
         }
 
-     
+
 
 
         //public JsonResult StudentByClass(int id)
@@ -90,7 +92,7 @@ namespace SEA_Application.Controllers
 
         // GET: AspnetSubjectTopics/Edit/5
         public ActionResult Edit(int? id)
-        {
+            {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -99,10 +101,18 @@ namespace SEA_Application.Controllers
             if (aspnetSubjectTopic == null)
             {
                 return HttpNotFound();
+
             }
 
-            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
-            ViewBag.SubjectId = new SelectList(db.AspNetSubjects, "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
+            int? SubjectId = aspnetSubjectTopic.SubjectId;
+
+            AspNetSubject Subject = db.AspNetSubjects.Where(x => x.Id == SubjectId).FirstOrDefault();
+
+            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName", Subject.ClassID);
+            ViewBag.SubjectId = new SelectList(db.AspNetSubjects.Where(x=>x.ClassID==Subject.ClassID && x.CourseType == Subject.CourseType), "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
+
+            ViewBag.CTId = Subject.CourseType;
+
             return View(aspnetSubjectTopic);
         }
 
@@ -119,6 +129,7 @@ namespace SEA_Application.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+
             ViewBag.SubjectId = new SelectList(db.AspNetSubjects, "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
             return View(aspnetSubjectTopic);
         }
@@ -161,13 +172,13 @@ namespace SEA_Application.Controllers
 
         public JsonResult GetSubjectsByClass(int ClassID)
         {
-           var SubjectsByClass = db.AspNetSubjects.Where(x => x.ClassID == ClassID).ToList();
-          //string status = Newtonsoft.Json.JsonConvert.SerializeObject(SubjectsByClass);
+            var SubjectsByClass = db.AspNetSubjects.Where(x => x.ClassID == ClassID).ToList();
+            //string status = Newtonsoft.Json.JsonConvert.SerializeObject(SubjectsByClass);
 
             return Json(SubjectsByClass, JsonRequestBehavior.AllowGet);
-      //    return Content(status);
+            //    return Content(status);
 
         }
-    
+
     }
 }
