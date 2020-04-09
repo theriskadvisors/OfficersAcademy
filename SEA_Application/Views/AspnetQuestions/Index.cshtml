@@ -24,26 +24,19 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Name)
                     </th>
-                    <th>
-                      Created By
-                    </th>
-                    <th>
-                        Quiz
-                    </th>
-                    <th>
-                      Is Active
-                    </th>
+                  
                     <th>
                         @Html.DisplayNameFor(model => model.Type)
                     </th>
-                    <th>
-                    Creation Date
-                    </th>
+                  
                     <th>
                         Lesson Name
                     </th>
                     <th>
                         Answer
+                    </th>
+                    <th>
+                        Creation Date
                     </th>
                     @*<th></th>*@
                 </tr>
@@ -58,26 +51,19 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Name)
                         </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CreatedBy)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Is_Quiz)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Is_Active)
-                        </td>
+                       
                         <td>
                             @Html.DisplayFor(modelItem => item.Type)
                         </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CreationDate)
-                        </td>
+                      
                         <td>
                             @Html.DisplayFor(modelItem => item.AspnetLesson.Name)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.AspnetOption.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CreationDate)
                         </td>
                         @*<td>
                             @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
