@@ -21,15 +21,15 @@
                 $el.empty();
                 if (sch.length > 0) {
                     $el.append($("<option></option>")
-                                 .attr("value", 0).text('Select Section'));
+                        .attr("value", 0).text('Select Section'));
                     for (i = 0; i < sch.length; i++) {
                         $el.append($("<option></option>")
-                                .attr("value", sch[i].Id).text(sch[i].ClassName));
+                            .attr("value", sch[i].Id).text(sch[i].ClassName));
                     }
                 }
                 else {
                     $el.append($("<option></option>")
-                               .attr("value", '').text('Select'));
+                        .attr("value", '').text('Select'));
                 }
             }
         });
@@ -38,6 +38,8 @@
         var course = 'CSS';
         var Class;
         $('#CTId').change(function () {
+
+                $('#TopicId').html('');
 
             var crse = $(this).val();
             console.log(crse);
@@ -57,16 +59,16 @@
                     $el.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
-                                     .attr("value", 0).text('Select Subject'));
+                            .attr("value", 0).text('Select Subject'));
                         for (i = 0; i < sch.length; i++) {
 
                             $el.append($("<option></option>")
-                                    .attr("value", sch[i].Id).text(sch[i].SubjectName));
+                                .attr("value", sch[i].Id).text(sch[i].SubjectName));
                         }
                     }
                     else {
                         $el.append($("<option></option>")
-                                   .attr("value", '').text('Select'));
+                            .attr("value", '').text('Select'));
                     }
                 }
             });
@@ -74,6 +76,8 @@
 
 
         $('#SecId').change(function () {
+                $('#TopicId').html('');
+
 
             var UserName = $(this).val();
             console.log(UserName);
@@ -93,22 +97,21 @@
                     $e2.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
-                                     .attr("value", 0).text('Select Subject'));
+                            .attr("value", 0).text('Select Subject'));
                         for (i = 0; i < sch.length; i++) {
 
                             $el.append($("<option></option>")
-                                    .attr("value", sch[i].Id).text(sch[i].SubjectName));
+                                .attr("value", sch[i].Id).text(sch[i].SubjectName));
                         }
                     }
                     else {
                         $el.append($("<option></option>")
-                                   .attr("value", '').text('Select'));
+                            .attr("value", '').text('Select'));
                     }
                 }
             });
 
         });
-
 
         $('#SubId').change(function () {
 
@@ -128,16 +131,16 @@
                     $el.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
-                                     .attr("value", 0).text('Select Topic'));
+                            .attr("value", 0).text('Select Topic'));
                         for (i = 0; i < sch.length; i++) {
 
                             $el.append($("<option></option>")
-                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                                .attr("value", sch[i].Id).text(sch[i].Name));
                         }
                     }
                     else {
                         $el.append($("<option></option>")
-                                   .attr("value", '').text('Select'));
+                            .attr("value", '').text('Select'));
                     }
                 }
             });
@@ -148,7 +151,7 @@
 </script>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     <div class="box box-primary">
@@ -220,8 +223,6 @@
                         <select class="form-control SubIdDDL" id="SubId" name="SubId"></select>
                     </div>
                 </div>
-            
-
 
                 <div class="form-group">
 
@@ -232,10 +233,16 @@
                                 <div class="box box-primary">
                                     <div class="box-header with-border"><h3 class="orange">Topics:<span class="red-mark">*</span></h3></div>
 
-
                                     <div class="box-body">
-                                        @Html.ListBox("TopicId", null, htmlAttributes: new { @class = "form-control", @style = "height:400px;" })
+
+                                        @*@Html.ListBox("TopicId", null, htmlAttributes: new { @class = "form-control", @style = "height:400px;" })*@
+                                        <select multiple style="height:400px;overflow-x:scroll" class="form-control" id="TopicId" name="TopicId" required></select>
+
+
                                     </div>
+
+
+
                                 </div>
                             </div>
 
@@ -246,6 +253,9 @@
 
                                     <div class="box-body">
                                         <select multiple style="height:400px;overflow-x:scroll" class="form-control" id="QuestionID" name="QuestionID" required></select>
+
+
+
                                     </div>
                                 </div>
                             </div>
@@ -266,10 +276,8 @@
             </div>
         </div>
     </div>
-
-
-            }
-            <script>
+}
+<script>
 
 
     $(document).ready(function () {
@@ -297,7 +305,49 @@
             })
 
 
-        });
+          });
+
+
+               $("#SubId").change(function () {
+
+                var SubjectId =   $("#SubId").val();
+
+                 $.ajax({
+
+                type: "POST",
+                url: "/AspnetQuizs/GetSubjectTopics",
+                data: { "SubjectId": SubjectId },
+                success: function (data) {
+
+                $('#TopicId').html('');
+
+                 $.each(data, function (i, item) {
+
+                    debugger
+                   // var classname = $("#ClassID option[value='" + item.ClassID + "']").text();
+                     $('#TopicId').append('<option value=' + item.Id + '>' + item.Name + ' </option>');
+
+
+
+
+                });
+
+
+
+
+
+
+                }
+
+
+            })
+
+
+
+
+
+
+        })
 
 
 
@@ -305,7 +355,7 @@
 
 
 
-            </script>
+</script>
 
 
 

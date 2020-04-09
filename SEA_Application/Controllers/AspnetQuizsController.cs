@@ -61,7 +61,7 @@ namespace SEA_Application.Controllers
         // GET: AspnetQuizs/Create
         public ActionResult Create()
         {
-            ViewBag.TopicId = new SelectList(db.AspnetSubjectTopics, "Id", "Name");
+           // ViewBag.TopicId = new SelectList(db.AspnetSubjectTopics, "Id", "Name");
 
 
 
@@ -147,6 +147,21 @@ namespace SEA_Application.Controllers
 
             return Json(AllQuestion, JsonRequestBehavior.AllowGet);
         }
+
+
+        public ActionResult GetSubjectTopics(int SubjectId)
+        {
+         
+            
+          var subjectTopics =   db.AspnetSubjectTopics.Where(x => x.SubjectId == SubjectId).Select(x => new { x.Id, x.Name }).ToList();
+
+
+            return Json(subjectTopics, JsonRequestBehavior.AllowGet);
+        }
+
+
+
+
 
         // GET: AspnetQuizs/Edit/5
         public ActionResult Edit(int? id)

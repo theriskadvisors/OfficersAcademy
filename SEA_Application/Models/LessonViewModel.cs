@@ -8,17 +8,20 @@ namespace SEA_Application.Models
 {
     public class LessonViewModel
     {
+
+        public int Id { get; set; }
+
         [Display(Name = "Lesson Name")]
         public string LessonName { get; set; }
         [Display(Name = "Lesson Video Url")]
         public string LessonVideoURL { get; set; }
-        [Display(Name = "Lesson Video Description")]
+        [Display(Name = "Lesson Description")]
 
         public string LessonDescription { get; set; }
 
         [Display(Name = "Lesson Duration")]
 
-        public TimeSpan LessonDuration { get; set; }
+        public TimeSpan? LessonDuration { get; set; }
 
         [Display(Name = "Creation Date")]
 
@@ -39,7 +42,7 @@ namespace SEA_Application.Models
 
         [Display(Name = "Assignment Due Date")]
 
-        public DateTime AssignmentDueDate { get; set; }
+        public DateTime? AssignmentDueDate { get; set; }
 
 
         [Display(Name = "Attachment Name-1")]
