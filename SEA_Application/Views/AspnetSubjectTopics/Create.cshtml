@@ -20,8 +20,14 @@
 }
 </style>
 <script>
+   
     $(document).ready(function () {
-       
+        $("#btnCancel").click(function () {
+
+            window.location.href = "/AspnetSubjectTopics/Index";
+        })
+
+
         var course = 'CSS';
         var Class;
         $('#CTId').change(function () {
@@ -95,8 +101,8 @@
 
 </script>
 
+<div class="box-header with-border"><h3 class="orange">Create Topics<span class="red-mark">*</span></h3></div>
 
-<h2>&nbsp; Create Topic</h2>
 
 @using (Html.BeginForm())
 {
@@ -187,7 +193,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.FAQ, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-6">
-                    @Html.EditorFor(model => model.FAQ, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.TextAreaFor(model => model.FAQ, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.FAQ, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -195,6 +201,7 @@
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
                     <input type="submit" value="Create" class="btn btn-primary" />
+                    <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
                 </div>
             </div>
         </div>
