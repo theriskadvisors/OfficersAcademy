@@ -9,30 +9,38 @@
    
     $(document).ready(function () {
         
+        var Quiz = {
+            QuizId: '',
+            OptionId: [],
+            QuestionId: []
+        }
+
         $('#Submit').click(function () {
             debugger;
+            Quiz = Object.create(Quiz);
+
             var options = $('.Option');
-            var answers = [];
-            var Questions = [];
 
             for (var i = 0; i < options.length; i++) {
-                answers[i] = $(options[i]).val();
-                Questions[i] = $(options[i]).attr("id");
+                Quiz.OptionId[i] = $(options[i]).val();
+                Quiz.QuestionId[i] = $(options[i]).attr("id");
             }
             
-            var quiz_id = $("#QuizId").val();
+            Quiz.QuizId = $("#QuizId").val();
 
             $.ajax({
-                type: "POST",
-                url: "/Student_Dashboard/submit_question?OptionId=" + answers + "&&QuizId=" + quiz_id + "&&QuestionId=" + Questions,
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                type: 'POST',
+                url: '/Student_Dashboard/submit_question',
+                data: Quiz,
                 success: function (data) {
-                    alert(data);
-                    window.location.href = "/Student_Dashboard/Dashboard";
+                    alert (data);
                 }
             });
+                
+            });
         });
-    });
-
 </script>
 
 <h2>Guidelines</h2>
