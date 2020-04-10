@@ -9,38 +9,41 @@
    
     $(document).ready(function () {
         
-        var Quiz = {
-            QuizId: '',
-            OptionId: [],
-            QuestionId: []
-        }
-
         $('#Submit').click(function () {
             debugger;
-            Quiz = Object.create(Quiz);
-
             var options = $('.Option');
-
+            var answers = [];
+            var Questions = [];
+            var Question = [];
+            var Answer = [];
             for (var i = 0; i < options.length; i++) {
-                Quiz.OptionId[i] = $(options[i]).val();
-                Quiz.QuestionId[i] = $(options[i]).attr("id");
+                answers[i] = $(options[i]).val();
+                Answer.push($(options[i]).val());
+                Questions[i] = $(options[i]).attr("id");
+                Question.push($(options[i]).attr("id"));
+
+
             }
             
-            Quiz.QuizId = $("#QuizId").val();
+            var quiz_id = $("#QuizId").val();
 
             $.ajax({
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                type: 'POST',
                 url: '/Student_Dashboard/submit_question',
-                data: Quiz,
+                type: "GET",
+                data: { Question: Question.toString(),Answer:Answer.toString(),QuizID: quiz_id  },
+                cache: false,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
                 success: function (data) {
-                    alert (data);
+                    var result = JSON.parse(data);
+                    
+                    alert("NUmber of Correct answers are :" + result);
                 }
             });
-                
-            });
+
         });
+    });
+
 </script>
 
 <h2>Guidelines</h2>
@@ -74,7 +77,7 @@
                     {
                         <span>@item.name</span>
                         
-                        <input id="@item.id" class="Option hidden" type="text" value="" />
+                        <input id="@item.id" class="Option" type="hidden" value="" />
 
                         <ol>
                             @foreach (var item1 in item.options)

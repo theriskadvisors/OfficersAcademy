@@ -166,29 +166,36 @@ namespace SEA_Application.Controllers
             }
             
         }
-
-        public JsonResult submit_question(List<int> OptionId, int QuizId, List<int> QuestionId)
+        public class Quiz
+        {
+            public List<int> OptionId;
+            public int QuizId;
+            public List<int> QuestionId;
+        }
+        public ActionResult submit_question(string Question,string  Answer,int QuizID)
         {
             var student_id = db.AspNetStudents.Where(x => x.StudentID == StudentID).Select(x => x.Id).FirstOrDefault();
             int score = 0;
-            var list = QuestionId.Zip(OptionId, (q, o) => new { Question = q, Option = o });
-
-            foreach (var item in list)
+            string[] selectedQuestions = Question.Split(',');
+            string[] selectedAnswers = Answer.Split(',');
+         
+            int i = 0;
+            foreach (var item in selectedQuestions)
             {
-                var record = db.Student_Quiz_Scoring.Where(x => x.QuizId == QuizId && x.QuestionId == item.Question && x.StudentId == student_id).FirstOrDefault();
-
-                if (item.Option == db.AspnetQuestions.Where(x => x.Id == item.Question).Select(x => x.AnswerId).FirstOrDefault())
+              var record = db.Student_Quiz_Scoring.Where(x => x.QuizId == QuizID && x.QuestionId.ToString() == item && x.StudentId == student_id).FirstOrDefault();
+              var ans = db.AspnetQuestions.Where(x => x.Id.ToString() == item).Select(x => x.AnswerId).FirstOrDefault();
+                if(selectedAnswers[i] == ans.ToString())
                 {
                     record.Score = "true";
                     score++;
                 }
                 else
                     record.Score = "false";
-
-                db.SaveChanges();
+                i++;
+               db.SaveChanges();
             }
             
-            return Json("Number of Correct Answer is " + score, JsonRequestBehavior.AllowGet);
+            return Content(score.ToString());
         }
 
 
