@@ -26,13 +26,18 @@ namespace SEA_Application.Models
         public string Months { get; set; }
         public string Status { get; set; }
         public Nullable<double> InstalmentAmount { get; set; }
-        public string IssueDate { get; set; }
         public Nullable<System.DateTime> DueDate { get; set; }
         public Nullable<double> Multiplier { get; set; }
         public Nullable<double> FeePayable { get; set; }
         public Nullable<bool> IsPrinted { get; set; }
         public Nullable<int> SessionId { get; set; }
         public Nullable<System.DateTime> ValildityDate { get; set; }
+        public string FeeType { get; set; }
+        public Nullable<double> Discount { get; set; }
+        public Nullable<double> TotalFee { get; set; }
+        public Nullable<double> FeeReceived { get; set; }
+        public Nullable<double> NotesFee { get; set; }
+        public Nullable<System.DateTime> IssueDate { get; set; }
     
         public virtual AspNetSession AspNetSession { get; set; }
         public virtual AspNetStudent AspNetStudent { get; set; }
