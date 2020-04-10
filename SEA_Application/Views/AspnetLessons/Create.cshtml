@@ -321,7 +321,7 @@ function validateYouTubeUrl()
                     <div class="form-group">
                         @Html.LabelFor(model => model.AssignmentName, htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="col-md-6">
-                            @Html.EditorFor(model => model.AssignmentName, new { htmlAttributes = new { @class = "form-control", @required = true } })
+                            @Html.EditorFor(model => model.AssignmentName, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.AssignmentName, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -343,7 +343,7 @@ function validateYouTubeUrl()
 
                             @*<div class="btn btn-default btn-file ">
                                 <i class="fa fa-paperclip"></i> Choose File Option:*@
-                                <input type="file" id="Assignment" name="Assignment" required >
+                                <input type="file" id="Assignment" name="Assignment"  >
                             @*</div>*@
                             <div class="">
                                 <p class="help-block">Max. 32MB. (File Name Should be unique)  </p>
@@ -357,7 +357,7 @@ function validateYouTubeUrl()
                         @Html.LabelFor(model => model.AssignmentDueDate, htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="col-md-6">
 
-                            <input type="date" name="AssignmentDueDate" id="AssignmentDueDate" value="" class="form-control" required />
+                            <input type="date" name="AssignmentDueDate" id="AssignmentDueDate" value="" class="form-control"  />
 
                             @Html.ValidationMessageFor(model => model.AssignmentDueDate, "", new { @class = "text-danger" })
 

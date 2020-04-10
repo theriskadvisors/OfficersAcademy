@@ -221,20 +221,19 @@ namespace SEA_Application.Controllers
             //  new { StudentAssigmentName = AssignmentName, StudentAssignmentDueDate = AssignmentDueDate, StudentAssignmentId = AssignmentId }
 
 
-            var a = db.AspnetStudentAssignments.Where(x => x.LessonId == LessonID).Select(x => new { x.Id, x.FileName, x.DueDate }).FirstOrDefault();
+            var a = db.AspnetStudentAssignments.Where(x => x.LessonId == LessonID).Select(x => new { x.Id, x.FileName, x.DueDate ,x.Name}).FirstOrDefault();
 
             var AssignmentSubmission = db.AspnetStudentAssignmentSubmissions.Where(x => x.LessonId == LessonID).FirstOrDefault();
 
             var FileName = "";
             var DueDate = "";
             var AssignmentId = "";
-           
-            
-            if(a !=null)
+            var AssignName = "";
+            if (a !=null)
             {
                 FileName = a.FileName;
+                AssignName = a.Name;
 
-                            
                 DueDate = Convert.ToString(a.DueDate.Value.Date);
                 AssignmentId = Convert.ToString( a.Id);
 
@@ -249,7 +248,7 @@ namespace SEA_Application.Controllers
             
 
 
-            return Json(new { StudentAssigmentName = FileName, StudentAssignmentDueDate = DueDate, StudentAssignmentId = AssignmentId, TeacherComments = TeacherComments }, JsonRequestBehavior.AllowGet);
+            return Json(new { StudentAssigmentName = AssignName, FileName= FileName, StudentAssignmentDueDate = DueDate, StudentAssignmentId = AssignmentId, TeacherComments = TeacherComments }, JsonRequestBehavior.AllowGet);
         }
 
 

@@ -341,10 +341,8 @@
 
                 $("#Assignment").append('<div class="form-group"><span class="col-md-2">Assignment Name</span ><div class="col-md-6">' + data.StudentAssigmentName + ' </div>');
 
-                $("#Assignment").append('<div class="form-group"><span class="col-md-2">Download Attach File</span ><div class="col-md-6"><a href ="/StudentCourses/DownloadFileOfAssignment/' + data.StudentAssignmentId + '">' + data.StudentAssigmentName + '</a></div> ');
+                $("#Assignment").append('<div class="form-group"><span class="col-md-2">Download Attach File</span ><div class="col-md-6"><a href ="/StudentCourses/DownloadFileOfAssignment/' + data.StudentAssignmentId + '">' + data.FileName + '</a></div> ');
                 $("#Assignment").append('<div class="form-group"><span class="col-md-2">Assignment DueDate</span><div class="col-md-6">' + data.StudentAssignmentDueDate + ' </div></div>');
-
-
 
                 //  $("#Assignment").append('<tr><td>Assignment Name </td>  <td>' + data.StudentAssigmentName + '</td></tr>');
                 //  $("#Assignment").append('<tr><td> Download Attach File  </td>  <td><a href ="/StudentCourses/DownloadFileOfAssignment/' + data.StudentAssignmentId + '">' + data.StudentAssigmentName + '</a></td></tr>');
