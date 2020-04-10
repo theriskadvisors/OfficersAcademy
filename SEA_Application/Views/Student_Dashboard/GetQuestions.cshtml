@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_StudentDashboardLayout.cshtml";
 }
 
+
 <script>
 
    
@@ -37,7 +38,7 @@
                 success: function (data) {
                     var result = JSON.parse(data);
                     
-                    alert("NUmber of Correct answers are :" + result);
+                    alert("Number of Correct answers are :" + result);
                 }
             });
 
@@ -46,7 +47,7 @@
 
 </script>
 
-<h2>Guidelines</h2>
+<h2>&nbsp; Guidelines</h2>
 
 <div class="box box-primary">
     <div class="box-body">
@@ -57,7 +58,7 @@
                         <li>one</li>
                         <li>two</li>
                         <li>three</li>
-                        <li>four</li>
+                       
                     </ul>
                 </div>
             </div>
@@ -65,17 +66,21 @@
     </div>
 </div>
 
-<h2>Questions</h2>
+@{
+int counter = 1;    
+}
+
+<h3> &nbsp; M.C.Q.S Section</h3>
 <input id="QuizId" class="hidden" type="text" value="@ViewBag.QuizId"/>
 
 <div class="box box-primary">
     <div class="box-body">
         <div class="col-md-12">
             <div class="form-three widget-shadow">
-                    <h4>MCQs Section</h4>
+                    
                     @foreach (var item in ViewBag.questionList_MCQS)
                     {
-                        <span>@item.name</span>
+                <h3><span>Question @counter: @item.name</span></h3>
                         
                         <input id="@item.id" class="Option" type="hidden" value="" />
 
@@ -86,17 +91,18 @@
                             }
                         </ol>
                         <hr />
+                counter = counter +1;
                     }
             </div>
 
-            <div class="form-three widget-shadow">
+            @*<div class="form-three widget-shadow">
                     <h4>Fill in Blanks Section</h4>
                     @foreach (var item in ViewBag.questionList_Fill)
                     {
                         <span>@item.name: <input type="text" id="@item.id" /></span>
                     }
 
-            </div>
+            </div>*@
         </div>
         <button id="Submit" class="btn btn-success" >Submit Quiz</button>
     </div>
