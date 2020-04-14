@@ -237,7 +237,7 @@ function validateYouTubeUrl()
             <div class="form-group">
                 @Html.LabelFor(model => model.LessonVideoURL, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-6">
-                    @Html.EditorFor(model => model.LessonVideoURL, new { htmlAttributes = new { @placeholder = "Provide only one link at a time. Only Allow youtube videos", @class = "form-control", @required = true, onblur = "validateYouTubeUrl()" } })
+                    @Html.EditorFor(model => model.LessonVideoURL, new { htmlAttributes = new { @placeholder = "Provide only one link at a time. Only Allow ispringcloud videos", @class = "form-control", @required = true,  } })
                     @Html.ValidationMessageFor(model => model.LessonVideoURL, "", new { @class = "text-danger" })
                     <span style="color:red;" id="youtubeErrorMsg"></span>
                 </div>

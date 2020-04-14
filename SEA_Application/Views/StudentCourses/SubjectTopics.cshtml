@@ -16,7 +16,7 @@
         cursor: pointer;
         margin: auto;
         padding-left: 10px;
-    }
+    }   
 
     #TopicList {
         width: 70%;
@@ -30,7 +30,16 @@
     .TopicDiv {
         background: rgb(51, 70, 102);
         color: white;
+
+
     }
+    .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 2200px !important;
+}
+
 </style>
 
 <input type="hidden" id="SubjectId" name="name" value="@ViewBag.SubjectId" />
@@ -38,7 +47,7 @@
 <div class="col-md-12">
 
 
-    <div id="TopicList" style=" margin: auto; ">
+    <div id="TopicList" style=" margin: auto;" >
 
 
         <h3 style="color:black">Course Content</h3>
@@ -48,8 +57,10 @@
 
         <br />
     </div>
-
+    <br />
+    <br />
 </div>
+
 
 
 

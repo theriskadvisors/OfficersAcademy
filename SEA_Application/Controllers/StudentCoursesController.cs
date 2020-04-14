@@ -221,7 +221,7 @@ namespace SEA_Application.Controllers
             //  new { StudentAssigmentName = AssignmentName, StudentAssignmentDueDate = AssignmentDueDate, StudentAssignmentId = AssignmentId }
 
 
-            var a = db.AspnetStudentAssignments.Where(x => x.LessonId == LessonID).Select(x => new { x.Id, x.FileName, x.DueDate ,x.Name}).FirstOrDefault();
+            var a = db.AspnetStudentAssignments.Where(x => x.LessonId == LessonID).Select(x => new { x.Id, x.FileName, x.DueDate, x.Name }).FirstOrDefault();
 
             var AssignmentSubmission = db.AspnetStudentAssignmentSubmissions.Where(x => x.LessonId == LessonID).FirstOrDefault();
 
@@ -229,13 +229,18 @@ namespace SEA_Application.Controllers
             var DueDate = "";
             var AssignmentId = "";
             var AssignName = "";
-            if (a !=null)
+            if (a != null)
             {
                 FileName = a.FileName;
                 AssignName = a.Name;
 
-                DueDate = Convert.ToString(a.DueDate.Value.Date);
-                AssignmentId = Convert.ToString( a.Id);
+                if (a.DueDate != null)
+                {
+
+                    DueDate = Convert.ToString(a.DueDate.Value.Date);
+                }
+
+                AssignmentId = Convert.ToString(a.Id);
 
 
             }
@@ -245,10 +250,10 @@ namespace SEA_Application.Controllers
             {
                 TeacherComments = AssignmentSubmission.TeacherComments;
             }
-            
 
 
-            return Json(new { StudentAssigmentName = AssignName, FileName= FileName, StudentAssignmentDueDate = DueDate, StudentAssignmentId = AssignmentId, TeacherComments = TeacherComments }, JsonRequestBehavior.AllowGet);
+
+            return Json(new { StudentAssigmentName = AssignName, FileName = FileName, StudentAssignmentDueDate = DueDate, StudentAssignmentId = AssignmentId, TeacherComments = TeacherComments }, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -339,6 +344,134 @@ namespace SEA_Application.Controllers
 
 
             return Json("Submitted Successfully", JsonRequestBehavior.AllowGet);
+        }// Student Assignment Submission
+
+        public ActionResult SaveCommentHead(int LessonID, string Title, string Body)
+        {
+
+            var id = User.Identity.GetUserId();
+            AspnetComment_Head commentHead = new AspnetComment_Head();
+
+            //Comment_Head commentHead = new Comment_Head();
+            commentHead.Comment_Head = Title;
+            commentHead.CommentBody = Body;
+            commentHead.LessonId = LessonID;
+            commentHead.CreatedBy = id;
+            commentHead.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
+            db.AspnetComment_Head.Add(commentHead);
+            db.SaveChanges();
+
+            return Json("", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AllCommentsHead(int LessonID)
+        {
+            var AllCommentHead = from commentHead in db.AspnetComment_Head
+                                 join user in db.AspNetUsers on commentHead.CreatedBy equals user.Id
+                                 where commentHead.LessonId == LessonID
+                                 select new
+                                 {
+                                     CommentHeadId = commentHead.Id,
+                                     Title = commentHead.Comment_Head,
+                                     Body = commentHead.CommentBody,
+                                     LessonId = commentHead.LessonId,
+                                     UserName = user.Name,
+                                     Date = commentHead.CreationDate,
+                                 };
+
+
+
+            return Json(AllCommentHead, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult CommentsPage(int? CommentHeadId)
+        {
+            //var commentHead = db.Comment_Head.Where(x => x.Id == CommentHeadId).FirstOrDefault();
+
+            // commentHead
+            return RedirectToAction("CommentsPage1", CommentHeadId);
+
+        }
+
+        public ActionResult CommentsPage1(int id)
+        {
+            ViewBag.CommentHeadId = id;
+
+            ViewBag.LessonId = db.AspnetComment_Head.Where(x => x.Id == id).FirstOrDefault().LessonId;
+
+            return View("Comments");
+        }
+
+        public ActionResult GetCommentHead(int CommentHeadId)
+        {
+            // var commentHead = db.Comment_Head.Where(x => x.Id == CommentHeadId).FirstOrDefault();
+
+            var CommentHead = (from commentHead in db.AspnetComment_Head
+                               join user in db.AspNetUsers on commentHead.CreatedBy equals user.Id
+                               where commentHead.Id == CommentHeadId
+                               select new
+                               {
+                                   CommentHeadId = commentHead.Id,
+                                   Title = commentHead.Comment_Head,
+                                   Body = commentHead.CommentBody,
+                                   LessonId = commentHead.LessonId,
+                                   UserName = user.Name,
+                                   Date = commentHead.CreationDate,
+                               }).FirstOrDefault();
+
+
+
+            return Json(CommentHead, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult CommentReply(int CommentHeadId, string UserComment)
+        {
+
+            var id = User.Identity.GetUserId();
+
+            int count = db.AspnetComments.Count();
+            AspnetComment commentobj = new AspnetComment();
+
+            if (count == 0)
+            {
+                commentobj.ParentCommentId = null;
+                commentobj.Comment = UserComment;
+                commentobj.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
+                commentobj.HeadId = CommentHeadId;
+                commentobj.CreatedBy = id;
+                db.AspnetComments.Add(commentobj);
+                db.SaveChanges();
+            }
+            else
+            {
+                int LastId = db.AspnetComments.OrderByDescending(o => o.Id).FirstOrDefault().Id;
+                commentobj.ParentCommentId = LastId;
+                commentobj.Comment = UserComment;
+                commentobj.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
+                commentobj.HeadId = CommentHeadId;
+                commentobj.CreatedBy = id;
+
+                db.AspnetComments.Add(commentobj);
+                db.SaveChanges();
+            }
+
+
+
+            return Json("", JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult AllComments(int CommentHeadId)
+        {
+            var Comments = from comment in db.AspnetComments
+                           join user in db.AspNetUsers on comment.CreatedBy equals user.Id
+                           where comment.HeadId == CommentHeadId
+                           select new
+                           {
+                               CommentName = comment.Comment,
+                               UserName = user.Name,
+                               Date = comment.CreationDate,
+                           };
+
+
+            return Json(Comments, JsonRequestBehavior.AllowGet);
         }
 
 

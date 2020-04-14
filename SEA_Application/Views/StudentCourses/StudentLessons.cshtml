@@ -9,7 +9,7 @@
         list-style: none;
         margin: 0;
         padding: 0;
-        height: 1200px !important;
+        height: 2000px !important;
     }
 
 
@@ -40,25 +40,64 @@
     #tab_3 table td {
         width: 20%;
     }
-    .box-body,.box
-    {
-        background:white;
+
+    .box-body, .box {
+        background: white;
     }
 
+    #AllCommentsHead {
+    }
+
+    #QADiv:hover {
+        background: #CDCDCD;
+    }
+
+    #TitleParagraph {
+      
+        background: rgb(51, 70, 102);   
+        color: white;
+   
+    }
+
+    #QADiv {
+        border: 1px solid gray;
+        width: 80%;
+        cursor: pointer;
+        margin: auto;
+        cursor: pointer;
+    }
+  a{
+      color:black;
+  }
+  a:hover
+  {
+      text-decoration:none;
+      color:black;
+  }
 </style>
+
+
 
 <div class="box box-primary">
     <div class="box-title"></div>
 
     <div class="box-body">
 
+
+
         <h3 id="LessonName"></h3>
+
+
+
 
         <input type="hidden" id="LessonID" name="name" value="@ViewBag.LessonID" />
 
-        <div id="LessonVideo" style="        margin-left: 100px;
-">
-            <iframe width="800" height="450" src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <div id="LessonVideo" style="
+        margin-left: 100px;
+    ">
+            @*<iframe width="800" height="450" src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*@
+      
+            <iframe src="" width="900" height="450" frameborder="0" border="0" scrolling="auto" allowtransparency="true" allowfullscreen="1" style="border: none; background-color: transparent"></iframe>
         </div>
         <br />
 
@@ -116,11 +155,11 @@
 
 
                             @*<table id="Attachment" style="width:40%;">
-                        </table>
+                                </table>
 
 
-                        <table id="LinksTable" style="width:40%;">
-                        </table>*@
+                                <table id="LinksTable" style="width:40%;">
+                                </table>*@
 
 
 
@@ -133,7 +172,7 @@
 
             <div class="tab-pane" id="tab_4">
                 @*<table id="Assignment" style="width:40%;">
-            </table>*@
+                    </table>*@
 
                 <div class="box" style="border:0">
                     <div class="box-title" style="border:0"></div>
@@ -148,12 +187,7 @@
                 </div>
 
 
-
-
-
-
-
-                <div class="form-group" id="TeacherComments">
+                <div class="form-group" id="">
 
                     <span class="col-md-2"> Teacher Comments  </span>
 
@@ -161,7 +195,7 @@
                         <textarea readonly id="TeacherComments" style="height:120px;width:80%">
 
 
-                            </textarea>
+                        </textarea>
 
 
                     </div>
@@ -180,15 +214,17 @@
                         <span class="col-md-2"> Submit your Assignment </span>
 
                         @*<i class="fa fa-paperclip" style="padding-left:80px"></i> Choose File
-                        <input type="file" style="padding-left:80px" id="SubmitAssignment" name="SubmitAssignment">
-                    </div>
-                    <div class="col-md-offset-2 col-lg-offset-2" style="padding-left:80px">
-                        <p class="help-block">Max. 32MB</p>
-                    </div>*@
+                                <input type="file" style="padding-left:80px" id="SubmitAssignment" name="SubmitAssignment">
+                            </div>
+                            <div class="col-md-offset-2 col-lg-offset-2" style="padding-left:80px">
+                                <p class="help-block">Max. 32MB</p>
+                            </div>*@
                         <div class="col-md-6">
 
 
-                            <input type="file" class="btn btn-default" id="AssignmentSubmitButton" name="" value="Submit" />
+                            <input type="file" class="btn btn-default" id="SubmitAssignment" name="SubmitAssignment" />
+                            <br />
+                            <input class="btn btn-default" type="button" id="AssignmentSubmitButton" name="" value="Submit" />
                         </div>
 
                     </div>
@@ -200,20 +236,89 @@
 
             <div class="tab-pane" id="tab_5">
 
+                <div class="col-md-12">
+
+                    <input type="button" class="btn btn-default" value="Comment" data-toggle="modal" data-target="#myModal" />
+
+                    <br />
+
+
+
+
+
+                </div>
+
+                <div id="AllCommentsHead" class="col-md-12">
+                    <br />
+                    <br />
+
+                </div>
+
 
             </div>
 
         </div>
 
-
     </div>
 
+    <!--Bootstrap Modal Section -->
+    <div class="modal fade" id="myModal" role="dialog" style="margin-top:100px;">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Create a new  thread </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+
+                        <div class="col-md-12">
+
+                            <label class="col-md-2">Title</label>
+                            <div class="col-md-10">
+
+                                <input type="text" name="ThreadTitle" id="ThreadTitle" value="" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <br />
+
+                    <div class="col-md-12">
+
+                        <div class="form-group">
+                            <label class="col-md-2">Body</label>
+                            <div class="col-md-6">
+
+                                <textarea  id="ThreadBody" name="ThreadBody" rows="8" cols="60">
+                                </textarea>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div> <!--End modal body-->
+
+
+
+                <div class="modal-footer">
+                    <button type="button" id="ModalSaveButton" class="btn btn-primary">Save</button>
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
 
 </div>
 
 
-
-      
+</div>
 
 <script>
 
@@ -347,7 +452,7 @@
                 //  $("#Assignment").append('<tr><td>Assignment Name </td>  <td>' + data.StudentAssigmentName + '</td></tr>');
                 //  $("#Assignment").append('<tr><td> Download Attach File  </td>  <td><a href ="/StudentCourses/DownloadFileOfAssignment/' + data.StudentAssignmentId + '">' + data.StudentAssigmentName + '</a></td></tr>');
                 // $("#Assignment").append('<tr><td>Assignment DueDate </td>  <td>' + data.StudentAssignmentDueDate + '</td></tr>');
-                //$("#TeacherComments").text(data.TeacherComments);
+                $("#TeacherComments").text(data.TeacherComments);
 
             }
 
@@ -369,7 +474,10 @@
                 processData: false,
                 data: data,
                 success: function (message) {
-                    alert(message);
+
+                    window.location.href = "/StudentCourses/Index";
+
+
                 },
                 error: function () {
                     alert("There was error uploading files!");
@@ -378,9 +486,94 @@
         });
 
 
+        $("#ModalSaveButton").click(function () {
+
+
+            var ThreadTitle = $("#ThreadTitle").val();
+            var ThreadBody = $("#ThreadBody").val();
+
+            $.ajax({
+
+                type: "POST",
+                url: "/StudentCourses/SaveCommentHead",
+                data: { "LessonID": LessonId, "Title": ThreadTitle, "Body": ThreadBody },
+                success: function (data) {
+
+
+                   location.reload();
+
+                }
+
+            })
+
+
+        })
+
+        $.ajax({
+
+            type: "POST",
+            url: "/StudentCourses/AllCommentsHead",
+            data: {"LessonID": LessonId},
+            success: function (data) {
+
+                debugger
+
+                
+
+                $.each(data, function (index) {
+
+                    //   Total = Total + data[index].Total;
+
+                       var value = new Date(parseInt(data[index].Date.replace(/(^.*\()|([+-].*$)/g, '')));
+                            var dat = value.getMonth() +
+                                1 +
+                                "/" +
+                                value.getDate() +
+                                "/" +
+                        value.getFullYear();
+
+                    var id  = parseInt(data[index].CommentHeadId);
+
+                    $("#AllCommentsHead").append('<a href = "/StudentCourses/CommentsPage1/'+data[index].CommentHeadId+'"><div id="QADiv"  name ="' + data[index].CommentHeadId + '"   class ="CommentDivs" ><p id="TitleParagraph" class="titleParagraphs" style="padding:10px;" ><b>' + data[index].Title + '</b> </p> <div style="padding:10px;"> <p>' + data[index].Body + '</p> <p><b>' + dat + ' &nbsp;&nbsp;&nbsp; ' + data[index].UserName + '</b></p><p><b></p> </b></div> </div></a>');
+
+                });
+
+
+
+            }
+        })//end of ajax
+
+
+            //   $("#AllCommentsHead").on('click', ".CommentDivs", function () {
+
+
+            //       var id = $(this).attr('name');
+
+
+
+            ////  window.location.href = "/StudentCourses/CommentsPage1?Page=data&PostData=" + id;
+
+            //       $.ajax({
+
+            //           type: "POST",
+            //           url: "/StudentCourses/CommentsPage1",
+            //           data: { "CommentHeadId": id },
+            //           success: function (data) {
+
+            //               alert("usama");
+
+            //           }
+
+            //       })
+
+
+
+            //   })
+
 
 
 
     })
+
 
 </script>
