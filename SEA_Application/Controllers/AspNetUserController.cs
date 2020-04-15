@@ -29,7 +29,7 @@ namespace SEA_Application.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private SEA_DatabaseEntities db = new SEA_DatabaseEntities();
-        int SessionID = Int32.Parse(SessionIDStaticController.GlobalSessionID);
+     int SessionID = Int32.Parse(SessionIDStaticController.GlobalSessionID);
         public AspNetUserController()
         {
 
@@ -288,9 +288,6 @@ namespace SEA_Application.Controllers
                                         join StudentSubject in db.AspNetStudent_Subject on Subject.Id equals StudentSubject.SubjectID
                                         where StudentSubject.StudentID == id && Subject.CourseType == coursetype && Subject.IsManadatory == true
                                         select Subject;
-
-
-
 
 
                 var OptionalSubjects = from Subject in db.AspNetSubjects
@@ -813,6 +810,10 @@ namespace SEA_Application.Controllers
         {
 
 
+          var ChecktotalFee =  Convert.ToDouble(Request.Form["TotalFee"]);
+          var CheckDiscount = Request.Form["Discount"];
+
+
             var dbTransaction = db.Database.BeginTransaction();
             try
             {
@@ -999,6 +1000,10 @@ namespace SEA_Application.Controllers
                         selectedsubjects = null;
                     }
 
+                    List<string> listofIDs = selectedsubjects.ToList();
+                    List<int> myIntegersSubjectsList = listofIDs.Select(s => int.Parse(s)).ToList();
+
+
                     string selectedClass = Request.Form["ClassID"];
 
                     int ClassInt = Convert.ToInt32(selectedClass);
@@ -1022,6 +1027,18 @@ namespace SEA_Application.Controllers
                     }
 
                     while (stu_sub_rem != null);
+
+
+                    var AllGenricStudentSubjectsToRemove = db.Student_GenericSubjects.Where(x => x.StudentId == aspNetUser.Id).ToList();
+
+                    db.Student_GenericSubjects.RemoveRange(AllGenricStudentSubjectsToRemove);
+                    db.SaveChanges();
+
+
+
+
+
+                        
 
                     var student = db.AspNetStudents.Where(x => x.StudentID == aspNetUser.Id).Select(x => x).FirstOrDefault();
 
@@ -1055,6 +1072,43 @@ namespace SEA_Application.Controllers
                             db.SaveChanges();
                         }
                     }
+
+                    if (selectedsubjects != null)
+                    {
+                        var AllSubjectsOfAStudent = from subject in db.AspNetSubjects
+                                                    where myIntegersSubjectsList.Contains(subject.Id)
+                                                    select subject;
+
+
+                        foreach (var sub in AllSubjectsOfAStudent)
+                        {
+
+                            foreach (var sub1 in db.GenericSubjects.ToList())
+                            {
+
+                                if (sub.SubjectName == sub1.SubjectName && sub.CourseType == sub1.SubjectType)
+                                {
+
+                                    Student_GenericSubjects genericSubject = new Student_GenericSubjects();
+
+                                    genericSubject.GenericSubjectId = sub1.Id;
+                                    genericSubject.StudentId = aspNetUser.Id;
+
+                                    db.Student_GenericSubjects.Add(genericSubject);
+                                    db.SaveChanges();
+                                }
+
+                            }
+
+
+                        }
+
+
+
+                    }
+
+
+
                     //db.Entry(aspNetUser).State = EntityState.Modified;
 
                     //  db.Entry(registration).Property(x => x.Name).IsModified = false;
@@ -1391,6 +1445,8 @@ namespace SEA_Application.Controllers
         // GET: AspNetUser
         public ViewResult StudentsIndex()
         {
+
+
             //var students = db.AspNetStudents.ToList();
             //foreach (var st in students)
             //{

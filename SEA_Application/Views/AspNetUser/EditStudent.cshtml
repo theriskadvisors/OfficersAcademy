@@ -126,7 +126,7 @@
             $("#Discount").val(0);
             $("#RemainingAmount").val(0);
 
-            $("#TotalFee").val("");
+            $(".totalfeeclass").val("");
 
 
            })
@@ -158,16 +158,18 @@
 
                  var RemainingFeeAfterFeeType = parseFloat(FeeAfterFeeType) - parseFloat(DiscountedAmount);
 
-                 $("#Discount").val(DiscountedAmount);
+
+                 var RoundRemainingFeeAfterFeeType = Math.round(RemainingFeeAfterFeeType);
+                 $("#Discount").val(Math.round( DiscountedAmount));
 
                  
-                 $("#RemainingAmount").val(RemainingFeeAfterFeeType);
+                 $("#RemainingAmount").val(RoundRemainingFeeAfterFeeType);
                  
-                 TotalFee = parseFloat(RemainingFeeAfterFeeType) + parseFloat(NotesAmount);
+                 TotalFee = parseFloat(RoundRemainingFeeAfterFeeType) + parseFloat(NotesAmount);
 
                  $("#TotalFee").val(TotalFee);
 
-                 if (RemainingFeeAfterFeeType < 0) {
+                 if (RoundRemainingFeeAfterFeeType < 0) {
 
                     $('#FormSubmit').prop('disabled', true);
                  }
@@ -175,8 +177,6 @@
 
              }
 
-
-             
          });
 
         $("#ClassID").change(function () {
@@ -1721,7 +1721,7 @@
                         <div class="form-group">
                             <label class="col-md-2 col-lg-2 control-label"><b>Discount %</b></label>
                             <div class="col-md-6">
-                                <input type="number"  value="@ViewBag.DiscountPercentage" class="form-control round-border"  name="DiscountPercentage" id="DiscountPercentage" />
+                                <input type="number"  value="@ViewBag.DiscountPercentage" onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="form-control round-border"  name="DiscountPercentage" id="DiscountPercentage" />
                             </div>
                         </div>
 
@@ -1759,14 +1759,14 @@
 
                                 @if (ViewBag.FeePayAbleAsTotalFee != null)
                                 {
-                                    <input type="text" value="@ViewBag.FeePayAbleAsTotalFee" required class="form-control text_box_style" name="TotalFee" id="TotalFee" readonly />
+                                    <input type="text" value="@ViewBag.FeePayAbleAsTotalFee" required class="form-control text_box_style totalfeeclass" name="TotalFee" id="TotalFee" readonly />
 
                                 }
                                 else
 
                                 {
 
-                                    <input type="text" required class="form-control text_box_style" name="TotalFee" id="TotalFee" readonly />
+                                    <input type="text" required class="form-control text_box_style totalfeeclass" name="TotalFee" id="TotalFee" readonly />
 
 
                                 }
@@ -1833,7 +1833,7 @@
              debugger
              var TotalFee  = $("#TotalFee").val();
 
-             if (TotalFee == "") {
+             if (TotalFee == "" && TotalFee <0) {
                  return false;
              }
 

@@ -1686,7 +1686,7 @@ namespace SEA_Application.Controllers
 
 
             //Aspnet_Employee_Session EmployeeSession = db.Aspnet_Employee_Session.Where(x => x.Emp_Id == emp.Id).FirstOrDefault();
-            
+
             //EmployeeSession.Session_Id = SessionId;
 
             //db.SaveChanges();
@@ -1763,7 +1763,7 @@ namespace SEA_Application.Controllers
 
                     var roleStore = new RoleStore<IdentityRole>(context);
                     var roleManager = new RoleManager<IdentityRole>(roleStore);
-                   var userStore = new UserStore<ApplicationUser>(context);
+                    var userStore = new UserStore<ApplicationUser>(context);
                     var userManager = new UserManager<ApplicationUser>(userStore);
 
 
@@ -1800,8 +1800,9 @@ namespace SEA_Application.Controllers
                     string Error = "Teacher successfully saved.";
                     return RedirectToAction("TeacherIndex", "AspNetUser", new { Error });
                 }
-                else {
-                    var remove = db.AspNetUsers.Where(x => x.Id == user.Id).FirstOrDefault(); 
+                else
+                {
+                    var remove = db.AspNetUsers.Where(x => x.Id == user.Id).FirstOrDefault();
                     db.AspNetUsers.Remove(remove);
                     db.SaveChanges();
                     AddErrors(result);
@@ -2012,21 +2013,21 @@ namespace SEA_Application.Controllers
         {
 
             AspNetUser User = db.AspNetUsers.Where(x => x.UserName == RollNo).FirstOrDefault();
-          
-            
+
+
             string VerifictionMsg = "";
 
             if (User != null)
             {
 
-                    if (User.FingerPrintCode != null)
-                    {
-                        VerifictionMsg = "Yes";
-                    }
-                    else
-                    {
-                        VerifictionMsg = "No";
-                    }
+                if (User.FingerPrintCode != null)
+                {
+                    VerifictionMsg = "Yes";
+                }
+                else
+                {
+                    VerifictionMsg = "No";
+                }
 
             }
 
@@ -2091,7 +2092,7 @@ namespace SEA_Application.Controllers
                 model.Email = "oa" + model.UserName + "@gmail.com";
 
             }
-            
+
             var dbTransaction = db.Database.BeginTransaction();
             try
             {
@@ -2170,6 +2171,9 @@ namespace SEA_Application.Controllers
                     {
                         selectedsubjects = null;
                     }
+
+                    List<string> listofIDs = selectedsubjects.ToList();
+                    List<int> myIntegersSubjectsList = listofIDs.Select(s => int.Parse(s)).ToList();
 
                     //if (Request.Form["MandatoryCSSSubjects0"] != null)
                     //{
@@ -2272,6 +2276,36 @@ namespace SEA_Application.Controllers
                                 db.SaveChanges();
                             }
                         }
+
+                        if (selectedsubjects != null)
+                        {
+                            var AllSubjectsOfAStudent = from subject in db.AspNetSubjects
+                                                        where myIntegersSubjectsList.Contains(subject.Id)
+                                                        select subject;
+
+
+                            foreach (var sub in AllSubjectsOfAStudent)
+                            {
+
+                                foreach (var sub1 in db.GenericSubjects.ToList())
+                                {
+
+                                    if (sub.SubjectName == sub1.SubjectName && sub.CourseType == sub1.SubjectType)
+                                    {
+
+                                        Student_GenericSubjects genericSubject = new Student_GenericSubjects();
+
+                                        genericSubject.GenericSubjectId = sub1.Id;
+                                        genericSubject.StudentId = student.StudentID;
+
+                                        db.Student_GenericSubjects.Add(genericSubject);
+                                        db.SaveChanges();
+                                    }
+
+                                }
+                            }
+                        }
+
                         var roleStore = new RoleStore<IdentityRole>(context);
                         var roleManager = new RoleManager<IdentityRole>(roleStore);
 
@@ -2292,7 +2326,7 @@ namespace SEA_Application.Controllers
                         string Error = "Student successfully saved.";
 
                         StudentFeeMonth studentFeeMonth = new StudentFeeMonth();
-                       
+
                         string NotesCategory = Request.Form["NotesCategory"];
                         string FeeType = Request.Form["FeeType"];
                         double NotesFee = 0;
@@ -2333,17 +2367,18 @@ namespace SEA_Application.Controllers
                         }
 
 
-                        //DateTime ConvertIssueDate =   Convert.ToDateTime(Request.Form["IssueDate"]);
 
 
-                        // var Month = ConvertIssueDate.ToString("MMMM");
+                        //DateTime ConvertIssueDate = Convert.ToDateTime(Request.Form["IssueDate"]);
+                        //var Month = ConvertIssueDate.ToString("MMMM");
 
 
+
+                        //  studentFeeMonth.Months = Month;
+                        // studentFeeMonth.IssueDate = Convert.ToDateTime(Request.Form["IssueDate"]);
 
                         studentFeeMonth.IssueDate = DateTime.Now;
                         var Month = DateTime.Now.ToString("MMMM");
-                        studentFeeMonth.Months = Month;
-                        studentFeeMonth.IssueDate = Convert.ToDateTime(Request.Form["IssueDate"]);
                         studentFeeMonth.FeePayable = Convert.ToDouble(Request.Form["TotalFee"]);
                         studentFeeMonth.Discount = discount;
                         studentFeeMonth.FeeType = Request.Form["FeeType"];
@@ -2388,8 +2423,6 @@ namespace SEA_Application.Controllers
                         voucherRecord.VoucherId = voucher.Id;
 
                         voucherRecord.Description = "Fee added of student (" + model.Name + ") (" + SessionName + ")";
-
-
                         Leadger.CurrentBalance = AfterBalance;
                         db.VoucherRecords.Add(voucherRecord);
                         db.SaveChanges();
@@ -2465,9 +2498,9 @@ namespace SEA_Application.Controllers
                             db.SaveChanges();
                         }
 
-                      //    return RedirectToAction("BiometricRegistration", "Admin_Dashboard", new { RollNo = model.UserName, Success = Error });
+                        //    return RedirectToAction("BiometricRegistration", "Admin_Dashboard", new { RollNo = model.UserName, Success = Error });
 
-                       return RedirectToAction("StudentIndex", "AspNetUser", new { Error });
+                        return RedirectToAction("StudentIndex", "AspNetUser", new { Error });
 
                     }
                     else

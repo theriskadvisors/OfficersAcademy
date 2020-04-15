@@ -21,7 +21,7 @@ namespace SEA_Application.Controllers
         // GET: AspnetSubjectTopics
         public ActionResult Index()
         {
-            var aspnetSubjectTopics = db.AspnetSubjectTopics.Include(a => a.AspNetSubject);
+            var aspnetSubjectTopics = db.AspnetSubjectTopics.Include(a => a.GenericSubject);
             return View(aspnetSubjectTopics.ToList());
         }
 
@@ -43,7 +43,7 @@ namespace SEA_Application.Controllers
         // GET: AspnetSubjectTopics/Create
         public ActionResult Create()
         {
-            ViewBag.SubjectId = new SelectList(db.AspNetSubjects, "Id", "SubjectName");
+            ViewBag.SubjectId = new SelectList(db.GenericSubjects, "Id", "SubjectName");
 
             ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName");
 
@@ -71,7 +71,7 @@ namespace SEA_Application.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.SubjectId = new SelectList(db.AspNetSubjects, "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
+            ViewBag.SubjectId = new SelectList(db.GenericSubjects, "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
             return View(aspnetSubjectTopic);
         }
 

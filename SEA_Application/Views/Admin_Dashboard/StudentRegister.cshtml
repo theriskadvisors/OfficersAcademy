@@ -14,7 +14,7 @@
 
     .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
         list-style: none;
-        margin: 0;
+        margin: 0; 
         padding: 0;
         height: 4200px !important;
     }
@@ -344,7 +344,13 @@
 
         
         $("#DueDate").bind('blur', function () {
-            var dob = $("#DueDate").val();
+       
+            ValidateDueDate();
+        });
+
+        function ValidateDueDate() {
+
+           var dob = $("#DueDate").val();
             var dob = dob.split("-");
             var date = new Date();
 
@@ -355,33 +361,46 @@
             if (dob[0] >= year) {
                 $('#FormSubmit').prop('disabled', false);
                 $('#DueDateError').html(" ");
+                
                 if (dob[0] == year) {
                     if (dob[1] >= month) {
                         $('#FormSubmit').prop('disabled', false);
                         $('#DueDateError').html(" ");
+                        
                         if (dob[1] == month) {
                             if (dob[2] >= day) {
                                 $('#FormSubmit').prop('disabled', false);
                                 $('#DueDateError').html(" ");
+                                return true;
                             } else {
                                 $('#FormSubmit').prop('disabled', true);
                                 $('#DueDateError').html("DueDate Should be today or greater than today");
+                                return false;
                             }
                         } else if (dob[1] < month) {
                             $('#FormSubmit').prop('disabled', true);
                             $('#DueDateError').html("DueDate Should be today or greater than today");
+                                return false;
+
                         }
                     } else {
                         $('#FormSubmit').prop('disabled', true);
                         $('#DueDateError').html("DueDate Should be today or greater than today");
+                                return false;
+
                     }
                 }
             } else {
                 $('#FormSubmit').prop('disabled', true);
                 $('#DueDateError').html("DueDate Should be today or greater than today");
+                                return false;
+
             }
 
-        });
+
+
+        }
+
 
         $("#birthDate").bind('blur', function () {
             var dob = $("#birthDate").val();
@@ -406,19 +425,24 @@
                             } else {
                                 $('#FormSubmit').prop('disabled', true);
                                 $('#DOB-Error').html("Enter a date less than today");
+                                return false;
                             }
                         } else if (dob[1] > month) {
                             $('#FormSubmit').prop('disabled', true);
                             $('#DOB-Error').html("Enter a date less than today");
+
+                             return false;
                         }
                     } else {
                         $('#FormSubmit').prop('disabled', true);
                         $('#DOB-Error').html("Enter a date less than today");
+                         return false;
                     }
                 }
             } else {
                 $('#FormSubmit').prop('disabled', true);
-                $('#DOB-Error').html("Enter a date less than today")
+                $('#DOB-Error').html("Enter a date less than today");
+                 return false;
             }
 
         });
@@ -492,7 +516,23 @@
         })
           $("form").submit(function(){
 
-                  $("#FormSubmit").attr("disabled", true);
+          var TotalFee  = $("#TotalFee").val();
+              debugger
+              if (ValidateDueDate()== true) {
+
+                  if (TotalFee > 0) {
+
+                      $("#FormSubmit").attr("disabled", true);
+
+                  }
+                  else
+                      return false;
+              }
+              else {
+
+                  return false;
+              }
+
 
           });
 
@@ -741,10 +781,6 @@
         });
 
 
-
-
-
-
         $("#MandatorySubjectsCSS").on('change', "#CheckboxCSSMandatory", function () {
             debugger
 
@@ -800,8 +836,6 @@
 
                 $("input[name='CSSSubjects1']").prop("checked", false);
 
-
-
             }
 
         })
@@ -818,8 +852,6 @@
             else {
 
                 $("input[name='CSSSubjects2']").prop("checked", false);
-
-
 
             }
 
@@ -919,8 +951,6 @@
             }
 
         })
-
-
 
 
           $("#SubjectPMSGroup1").on('change', ".CheckboxPMSGroup1", function () {
@@ -1057,15 +1087,17 @@
 
                  var RemainingFeeAfterFeeType = parseFloat(FeeAfterFeeType) - parseFloat(DiscountedAmount);
 
-                 $("#Discount").val(DiscountedAmount);
+                 var RoundRemainingFeeAfterFeeType = Math.round(RemainingFeeAfterFeeType);
 
-                  $("#RemainingAmount").val(RemainingFeeAfterFeeType);
+                 $("#Discount").val(Math.round( DiscountedAmount));
 
-                 TotalFee = parseFloat(RemainingFeeAfterFeeType) + parseFloat(NotesAmount);
+                  $("#RemainingAmount").val(RoundRemainingFeeAfterFeeType);
+
+                 TotalFee = parseFloat(RoundRemainingFeeAfterFeeType) + parseFloat(NotesAmount);
 
                  $("#TotalFee").val(TotalFee);
 
-                 if (RemainingFeeAfterFeeType < 0) {
+                 if (RoundRemainingFeeAfterFeeType < 0) {
 
                     $('#FormSubmit').prop('disabled', true);
                  }
@@ -1108,24 +1140,23 @@
 
 
                    DiscountedAmount = parseFloat(DiscountInAmount);
-                   var RemainingFeeAfterFeeType = parseFloat(FeeAfterFeeType) - parseFloat(DiscountInAmount);
-                   $("#Discount").val(DiscountedAmount);
+                  var RemainingFeeAfterFeeType = parseFloat(FeeAfterFeeType) - parseFloat(DiscountInAmount);
 
-                 $("#RemainingAmount").val(RemainingFeeAfterFeeType);
+                  var RoundRemainingFeeAfterFeeType = Math.round(RemainingFeeAfterFeeType);
 
-                 TotalFee = parseFloat(RemainingFeeAfterFeeType) + parseFloat(NotesAmount);
+                 $("#Discount").val(DiscountedAmount);
+
+                 $("#RemainingAmount").val(RoundRemainingFeeAfterFeeType);
+
+                 TotalFee = parseFloat(RoundRemainingFeeAfterFeeType) + parseFloat(NotesAmount);
 
                  $("#TotalFee").val(TotalFee);
 
-                 if (RemainingFeeAfterFeeType < 0) {
+                 if (RoundRemainingFeeAfterFeeType < 0) {
 
                     $('#FormSubmit').prop('disabled', true);
                  }
              }
-
-
-
-
 
         })
 
@@ -1401,6 +1432,7 @@
 
                                             </div>
                                         </div>
+
                                         <div class="form-group">
                                             <label class="col-md-2 col-lg-2" for="Name"><b>Profile Photo:</b></label>
                                             <div class="col-md-6">
@@ -2022,10 +2054,6 @@
                                         </div>
                                     </div>
 
-
-
-
-
                                     <div class="form-group">
                                         <label class="col-md-2 col-lg-2 control-label"><b>Fee Type</b><span class="red-mark">*</span></label>
                                         <div class="col-md-6">
@@ -2082,7 +2110,7 @@
                                         <div class="form-group" id="DiscountPercentageDiv">
                                             <label class="col-md-2 col-lg-2 control-label"><b>Discount %</b></label>
                                             <div class="col-md-6">
-                                                <input type="number" value="0" class="form-control round-border" name="DiscountPercentage" id="DiscountPercentage" />
+                                                <input type="number" value="0"  onkeypress="return event.charCode >= 48 && event.charCode <= 57"  class="form-control round-border" name="DiscountPercentage" id="DiscountPercentage" />
                                             </div>
                                         </div>
 
@@ -2090,7 +2118,7 @@
                                         <div class="form-group" id="DiscountAmountDiv" style="display:none">
                                             <label class="col-md-2 col-lg-2 control-label"><b>Discount Amount</b></label>
                                             <div class="col-md-6">
-                                                <input type="number" value="0" class="form-control round-border" name="DiscountInAmount" id="DiscountInAmount" />
+                                                <input type="number" value="0"  onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="form-control round-border" name="DiscountInAmount" id="DiscountInAmount" />
                                             </div>
                                         </div>
 
@@ -2129,7 +2157,16 @@
                                         </div>
                                     </div>
                                  
-
+                                    
+                                    @*<div class="form-group">
+                                      
+                                        <label class="col-md-2 col-lg-2 control-label"><b>Issue Date </b><span class="red-mark">*</span></label>
+                                        <div class="col-md-6">
+                                            <input type="date" id="IssueDate" name="IssueDate" class="form-control" required>
+                                            <span id="IssueDateError" class="text-danger"></span>
+                                        </div>
+                                    </div>*@
+                                 
 
                                     <hr />
                                     <br />

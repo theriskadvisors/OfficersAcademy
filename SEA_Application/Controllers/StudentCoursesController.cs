@@ -14,6 +14,8 @@ namespace SEA_Application.Controllers
     {
 
         private SEA_DatabaseEntities db = new SEA_DatabaseEntities();
+        public static int SessionID = Convert.ToInt32(SessionIDStaticController.GlobalSessionID);
+
 
         public ActionResult Index()
         {
@@ -27,20 +29,34 @@ namespace SEA_Application.Controllers
         {
 
             var userID = User.Identity.GetUserId();
+            var UserRole = db.GetUserRoleById(userID).FirstOrDefault();
+            int ClassID =  db.AspNetClasses.Where(x => x.SessionID == SessionID).FirstOrDefault().Id;
 
-            var AllSubjectsOfStudent = from Subject in db.AspNetSubjects
-                                       join StudentSubject in db.AspNetStudent_Subject on Subject.Id equals StudentSubject.SubjectID
-                                       where StudentSubject.StudentID == userID
+
+            //var AllSubjectsOfStudent = from Subject in db.AspNetSubjects
+            //                           join StudentSubject in db.AspNetStudent_Subject on Subject.Id equals StudentSubject.SubjectID
+            //                           where StudentSubject.StudentID == userID
+            //                           select new
+            //                           {
+            //                               Subject.Id,
+            //                               Subject.SubjectName,
+            //                               Subject.CourseType,
+            //                               Subject.Points,
+            //                            };
+
+            var AllSubjectsOfStudent = from Subject in db.GenericSubjects
+                                       join StudentSubject in db.Student_GenericSubjects on Subject.Id equals StudentSubject.GenericSubjectId
+                                       where StudentSubject.StudentId == userID
                                        select new
                                        {
                                            Subject.Id,
                                            Subject.SubjectName,
-                                           Subject.CourseType,
-                                           Subject.Points,
-
+                                        
                                        };
 
+
             return Json(AllSubjectsOfStudent, JsonRequestBehavior.AllowGet);
+
 
         }
 
@@ -378,8 +394,6 @@ namespace SEA_Application.Controllers
                                      UserName = user.Name,
                                      Date = commentHead.CreationDate,
                                  };
-
-
 
             return Json(AllCommentHead, JsonRequestBehavior.AllowGet);
         }

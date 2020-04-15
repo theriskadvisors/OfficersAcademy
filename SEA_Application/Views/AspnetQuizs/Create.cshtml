@@ -49,36 +49,50 @@
             $('#TopicId').html('');
 
             var crse = $(this).val();
-            console.log(crse);
-            course = crse;
-            $.ajax({
-                type: "POST",
-                cache: false,
-                url: "/AspNetProject/GetSubjectsByClass?ClassID=" + Class + "&&CT=" + course,
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    var sch = JSON.parse(data);
-                    console.log(sch);
-                    var $el = $(".SubIdDDL");
-                    var $e2 = $(".TopIdDDL");
-                    $e2.empty();
-                    $el.empty();
-                    if (sch.length > 0) {
-                        $el.append($("<option></option>")
-                            .attr("value", 0).text('Select Subject'));
-                        for (i = 0; i < sch.length; i++) {
 
+            if (crse != "") {
+
+                console.log(crse);
+                course = crse;
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/AspNetProject/GetSubjectsByClass?CT=" + course,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $(".SubIdDDL");
+                        var $e2 = $(".TopIdDDL");
+                        $e2.empty();
+                        $el.empty();
+                        if (sch.length > 0) {
                             $el.append($("<option></option>")
-                                .attr("value", sch[i].Id).text(sch[i].SubjectName));
+                                .attr("value", 0).text('Select Subject'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].SubjectName));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select'));
                         }
                     }
-                    else {
-                        $el.append($("<option></option>")
-                            .attr("value", '').text('Select'));
-                    }
-                }
-            });
+                });
+            }
+            else {
+
+                   var $el = $(".SubIdDDL");
+                    $el.empty();
+                    var $e2 = $(".TopIdDDL");
+                    $e2.empty();
+
+            }
+
+
         });
 
 
@@ -206,20 +220,24 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                @*<div class="form-group">
                     <div class="col-md-2">
                         <label>Section <span class="text-danger">*</span></label>
                     </div>
                     <div class="col-md-6">
                         <select class="form-control SecIdDDL" id="SecId" name="SecId"></select>
                     </div>
-                </div>
+                </div>*@
+
                 <div class="form-group">
                     <div class="col-md-2">
                         <label>Course Type <span class="text-danger">*</span></label>
                     </div>
                     <div class="col-md-6">
                         <select class="form-control CTIdDDL" id="CTId" name="CTId">
+
+                            <option value="">Select One</option>
+
                             <option value="CSS">CSS</option>
                             <option value="PMS">PMS</option>
 
