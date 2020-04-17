@@ -10,10 +10,16 @@
         $("#example").dataTable();
 
         $('.table').on('click', 'tbody tr', function () {
+
+           
             var td = $(this).children("td");
             var userName = $(td[0]).children("input").val();
-            userName = userName.trim();
-            window.location.href = "/AspNetDiscountType/Details?id=" + userName;
+
+           //alert($(td[0]).html());    
+            var Id =  parseInt($(td[0]).html()) 
+           // alert(Id);
+            //userName = userName.trim();
+            window.location.href = "/AspnetQuizs/Details?id=" + Id;
         });
 
         DrawTable();
@@ -70,6 +76,8 @@
                 <thead>
 
                     <tr>
+
+                        <th style="display:none">  11</th>
                         <th>
                             @Html.DisplayNameFor(model => model.Name)
                         </th>
@@ -95,34 +103,39 @@
 
                     @foreach (var item in Model)
                     {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Name)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Description)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Start_Date)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Due_Date)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Created_By)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CreationDate)
-                            </td>
-                            @*<td>
+                    <tr>
+                        <td style="display:none">
 
-                                    @*<input type="button" class="btn btn-sm btn-primary ViewQuestionBtn" name="@item.Id" value="View Questions" />    |*
+                            @item.Id
+                        </td>
 
-                                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                                    @Html.ActionLink("Details", "Details", new { id = item.Id })
-                                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })*
-                                </td>*@
-                        </tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Start_Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Due_Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Created_By)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CreationDate)
+                        </td>
+                        @*<td>
+
+            @*<input type="button" class="btn btn-sm btn-primary ViewQuestionBtn" name="@item.Id" value="View Questions" />    |*
+
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.Id })
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id })*
+        </td>*@
+                    </tr>
                     }
                 </tbody>
 

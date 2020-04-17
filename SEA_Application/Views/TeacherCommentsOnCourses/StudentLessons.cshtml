@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "StudentLessons";
-    Layout = "~/Views/Shared/_StudentDashboardLayout.cshtml";
+    Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
 }
 
 
@@ -55,10 +55,8 @@
     }
 
     #TitleParagraph {
-      
-        background: rgb(51, 70, 102);   
+        background: rgb(51, 70, 102);
         color: white;
-   
     }
 
     #QADiv {
@@ -68,14 +66,15 @@
         margin: auto;
         cursor: pointer;
     }
-  a{
-      color:black;
-  }
-  a:hover
-  {
-      text-decoration:none;
-      color:black;
-  }
+
+    a {
+        color: black;
+    }
+
+        a:hover {
+            text-decoration: none;
+            color: black;
+        }
 </style>
 
 
@@ -98,7 +97,7 @@
         margin-left: 100px;
     ">
             @*<iframe width="800" height="450" src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*@
-      
+
             <iframe src="" width="900" height="450" frameborder="0" border="0" scrolling="auto" allowtransparency="true" allowfullscreen="1" style="border: none; background-color: transparent"></iframe>
         </div>
         <br />
@@ -294,7 +293,7 @@
                             <label class="col-md-2">Body</label>
                             <div class="col-md-6">
 
-                                <textarea  id="ThreadBody" name="ThreadBody" rows="8" cols="60">
+                                <textarea id="ThreadBody" name="ThreadBody" rows="8" cols="60">
                                 </textarea>
                             </div>
 
@@ -332,7 +331,7 @@
 
 
             type: "POST",
-            url: "/StudentCourses/GetLessonVideo",
+            url: "/TeacherCommentsOnCourses/GetLessonVideo",
             data: { "LessonID": LessonId },
             success: function (data) {
 
@@ -352,7 +351,7 @@
 
 
             type: "POST",
-            url: "/StudentCourses/ReadingMaterials",
+            url: "/TeacherCommentsOnCourses/ReadingMaterials",
             data: { "LessonID": LessonId },
             success: function (data) {
 
@@ -372,7 +371,7 @@
 
                     $("#AttachmentAndLinkTable").append('<div class="form-group"> <span class="col-md-2">Attachment Name</span >  <div class="col-md-6">' + file + '</div></div> ');
 
-                    $("#AttachmentAndLinkTable").append('<div class="form-group"> <span class="col-md-2">Download Attach File</span > <div class="col-md-6"><a href ="/StudentCourses/DownloadFile/' + value1.AttachmentId + '">' + value1.AttachmentPath + '</div></div> ');
+                    $("#AttachmentAndLinkTable").append('<div class="form-group"> <span class="col-md-2">Download Attach File</span > <div class="col-md-6"><a href ="/TeacherCommentsOnCourses/DownloadFile/' + value1.AttachmentId + '">' + value1.AttachmentPath + '</div></div> ');
                 })
 
 
@@ -396,7 +395,7 @@
         $.ajax({
 
             type: "POST",
-            url: "/StudentCourses/GetCourseContent",
+            url: "/TeacherCommentsOnCourses/GetCourseContent",
             data: { "LessonID": LessonId },
             success: function (data) {
 
@@ -416,7 +415,7 @@
 
                     $.each(lessonlist, function (key, lesson) {
 
-                        $("#TopicList").append('<div   class ="TopicsAndLesson" style="border:1px solid black"><a href = "/StudentCourses/StudentLessons/' + lesson.LessonId + '">' + lesson.LessonName + '</a></div>');
+                        $("#TopicList").append('<div   class ="TopicsAndLesson" style="border:1px solid black"><a href = "/TeacherCommentsOnCourses/StudentLessons/' + lesson.LessonId + '">' + lesson.LessonName + '</a></div>');
 
 
                     })
@@ -433,7 +432,7 @@
 
 
             type: "POST",
-            url: "/StudentCourses/StudentAssignment",
+            url: "/TeacherCommentsOnCourses/StudentAssignment",
             data: { "LessonID": LessonId },
             success: function (data) {
 
@@ -448,7 +447,7 @@
 
                 $("#Assignment").append('<div class="form-group"><span class="col-md-2">Assignment Name</span ><div class="col-md-6">' + data.StudentAssigmentName + ' </div>');
 
-                $("#Assignment").append('<div class="form-group"><span class="col-md-2">Download Attach File</span ><div class="col-md-6"><a href ="/StudentCourses/DownloadFileOfAssignment/' + data.StudentAssignmentId + '">' + data.FileName + '</a></div> ');
+                $("#Assignment").append('<div class="form-group"><span class="col-md-2">Download Attach File</span ><div class="col-md-6"><a href ="/TeacherCommentsOnCourses/DownloadFileOfAssignment/' + data.StudentAssignmentId + '">' + data.FileName + '</a></div> ');
                 $("#Assignment").append('<div class="form-group"><span class="col-md-2">Assignment DueDate</span><div class="col-md-6">' + data.StudentAssignmentDueDate + ' </div></div>');
 
                 //  $("#Assignment").append('<tr><td>Assignment Name </td>  <td>' + data.StudentAssigmentName + '</td></tr>');
@@ -471,13 +470,13 @@
             }
             $.ajax({
                 type: "POST",
-                url: "/StudentCourses/StudentAssignmentSubmission",
+                url: "/TeacherCommentsOnCourses/StudentAssignmentSubmission",
                 contentType: false,
                 processData: false,
                 data: data,
                 success: function (message) {
 
-                    window.location.href = "/StudentCourses/Index";
+                    window.location.href = "/TeacherCommentsOnCourses/Index";
 
 
                 },
@@ -490,13 +489,14 @@
 
         $("#ModalSaveButton").click(function () {
 
+
             var ThreadTitle = $("#ThreadTitle").val();
             var ThreadBody = $("#ThreadBody").val();
 
             $.ajax({
 
                 type: "POST",
-                url: "/StudentCourses/SaveCommentHead",
+                url: "/TeacherCommentsOnCourses/SaveCommentHead",
                 data: { "LessonID": LessonId, "Title": ThreadTitle, "Body": ThreadBody },
                 success: function (data) {
 
@@ -513,13 +513,13 @@
         $.ajax({
 
             type: "POST",
-            url: "/StudentCourses/AllCommentsHead",
+            url: "/TeacherCommentsOnCourses/AllCommentsHead",
             data: {"LessonID": LessonId},
             success: function (data) {
 
                 debugger
 
-                
+
 
                 $.each(data, function (index) {
 
@@ -535,7 +535,7 @@
 
                     var id  = parseInt(data[index].CommentHeadId);
 
-                    $("#AllCommentsHead").append('<a href = "/StudentCourses/CommentsPage1/'+data[index].CommentHeadId+'"><div id="QADiv"  name ="' + data[index].CommentHeadId + '"   class ="CommentDivs" ><p id="TitleParagraph" class="titleParagraphs" style="padding:10px;" ><b>' + data[index].Title + '</b> </p> <div style="padding:10px;"> <p>' + data[index].Body + '</p> <p><b>' + dat + ' &nbsp;&nbsp;&nbsp; ' + data[index].UserName + '</b></p><p><b></p> </b></div> </div></a>');
+                    $("#AllCommentsHead").append('<a href = "/TeacherCommentsOnCourses/CommentsPage1/'+data[index].CommentHeadId+'"><div id="QADiv"  name ="' + data[index].CommentHeadId + '"   class ="CommentDivs" ><p id="TitleParagraph" class="titleParagraphs" style="padding:10px;" ><b>' + data[index].Title + '</b> </p> <div style="padding:10px;"> <p>' + data[index].Body + '</p> <p><b>' + dat + ' &nbsp;&nbsp;&nbsp; ' + data[index].UserName + '</b></p><p><b></p> </b></div> </div></a>');
 
                 });
 
@@ -578,3 +578,5 @@
 
 
 </script>
+
+

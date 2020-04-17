@@ -170,13 +170,113 @@ namespace SEA_Application.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             AspnetQuestion aspnetQuestion = db.AspnetQuestions.Find(id);
-            if (aspnetQuestion == null)
+
+            QuestionAnswerViewModel QuestionViewModel = new QuestionAnswerViewModel();
+
+            if (aspnetQuestion != null)
             {
-                return HttpNotFound();
+                QuestionViewModel.QuestionIsQuiz = Convert.ToBoolean(aspnetQuestion.Is_Quiz);
+                QuestionViewModel.QuestionType = aspnetQuestion.Type;
+                QuestionViewModel.QuestionName = aspnetQuestion.Name;
+                QuestionViewModel.Id = aspnetQuestion.Id;
+                QuestionViewModel.QuestionIsActive = Convert.ToBoolean( aspnetQuestion.Is_Active);
+                string IsMandatory;
+              
+             
+                //if(QuestionViewModel.QuestionIsActive  ==true)
+                //{
+
+                //    IsMandatory = "on";
+                //}
+                //else
+                //{
+                //    IsMandatory = "";
+
+                //}
+
+
+
+
+                string[] options = db.AspnetOptions.Where(x => x.QuestionId == aspnetQuestion.Id).Select(x => x.Name).ToArray();
+
+
+                QuestionViewModel.OptionNameOne = options[0];
+                QuestionViewModel.QuestionNameTwo = options[1];
+                QuestionViewModel.QuestionNameThree = options[2];
+                QuestionViewModel.QuesitonNameFour = options[3];
+
+                List<int> AnwersListToChoones = db.AspnetOptions.Where(x => x.QuestionId == aspnetQuestion.Id).Select(x => x.Id).ToList();
+
+                int count = 1;
+                foreach (int FindAsnwer in AnwersListToChoones)
+                {
+
+
+                    if (FindAsnwer == aspnetQuestion.AnswerId)
+                    {
+
+                        break;
+
+                    }
+                    count++;
+
+                }
+                string Answer = "";
+                if (count == 1)
+                {
+                    Answer = "a";
+                }
+                else if (count == 2)
+                {
+                    Answer = "b";
+
+                }
+                else if (count == 3)
+                {
+                    Answer = "c";
+
+                }
+                else if (count == 4)
+                {
+
+
+                    Answer = "d";
+
+                }
+                else
+                {
+                    Answer = "";
+
+                }
+                ViewBag.Answer = Answer;
+
+           //     ViewBag.IsMandatory = IsMandatory;
+                int? TopicId = db.AspnetLessons.Where(x => x.Id == aspnetQuestion.LessonId).FirstOrDefault().TopicId;
+
+                int? SubjectId = db.AspnetSubjectTopics.Where(x => x.Id == TopicId).FirstOrDefault().SubjectId;
+
+                string SubjectType = db.GenericSubjects.Where(x => x.Id == SubjectId).FirstOrDefault().SubjectType;
+
+
+                ViewBag.SubId = new SelectList(db.GenericSubjects.Where(x => x.SubjectType == SubjectType), "Id", "SubjectName", SubjectId);
+                ViewBag.TopicId = new SelectList(db.AspnetSubjectTopics.Where(x => x.SubjectId == SubjectId), "Id", "Name", TopicId);
+                ViewBag.LessonId = new SelectList(db.AspnetLessons.Where(x=>x.TopicId==TopicId), "Id", "Name", aspnetQuestion.LessonId);
+                ViewBag.CTId = SubjectType;
+
+
             }
-            ViewBag.LessonId = new SelectList(db.AspnetLessons, "Id", "Name", aspnetQuestion.LessonId);
-            ViewBag.AnswerId = new SelectList(db.AspnetOptions, "Id", "Name", aspnetQuestion.AnswerId);
-            return View(aspnetQuestion);
+
+
+
+            //  ViewBag.Aswer = aspnetQuestion
+
+
+
+            //ViewBag.AnswerId = new SelectList(db.AspnetOptions, "Id", "Name", aspnetQuestion.AnswerId);
+
+
+
+            return View(QuestionViewModel);
         }
 
         // POST: AspnetQuestions/Edit/5
@@ -184,17 +284,99 @@ namespace SEA_Application.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,AnswerId,LessonId,CreatedBy,Is_Quiz,Is_Active,Type,CreationDate")] AspnetQuestion aspnetQuestion)
+        public ActionResult Edit(QuestionAnswerViewModel QuestionAnswerViewModel)
         {
-            if (ModelState.IsValid)
+
+            AspnetQuestion Question = db.AspnetQuestions.Where(x => x.Id == QuestionAnswerViewModel.Id).FirstOrDefault();
+
+
+            Question.Name = QuestionAnswerViewModel.QuestionName;
+            Question.LessonId = QuestionAnswerViewModel.LessonId;
+
+            //string IsMandatory = Request.Form["IsMandatory"];
+            //if (IsMandatory == "on")
+            //{
+            //    QuestionAnswerViewModel.QuestionIsActive = true;
+
+            //}
+            //else
+            //{
+            //    QuestionAnswerViewModel.QuestionIsActive = false;
+            //}
+
+           // Question.Is_Active = QuestionAnswerViewModel.QuestionIsActive;
+
+
+            db.SaveChanges();
+
+            var QuestionType = QuestionAnswerViewModel.QuestionType;
+            if (QuestionType == "MCQ" || QuestionType == "TF")
             {
-                db.Entry(aspnetQuestion).State = EntityState.Modified;
+                AspnetOption[] options = db.AspnetOptions.Where(x => x.QuestionId == QuestionAnswerViewModel.Id).ToArray();
+
+                options[0].Name = QuestionAnswerViewModel.OptionNameOne;
+                options[1].Name = QuestionAnswerViewModel.QuestionNameTwo;
+                options[2].Name = QuestionAnswerViewModel.QuestionNameThree;
+                options[3].Name = QuestionAnswerViewModel.QuesitonNameFour;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+
+
+                int AnswerId;
+
+                if (QuestionAnswerViewModel.Answer == "a")
+                {
+
+                    AnswerId = options[0].Id;
+                }
+
+                else if (QuestionAnswerViewModel.Answer == "b")
+                {
+                    AnswerId = options[1].Id;
+
+                }
+
+                else if (QuestionAnswerViewModel.Answer == "c")
+                {
+                    AnswerId = options[2].Id;
+
+                }
+
+                else
+
+                {
+                    AnswerId = options[3].Id;
+
+                }
+
+                Question.AnswerId = AnswerId;
+                db.SaveChanges();
+
             }
-            ViewBag.LessonId = new SelectList(db.AspnetLessons, "Id", "Name", aspnetQuestion.LessonId);
-            ViewBag.AnswerId = new SelectList(db.AspnetOptions, "Id", "Name", aspnetQuestion.AnswerId);
-            return View(aspnetQuestion);
+            else
+            {
+                AspnetOption Op = new AspnetOption();
+                Op.Name = QuestionAnswerViewModel.FillAnswer;
+                Op.QuestionId = Question.Id;
+                Op.CreationDate = DateTime.Now;
+                db.AspnetOptions.Add(Op);
+                db.SaveChanges();
+                int AnswerId;
+                AnswerId = Op.Id;
+                Question.AnswerId = AnswerId;
+                db.SaveChanges();
+            }
+
+            //    if (ModelState.IsValid)
+            //    {
+            //        db.Entry(aspnetQuestion).State = EntityState.Modified;
+            //        db.SaveChanges();
+            //        return RedirectToAction("Index");
+            //    }
+            //    ViewBag.LessonId = new SelectList(db.AspnetLessons, "Id", "Name", aspnetQuestion.LessonId);
+            //    ViewBag.AnswerId = new SelectList(db.AspnetOptions, "Id", "Name", aspnetQuestion.AnswerId);
+            //    return View(aspnetQuestion);
+
+            return RedirectToAction("Index");
         }
 
         // GET: AspnetQuestions/Delete/5

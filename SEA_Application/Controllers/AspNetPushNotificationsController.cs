@@ -28,13 +28,26 @@ namespace SEA_Application.Controllers
 
         // GET: AspNetPushNotifications/Details/5
         public ActionResult Details(int? id)
-        {
+         {
             var UserNameLog = User.Identity.Name;
             AspNetUser currentUser = db.AspNetUsers.First(x => x.UserName == UserNameLog);
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            if (this.User.IsInRole("Teacher"))
+            {
+                ViewBag.AchorTagText = "Reply to Student Comment";
+            }
+            else if (this.User.IsInRole("Student"))
+            {
+                ViewBag.AchorTagText = "See Teacher Reply";
+            }
+            else
+            {
+                ViewBag.AchorTagText = "";
+            }
+
             AspNetNotification_User aspNetNotification = db.AspNetNotification_User.Where(x => x.Id == id).FirstOrDefault();
             if (aspNetNotification.UserID== currentUser.Id)
             {
@@ -242,14 +255,30 @@ namespace SEA_Application.Controllers
                 return Json(NotificationsList, JsonRequestBehavior.AllowGet);
 
             }
-            else
+                if (this.User.IsInRole("Student"))
+                {
+
+                    //List<notifications> NotificationsList = new List<notifications>();
+
+                    var NotificationsList = (from notification in db.AspNetNotification_User
+                                             where notification.UserID == currentUser.Id && notification.Seen == false
+                                             select new { notification.Id, notification.AspNetNotification.Subject, notification.AspNetNotification.Time, notification.AspNetNotification.Description, notification.AspNetNotification.SenderID }).ToList();
+
+
+                    //var NotificationsList = db.AspNetPushNotifications.Where(x => x.UserID == currentUser.Id && x.IsOpen == false).ToList();
+                    return Json(NotificationsList, JsonRequestBehavior.AllowGet);
+
+                }
+
+
+                else
             {
                     //List<notifications> NotificationsList = new List<notifications>();
 
                 //var NotificationsList = db.AspNetPushNotifications.Where(x => x.UserID == currentUser.Id && x.IsOpen == false).ToList();
                    var NotificationsList = (from notification in db.AspNetNotification_User
-                                         where  notification.Seen == false
-                                         select new { notification.Id, notification.AspNetNotification.Subject, notification.AspNetNotification.Time ,notification.AspNetNotification.Description,notification.AspNetNotification.SenderID}).ToList();
+                                            where notification.UserID == currentUser.Id && notification.Seen == false
+                                            select new { notification.Id, notification.AspNetNotification.Subject, notification.AspNetNotification.Time ,notification.AspNetNotification.Description,notification.AspNetNotification.SenderID}).ToList();
 
                 return Json(NotificationsList, JsonRequestBehavior.AllowGet);
             }

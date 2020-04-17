@@ -9,11 +9,20 @@
     $(document).ready(function () {
         $("#example").dataTable();
 
-        $('.table').on('click', 'tbody tr', function () {
-            var td = $(this).children("td");
-            var userName = $(td[0]).children("input").val();
-            userName = userName.trim();
-            window.location.href = "/AspNetDiscountType/Details?id=" + userName;
+            $('.table').on('click', 'tbody tr', function () {
+
+           
+           var td = $(this).children("td");
+
+         //   var userName = $(td[0]).children("input").val();
+
+           //alert($(td[0]).html());    
+           var Id = parseInt($(td[0]).html());
+           //alert(Id);
+
+           // alert(Id);
+            //userName = userName.trim();
+           window.location.href = "/AspnetQuestions/Edit?id=" + Id;
         });
 
         DrawTable();
@@ -70,6 +79,8 @@
             <thead>
 
                 <tr>
+
+                    <th style="display:none">  11</th>
                     <th>
                         @Html.DisplayNameFor(model => model.Name)
                     </th>
@@ -96,30 +107,36 @@
 
                 @foreach (var item in Model)
                 {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
+                <tr>
+                    <td style="display:none">
 
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Type)
-                        </td>
+                        @item.Id
+                    </td>
 
-                        <td>
-                            @Html.DisplayFor(modelItem => item.AspnetLesson.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.AspnetOption.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CreationDate)
-                        </td>
-                        @*<td>
-                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                            </td>*@
-                    </tr>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Type)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AspnetLesson.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AspnetOption.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreationDate)
+                    </td>
+                    @*<td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+        </td>*@
+                </tr>
 
 
                 }

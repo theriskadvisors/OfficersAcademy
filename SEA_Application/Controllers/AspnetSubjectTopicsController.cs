@@ -25,6 +25,30 @@ namespace SEA_Application.Controllers
             return View(aspnetSubjectTopics.ToList());
         }
 
+        public ActionResult ViewTopicsAndLessons()
+        {
+            var aspnetSubjectTopics = db.AspnetSubjectTopics.Include(a => a.GenericSubject);
+            return View(aspnetSubjectTopics.ToList());
+
+        }
+        public ActionResult AllLessonsList()
+        {
+
+            var AllLessons = (from lesson in db.AspnetLessons
+                              select new
+                              {
+                                  LessonId = lesson.Id,
+                                  LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                  LessonName = lesson.Name,
+                                  LessonVidoeUrl = lesson.Video_Url,
+                                  LessonDuration = lesson.DurationMinutes,
+                                  LessonDescription = lesson.Description,
+                              }).ToList();
+
+            return Json(AllLessons, JsonRequestBehavior.AllowGet);
+        }
+
+
         // GET: AspnetSubjectTopics/Details/5
         public ActionResult Details(int? id)
         {
@@ -87,12 +111,9 @@ namespace SEA_Application.Controllers
         //}
 
 
-
-
-
         // GET: AspnetSubjectTopics/Edit/5
         public ActionResult Edit(int? id)
-            {
+        {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -106,12 +127,11 @@ namespace SEA_Application.Controllers
 
             int? SubjectId = aspnetSubjectTopic.SubjectId;
 
-            AspNetSubject Subject = db.AspNetSubjects.Where(x => x.Id == SubjectId).FirstOrDefault();
+            GenericSubject Subject = db.GenericSubjects.Where(x => x.Id == SubjectId).FirstOrDefault();
 
-            ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName", Subject.ClassID);
-            ViewBag.SubjectId = new SelectList(db.AspNetSubjects.Where(x=>x.ClassID==Subject.ClassID && x.CourseType == Subject.CourseType), "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
-
-            ViewBag.CTId = Subject.CourseType;
+        //    ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName", Subject.ClassID);
+              ViewBag.SubjectId = new SelectList(db.GenericSubjects.Where(x=>x.SubjectType == Subject.SubjectType), "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
+              ViewBag.CTId = Subject.SubjectType;
 
             return View(aspnetSubjectTopic);
         }
@@ -130,7 +150,7 @@ namespace SEA_Application.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.SubjectId = new SelectList(db.AspNetSubjects, "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
+            ViewBag.SubjectId = new SelectList(db.GenericSubjects, "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
             return View(aspnetSubjectTopic);
         }
 

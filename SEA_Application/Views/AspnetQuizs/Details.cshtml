@@ -19,6 +19,7 @@
         <div class="box-body">
             <div class="form-horizontal">
                 <h4>Quiz Detail</h4><br />
+                                    <input type="hidden"  name="Id" id="Id" value="@Model.Id" />
 
                 <div class="form-group">
                     @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -74,7 +75,7 @@
 
 
                                     <div class="box-body">
-                                        @Html.ListBox("TopicId", null, htmlAttributes: new {  @readonly = "readonly",@class = "form-control", @style = "height:400px;" })
+                                        @Html.ListBox("TopicId", null, htmlAttributes: new { @readonly = "readonly", @class = "form-control", @style = "height:400px;" })
                                     </div>
                                 </div>
                             </div>
@@ -85,9 +86,16 @@
                                     <div class="box-header with-border"><h3 class="orange">Questions:<span class="red-mark">*</span></h3></div>
 
                                     <div class="box-body">
-                                        @Html.ListBox("QuestionID", null, htmlAttributes: new {  @readonly = "readonly",@class = "form-control", @style = "height:400px;" })
+                                        @Html.ListBox("QuestionID", null, htmlAttributes: new { @readonly = "readonly", @class = "form-control", @style = "height:400px;" })
 
                                     </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-1 col-md-10">
+                                    <button type="button" id="edit" class="btn btn-primary" onclick="redirectToEdit()">Edit</button>
+
                                 </div>
                             </div>
 
@@ -100,3 +108,11 @@
             </div><!--End of Form Horizontal-->
         </div>
         </div>
+    <script>
+
+          function redirectToEdit() {
+        var id = $("#Id").val();
+        window.location.href = "Edit?id=" + id;
+    }
+
+    </script>
