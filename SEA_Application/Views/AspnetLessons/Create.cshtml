@@ -20,7 +20,7 @@
                 $el.empty();
                 if (sch.length > 0) {
                     $el.append($("<option></option>")
-                        .attr("value", 0).text('Select Section'));
+                        .attr("value", "").text('Select Section'));
                     for (i = 0; i < sch.length; i++) {
                         $el.append($("<option></option>")
                             .attr("value", sch[i].Id).text(sch[i].ClassName));
@@ -58,7 +58,7 @@
                         $e2.empty();
                         if (sch.length > 0) {
                             $el.append($("<option></option>")
-                                .attr("value", 0).text('Select Subject'));
+                                .attr("value", "").text('Select Subject'));
                             for (i = 0; i < sch.length; i++) {
 
                                 $el.append($("<option></option>")
@@ -76,8 +76,8 @@
 
                 var $el = $(".SubIdDDL");
                 $el.empty();
-                 var $e2 = $(".TopicIdDDL");
-                    $e2.empty();
+                var $e2 = $(".TopicIdDDL");
+                $e2.empty();
 
             }
 
@@ -105,7 +105,7 @@
                     $e2.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
-                            .attr("value", 0).text('Select Subject'));
+                            .attr("value", "").text('Select Subject'));
                         for (i = 0; i < sch.length; i++) {
 
                             $el.append($("<option></option>")
@@ -140,7 +140,7 @@
                     $el.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
-                            .attr("value", 0).text('Select Topic'));
+                            .attr("value", "").text('Select Topic'));
                         for (i = 0; i < sch.length; i++) {
 
                             $el.append($("<option></option>")
@@ -169,6 +169,131 @@
         //    }
         //});
 
+
+
+        $("form").submit(function () {
+
+            debugger
+
+            if (document.getElementById("Assignment").files.length == 0) {
+                console.log("no files selected");
+
+            
+
+
+            }
+            else {
+                var AssignmentName = $("#AssignmentName");
+                var AssignmentDueDate = $("#AssignmentDueDate");
+
+                if (AssignmentName.val() != "" && AssignmentDueDate.val() != "") {
+
+                 
+                }
+                else {
+
+
+
+                    $("#AssignmentName").prop('required', true);
+                    $("#AssignmentDescription").prop('required', true);
+                    $("#AssignmentDueDate").prop('required', true);
+
+                    return false;
+                }
+
+
+            }
+
+           
+
+            if (document.getElementById("Attachment1").files.length == 0) {
+                console.log("no files selected");
+
+             
+               
+
+            }
+            else {
+                var AttachmentName1 = $("#AttachmentName1");
+
+
+                if (AttachmentName1.val() != "") {
+
+                
+
+                }
+                else {
+
+
+
+                    $("#AttachmentName1").prop('required', true);
+
+                    return false;
+                }
+
+
+            }
+
+
+
+            if (document.getElementById("Attachment2").files.length == 0) {
+                console.log("no files selected");
+
+             
+
+
+            }
+            else {
+                var AttachmentName2 = $("#AttachmentName2");
+
+
+                if (AttachmentName2.val() != "") {
+
+
+                }
+                else {
+
+
+
+                    $("#AttachmentName2").prop('required', true);
+
+                    return false;
+                }
+
+
+            }
+
+            
+           
+
+                if (document.getElementById("Attachment3").files.length == 0) {
+                    console.log("no files selected");
+
+
+
+                }
+                else {
+                    var AttachmentName3 = $("#AttachmentName3");
+
+
+                    if (AttachmentName3.val() != "") {
+
+                    }
+                    else {
+
+
+
+                        $("#AttachmentName3").prop('required', true);
+
+                        return false;
+                    }
+
+
+                }
+            
+
+
+        });
 
 
 

@@ -66,14 +66,14 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(LessonViewModel LessonViewModel)
         {
-
+            
             AspnetLesson Lesson = new AspnetLesson();
 
             Lesson.Name = LessonViewModel.LessonName;
             Lesson.Video_Url = LessonViewModel.LessonVideoURL;
             Lesson.TopicId = LessonViewModel.TopicId;
             Lesson.DurationMinutes = LessonViewModel.LessonDuration;
-            
+
             Lesson.CreationDate = LessonViewModel.CreationDate;
             Lesson.Description = LessonViewModel.LessonDescription;
             Lesson.CreationDate = DateTime.Now;
@@ -240,21 +240,30 @@ namespace SEA_Application.Controllers
             lessonViewModel.LessonDuration = aspnetLesson.DurationMinutes;
             int? TopicId = aspnetLesson.TopicId;
 
+            ViewBag.LessonDuration = aspnetLesson.DurationMinutes;
 
             int? SubjectId = db.AspnetSubjectTopics.Where(x => x.Id == TopicId).FirstOrDefault().SubjectId;
-            AspNetSubject Subject = db.AspNetSubjects.Where(x => x.Id == SubjectId).FirstOrDefault();
+            GenericSubject Subject = db.GenericSubjects.Where(x => x.Id == SubjectId).FirstOrDefault();
 
 
-            int? ClassId = Subject.ClassID;
-            var CourseType = Subject.CourseType;
+
+            var CourseType = Subject.SubjectType;
 
             lessonViewModel.Id = aspnetLesson.Id;
-            lessonViewModel.AssignmentName = studentAssignment.Name;
-            lessonViewModel.AssignmentDescription = studentAssignment.Description;
-            DateTime Date = Convert.ToDateTime(studentAssignment.DueDate);
-            string date = Date.ToString("yyyy-MM-dd");
-            //  lessonViewModel.AssignmentDueDate = studentAssignment.DueDate;
-            ViewBag.Date = date;
+            if (studentAssignment != null)
+            {
+                lessonViewModel.AssignmentName = studentAssignment.Name;
+                lessonViewModel.AssignmentDescription = studentAssignment.Description;
+                DateTime Date = Convert.ToDateTime(studentAssignment.DueDate);
+                string date = Date.ToString("yyyy-MM-dd");
+
+                ViewBag.AssignmentFileName = studentAssignment.FileName;
+
+                lessonViewModel.AssignmentDueDate = studentAssignment.DueDate;
+                ViewBag.Date = date;
+
+
+            }
 
 
             int count = 1;
@@ -321,10 +330,10 @@ namespace SEA_Application.Controllers
             }
 
 
-            ViewBag.SecId = new SelectList(db.AspNetClasses, "Id", "ClassName", ClassId);
-            ViewBag.SubId = new SelectList(db.AspNetSubjects.Where(x => x.ClassID == ClassId && x.CourseType == Subject.CourseType), "Id", "SubjectName", SubjectId);
+            //  ViewBag.SecId = new SelectList(db.AspNetClasses, "Id", "ClassName", ClassId);
+            ViewBag.SubId = new SelectList(db.GenericSubjects.Where(x => x.SubjectType == Subject.SubjectType), "Id", "SubjectName", SubjectId);
             ViewBag.TopicId = new SelectList(db.AspnetSubjectTopics.Where(x => x.SubjectId == SubjectId), "Id", "Name", aspnetLesson.TopicId);
-            ViewBag.CTId = Subject.CourseType;
+            ViewBag.CTId = Subject.SubjectType;
 
 
 
@@ -348,8 +357,6 @@ namespace SEA_Application.Controllers
             Lesson.Description = LessonViewModel.LessonDescription;
             db.SaveChanges();
 
-          
-
 
             HttpPostedFileBase Assignment = Request.Files["Assignment"];
             HttpPostedFileBase Attachment1 = Request.Files["Attachment1"];
@@ -364,6 +371,9 @@ namespace SEA_Application.Controllers
 
             }
             AspnetStudentAssignment studentAssignment = db.AspnetStudentAssignments.Where(x => x.LessonId == Lesson.Id).FirstOrDefault();
+
+            if(studentAssignment !=null)
+            {
 
             if (fileName != "")
             {
@@ -387,6 +397,47 @@ namespace SEA_Application.Controllers
 
             studentAssignment.Description = LessonViewModel.AssignmentDescription;
             db.SaveChanges();
+            }
+            else
+            {
+                if (Assignment.ContentLength > 0)
+                {
+
+                    AspnetStudentAssignment studentAssignment1 = new AspnetStudentAssignment();
+
+                    studentAssignment1.FileName = fileName;
+
+                    studentAssignment1.Name = LessonViewModel.AssignmentName;
+
+
+                    string DueDate = Convert.ToString(LessonViewModel.AssignmentDueDate);
+
+
+                    if (DueDate == "1/1/0001 12:00:00 AM")
+                    {
+                        studentAssignment1.DueDate = null;
+
+                    }
+                    else
+                    {
+
+                        studentAssignment1.DueDate = LessonViewModel.AssignmentDueDate;
+
+                    }
+
+
+                    studentAssignment1.Description = LessonViewModel.AssignmentDescription;
+                    studentAssignment1.CreationDate = DateTime.Now;
+                    studentAssignment1.LessonId = Lesson.Id;
+
+                    db.AspnetStudentAssignments.Add(studentAssignment1);
+                    db.SaveChanges();
+
+
+
+                }
+
+            }
 
 
             List<AspnetStudentAttachment> studentAttachments = db.AspnetStudentAttachments.Where(x => x.LessonId == Lesson.Id).ToList();
@@ -398,7 +449,7 @@ namespace SEA_Application.Controllers
             db.AspnetStudentLinks.RemoveRange(studentLinks);
             db.SaveChanges();
 
-            
+
             if (Attachment1.ContentLength > 0)
             {
                 var fileName1 = Path.GetFileName(Attachment1.FileName);
@@ -410,7 +461,7 @@ namespace SEA_Application.Controllers
                 studentAttachment1.Path = fileName1;
                 studentAttachment1.CreationDate = DateTime.Now;
                 studentAttachment1.LessonId = Lesson.Id;
-           
+
                 db.SaveChanges();
 
 

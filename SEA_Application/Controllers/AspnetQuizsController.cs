@@ -24,6 +24,7 @@ namespace SEA_Application.Controllers
         // GET: AspnetQuizs/Details/5
         public ActionResult Details(int? id)
         {
+            
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -48,11 +49,17 @@ namespace SEA_Application.Controllers
             var AllQuestionIDS = db.Quiz_Topic_Questions.Where(x => x.QuizId == id).Select(x => x.QuestionId).ToList();
 
             var AllQuestion = from Question in db.AspnetQuestions
-                           where AllQuestionIDS.Contains(Question.Id)
-                           select Question;
+                              where AllQuestionIDS.Contains(Question.Id)
+                              select Question;
             ViewBag.QuestionID = new SelectList(AllQuestion, "Id", "Name");
 
+            DateTime Date = Convert.ToDateTime(aspnetQuiz.Start_Date);
+            string StartDate = Date.ToString("yyyy-MM-dd");
+            ViewBag.StartDate = StartDate;
 
+            DateTime Date1 = Convert.ToDateTime(aspnetQuiz.Due_Date);
+            string DueDate = Date1.ToString("yyyy-MM-dd");
+            ViewBag.DueDate = DueDate;
 
 
             return View(aspnetQuiz);
@@ -61,7 +68,7 @@ namespace SEA_Application.Controllers
         // GET: AspnetQuizs/Create
         public ActionResult Create()
         {
-           // ViewBag.TopicId = new SelectList(db.AspnetSubjectTopics, "Id", "Name");
+            // ViewBag.TopicId = new SelectList(db.AspnetSubjectTopics, "Id", "Name");
 
 
 
@@ -75,6 +82,7 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(AspnetQuiz aspnetQuiz)
         {
+       
 
             var id = User.Identity.GetUserId();
             var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
@@ -151,9 +159,9 @@ namespace SEA_Application.Controllers
 
         public ActionResult GetSubjectTopics(int SubjectId)
         {
-         
-            
-          var subjectTopics =   db.AspnetSubjectTopics.Where(x => x.SubjectId == SubjectId).Select(x => new { x.Id, x.Name }).ToList();
+
+
+            var subjectTopics = db.AspnetSubjectTopics.Where(x => x.SubjectId == SubjectId).Select(x => new { x.Id, x.Name }).ToList();
 
 
             return Json(subjectTopics, JsonRequestBehavior.AllowGet);
@@ -175,6 +183,45 @@ namespace SEA_Application.Controllers
             {
                 return HttpNotFound();
             }
+
+
+
+            DateTime Date = Convert.ToDateTime(aspnetQuiz.Start_Date);
+            string StartDate = Date.ToString("yyyy-MM-dd");
+            ViewBag.StartDate = StartDate;
+
+            DateTime Date1= Convert.ToDateTime(aspnetQuiz.Due_Date);
+            string DueDate = Date1.ToString("yyyy-MM-dd");
+            ViewBag.DueDate = DueDate;
+
+
+            var AllTopicIDs = db.Quiz_Topic_Questions.Where(x => x.QuizId == id).Select(x => x.TopicId).ToList();
+
+            var AllTopic = from topic in db.AspnetSubjectTopics
+                           where AllTopicIDs.Contains(topic.Id)
+                           select topic;
+            ViewBag.TopicId = new SelectList(AllTopic, "Id", "Name");
+
+
+            //All Questions To Display
+
+            var AllQuestionIDS = db.Quiz_Topic_Questions.Where(x => x.QuizId == id).Select(x => x.QuestionId).ToList();
+
+            var AllQuestion = from Question in db.AspnetQuestions
+                              where AllQuestionIDS.Contains(Question.Id)
+                              select Question;
+            ViewBag.QuestionID = new SelectList(AllQuestion, "Id", "Name");
+
+
+            int? TopicId = db.Quiz_Topic_Questions.Where(x => x.QuizId == id).FirstOrDefault().TopicId;
+            int? SubjectId = db.AspnetSubjectTopics.Where(x => x.Id == TopicId).FirstOrDefault().SubjectId;
+            GenericSubject SubjectObj = db.GenericSubjects.Where(x => x.Id == SubjectId).FirstOrDefault();
+            string CourseType = SubjectObj.SubjectType;
+
+            ViewBag.SubjectId = new SelectList(db.GenericSubjects.Where(x => x.SubjectType == CourseType), "Id", "SubjectName", SubjectId);
+            ViewBag.CTId = CourseType;
+
+
             return View(aspnetQuiz);
         }
 
@@ -183,15 +230,51 @@ namespace SEA_Application.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Description,Start_Date,Due_Date,Created_By,CreationDate")] AspnetQuiz aspnetQuiz)
+        public ActionResult Edit(AspnetQuiz aspnetQuiz)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(aspnetQuiz).State = EntityState.Modified;
+                
+                AspnetQuiz quiz =   db.AspnetQuizs.Where(x => x.Id == aspnetQuiz.Id).FirstOrDefault();
+
+                quiz.Name = aspnetQuiz.Name;
+                quiz.Description = aspnetQuiz.Description;
+                quiz.Start_Date = aspnetQuiz.Start_Date;
+                quiz.Due_Date = aspnetQuiz.Due_Date;
+
                 db.SaveChanges();
-                return RedirectToAction("Index");
+
+                 if (Request.Form["QuestionID"] != null)
+                {
+
+
+                 string[] QuestionIDs = Request.Form["QuestionID"].Split(',');
+                 List<Quiz_Topic_Questions> QuizTopicQuestionsToRemove = db.Quiz_Topic_Questions.Where(x => x.QuizId == aspnetQuiz.Id).ToList();
+
+                db.Quiz_Topic_Questions.RemoveRange(QuizTopicQuestionsToRemove);
+                db.SaveChanges();
+
+
+                foreach (var a in QuestionIDs)
+                {
+
+                    int Questionid = Convert.ToInt32(a);
+                    int SubjectTopicId = db.AspnetQuestions.Where(x => x.Id == Questionid).Select(x => x.AspnetLesson).Select(x => x.AspnetSubjectTopic.Id).FirstOrDefault();
+                    Quiz_Topic_Questions QuizTopicQuestions = new Quiz_Topic_Questions();
+                    QuizTopicQuestions.QuestionId = Questionid;
+                    QuizTopicQuestions.QuizId = aspnetQuiz.Id;
+                    QuizTopicQuestions.TopicId = SubjectTopicId;
+                    db.Quiz_Topic_Questions.Add(QuizTopicQuestions);
+                    db.SaveChanges();
+
+                }
+                }
+
+
             }
-            return View(aspnetQuiz);
+
+
+            return RedirectToAction("Index");
         }
 
         // GET: AspnetQuizs/Delete/5

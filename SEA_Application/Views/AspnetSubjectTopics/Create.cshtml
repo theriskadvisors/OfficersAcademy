@@ -11,7 +11,7 @@
         list-style: none;
         margin: 0;
         padding: 0;
-        height: 1000px !important;
+        height: 1200px !important;
     }
 
     .form-horizontal {
@@ -57,7 +57,7 @@
                         $el.empty();
                         if (sch.length > 0) {
                             $el.append($("<option></option>")
-                                .attr("value", 0).text('Select Subject'));
+                                .attr("value", "").text('Select Subject'));
                             for (i = 0; i < sch.length; i++) {
 
                                 $el.append($("<option></option>")
@@ -97,7 +97,7 @@
                     $el.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
-                            .attr("value", 0).text('Select Subject'));
+                            .attr("value", "").text('Select Subject'));
                         for (i = 0; i < sch.length; i++) {
 
                             $el.append($("<option></option>")

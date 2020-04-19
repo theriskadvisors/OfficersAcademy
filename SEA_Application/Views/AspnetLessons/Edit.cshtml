@@ -34,7 +34,7 @@
 
             if (sch.length > 0) {
                 $el.append($("<option></option>")
-                             .attr("value", 0).text('Select Section'));
+                             .attr("value", "").text('Select Section'));
                 for (i = 0; i < sch.length; i++) {
                     $el.append($("<option></option>")
                             .attr("value", sch[i].Id).text(sch[i].ClassName));
@@ -58,7 +58,7 @@
         $.ajax({
             type: "POST",
             cache: false,
-            url: "/AspNetProject/GetSubjectsByClass?ClassID=" + Class + "&&CT=" + course,
+            url: "/AspNetProject/GetSubjectsByClass?CT=" + course,
             processData: false,
             contentType: false,
             success: function (data) {
@@ -70,7 +70,7 @@
                 $e2.empty();
                 if (sch.length > 0) {
                     $el.append($("<option></option>")
-                                 .attr("value", 0).text('Select Subject'));
+                                 .attr("value", "").text('Select Subject'));
                     for (i = 0; i < sch.length; i++) {
 
                         $el.append($("<option></option>")
@@ -106,7 +106,7 @@
                 $e2.empty();
                 if (sch.length > 0) {
                     $el.append($("<option></option>")
-                                 .attr("value", 0).text('Select Subject'));
+                                 .attr("value", "").text('Select Subject'));
                     for (i = 0; i < sch.length; i++) {
 
                         $el.append($("<option></option>")
@@ -141,7 +141,7 @@
                 $el.empty();
                 if (sch.length > 0) {
                     $el.append($("<option></option>")
-                                 .attr("value", 0).text('Select Topic'));
+                                 .attr("value", "").text('Select Topic'));
                     for (i = 0; i < sch.length; i++) {
 
                         $el.append($("<option></option>")
@@ -156,6 +156,137 @@
         });
 
     });
+           $("form").submit(function () {
+
+            debugger
+
+            if (document.getElementById("Assignment").files.length == 0) {
+                console.log("no files selected");
+
+            
+
+
+            }
+            else {
+                var AssignmentName = $("#AssignmentName");
+                var AssignmentDueDate = $("#AssignmentDueDate");
+
+                if (AssignmentName.val() != "" && AssignmentDueDate.val() != "") {
+
+                 
+                }
+                else {
+
+
+
+                    $("#AssignmentName").prop('required', true);
+                    $("#AssignmentDescription").prop('required', true);
+                    $("#AssignmentDueDate").prop('required', true);
+
+                    return false;
+                }
+
+
+            }
+
+           
+
+            if (document.getElementById("Attachment1").files.length == 0) {
+                console.log("no files selected");
+
+             
+               
+
+            }
+            else {
+                var AttachmentName1 = $("#AttachmentName1");
+
+
+                if (AttachmentName1.val() != "") {
+
+                
+
+                }
+                else {
+
+
+
+                    $("#AttachmentName1").prop('required', true);
+
+                    return false;
+                }
+
+
+            }
+
+
+
+            if (document.getElementById("Attachment2").files.length == 0) {
+                console.log("no files selected");
+
+             
+
+
+            }
+            else {
+                var AttachmentName2 = $("#AttachmentName2");
+
+
+                if (AttachmentName2.val() != "") {
+
+
+                }
+                else {
+
+
+
+                    $("#AttachmentName2").prop('required', true);
+
+                    return false;
+                }
+
+
+            }
+
+            
+           
+
+                if (document.getElementById("Attachment3").files.length == 0) {
+                    console.log("no files selected");
+
+
+
+                }
+                else {
+                    var AttachmentName3 = $("#AttachmentName3");
+
+
+                    if (AttachmentName3.val() != "") {
+
+                    }
+                    else {
+
+
+
+                        $("#AttachmentName3").prop('required', true);
+
+                        return false;
+                    }
+
+
+                }
+            
+
+
+        });
+
+
+        $("#Assignment").click(function () {
+
+            $("#AssignmentText").css('display', 'none');
+
+
+        })
 
     })
 </script>
@@ -201,13 +332,13 @@
                         @Html.ValidationMessageFor(model => model.LessonDescription, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <div class="form-group">
+                @*<div class="form-group">
                     <label class="cocntrol-label col-md-2">Select Section</label>
                     <div class="col-md-6">
                         @Html.DropDownList("SecId", null, htmlAttributes: new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.TopicId, "", new { @class = "text-danger" })
                     </div>
-                </div>
+                </div>*@
                 <div class="form-group">
 
                     <label class="cocntrol-label col-md-2">Select Course Type</label>
@@ -241,7 +372,8 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.LessonDuration, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-6">
-                        @Html.EditorFor(model => model.LessonDuration, new { htmlAttributes = new { type = "time", @class = "form-control" } })
+                        <input type="number" min="30" max="60" value="@ViewBag.LessonDuration" onkeydown="return false" class="form-control" name="LessonDuration" id="LessonDuration" required />
+
                         @Html.ValidationMessageFor(model => model.LessonDuration, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -276,10 +408,10 @@
 
                             <div class="col-md-6">
 
-                                <div class="btn btn-default btn-file ">
-                                    <i class="fa fa-paperclip"></i> Choose File Option:
-                                    <input type="file" id="Assignment" name="Assignment">
-                                </div>
+                                <input type="file" id="Assignment" name="Assignment">
+                                <br />
+                                <span style="color:steelblue" id="AssignmentText"> @ViewBag.AssignmentFileName </span>
+
                                 <div class="">
                                     <p class="help-block">Max. 32MB. (File Name Should be unique)  </p>
                                 </div>
@@ -325,10 +457,10 @@
                             <div class="col-md-6">
 
 
-                                <div class="btn btn-default btn-file ">
-                                    <i class="fa fa-paperclip"></i> Choose File Option:
+                              
                                     <input type="file" id="Attachment1" name="Attachment1">
-                                </div>
+
+                               
 
                                 <div>
                                     <p class="help-block">Max. 32MB. (File Name Should be unique) </p>
@@ -353,10 +485,10 @@
                             <label class="control-label col-md-2"> Attach File-2</label>
                             <div class="col-md-6">
 
-                                <div class="btn btn-default btn-file ">
-                                    <i class="fa fa-paperclip"></i> Choose File Option:
+                               
                                     <input type="file" id="Attachment2" name="Attachment2">
-                                </div>
+
+                             
 
                                 <div>
                                     <p class="help-block">Max. 32MB. (File Name Should be unique) </p>
@@ -379,10 +511,8 @@
                             <label class="control-label col-md-2"> Attach File-3</label>
                             <div class="col-md-6">
 
-                                <div class="btn btn-default btn-file ">
-                                    <i class="fa fa-paperclip"></i> Choose File Option:
-                                    <input type="file" id="Attachment3" name="Attachment3">
-                                </div>
+                                <input type="file" id="Attachment3" name="Attachment3">
+
 
                                 <div class="    ">
                                     <p class="help-block">Max. 32MB. (File Name Should be unique) </p>

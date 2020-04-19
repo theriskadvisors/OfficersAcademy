@@ -99,9 +99,6 @@ namespace SEA_Application.Controllers
             return View(aspnetSubjectTopic);
         }
 
-
-
-
         //public JsonResult StudentByClass(int id)
         //{
         //    var result1 = db.AspNetSubjects.Where(x => x.ClassID == id).ToList();

@@ -4,6 +4,27 @@
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
 }
+    <style>
+
+        input[type='checkbox'] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio] {
+            position: absolute;
+            margin-top: 4px\9;
+            margin-left: 0px;
+        }
+
+        .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            height: 1500px !important;
+        }
+    </style>
+
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 @*<script src="~/Content/Toggle.js"></script>*@
 <script src="~/Content/Toggle.js"></script>
@@ -23,7 +44,7 @@
                 $el.empty();
                 if (sch.length > 0) {
                     $el.append($("<option></option>")
-                                 .attr("value", 0).text('Select Section'));
+                                 .attr("value", "").text('Select Section'));
                     for (i = 0; i < sch.length; i++) {
                         $el.append($("<option></option>")
                                 .attr("value", sch[i].Id).text(sch[i].ClassName));
@@ -63,7 +84,7 @@
                         $e3.empty();
                         if (sch.length > 0) {
                             $el.append($("<option></option>")
-                                .attr("value", 0).text('Select Subject'));
+                                .attr("value", "").text('Select Subject'));
                             for (i = 0; i < sch.length; i++) {
 
                                 $el.append($("<option></option>")
@@ -112,7 +133,7 @@
                     $e3.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
-                                     .attr("value", 0).text('Select Subject'));
+                                     .attr("value", "").text('Select Subject'));
                         for (i = 0; i < sch.length; i++) {
 
                             $el.append($("<option></option>")
@@ -147,7 +168,7 @@
                     $el.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
-                                     .attr("value", 0).text('Select Lesson'));
+                                     .attr("value", "").text('Select Lesson'));
                         for (i = 0; i < sch.length; i++) {
 
                             $el.append($("<option></option>")
@@ -185,7 +206,7 @@
 
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
-                                     .attr("value", 0).text('Select Topic'));
+                                     .attr("value", "").text('Select Topic'));
                         for (i = 0; i < sch.length; i++) {
 
                             $el.append($("<option></option>")
@@ -205,24 +226,7 @@
 </script>
 
 
-<style>
 
-    input[type='checkbox'] {
-        width: 20px;
-        height: 20px;
-    }
-    .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio] {
-    position: absolute;
-    margin-top: 4px\9;
-    margin-left: 0px;
-}
-        .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    height: 1000px !important;
-}
-</style>
 
 
 <div class="box box-primary">

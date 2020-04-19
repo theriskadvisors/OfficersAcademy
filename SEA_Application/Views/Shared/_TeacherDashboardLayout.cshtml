@@ -28,7 +28,7 @@
         list-style: none;
         margin: 0;
         padding: 0;
-        height: 1200px !important;
+        height: 1500px !important;
     }
 
     .box.box-primary {
@@ -143,12 +143,7 @@
                 <span class="title">Lesson</span>
             </a>
         </li>
-        <li class="nav-item" id="studentlesson">
-            <a href="@Url.Action("ViewTopicsAndLessons", "AspnetSubjectTopics")" class="nav-link nav-toggle">
-                <i class="fa fa-leaf"></i>
-                <span class="title">Topic & Lessons</span>
-            </a>
-        </li>
+
 
         <li class="nav-item" id="studentQuestionAnswer">
             <a href="@Url.Action("Index", "AspnetQuestions")" class="nav-link nav-toggle">
@@ -168,7 +163,19 @@
 
 
 
+        <li class="nav-item" id="TopicAndLessonss">
+            <a href="@Url.Action("ViewTopicsAndLessons", "AspnetSubjectTopics")" class="nav-link nav-toggle">
+                <i class="fa fa-leaf"></i>
+                <span class="title">Topic & Lessons</span>
+            </a>
+        </li>
 
+        <li class="nav-item" id="QusetionAndQuiz">
+            <a href="@Url.Action("ViewQuestionAndQuiz", "AspnetQuestions")" class="nav-link nav-toggle">
+                <i class="fa fa-leaf"></i>
+                <span class="title">Questions & Quiz</span>
+            </a>
+        </li>
 
 
         @*<li class="nav-item  ">

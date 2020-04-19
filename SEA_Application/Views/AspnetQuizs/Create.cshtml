@@ -28,7 +28,7 @@
                 $el.empty();
                 if (sch.length > 0) {
                     $el.append($("<option></option>")
-                        .attr("value", 0).text('Select Section'));
+                        .attr("value", "").text('Select Section'));
                     for (i = 0; i < sch.length; i++) {
                         $el.append($("<option></option>")
                             .attr("value", sch[i].Id).text(sch[i].ClassName));
@@ -69,7 +69,7 @@
                         $el.empty();
                         if (sch.length > 0) {
                             $el.append($("<option></option>")
-                                .attr("value", 0).text('Select Subject'));
+                                .attr("value", "").text('Select Subject'));
                             for (i = 0; i < sch.length; i++) {
 
                                 $el.append($("<option></option>")
@@ -89,7 +89,8 @@
                     $el.empty();
                     var $e2 = $(".TopIdDDL");
                     $e2.empty();
-
+                   var $e3 = $("#QuestionID");
+                    $e3.empty();
             }
 
 
@@ -118,7 +119,7 @@
                     $e2.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
-                            .attr("value", 0).text('Select Subject'));
+                            .attr("value", "").text('Select Subject'));
                         for (i = 0; i < sch.length; i++) {
 
                             $el.append($("<option></option>")
@@ -152,7 +153,7 @@
                     $el.empty();
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
-                            .attr("value", 0).text('Select Topic'));
+                            .attr("value", "").text('Select Topic'));
                         for (i = 0; i < sch.length; i++) {
 
                             $el.append($("<option></option>")
@@ -271,8 +272,6 @@
 
                                     </div>
 
-
-
                                 </div>
                             </div>
 
@@ -283,8 +282,6 @@
 
                                     <div class="box-body">
                                         <select multiple style="height:400px;overflow-x:scroll" class="form-control" id="QuestionID" name="QuestionID" required></select>
-
-
 
                                     </div>
                                 </div>

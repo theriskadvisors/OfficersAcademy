@@ -21,6 +21,31 @@ namespace SEA_Application.Controllers
             var aspnetQuestions = db.AspnetQuestions.Include(a => a.AspnetLesson).Include(a => a.AspnetOption);
             return View(aspnetQuestions.ToList());
         }
+        public ActionResult ViewQuestionAndQuiz()
+        {
+
+            var aspnetQuestions = db.AspnetQuestions.Include(a => a.AspnetLesson).Include(a => a.AspnetOption);
+            return View(aspnetQuestions.ToList());
+        }
+        public ActionResult AllQuizList()
+        {
+
+            var AllLessons = (from Quiz in db.AspnetQuizs
+                              select new
+                              {
+                                  QuizId = Quiz.Id,
+                                  QuizName = Quiz.Name,
+                                  QuizDescription = Quiz.Description,
+                                  QuizStartDate = Quiz.Start_Date,
+                                  QuizDueDate = Quiz.Due_Date,
+                                  QuizCreatedBy = Quiz.Created_By,
+                                  QuizCreationDate = Quiz.CreationDate,
+
+                              }).ToList();
+
+            return Json(AllLessons, JsonRequestBehavior.AllowGet);
+        }
+
 
         // GET: AspnetQuestions/Details/5
         public ActionResult Details(int? id)
@@ -53,7 +78,7 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(QuestionAnswerViewModel QuestionAnswerViewModel)
         {
-
+      
             var id = User.Identity.GetUserId();
             var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
 

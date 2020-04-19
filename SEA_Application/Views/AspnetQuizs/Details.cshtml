@@ -49,7 +49,9 @@
                 <div class="form-group">
                     <span class="col-md-2">@Html.DisplayNameFor(model => model.Start_Date)</span>
                     <div class="col-md-6">
-                        @Html.DisplayFor(model => model.Start_Date, new { htmlAttributes = new { @class = "form-control" } })
+
+                        <input readonly type="date" class="form-control" name="Due_Date" value="@ViewBag.StartDate" />
+
                         @Html.ValidationMessageFor(model => model.Start_Date, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -57,7 +59,9 @@
                 <div class="form-group">
                     <span class="col-md-2">@Html.DisplayNameFor(model => model.Due_Date)</span>
                     <div class="col-md-6">
-                        @Html.DisplayFor(model => model.Due_Date, new { htmlAttributes = new { @class = "form-control" } })
+
+                        <input readonly type="date" class="form-control" name="Due_Date" value="@ViewBag.DueDate" />
+
                         @Html.ValidationMessageFor(model => model.Due_Date, "", new { @class = "text-danger" })
                     </div>
                 </div>
