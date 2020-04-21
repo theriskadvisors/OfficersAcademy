@@ -111,6 +111,7 @@
                 <li><a href="#tab_3" data-toggle="tab">Reading Material</a></li>
                 <li><a href="#tab_4" data-toggle="tab">Assignment</a></li>
                 <li><a href="#tab_5" data-toggle="tab">Q/A</a></li>
+                <li><a href="#tab_6" data-toggle="tab">Perform Test</a></li>
             </ul>
         </div>
 
@@ -157,11 +158,11 @@
 
 
                             @*<table id="Attachment" style="width:40%;">
-                                </table>
+                        </table>
 
 
-                                <table id="LinksTable" style="width:40%;">
-                                </table>*@
+                        <table id="LinksTable" style="width:40%;">
+                        </table>*@
 
 
 
@@ -174,7 +175,7 @@
 
             <div class="tab-pane" id="tab_4">
                 @*<table id="Assignment" style="width:40%;">
-                    </table>*@
+            </table>*@
 
                 <div class="box" style="border:0">
                     <div class="box-title" style="border:0"></div>
@@ -216,17 +217,19 @@
                         <span class="col-md-2"> Submit your Assignment </span>
 
                         @*<i class="fa fa-paperclip" style="padding-left:80px"></i> Choose File
-                                <input type="file" style="padding-left:80px" id="SubmitAssignment" name="SubmitAssignment">
-                            </div>
-                            <div class="col-md-offset-2 col-lg-offset-2" style="padding-left:80px">
-                                <p class="help-block">Max. 32MB</p>
-                            </div>*@
+                        <input type="file" style="padding-left:80px" id="SubmitAssignment" name="SubmitAssignment">
+                    </div>
+                    <div class="col-md-offset-2 col-lg-offset-2" style="padding-left:80px">
+                        <p class="help-block">Max. 32MB</p>
+                    </div>*@
                         <div class="col-md-6">
 
 
-                            <input type="file" class="btn btn-default" id="SubmitAssignment" name="SubmitAssignment" />
+                            <input type="file" class="btn btn-default" id="SubmitAssignment" name="SubmitAssignment" />  <span id="AssignmentMessage"></span>
+
                             <br />
                             <input class="btn btn-default" type="button" id="AssignmentSubmitButton" name="" value="Submit" />
+
                         </div>
 
                     </div>
@@ -259,9 +262,31 @@
 
             </div>
 
+            <div class="tab-pane" id="tab_6">
+
+                <div class="col-md-12">
+
+                    @if (ViewBag.IsLastLesson == "Yes")
+                    {
+
+                        <a href="/StudentCourses/Test/@ViewBag.TopicId"> <button class="btn btn-primary"> Perform Test</button></a>
+
+
+                    }
+                    else
+                    {
+
+                    }
+
+
+                </div>
+
+
+            </div> <!--tab 6-->
+
         </div>
 
-    </div>
+        </div>
 
     <!--Bootstrap Modal Section -->
     <div class="modal fade" id="myModal" role="dialog" style="margin-top:100px;">
@@ -393,6 +418,10 @@
 
         })
 
+
+
+
+
         $.ajax({
 
             type: "POST",
@@ -416,9 +445,15 @@
 
                     $.each(lessonlist, function (key, lesson) {
 
-                        $("#TopicList").append('<div   class ="TopicsAndLesson" style="border:1px solid black"><a href = "/StudentCourses/StudentLessons/' + lesson.LessonId + '">' + lesson.LessonName + '</a></div>');
+                        if (lesson.LessonExistInTrackingTable == "Yes") {
 
+                            $("#TopicList").append('<div   class ="TopicsAndLesson" style="border:1px solid black"><a class="StudentLessons" name = "' + lesson.LessonId + '"  href = "/StudentCourses/StudentLessons/' + lesson.LessonId + '">' + lesson.LessonName + '</a><span class="glyphicon glyphicon-ok"></span></div>');
+                        }
+                        else {
+                            $("#TopicList").append('<div   class ="TopicsAndLesson" style="border:1px solid black"><a class="StudentLessons" name = "' + lesson.LessonId + '"  href = "/StudentCourses/StudentLessons/' + lesson.LessonId + '">' + lesson.LessonName + '</a></div>');
 
+                        }
+                        
                     })
 
                 })
@@ -426,6 +461,26 @@
                 $("#TotalLessons").text(Count);
 
             }
+        })
+
+           $("#TopicList").on('click', ".StudentLessons", function () {
+
+            var LessonId = $(this).attr('name');
+
+              // alert(LessonId); 
+
+            $.ajax({
+                type: "POST",
+                url: "/StudentCourses/UpdateStudentLessonTracking",
+                data: { "LessonId": LessonId },
+
+                success: function (data) {
+
+                }
+
+
+            })
+
         })
 
 
@@ -477,7 +532,9 @@
                 data: data,
                 success: function (message) {
 
-                    window.location.href = "/StudentCourses/Index";
+                    $("#AssignmentMessage").html(message);
+
+                  //  window.location.href = "/StudentCourses/Index";
 
 
                 },

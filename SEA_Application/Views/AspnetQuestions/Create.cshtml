@@ -23,6 +23,8 @@
             padding: 0;
             height: 1500px !important;
         }
+
+
     </style>
 
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
@@ -249,13 +251,13 @@
                 </div>
             </div>
             @*<div class="form-group">
-                <div class="col-md-2">
-                    <label>Section <span class="text-danger">*</span></label>
-                </div>
-                <div class="col-md-6">
-                    <select class="form-control SecIdDDL" id="SecId" name="SecId"></select>
-                </div>
-            </div>*@
+            <div class="col-md-2">
+                <label>Section <span class="text-danger">*</span></label>
+            </div>
+            <div class="col-md-6">
+                <select class="form-control SecIdDDL" id="SecId" name="SecId"></select>
+            </div>
+        </div>*@
 
             <div class="form-group">
                 <div class="col-md-2">
@@ -301,15 +303,15 @@
             </div>
 
             @*<div class="form-group">
-                @Html.LabelFor(model => model.LessonId, "Lesson", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
+            @Html.LabelFor(model => model.LessonId, "Lesson", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
 
-                </div>
-                <div class="col-md-6">
-                    @Html.DropDownList("LessonId", null, "Select One", htmlAttributes: new { @class = "form-control", @required = true })
-                    @Html.ValidationMessageFor(model => model.LessonId, "", new { @class = "text-danger" })
-                </div>
-            </div>*@
+            </div>
+            <div class="col-md-6">
+                @Html.DropDownList("LessonId", null, "Select One", htmlAttributes: new { @class = "form-control", @required = true })
+                @Html.ValidationMessageFor(model => model.LessonId, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
 
             @*<div class="form-group">
             @Html.LabelFor(model => model.QuestionnCreatedBy, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -320,24 +322,37 @@
         </div>*@
 
             @*<div class="form-group">
-                @Html.LabelFor(model => model.QuestionIsQuiz, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-6">
-                    <div class="checkbox col-md-6">
-                        @Html.EditorFor(model => model.QuestionIsQuiz)
+            @Html.LabelFor(model => model.QuestionIsQuiz, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                <div class="checkbox col-md-6">
+                    @Html.EditorFor(model => model.QuestionIsQuiz)
 
-                        @Html.ValidationMessageFor(model => model.QuestionIsQuiz, "", new { @class = "text-danger" })
-                    </div>
+                    @Html.ValidationMessageFor(model => model.QuestionIsQuiz, "", new { @class = "text-danger" })
                 </div>
-            </div>*@
+            </div>
+        </div>*@
 
             <div class="form-group">
                 @Html.LabelFor(model => model.QuestionIsActive, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-6">
                     @*<div class="checkbox">
-                        @Html.EditorFor(model => model.QuestionIsActive)
-                        @Html.ValidationMessageFor(model => model.QuestionIsActive, "", new { @class = "text-danger" })
-                    </div>*@
+                    @Html.EditorFor(model => model.QuestionIsActive)
+                    @Html.ValidationMessageFor(model => model.QuestionIsActive, "", new { @class = "text-danger" })
+                </div>*@
                     <input type="checkbox" id="IsMandatory" name="IsMandatory" checked data-toggle="toggle">
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.QuestionIsQuiz, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-6">
+                    <div class="checkbox">
+                    @Html.EditorFor(model => model.QuestionIsQuiz)
+                    @Html.ValidationMessageFor(model => model.QuestionIsQuiz, "", new { @class = "text-danger" })
+                </div>
+                
                 </div>
             </div>
 

@@ -37,9 +37,32 @@ namespace SEA_Application.Controllers
             assignmentSubmission.TeacherComments = TeacherComments;
             db.SaveChanges();
 
+
+            int? LessonId = assignmentSubmission.LessonId;
+            int? StudentId = assignmentSubmission.StudentId;
+
+            var StudentIdInString =    db.AspNetStudents.Where(x => x.Id == StudentId).FirstOrDefault().StudentID;
+
+            StudentLessonTracking LessonTracking =  db.StudentLessonTrackings.Where(x => x.LessonId == LessonId && x.StudentId == StudentIdInString).FirstOrDefault();
+
+            if(LessonTracking !=null)
+            {
+                LessonTracking.Assignment_Status = "Approved";
+                db.SaveChanges();
+
+            }
+
             return Json("", JsonRequestBehavior.AllowGet);
 
         }
+        public ActionResult StudentLessonTracking()
+        {
+
+            
+
+            return View(db.StudentLessonTrackings.ToList());
+        }
+
 
         public ActionResult StudentAssignments()
         {
@@ -66,7 +89,7 @@ namespace SEA_Application.Controllers
                 int AssignemntId = submittedAssignment.Id;
 
                 var ClassName = db.AspNetClasses.Where(x => x.Id == ClassId).FirstOrDefault().ClassName;
-                var SubjectName = db.AspNetSubjects.Where(x => x.Id == SubjectId).FirstOrDefault().SubjectName;
+                var SubjectName = db.GenericSubjects.Where(x => x.Id == SubjectId).FirstOrDefault().SubjectName;
                 var TopicName = db.AspnetSubjectTopics.Where(x => x.Id == TopicId).FirstOrDefault().Name;
                 var LessonName = db.AspnetLessons.Where(x => x.Id == LessonId).FirstOrDefault().Name;
                 var StudentID = db.AspNetStudents.Where(x => x.Id == StudentId).FirstOrDefault().StudentID;

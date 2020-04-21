@@ -145,7 +145,8 @@ namespace SEA_Application.Controllers
                 }
 
 
-                TopicObj.LessonList = LessonsList;
+                List<Lesson> OrderByLessons = LessonsList.OrderBy(x => x.LessonName).ToList();
+                TopicObj.LessonList = OrderByLessons;
 
                 TopicObj.TotalLessons = Count;
                 TopicObj.TotalLessons1 = count1;
@@ -154,7 +155,9 @@ namespace SEA_Application.Controllers
             }
 
 
-            return Json(TopicListObj, JsonRequestBehavior.AllowGet);
+            // return Json(TopicListObj, JsonRequestBehavior.AllowGet);
+            return Json(TopicListObj.OrderBy(x => x.TopicName).ToList(), JsonRequestBehavior.AllowGet);
+
 
 
 
@@ -182,8 +185,6 @@ namespace SEA_Application.Controllers
                 TopicObj.TopicId = a.Id;
                 TopicObj.TopicName = a.Name;
 
-
-
                 List<Lesson> LessonsList = new List<Lesson>();
 
 
@@ -199,9 +200,9 @@ namespace SEA_Application.Controllers
                     count1++;
                 }
 
+                List<Lesson> OrderByLessons = LessonsList.OrderBy(x => x.LessonName).ToList();
 
-                TopicObj.LessonList = LessonsList;
-
+                TopicObj.LessonList = OrderByLessons;
                 TopicObj.TotalLessons = Count;
                 TopicObj.TotalLessons1 = count1;
 
@@ -209,9 +210,9 @@ namespace SEA_Application.Controllers
             }
 
 
-            return Json(TopicListObj, JsonRequestBehavior.AllowGet);
+            //  return Json(TopicListObj, JsonRequestBehavior.AllowGet);
 
-
+            return Json(TopicListObj.OrderBy(x => x.TopicName).ToList(), JsonRequestBehavior.AllowGet);
 
         }
         public ActionResult StudentAssignment(int LessonID)

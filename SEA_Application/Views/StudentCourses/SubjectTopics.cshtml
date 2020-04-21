@@ -16,7 +16,7 @@
         cursor: pointer;
         margin: auto;
         padding-left: 10px;
-    }   
+    }
 
     #TopicList {
         width: 70%;
@@ -30,16 +30,14 @@
     .TopicDiv {
         background: rgb(51, 70, 102);
         color: white;
-
-
     }
-    .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    height: 2200px !important;
-}
 
+    .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 2200px !important;
+    }
 </style>
 
 <input type="hidden" id="SubjectId" name="name" value="@ViewBag.SubjectId" />
@@ -47,7 +45,7 @@
 <div class="col-md-12">
 
 
-    <div id="TopicList" style=" margin: auto;" >
+    <div id="TopicList" style=" margin: auto;">
 
 
         <h3 style="color:black">Course Content</h3>
@@ -84,7 +82,6 @@
 
                 $.each(data, function (key, value1) {
 
-                    debugger
 
                     Count = value1.TotalLessons;
 
@@ -93,10 +90,20 @@
                     $("#TopicList").append('<div   class ="TopicsAndLesson TopicDiv" style="border:1px solid black"><b> ' + value1.TopicName + '</b> <b><span style ="float:right">' + value1.TotalLessons1 + '  Lesson </span></b></div>');
 
                     $.each(lessonlist, function (key, lesson) {
+                        debugger
 
-                        $("#TopicList").append('<div   class ="TopicsAndLesson" style="border:1px solid black"><a href = "/StudentCourses/StudentLessons/' + lesson.LessonId + '">' + lesson.LessonName + '</a></div>');
+                        if (lesson.LessonExistInTrackingTable == "Yes") {
 
 
+                            $("#TopicList").append('<div   class ="TopicsAndLesson" style="border:1px solid black"><a class="StudentLessons" name = "' + lesson.LessonId + '"   href = "/StudentCourses/StudentLessons/' + lesson.LessonId + '">' + lesson.LessonName + '</a> <span class="glyphicon glyphicon-ok"></span>  </div>');
+                        }
+                        else {
+
+                            $("#TopicList").append('<div   class ="TopicsAndLesson" style="border:1px solid black"><a class="StudentLessons" name = "' + lesson.LessonId + '"   href = "/StudentCourses/StudentLessons/' + lesson.LessonId + '">' + lesson.LessonName + '</a>   </div>');
+
+                        }
+
+                        //<span class="glyphicon glyphicon-ok"></span>
                     })
 
                 })
@@ -114,8 +121,28 @@
         })
 
 
-    })
+        $("#TopicList").on('click', ".StudentLessons", function () {
 
+            var LessonId = $(this).attr('name');
+
+
+            $.ajax({
+                type: "POST",
+                url: "/StudentCourses/UpdateStudentLessonTracking",
+                data: { "LessonId": LessonId },
+
+                success: function (data) {
+
+
+
+
+                }
+
+
+            })
+
+        })
+          })//end of document ready
 
 
 </script>   

@@ -97,7 +97,7 @@ namespace SEA_Application.Controllers
             }
 
             // Question.Is_Active = QuestionAnswerViewModel.QuestionIsActive;
-            Question.Is_Quiz = null;
+            Question.Is_Quiz = QuestionAnswerViewModel.QuestionIsQuiz;
             Question.Type = QuestionAnswerViewModel.QuestionType;
             Question.LessonId = QuestionAnswerViewModel.LessonId;
             Question.AnswerId = null;
@@ -186,6 +186,45 @@ namespace SEA_Application.Controllers
 
 
         }
+        public ActionResult TestQuestions()
+        {
+
+
+        
+
+
+
+            return View();
+        }
+
+        public ActionResult TestQuestionsByTopics(int bdoIds)
+        {
+
+            //List<AspnetSubjectTopic> AllTopics = (from topic in db.AspnetSubjectTopics
+            //                                      where bdoIds.Contains(topic.Id)
+            //                                      select topic).ToList();
+
+            //var AllQuestions =   AllTopics.Select(x => x.AspnetLessons.Select(y => y.AspnetQuestions).Select(y => y)).ToList();
+
+
+            var AllQuestion = (from topic in db.AspnetSubjectTopics
+                               join lesson in db.AspnetLessons on topic.Id equals lesson.TopicId
+                               join question in db.AspnetQuestions on lesson.Id equals question.LessonId
+
+                               where topic.Id == bdoIds && question.Is_Quiz == true && question.Type=="MCQ"
+                               select new
+                               {
+                                   question.Id,
+                                   question.Name
+
+                               }).ToList();
+
+
+
+
+
+            return Json(AllQuestion, JsonRequestBehavior.AllowGet);
+        }
 
         // GET: AspnetQuestions/Edit/5
         public ActionResult Edit(int? id)
@@ -219,11 +258,7 @@ namespace SEA_Application.Controllers
 
                 //}
 
-
-
-
                 string[] options = db.AspnetOptions.Where(x => x.QuestionId == aspnetQuestion.Id).Select(x => x.Name).ToArray();
-
 
                 QuestionViewModel.OptionNameOne = options[0];
                 QuestionViewModel.QuestionNameTwo = options[1];

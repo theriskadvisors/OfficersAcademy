@@ -8,7 +8,7 @@ namespace SEA_Application.Models
     public static class GetLocalDateTime
     {
 
-        public static DateTime GetLocalDateTimeFunction()
+        public static DateTime? GetLocalDateTimeFunction()
         {
             TimeZone time2 = TimeZone.CurrentTimeZone;
             DateTime test = time2.ToUniversalTime(DateTime.Now);
