@@ -211,7 +211,7 @@ namespace SEA_Application.Controllers
                                join lesson in db.AspnetLessons on topic.Id equals lesson.TopicId
                                join question in db.AspnetQuestions on lesson.Id equals question.LessonId
 
-                               where topic.Id == bdoIds && question.Is_Quiz == true && question.Type=="MCQ"
+                               where topic.Id == bdoIds && question.Is_Quiz == false && question.Type=="MCQ" 
                                select new
                                {
                                    question.Id,

@@ -20,150 +20,150 @@
 
 <script>
     $(document).ready(function () {
-    $.ajax({
-        type: "POST",
-        cache: false,
-        url: "/AspnetLessons/LoadSectionIdDDL",
-        processData: false,
-        contentType: false,
-        success: function (data) {
-            var sch = JSON.parse(data);
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/AspnetLessons/LoadSectionIdDDL",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
 
-            //var $el = $("#TopicId");
-            //$el.empty();
+                //var $el = $("#TopicId");
+                //$el.empty();
 
-            if (sch.length > 0) {
-                $el.append($("<option></option>")
-                             .attr("value", "").text('Select Section'));
-                for (i = 0; i < sch.length; i++) {
+                if (sch.length > 0) {
                     $el.append($("<option></option>")
+                        .attr("value", "").text('Select Section'));
+                    for (i = 0; i < sch.length; i++) {
+                        $el.append($("<option></option>")
                             .attr("value", sch[i].Id).text(sch[i].ClassName));
-                }
-            }
-            else {
-                $el.append($("<option></option>")
-                           .attr("value", '').text('Select'));
-            }
-        }
-    });
-
-
-    var course = 'CSS';
-    var Class;
-    $('#CTId').change(function () {
-
-        var crse = $(this).val();
-        console.log(crse);
-        course = crse;
-        $.ajax({
-            type: "POST",
-            cache: false,
-            url: "/AspNetProject/GetSubjectsByClass?CT=" + course,
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                var sch = JSON.parse(data);
-                console.log(sch);
-                var $el = $("#SubId");
-                $el.empty();
-                var $e2 = $("#TopicId");
-                $e2.empty();
-                if (sch.length > 0) {
-                    $el.append($("<option></option>")
-                                 .attr("value", "").text('Select Subject'));
-                    for (i = 0; i < sch.length; i++) {
-
-                        $el.append($("<option></option>")
-                                .attr("value", sch[i].Id).text(sch[i].SubjectName));
                     }
                 }
                 else {
                     $el.append($("<option></option>")
-                               .attr("value", '').text('Select'));
+                        .attr("value", '').text('Select'));
                 }
             }
         });
-    });
 
 
-    $('#SecId').change(function () {
+        var course = 'CSS';
+        var Class;
+        $('#CTId').change(function () {
 
-        var UserName = $(this).val();
-        console.log(UserName);
-        Class = UserName;
-        $.ajax({
-            type: "POST",
-            cache: false,
-            url: "/AspNetProject/GetSubjectsByClass?ClassID=" + UserName + "&&CT=" + course,
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                var sch = JSON.parse(data);
-                console.log(sch);
-                var $el = $("#SubId");
-                $el.empty();
-                var $e2 = $("#TopicId");
-                $e2.empty();
-                if (sch.length > 0) {
-                    $el.append($("<option></option>")
-                                 .attr("value", "").text('Select Subject'));
-                    for (i = 0; i < sch.length; i++) {
-
+            var crse = $(this).val();
+            console.log(crse);
+            course = crse;
+            $.ajax({
+                type: "POST",
+                cache: false,
+                url: "/AspNetProject/GetSubjectsByClass?CT=" + course,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    var sch = JSON.parse(data);
+                    console.log(sch);
+                    var $el = $("#SubId");
+                    $el.empty();
+                    var $e2 = $("#TopicId");
+                    $e2.empty();
+                    if (sch.length > 0) {
                         $el.append($("<option></option>")
+                            .attr("value", "").text('Select Subject'));
+                        for (i = 0; i < sch.length; i++) {
+
+                            $el.append($("<option></option>")
                                 .attr("value", sch[i].Id).text(sch[i].SubjectName));
+                        }
+                    }
+                    else {
+                        $el.append($("<option></option>")
+                            .attr("value", '').text('Select'));
                     }
                 }
-                else {
-                    $el.append($("<option></option>")
-                               .attr("value", '').text('Select'));
-                }
-            }
+            });
         });
 
-    });
 
+        $('#SecId').change(function () {
 
-    $('#SubId').change(function () {
-
-        var subid = $(this).val();
-        console.log(subid);
-
-        $.ajax({
-            type: "POST",
-            cache: false,
-            url: "/AspNetProject/GetTopic?SubID=" + subid,
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                var sch = JSON.parse(data);
-                console.log(sch);
-                var $el = $("#TopicId");
-                $el.empty();
-                if (sch.length > 0) {
-                    $el.append($("<option></option>")
-                                 .attr("value", "").text('Select Topic'));
-                    for (i = 0; i < sch.length; i++) {
-
+            var UserName = $(this).val();
+            console.log(UserName);
+            Class = UserName;
+            $.ajax({
+                type: "POST",
+                cache: false,
+                url: "/AspNetProject/GetSubjectsByClass?ClassID=" + UserName + "&&CT=" + course,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    var sch = JSON.parse(data);
+                    console.log(sch);
+                    var $el = $("#SubId");
+                    $el.empty();
+                    var $e2 = $("#TopicId");
+                    $e2.empty();
+                    if (sch.length > 0) {
                         $el.append($("<option></option>")
+                            .attr("value", "").text('Select Subject'));
+                        for (i = 0; i < sch.length; i++) {
+
+                            $el.append($("<option></option>")
+                                .attr("value", sch[i].Id).text(sch[i].SubjectName));
+                        }
+                    }
+                    else {
+                        $el.append($("<option></option>")
+                            .attr("value", '').text('Select'));
+                    }
+                }
+            });
+
+        });
+
+
+        $('#SubId').change(function () {
+
+            var subid = $(this).val();
+            console.log(subid);
+
+            $.ajax({
+                type: "POST",
+                cache: false,
+                url: "/AspNetProject/GetTopic?SubID=" + subid,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    var sch = JSON.parse(data);
+                    console.log(sch);
+                    var $el = $("#TopicId");
+                    $el.empty();
+                    if (sch.length > 0) {
+                        $el.append($("<option></option>")
+                            .attr("value", "").text('Select Topic'));
+                        for (i = 0; i < sch.length; i++) {
+
+                            $el.append($("<option></option>")
                                 .attr("value", sch[i].Id).text(sch[i].Name));
+                        }
+                    }
+                    else {
+                        $el.append($("<option></option>")
+                            .attr("value", '').text('Select'));
                     }
                 }
-                else {
-                    $el.append($("<option></option>")
-                               .attr("value", '').text('Select'));
-                }
-            }
-        });
+            });
 
-    });
-           $("form").submit(function () {
+        });
+        $("form").submit(function () {
 
             debugger
 
             if (document.getElementById("Assignment").files.length == 0) {
                 console.log("no files selected");
 
-            
+
 
 
             }
@@ -173,7 +173,7 @@
 
                 if (AssignmentName.val() != "" && AssignmentDueDate.val() != "") {
 
-                 
+
                 }
                 else {
 
@@ -189,13 +189,13 @@
 
             }
 
-           
+
 
             if (document.getElementById("Attachment1").files.length == 0) {
                 console.log("no files selected");
 
-             
-               
+
+
 
             }
             else {
@@ -204,7 +204,7 @@
 
                 if (AttachmentName1.val() != "") {
 
-                
+
 
                 }
                 else {
@@ -224,7 +224,7 @@
             if (document.getElementById("Attachment2").files.length == 0) {
                 console.log("no files selected");
 
-             
+
 
 
             }
@@ -248,34 +248,34 @@
 
             }
 
-            
-           
-
-                if (document.getElementById("Attachment3").files.length == 0) {
-                    console.log("no files selected");
 
 
+
+            if (document.getElementById("Attachment3").files.length == 0) {
+                console.log("no files selected");
+
+
+
+            }
+            else {
+                var AttachmentName3 = $("#AttachmentName3");
+
+
+                if (AttachmentName3.val() != "") {
 
                 }
                 else {
-                    var AttachmentName3 = $("#AttachmentName3");
-
-
-                    if (AttachmentName3.val() != "") {
-
-                    }
-                    else {
 
 
 
-                        $("#AttachmentName3").prop('required', true);
+                    $("#AttachmentName3").prop('required', true);
 
-                        return false;
-                    }
-
-
+                    return false;
                 }
-            
+
+
+            }
+
 
 
         });
@@ -288,6 +288,27 @@
 
         })
 
+
+        $("#Attachment1").click(function () {
+
+            $("#AttachmentText1").css('display', 'none');
+
+
+        })
+
+        $("#Attachment2").click(function () {
+
+            $("#AttachmentText2").css('display', 'none');
+
+
+        })
+
+        $("#Attachment3").click(function () {
+
+            $("#AttachmentText3").css('display', 'none');
+
+
+        })
     })
 </script>
 
@@ -333,12 +354,12 @@
                     </div>
                 </div>
                 @*<div class="form-group">
-                    <label class="cocntrol-label col-md-2">Select Section</label>
-                    <div class="col-md-6">
-                        @Html.DropDownList("SecId", null, htmlAttributes: new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.TopicId, "", new { @class = "text-danger" })
-                    </div>
-                </div>*@
+                        <label class="cocntrol-label col-md-2">Select Section</label>
+                        <div class="col-md-6">
+                            @Html.DropDownList("SecId", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.TopicId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
                 <div class="form-group">
 
                     <label class="cocntrol-label col-md-2">Select Course Type</label>
@@ -457,10 +478,12 @@
                             <div class="col-md-6">
 
 
-                              
-                                    <input type="file" id="Attachment1" name="Attachment1">
 
-                               
+                                <input type="file" id="Attachment1" name="Attachment1">
+                                <br />
+                                <span style="color:steelblue" id="AttachmentText1"> @ViewBag.Attachment1FileName </span>
+
+
 
                                 <div>
                                     <p class="help-block">Max. 32MB. (File Name Should be unique) </p>
@@ -485,10 +508,12 @@
                             <label class="control-label col-md-2"> Attach File-2</label>
                             <div class="col-md-6">
 
-                               
-                                    <input type="file" id="Attachment2" name="Attachment2">
 
-                             
+                                <input type="file" id="Attachment2" name="Attachment2">
+                                <br />
+                                <span style="color:steelblue" id="AttachmentText2"> @ViewBag.Attachment2FileName </span>
+
+
 
                                 <div>
                                     <p class="help-block">Max. 32MB. (File Name Should be unique) </p>
@@ -512,6 +537,8 @@
                             <div class="col-md-6">
 
                                 <input type="file" id="Attachment3" name="Attachment3">
+                                <br />
+                                <span style="color:steelblue" id="AttachmentText3"> @ViewBag.Attachment3FileName </span>
 
 
                                 <div class="    ">

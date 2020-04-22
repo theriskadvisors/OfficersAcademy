@@ -84,7 +84,9 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Name)
                     </th>
-
+                    <th>
+                      Is Quiz
+                    </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Type)
                     </th>
@@ -116,6 +118,24 @@
 
                     <td>
                         @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @if (item.Is_Quiz == true)
+                        {
+                            <span>Yes</span>
+                        }
+                        else if (item.Is_Quiz == false)
+                        {
+                            <span>No</span>
+                        }
+                        else
+                        {
+                            <span>Not Set</span>
+
+                        }
+
+
+
                     </td>
 
                     <td>

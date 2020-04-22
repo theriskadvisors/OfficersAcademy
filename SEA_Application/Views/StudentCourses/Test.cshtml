@@ -34,7 +34,7 @@
             }
 
             //  var quiz_id = $("#QuizId").val();
-            var id = 2;
+
             $.ajax({
                 url: '/StudentCourses/submit_question',
                 type: "GET",
@@ -85,11 +85,11 @@
 }
 
 <h3> &nbsp; M.C.Q.S Section</h3>
-@if (@ViewBag.questionList_MCQS.Count  == 0)
+@if (@ViewBag.questionList_MCQS.Count == 0)
 {
 }
 else
-{   
+{
 
     <div class="box box-primary">
         <div class="box-body">
@@ -109,8 +109,10 @@ else
                             }
 
                         </ol>
+
                         <hr />
                         counter = counter + 1;
+
                     }
                 </div>
 

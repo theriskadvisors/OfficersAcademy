@@ -81,53 +81,16 @@ namespace SEA_Application.Controllers
             int? TopicId = Lesson.TopicId;
             string Name = Lesson.Name;
 
-            string LessonLastName = db.AspnetLessons.Where(x => x.TopicId == TopicId).OrderByDescending(x => x.Name).Select(x => x.Name).FirstOrDefault();
-
-            var IsLastLesson = "";
-
-            if (Name == LessonLastName)
-            {
-                IsLastLesson = "Yes";
-            }
-            else
-            {
-                IsLastLesson = "No";
-
-            }
-
-            ViewBag.TopicId = TopicId;
-            ViewBag.IsLastLesson = IsLastLesson;
-            ViewBag.LessonID = id;
-
-
-            return View();
-        }
-        public ActionResult GetLessonVideo(int LessonID)
-        {
-            AspnetLesson Lesson = db.AspnetLessons.Where(x => x.Id == LessonID).FirstOrDefault();
-            string LessonVideoUrl = "";
-
-
-            if (Lesson != null)
-            {
-                LessonVideoUrl = Lesson.Video_Url;
-
-            }
-
-            return Json(new { LessonId = Lesson.Id, LessonName = Lesson.Name, LessonVideo = Lesson.Video_Url, LessonDescription = Lesson.Description }, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult Test(int id )
-        {
+            // tab 6 Data Start
             var questionList_MCQS = new List<question>();
             //    List<AspnetSubjectTopic> SubjectTopics =   db.AspnetSubjectTopics.Where(x => x.Id == 35).ToList();
 
-            List<int> AllLessonofTopics = db.AspnetLessons.Where(x => x.AspnetSubjectTopic.Id == id).Select(x => x.Id).ToList();
+            List<int> AllLessonofTopics = db.AspnetLessons.Where(x => x.AspnetSubjectTopic.Id == TopicId).Select(x => x.Id).ToList();
 
             var items = AllLessonofTopics.Select(num => (int?)num).ToList();
 
             var Questions = from question in db.AspnetQuestions
-                            where items.Contains(question.LessonId) && question.Type == "MCQ" && question.Is_Quiz == true
+                            where items.Contains(question.LessonId) && question.Type == "MCQ" && question.Is_Quiz == false
                             select question;
 
             foreach (var item in Questions)
@@ -149,9 +112,62 @@ namespace SEA_Application.Controllers
                 questionList_MCQS.Add(q);
             }
 
-
-
             ViewBag.questionList_MCQS = questionList_MCQS;
+            //Tab 6 data end
+
+            ViewBag.TopicId = TopicId;
+            ViewBag.LessonID = id;
+
+            return View();
+        }
+        public ActionResult IsLastLesson( int LessonID)
+        {
+            var Lesson = db.AspnetLessons.Where(x => x.Id == LessonID).FirstOrDefault();
+
+            int? TopicId = Lesson.TopicId;
+            string Name = Lesson.Name;
+
+            string LessonLastName = db.AspnetLessons.Where(x => x.TopicId == TopicId).OrderByDescending(x => x.Name).Select(x => x.Name).FirstOrDefault();
+
+            var IsLastLesson = "";
+
+            if (Name == LessonLastName)
+            {
+                IsLastLesson = "Yes";
+            }
+            else
+            {
+                IsLastLesson = "No";
+
+            }
+
+            //ViewBag.TopicId = TopicId;
+           // ViewBag.IsLastLesson = IsLastLesson;
+           
+
+
+            return Json(new { TopicId = TopicId , IsLastLesson = IsLastLesson }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public ActionResult GetLessonVideo(int LessonID)
+        {
+            AspnetLesson Lesson = db.AspnetLessons.Where(x => x.Id == LessonID).FirstOrDefault();
+            string LessonVideoUrl = "";
+
+
+            if (Lesson != null)
+            {
+                LessonVideoUrl = Lesson.Video_Url;
+
+            }
+
+            return Json(new { LessonId = Lesson.Id, LessonName = Lesson.Name, LessonVideo = Lesson.Video_Url, LessonDescription = Lesson.Description }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Test(int id )
+        {
+    
             return View();
 
         } // End of Test Action Methods
@@ -222,94 +238,68 @@ namespace SEA_Application.Controllers
             string[] selectedAnswers = Answer.Split(',');
 
             int i = 0;
-            //int WrongAnswerQuestionIds=0;
-            List<int> WrongAnswerQuestionIds = new List<int>();
+
+            var questionList_MCQS = new List<question1>();
+
             foreach (var item in selectedQuestions)
             {
+                question1 QuestionObj = new question1();
+
                 var ans = db.AspnetQuestions.Where(x => x.Id.ToString() == item).Select(x => x.AnswerId).FirstOrDefault();
+                var QuestionFromDB = db.AspnetQuestions.Where(x => x.Id.ToString() == item).FirstOrDefault();
+
+                QuestionObj.name = QuestionFromDB.Name;
+                QuestionObj.id = QuestionFromDB.Id;
+                QuestionObj.type = QuestionFromDB.Type;
+
+                
                 string val = selectedAnswers[i];
                 if (selectedAnswers[i] == ans.ToString())
                 {
 
+
                     score++;
+
+                    var RightAnswer = "Selected Answer is Correct";
+
+                    QuestionObj.Message = RightAnswer;
+                    QuestionObj.IsCorrect = "Yes";
+
                 }
                 else {
 
-                    WrongAnswerQuestionIds.Add(Convert.ToInt32(item));
+
+                var AnswerName = db.AspnetOptions.Where(x => x.Id == QuestionFromDB.AnswerId).FirstOrDefault().Name;
+                var LessonName = db.AspnetLessons.Where(x => x.Id == QuestionFromDB.LessonId).FirstOrDefault().Name;
+
+                    if(selectedAnswers[i] == "")
+                    {
+
+                    QuestionObj.IsCorrect = "No";
+                    var WrongAnswer = "Correct Answer  is " + AnswerName +" you need to revise "+ LessonName + " Lesson";
+
+                    QuestionObj.Message = WrongAnswer;
+
+                    }
+                    else
+                    {
+
+                        QuestionObj.IsCorrect = "No";
+                         var WrongAnswer = "Your Answer is Wrong .Correct Answer  is " + AnswerName + " you need to revise " + LessonName +" Lesson";
+
+                        QuestionObj.Message = WrongAnswer;
+
+
+                    }
+
                 }
+
                 i++;
 
-              
-
-                // where WrongAnswerQuestionIds.Contains()
-
-
-                
-                // db.SaveChanges();
+                questionList_MCQS.Add(QuestionObj);
             }
-            var TotalScoreOfStudent = "Number of Correct Asnwers are " + score.ToString();
-
-
-                var result2 = (from question in db.AspnetQuestions
-                               join lesson in db.AspnetLessons on question.LessonId equals lesson.Id
-                               where WrongAnswerQuestionIds.Contains(question.Id)
-                               select new
-                               {
-                                   question.LessonId,
-                                   lesson.Name
-
-
-                              }).Distinct();
-
-            var ReviseLessonsOfStudent = "You need to revise ";
-
-            foreach( var result in result2)
-            {
-                ReviseLessonsOfStudent = ReviseLessonsOfStudent + "," + result.Name;
-
-
-            }
-
-            TotalScore = TotalScoreOfStudent;
-            ReviseLessons = ReviseLessonsOfStudent;
-
-
-            var questionList_MCQS = new List<question1>();
-
-            i = 0;
-            foreach (var item in selectedQuestions)
-            {
-                var q = new question1();
-
-                AspnetQuestion Queston = db.AspnetQuestions.Where(x => x.Id.ToString() == item).FirstOrDefault();
-
-                q.id = item;
-                q.name = Queston.Name;
-                q.type = Queston.Type;
-                q.CorrentAnswer = Convert.ToString(Queston.AnswerId);
-                q.StudentAnswer = selectedAnswers[i];
-
-                q.options = new List<option1>();
-                var op = db.AspnetOptions.Where(x => x.QuestionId.ToString() == q.id).ToList();
-                foreach (var item1 in op)
-                {
-                    var op1 = new option1();
-
-                    op1.id = Convert.ToString(item1.Id);
-                    op1.name = item1.Name;
-                    q.options.Add(op1);
-                }
-                questionList_MCQS.Add(q);
-
-                i++;
-            }
-
-
-            // return Content(score.ToString());
-
-            //return RedirectToAction("Index");
-            QuestionsStaticList = questionList_MCQS;
-            return Json( questionList_MCQS, JsonRequestBehavior.AllowGet);
+         
+            return Json(questionList_MCQS, JsonRequestBehavior.AllowGet);
 
         }
         public ActionResult TestResult( )
@@ -324,20 +314,16 @@ namespace SEA_Application.Controllers
             return View();
         }
 
-          public class option1
-        {
-            public string id;
-            public string name;
-        }
+       
 
         public class question1
         {
-            public string id;
+            public int id;
             public string name;
             public string type;
-            public string CorrentAnswer;
-            public string StudentAnswer;
-            public List<option1> options;
+            public string Message;
+            public string IsCorrect;
+          
         }
 
 

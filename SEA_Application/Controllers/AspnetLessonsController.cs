@@ -306,17 +306,22 @@ namespace SEA_Application.Controllers
                 {
 
                     lessonViewModel.AttachmentName1 = attachment.Name;
+                    ViewBag.Attachment1FileName = attachment.Path;
 
                 }
                 else if (count == 2)
                 {
 
                     lessonViewModel.AttachmentName2 = attachment.Name;
+                    ViewBag.Attachment2FileName = attachment.Path;
+
 
                 }
                 else if (count == 3)
                 {
                     lessonViewModel.AttachmentName3 = attachment.Name;
+                    ViewBag.Attachment3FileName = attachment.Path;
+
 
 
                 }
@@ -443,63 +448,243 @@ namespace SEA_Application.Controllers
             List<AspnetStudentAttachment> studentAttachments = db.AspnetStudentAttachments.Where(x => x.LessonId == Lesson.Id).ToList();
             List<AspnetStudentLink> studentLinks = db.AspnetStudentLinks.Where(x => x.LessonId == Lesson.Id).ToList();
 
+
+
             //db.AspnetStudentAttachments.RemoveRange(studentAttachments);
             //db.SaveChanges();
 
             db.AspnetStudentLinks.RemoveRange(studentLinks);
             db.SaveChanges();
 
+         SEA_DatabaseEntities db1 = new SEA_DatabaseEntities();
 
-            if (Attachment1.ContentLength > 0)
+        List<AspnetStudentAttachment> studentAttachments1 = db1.AspnetStudentAttachments.Where(x => x.LessonId == Lesson.Id).ToList();
+
+            int TotalAttachments =  studentAttachments1.Count;
+
+            if(TotalAttachments == 0)
             {
-                var fileName1 = Path.GetFileName(Attachment1.FileName);
-                Attachment1.SaveAs(Server.MapPath("~/Content/StudentAttachments/") + fileName1);
+                if (Attachment1.ContentLength > 0)
+                {
+                    var fileName1 = Path.GetFileName(Attachment1.FileName);
+                    Attachment1.SaveAs(Server.MapPath("~/Content/StudentAttachments/") + fileName1);
 
-                AspnetStudentAttachment studentAttachment1 = new AspnetStudentAttachment();
+                    AspnetStudentAttachment studentAttachment1 = new AspnetStudentAttachment();
 
-                studentAttachment1.Name = LessonViewModel.AttachmentName1;
-                studentAttachment1.Path = fileName1;
-                studentAttachment1.CreationDate = DateTime.Now;
-                studentAttachment1.LessonId = Lesson.Id;
+                    studentAttachment1.Name = LessonViewModel.AttachmentName1;
+                    studentAttachment1.Path = fileName1;
+                    studentAttachment1.CreationDate = DateTime.Now;
+                    studentAttachment1.LessonId = Lesson.Id;
+                    db.AspnetStudentAttachments.Add(studentAttachment1);
+                    db.SaveChanges();
 
-                db.SaveChanges();
+                }
+                if (Attachment2.ContentLength > 0)
+                {
+
+                    var fileName1 = Path.GetFileName(Attachment2.FileName);
+                    Attachment2.SaveAs(Server.MapPath("~/Content/StudentAttachments/") + fileName1);
+
+                    AspnetStudentAttachment studentAttachment2 = new AspnetStudentAttachment();
+
+                    studentAttachment2.Name = LessonViewModel.AttachmentName2;
+                    studentAttachment2.Path = fileName1;
+                    studentAttachment2.CreationDate = DateTime.Now;
+                    studentAttachment2.LessonId = Lesson.Id;
+                    db.AspnetStudentAttachments.Add(studentAttachment2);
+
+                    db.SaveChanges();
+
+                }
+
+                if (Attachment3.ContentLength > 0)
+                {
+
+                    var fileName1 = Path.GetFileName(Attachment3.FileName);
+                    Attachment3.SaveAs(Server.MapPath("~/Content/StudentAttachments/") + fileName1);
+
+                    AspnetStudentAttachment studentAttachment3 = new AspnetStudentAttachment();
+
+                    studentAttachment3.Name = LessonViewModel.AttachmentName3;
+                    studentAttachment3.Path = fileName1;
+                    studentAttachment3.CreationDate = DateTime.Now;
+                    studentAttachment3.LessonId = Lesson.Id;
+                    db.AspnetStudentAttachments.Add(studentAttachment3);
+                    db.SaveChanges();
+
+                }
 
 
             }
-            if (Attachment2.ContentLength > 0)
+            else
             {
 
-                var fileName1 = Path.GetFileName(Attachment2.FileName);
-                Attachment2.SaveAs(Server.MapPath("~/Content/StudentAttachments/") + fileName1);
+                if (TotalAttachments == 1)
+                {
+                    var FirstElement = studentAttachments1.ElementAt(0);
+                    FirstElement.Name = LessonViewModel.AttachmentName1;
 
-                AspnetStudentAttachment studentAttachment2 = new AspnetStudentAttachment();
+                    var FileName = FirstElement.Path;
 
-                studentAttachment2.Name = LessonViewModel.AttachmentName2;
-                studentAttachment2.Path = fileName1;
-                studentAttachment2.CreationDate = DateTime.Now;
-                studentAttachment2.LessonId = Lesson.Id;
-                db.AspnetStudentAttachments.Add(studentAttachment2);
+                    if (Attachment1.ContentLength > 0)
+                    {
+                        var fileName1 = Path.GetFileName(Attachment1.FileName);
+                        FileName = fileName1;
+                        Attachment1.SaveAs(Server.MapPath("~/Content/StudentAttachments/") + fileName1);
+                        
+                    }
+                    FirstElement.Path = FileName;
+                    db1.SaveChanges();
 
-                db.SaveChanges();
+                    if (Attachment2.ContentLength > 0)
+                    {
+
+                        var fileName1 = Path.GetFileName(Attachment2.FileName);
+                        Attachment2.SaveAs(Server.MapPath("~/Content/StudentAttachments/") + fileName1);
+
+                        AspnetStudentAttachment studentAttachment2 = new AspnetStudentAttachment();
+
+                        studentAttachment2.Name = LessonViewModel.AttachmentName2;
+                        studentAttachment2.Path = fileName1;
+                        studentAttachment2.CreationDate = DateTime.Now;
+                        studentAttachment2.LessonId = Lesson.Id;
+                        db.AspnetStudentAttachments.Add(studentAttachment2);
+
+                        db.SaveChanges();
+
+                    }
+
+                    if (Attachment3.ContentLength > 0)
+                    {
+
+                        var fileName1 = Path.GetFileName(Attachment3.FileName);
+                        Attachment3.SaveAs(Server.MapPath("~/Content/StudentAttachments/") + fileName1);
+
+                        AspnetStudentAttachment studentAttachment3 = new AspnetStudentAttachment();
+
+                        studentAttachment3.Name = LessonViewModel.AttachmentName3;
+                        studentAttachment3.Path = fileName1;
+                        studentAttachment3.CreationDate = DateTime.Now;
+                        studentAttachment3.LessonId = Lesson.Id;
+                        db.AspnetStudentAttachments.Add(studentAttachment3);
+                        db.SaveChanges();
+
+                    }
+
+                }
+
+                else if (TotalAttachments == 2)
+                  {
+
+                        var FirstElement = studentAttachments1.ElementAt(0);
+                        FirstElement.Name = LessonViewModel.AttachmentName1;
+
+                        var FileName0 = FirstElement.Path;
+
+                        if (Attachment1.ContentLength > 0)
+                        {
+                            var fileName1 = Path.GetFileName(Attachment1.FileName);
+                            FileName0 = fileName1;
+                            Attachment1.SaveAs(Server.MapPath("~/Content/StudentAttachments/") + fileName1);
+
+                        }
+                        FirstElement.Path = FileName0;
+                        db1.SaveChanges();
+
+
+                    var SecondElement = studentAttachments1.ElementAt(1);
+                        SecondElement.Name = LessonViewModel.AttachmentName2;
+
+                        var FileName1 = SecondElement.Path;
+
+                        if (Attachment2.ContentLength > 0)
+                        {
+                            var fileName2 = Path.GetFileName(Attachment2.FileName);
+                            FileName1 = fileName2;
+                            Attachment2.SaveAs(Server.MapPath("~/Content/StudentAttachments/") + fileName2);
+
+                        }
+                        SecondElement.Path = FileName1;
+                        db1.SaveChanges();
+
+
+
+                    if (Attachment3.ContentLength > 0)
+                    {
+
+                        var fileName1 = Path.GetFileName(Attachment3.FileName);
+                        Attachment3.SaveAs(Server.MapPath("~/Content/StudentAttachments/") + fileName1);
+
+                        AspnetStudentAttachment studentAttachment3 = new AspnetStudentAttachment();
+
+                        studentAttachment3.Name = LessonViewModel.AttachmentName3;
+                        studentAttachment3.Path = fileName1;
+                        studentAttachment3.CreationDate = DateTime.Now;
+                        studentAttachment3.LessonId = Lesson.Id;
+                        db.AspnetStudentAttachments.Add(studentAttachment3);
+                        db.SaveChanges();
+
+                    }
+
+                }
+
+                else
+                {
+
+                    var FirstElement = studentAttachments1.ElementAt(0);
+                    FirstElement.Name = LessonViewModel.AttachmentName1;
+
+                    var FileName0 = FirstElement.Path;
+
+                    if (Attachment1.ContentLength > 0)
+                    {
+                        var fileName1 = Path.GetFileName(Attachment1.FileName);
+                        FileName0 = fileName1;
+                        Attachment1.SaveAs(Server.MapPath("~/Content/StudentAttachments/") + fileName1);
+
+                    }
+                    FirstElement.Path = FileName0;
+                    db1.SaveChanges();
+
+
+                    var SecondElement = studentAttachments1.ElementAt(1);
+                    SecondElement.Name = LessonViewModel.AttachmentName2;
+
+                    var FileName1 = SecondElement.Path;
+
+                    if (Attachment2.ContentLength > 0)
+                    {
+                        var fileName2 = Path.GetFileName(Attachment2.FileName);
+                        FileName1 = fileName2;
+                        Attachment2.SaveAs(Server.MapPath("~/Content/StudentAttachments/") + fileName2);
+
+                    }
+                    SecondElement.Path = FileName1;
+                    db1.SaveChanges();
+
+
+                    var ThirdElement = studentAttachments1.ElementAt(2);
+                    ThirdElement.Name = LessonViewModel.AttachmentName3;
+
+                    var FileName2 = ThirdElement.Path;
+
+                    if (Attachment3.ContentLength > 0)
+                    {
+                        var fileName3 = Path.GetFileName(Attachment3.FileName);
+                        FileName2 = fileName3;
+                        Attachment2.SaveAs(Server.MapPath("~/Content/StudentAttachments/") + fileName3);
+
+                    }
+                    ThirdElement.Path = FileName2;
+                    db1.SaveChanges();
+
+
+                }
+
 
             }
 
-            if (Attachment3.ContentLength > 0)
-            {
-
-                var fileName1 = Path.GetFileName(Attachment3.FileName);
-                Attachment3.SaveAs(Server.MapPath("~/Content/StudentAttachments/") + fileName1);
-
-                AspnetStudentAttachment studentAttachment3 = new AspnetStudentAttachment();
-
-                studentAttachment3.Name = LessonViewModel.AttachmentName3;
-                studentAttachment3.Path = fileName1;
-                studentAttachment3.CreationDate = DateTime.Now;
-                studentAttachment3.LessonId = Lesson.Id;
-                db.AspnetStudentAttachments.Add(studentAttachment3);
-                db.SaveChanges();
-
-            }
+          
 
             if (LessonViewModel.LinkUrl1 != null)
             {

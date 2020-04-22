@@ -91,7 +91,9 @@
                             <th>
                                 @Html.DisplayNameFor(model => model.Name)
                             </th>
-
+                            <th>
+                             Is Quiz
+                            </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.Type)
                             </th>
@@ -114,36 +116,53 @@
 
                         @foreach (var item in Model)
                         {
-                            <tr>
-                                <td style="display:none">
+                        <tr>
+                            <td style="display:none">
 
-                                    @item.Id
-                                </td>
+                                @item.Id
+                            </td>
 
 
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Name)
-                                </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @if (item.Is_Quiz == true)
+                                {
+                                    <span>Yes</span>
+                                }
+                                else if (item.Is_Quiz == false)
+                                {
+                                    <span>No</span>
+                                }
+                                else
+                                {
+                                    <span>Not Set</span>
 
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Type)
-                                </td>
+                                }
 
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.AspnetLesson.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.AspnetOption.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.CreationDate)
-                                </td>
-                                @*<td>
-                                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                                        @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                                    </td>*@
-                            </tr>
+
+
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Type)
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AspnetLesson.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AspnetOption.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreationDate)
+                            </td>
+                            @*<td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+        </td>*@
+                        </tr>
 
 
                         }
