@@ -257,7 +257,8 @@ namespace SEA_Application.Controllers
                 //foreach(var Emplyee in SelectedTeahcersFromDB)
                 //{
 
-
+                // assign subject to teacher start 
+                /*
                  AspNetTeacherSubject ts = new AspNetTeacherSubject();
 
 
@@ -265,6 +266,9 @@ namespace SEA_Application.Controllers
                 ts.SubjectID = aspNetSubject.Id;
                 db.AspNetTeacherSubjects.Add(ts);
                 db.SaveChanges();
+                */
+
+               // assign subject to teachers end //
 
                 //}
 
@@ -512,12 +516,18 @@ namespace SEA_Application.Controllers
             var SubjectsToRemoveOfCurrentTeacher = AllTeacherSubjectOfCurrentClass.Where(x => x.TeacherID == teacherId);
 
             db.AspNetTeacherSubjects.RemoveRange(SubjectsToRemoveOfCurrentTeacher);
+          
+            db.SaveChanges();
+
+
+           var TeacherGenericSubjectsToRemove =  db.Teacher_GenericSubjects.Where(x => x.TeacherId == teacherId).ToList(); ;
+
+            db.Teacher_GenericSubjects.RemoveRange(TeacherGenericSubjectsToRemove);
+
             db.SaveChanges();
 
 
             List<string> selectedsubjects = new List<string>();
-                
-
             if (Request.Form["MandatorySubjects"] != null)
             {
 
@@ -530,6 +540,10 @@ namespace SEA_Application.Controllers
                 selectedsubjects.AddRange(Request.Form["OptionalSubjects"].Split(',').ToList());
 
             }
+
+            List<string> listofIDs = selectedsubjects.ToList();
+            List<int> myIntegersSubjectsList = listofIDs.Select(s => int.Parse(s)).ToList();
+
 
             if (selectedsubjects != null)
             {
@@ -547,6 +561,48 @@ namespace SEA_Application.Controllers
                     db.SaveChanges();
                 }
             }
+
+               SEA_DatabaseEntities db1 = new SEA_DatabaseEntities();
+
+
+
+            if (selectedsubjects != null)
+            {
+                var AllSubjectsOfTeacher = from subject in db.AspNetSubjects
+                                            where myIntegersSubjectsList.Contains(subject.Id)
+                                            select subject;
+
+
+                foreach (var sub in AllSubjectsOfTeacher)
+                {
+
+                    foreach (var sub1 in db.GenericSubjects.ToList())
+                    {
+
+                        if (sub.SubjectName == sub1.SubjectName && sub.CourseType == sub1.SubjectType)
+                        {
+
+                            Teacher_GenericSubjects genericSubject = new Teacher_GenericSubjects();
+
+                            genericSubject.SubjectId= sub1.Id;
+                            genericSubject.TeacherId = teacherId;
+
+                            db1.Teacher_GenericSubjects.Add(genericSubject);
+                            db1.SaveChanges();
+                        }
+
+                    }
+
+
+                }
+
+
+
+            }
+
+
+
+
 
             int? SessionId = db.AspNetClasses.Where(x => x.Id == classId).FirstOrDefault().SessionID;
 
