@@ -8,24 +8,71 @@
 <script>
     $(document).ready(function () {
         $("#example").dataTable();
+        var table = $("#example1").dataTable();
+
+        $.ajax({
+            type: "POST",
+            url: "/AspnetQuestions/AllQuizList",
+            data: {},
+
+            success: function (data) {
+
+                table.fnClearTable();
+
+                $.each(data, function (index) {
+
+
+
+                    var value1 = new Date(parseInt(data[index].QuizStartDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                    var dat1 = value1.getMonth() +
+                        1 +
+                        "/" +
+                        value1.getDate() +
+                        "/" +
+                    value1.getFullYear();
+
+
+                    var value2 = new Date(parseInt(data[index].QuizDueDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                    var dat2 = value2.getMonth() +
+                        1 +
+                        "/" +
+                        value2.getDate() +
+                        "/" +
+                    value2.getFullYear();
+
+                    var value3 = new Date(parseInt(data[index].QuizCreationDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                    var dat3 = value3.getMonth() +
+                        1 +
+                        "/" +
+                        value3.getDate() +
+                        "/" +
+                        value3.getFullYear();
+
+                    table.fnAddData([data[index].QuizName, data[index].QuizDescription, dat1, dat2, data[index].QuizCreatedBy, dat3]);
+
+                })
+                table.fnDraw();
+
+            }
+        })
+
 
         $('.table').on('click', 'tbody tr', function () {
-
-
             var td = $(this).children("td");
-
-            //   var userName = $(td[0]).children("input").val();
-
-            //alert($(td[0]).html());
             var Id = parseInt($(td[0]).html());
-            //alert(Id);
-
-            // alert(Id);
-            //userName = userName.trim();
+            Id = Id.trim();
             window.location.href = "/AspnetQuestions/Edit?id=" + Id;
         });
 
+        $('.table1').on('click', 'tbody tr', function () {
+            var td = $(this).children("td");
+            var Id = parseInt($(td[0]).html());
+            Id = Id.trim();
+            window.location.href = "/AspnetQuizs/Edit?id=" + Id;
+        });
+
         DrawTable();
+        DrawTable1();
     })
 
 
@@ -63,7 +110,39 @@
         $("#Class").prepend("<option value='0'>All</option>");
     }
 
+    function DrawTable1() {
+        $('#example1_filter').addClass("form-group");
+        $('#example1_filter').addClass("has-feedback");
+        $('#example1_length').addClass("col-lg-9 col-md-8 col-sm-12 col-xs-12");
+        //$('#example1_filter').addClass("col-lg-4 col-md-4 col-sm-12 col-xs-12");
+        $('#example1_wrapper').css("text-align", "left");
+        $('#example1_length').css("text-align", "left");
+        $('#example1_length label').addClass("col-md-3 col-sm-12 col-lg-2");
+        $("#example1_length label").css("text-align", "left");
+        $('#example1_length label').addClass("col-md-2 col-lg-2 col-sm-12");
+        // // $('#example1_length label select').addClass("col-md-3 col-sm-8 col-lg-3"); : auto;
+        $('#example1_filter input').css({ "border": "1px solid #ddd", "border-radius": "40px", "height": "30px", "margin-top": "-5px", "outline": "none", "padding-left": "10px", "color": "#000000 !important" });
+        //$('#example1_length').css({ "overflow": "auto" });
+        $('#example1_filter input').addClass("add");
+        $('#example1_filter').append('<span class="glyphicon glyphicon-search form-control-feedback" style="margin-top: -33px; color: #666;"></span>');
+        var list = $("#SubjectID").html();
+        $('#example1_length').append(
 
+            '<div class="col-md-1" style="width:0%; padding-left:1px;">' +
+            '<div class="d-bar"></div>' +
+            '</div>'
+            +
+            '<div class="col-md-5 col-lg-3" style="padding-left:0px">' +
+            '<div class="col-md-1 col-sm-3 col-xs-3" style="padding-left:0px"><a href=""><i class="glyphicon glyphicon-repeat" data-toggle="tooltip" title="Refresh" data-placement="bottom"></i></a></div>' +
+            '<div class="col-md-1 col-sm-3 col-xs-3"><a href="/AspnetQuizs/Create"><i class="glyphicon glyphicon-edit" data-placement="bottom"></i></a></div>' +
+            '<div class="col-md-1 col-sm-3 col-xs-3"><a href=""><span style="color:gray"><i class="glyphicon glyphicon-download-alt" data-placement="bottom"></i></span></a></div>' +
+            ' <div class="col-md-1 col-sm-3 col-xs-3"><a href=""><span style="color:gray"><i class="fa fa-ban"  data-placement="bottom"></i></span>' + '</a></div>' +
+            '<div class="col-md-1" padding-left:10px;">' +
+            '<div class="d-bar"></div>' +
+            '</div>' +
+            '</div>');
+        $("#Class").prepend("<option value='0'>All</option>");
+    }
 </script>
 
 <h4 class="orange">&nbsp;View Questions and Topics &nbsp;</h4>
@@ -86,13 +165,12 @@
                     <thead>
 
                         <tr>
-
                             <th style="display:none">  11</th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Name)
+                               @Html.DisplayNameFor(model => model.Name)
                             </th>
                             <th>
-                             Is Quiz
+                             Quiz Question?
                             </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.Type)
@@ -109,7 +187,6 @@
                             </th>
                             @*<th></th>*@
                         </tr>
-
                     </thead>
 
                     <tbody>
@@ -186,7 +263,7 @@
                 <div class="col-md-12">
 
 
-                    <table class="table table-striped table-bordered" id="datatable">
+                    <table class="table1 table-striped table-bordered" id="example1">
                         <thead>
                             <tr>
                                 <th>
@@ -214,105 +291,9 @@
                         </tbody>
                     </table>
 
-
-
-
-
                 </div>
             </div>
         </div>
     </div>
 
 </div>
-
-<script>
-    $(document).ready(function () {
-
-        var table = $("#datatable").dataTable();
-
-
-        $.ajax({
-            type: "POST",
-            url: "/AspnetQuestions/AllQuizList",
-            data: {},
-
-            success: function (data) {
-
-                table.fnClearTable();
-
-                $.each(data, function (index) {
-
-
-
-                      var value1 = new Date(parseInt(data[index].QuizStartDate.replace(/(^.*\()|([+-].*$)/g, '')));
-                        var dat1 = value1.getMonth() +
-                            1 +
-                            "/" +
-                            value1.getDate() +
-                            "/" +
-                        value1.getFullYear();
-
-
-                      var value2 = new Date(parseInt(data[index].QuizDueDate.replace(/(^.*\()|([+-].*$)/g, '')));
-                        var dat2 = value2.getMonth() +
-                            1 +
-                            "/" +
-                            value2.getDate() +
-                            "/" +
-                        value2.getFullYear();
-
-                       var value3 = new Date(parseInt(data[index].QuizCreationDate.replace(/(^.*\()|([+-].*$)/g, '')));
-                        var dat3 = value3.getMonth() +
-                            1 +
-                            "/" +
-                            value3.getDate() +
-                            "/" +
-                            value3.getFullYear();
-
-                    table.fnAddData([data[index].QuizName, data[index].QuizDescription, dat1, dat2 , data[index].QuizCreatedBy ,dat3]);
-
-                })
-                table.fnDraw();
-
-            }
-        })
-
-    })//end of document ready
-
-
-
-    function DrawTable1() {
-        $('#example_filter').addClass("form-group");
-        $('#example_filter').addClass("has-feedback");
-        $('#example_length').addClass("col-lg-9 col-md-8 col-sm-12 col-xs-12");
-        //$('#example_filter').addClass("col-lg-4 col-md-4 col-sm-12 col-xs-12");
-        $('#example_wrapper').css("text-align", "left");
-        $('#example_length').css("text-align", "left");
-        $('#example_length label').addClass("col-md-3 col-sm-12 col-lg-2");
-        $("#example_length label").css("text-align", "left");
-        $('#example_length label').addClass("col-md-2 col-lg-2 col-sm-12");
-        // // $('#example_length label select').addClass("col-md-3 col-sm-8 col-lg-3"); : auto;
-        $('#example_filter input').css({ "border": "1px solid #ddd", "border-radius": "40px", "height": "30px", "margin-top": "-5px", "outline": "none", "padding-left": "10px", "color": "#000000 !important" });
-        //$('#example_length').css({ "overflow": "auto" });
-        $('#example_filter input').addClass("add");
-        $('#example_filter').append('<span class="glyphicon glyphicon-search form-control-feedback" style="margin-top: -33px; color: #666;"></span>');
-        var list = $("#SubjectID").html();
-        $('#example_length').append(
-
-            '<div class="col-md-1" style="width:0%; padding-left:1px;">' +
-            '<div class="d-bar"></div>' +
-            '</div>'
-            +
-            '<div class="col-md-5 col-lg-3" style="padding-left:0px">' +
-            '<div class="col-md-1 col-sm-3 col-xs-3" style="padding-left:0px"><a href=""><i class="glyphicon glyphicon-repeat" data-toggle="tooltip" title="Refresh" data-placement="bottom"></i></a></div>' +
-            '<div class="col-md-1 col-sm-3 col-xs-3"><a href="/AspnetSubjectTopics/Create"><i class="glyphicon glyphicon-edit" data-placement="bottom"></i></a></div>' +
-            '<div class="col-md-1 col-sm-3 col-xs-3"><a href=""><span style="color:gray"><i class="glyphicon glyphicon-download-alt" data-placement="bottom"></i></span></a></div>' +
-            ' <div class="col-md-1 col-sm-3 col-xs-3"><a href=""><span style="color:gray"><i class="fa fa-ban"  data-placement="bottom"></i></span>' + '</a></div>' +
-            '<div class="col-md-1" padding-left:10px;">' +
-            '<div class="d-bar"></div>' +
-            '</div>' +
-            '</div>');
-        $("#Class").prepend("<option value='0'>All</option>");
-    }
-
-</script>
