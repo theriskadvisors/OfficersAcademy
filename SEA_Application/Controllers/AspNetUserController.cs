@@ -810,8 +810,8 @@ namespace SEA_Application.Controllers
         {
 
 
-          var ChecktotalFee =  Convert.ToDouble(Request.Form["TotalFee"]);
-          var CheckDiscount = Request.Form["Discount"];
+        //  var ChecktotalFee =  Convert.ToDouble(Request.Form["TotalFee"]);
+         // var CheckDiscount = Request.Form["Discount"];
 
 
             var dbTransaction = db.Database.BeginTransaction();
@@ -1445,6 +1445,23 @@ namespace SEA_Application.Controllers
         // GET: AspNetUser
         public ViewResult StudentsIndex()
         {
+
+            //List<GenericSubject> GenericSubjectsList = new List<GenericSubject>();
+
+            //var AllSubject = db.AspNetSubjects.Where(x => x.ClassID == 1).ToList();
+
+            //foreach (var Subject in AllSubject)
+            //{
+
+            //    GenericSubject genericSubject = new GenericSubject();
+            //    genericSubject.SubjectName = Subject.SubjectName;
+            //    genericSubject.SubjectType = Subject.CourseType;
+
+            //    db.GenericSubjects.Add(genericSubject);
+            //    db.SaveChanges();
+
+            //}
+
 
 
             //var students = db.AspNetStudents.ToList();
