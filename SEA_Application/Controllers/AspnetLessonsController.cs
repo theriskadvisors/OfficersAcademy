@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Collections;
 using SEA_Application.Models;
+using Microsoft.AspNet.Identity;
 
 namespace SEA_Application.Controllers
 {
@@ -210,7 +211,7 @@ namespace SEA_Application.Controllers
 
 
 
-            return RedirectToAction("Index");
+            return RedirectToAction("ViewTopicsAndLessons","AspnetSubjectTopics");
 
         }
 
@@ -336,7 +337,24 @@ namespace SEA_Application.Controllers
 
 
             //  ViewBag.SecId = new SelectList(db.AspNetClasses, "Id", "ClassName", ClassId);
-            ViewBag.SubId = new SelectList(db.GenericSubjects.Where(x => x.SubjectType == Subject.SubjectType), "Id", "SubjectName", SubjectId);
+            // ViewBag.SubId = new SelectList(db.GenericSubjects.Where(x => x.SubjectType == Subject.SubjectType), "Id", "SubjectName", SubjectId);
+
+
+            var UserId = User.Identity.GetUserId();
+
+
+            var SubjectofCurrentSessionTeacher = from subject in db.GenericSubjects
+                                                 join TeacherSubject in db.Teacher_GenericSubjects on subject.Id equals TeacherSubject.SubjectId
+                                                 join employee in db.AspNetEmployees on TeacherSubject.TeacherId equals employee.Id
+                                                 where employee.UserId == UserId && subject.SubjectType == Subject.SubjectType
+                                                 select new
+                                                 {
+                                                     subject.Id,
+                                                     subject.SubjectName,
+                                                 };
+
+             ViewBag.SubId = new SelectList(SubjectofCurrentSessionTeacher, "Id", "SubjectName", SubjectId);
+
             ViewBag.TopicId = new SelectList(db.AspnetSubjectTopics.Where(x => x.SubjectId == SubjectId), "Id", "Name", aspnetLesson.TopicId);
             ViewBag.CTId = Subject.SubjectType;
 
@@ -721,7 +739,7 @@ namespace SEA_Application.Controllers
             }
 
 
-            return RedirectToAction("Index");
+            return RedirectToAction("ViewTopicsAndLessons","AspnetSubjectTopics");
         }
 
         // GET: AspnetLessons/Delete/5

@@ -27,9 +27,21 @@ namespace SEA_Application.Controllers
         }
         public ActionResult GetSubjectsByClass(string CT)
         {
-            var SubjectsByClass = db.GenericSubjects.Where(x =>x.SubjectType== CT).ToList().Select(x => new { x.Id,x.SubjectName});
+            var UserId = User.Identity.GetUserId();
 
-            string status = Newtonsoft.Json.JsonConvert.SerializeObject(SubjectsByClass);
+            var SubjectofCurrentSessionTeacher = from subject in db.GenericSubjects
+                                                 join TeacherSubject in db.Teacher_GenericSubjects on subject.Id equals TeacherSubject.SubjectId
+                                                 join employee in db.AspNetEmployees on TeacherSubject.TeacherId equals employee.Id
+                                                 where employee.UserId == UserId &&  subject.SubjectType == CT
+                                                 select new
+                                                 {
+                                                     subject.Id,
+                                                     subject.SubjectName,
+                                                 };
+
+           //   var SubjectsByClass = db.GenericSubjects.Where(x =>x.SubjectType== CT).ToList().Select(x => new { x.Id,x.SubjectName});
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(SubjectofCurrentSessionTeacher);
     
             // return Json(SubjectsByClass, JsonRequestBehavior.AllowGet);
                return Content(status);

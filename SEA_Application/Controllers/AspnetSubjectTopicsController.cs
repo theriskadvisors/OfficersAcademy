@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
+using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using SEA_Application.Models;
 
@@ -18,23 +19,45 @@ namespace SEA_Application.Controllers
     {
         private SEA_DatabaseEntities db = new SEA_DatabaseEntities();
 
+
         // GET: AspnetSubjectTopics
         public ActionResult Index()
         {
+
+            //     var aspnetSubjectTopicsTesting = db.AspnetSubjectTopics.Include(a => a.GenericSubject));
+
+            //var UserId = User.Identity.GetUserId();
+            //int id  =  db.AspNetEmployees.Where(x => x.UserId == UserId).FirstOrDefault().Id;
+            //var aspnetSubjectTopics = db.AspnetSubjectTopics.Include(a => a.GenericSubject.Teacher_GenericSubjects.Where(x=>x.TeacherId== id));
+
+
             var aspnetSubjectTopics = db.AspnetSubjectTopics.Include(a => a.GenericSubject);
             return View(aspnetSubjectTopics.ToList());
+
+            //  return View();
         }
 
         public ActionResult ViewTopicsAndLessons()
         {
-            var aspnetSubjectTopics = db.AspnetSubjectTopics.Include(a => a.GenericSubject);
+            //var aspnetSubjectTopics = db.AspnetSubjectTopics.Include(a => a.GenericSubject);
+            //return View(aspnetSubjectTopics.ToList());
+                
+            var UserId = User.Identity.GetUserId();
+            int id  =  db.AspNetEmployees.Where(x => x.UserId == UserId).FirstOrDefault().Id;
+
+            var aspnetSubjectTopics = db.AspnetSubjectTopics.Include(a=>a.GenericSubject).Where(x=>x.GenericSubject.Teacher_GenericSubjects.Any(y=>y.TeacherId== id));
+
             return View(aspnetSubjectTopics.ToList());
+
 
         }
         public ActionResult AllLessonsList()
         {
+            var UserId = User.Identity.GetUserId();
+            int id = db.AspNetEmployees.Where(x => x.UserId == UserId).FirstOrDefault().Id;
 
-            var AllLessons = (from lesson in db.AspnetLessons
+
+            var AllLessons = (from lesson in db.AspnetLessons.Where(x=>x.AspnetSubjectTopic.GenericSubject.Teacher_GenericSubjects.Any(y => y.TeacherId == id))
                               select new
                               {
                                   LessonId = lesson.Id,
@@ -47,6 +70,25 @@ namespace SEA_Application.Controllers
 
             return Json(AllLessons, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult AllSubjectTopicList()
+        {
+
+            var AllSubjectTopicList = (from subjectTopic in db.AspnetSubjectTopics
+                                       select new
+                                       {
+                                           subjectTopic.Id,
+                                           subjectTopic.Name,
+                                           subjectTopic.StartDate,
+                                           subjectTopic.GenericSubject.SubjectName,
+                                           subjectTopic.FAQ,
+                                           subjectTopic.Description,
+                                       }).ToList();
+
+
+
+            return Json(AllSubjectTopicList, JsonRequestBehavior.AllowGet);
+        }
+
 
 
         // GET: AspnetSubjectTopics/Details/5
@@ -92,10 +134,22 @@ namespace SEA_Application.Controllers
             {
                 db.AspnetSubjectTopics.Add(aspnetSubjectTopic);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("ViewTopicsAndLessons");
             }
 
-            ViewBag.SubjectId = new SelectList(db.GenericSubjects, "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
+            var UserId = User.Identity.GetUserId();
+            //Teacher Subjects 
+            var SubjectofCurrentSessionTeacher = from subject in db.GenericSubjects
+                                                 join TeacherSubject in db.Teacher_GenericSubjects on subject.Id equals TeacherSubject.SubjectId
+                                                 join employee in db.AspNetEmployees on TeacherSubject.TeacherId equals employee.Id
+                                                 where employee.UserId == UserId
+                                                 select new
+                                                 {
+                                                     subject.Id,
+                                                     subject.SubjectName,
+                                                 };
+
+            ViewBag.SubjectId = new SelectList(SubjectofCurrentSessionTeacher, "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
             return View(aspnetSubjectTopic);
         }
 
@@ -122,13 +176,34 @@ namespace SEA_Application.Controllers
 
             }
 
+            //Teacher Subjects 
+           
+
+
             int? SubjectId = aspnetSubjectTopic.SubjectId;
 
             GenericSubject Subject = db.GenericSubjects.Where(x => x.Id == SubjectId).FirstOrDefault();
 
-        //    ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName", Subject.ClassID);
-              ViewBag.SubjectId = new SelectList(db.GenericSubjects.Where(x=>x.SubjectType == Subject.SubjectType), "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
-              ViewBag.CTId = Subject.SubjectType;
+
+            var UserId = User.Identity.GetUserId();
+
+
+            var SubjectofCurrentSessionTeacher = from subject in db.GenericSubjects
+                                                 join TeacherSubject in db.Teacher_GenericSubjects on subject.Id equals TeacherSubject.SubjectId
+                                                 join employee in db.AspNetEmployees on TeacherSubject.TeacherId equals employee.Id
+                                                 where employee.UserId == UserId && subject.SubjectType == Subject.SubjectType
+                                                 select new
+                                                 {
+                                                     subject.Id,
+                                                     subject.SubjectName,
+                                                 };
+
+            //    ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName", Subject.ClassID);
+            //     ViewBag.SubjectId = new SelectList(db.GenericSubjects.Where(x=>x.SubjectType == Subject.SubjectType), "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
+                ViewBag.SubjectId = new SelectList(SubjectofCurrentSessionTeacher, "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
+
+            
+            ViewBag.CTId = Subject.SubjectType;
 
             return View(aspnetSubjectTopic);
         }
@@ -144,7 +219,7 @@ namespace SEA_Application.Controllers
             {
                 db.Entry(aspnetSubjectTopic).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("ViewTopicsAndLessons");
             }
 
             ViewBag.SubjectId = new SelectList(db.GenericSubjects, "Id", "SubjectName", aspnetSubjectTopic.SubjectId);

@@ -24,13 +24,20 @@ namespace SEA_Application.Controllers
         public ActionResult ViewQuestionAndQuiz()
         {
 
-            var aspnetQuestions = db.AspnetQuestions.Include(a => a.AspnetLesson).Include(a => a.AspnetOption);
+            var UserId = User.Identity.GetUserId();
+            int id = db.AspNetEmployees.Where(x => x.UserId == UserId).FirstOrDefault().Id;
+
+            var aspnetQuestions = db.AspnetQuestions.Include(a => a.AspnetLesson).Include(a => a.AspnetOption).Where(x=>x.AspnetLesson.AspnetSubjectTopic.GenericSubject.Teacher_GenericSubjects.Any(y=>y.TeacherId == id));
+       
             return View(aspnetQuestions.ToList());
         }
         public ActionResult AllQuizList()
         {
 
-            var AllLessons = (from Quiz in db.AspnetQuizs
+            var UserId = User.Identity.GetUserId();
+            int id = db.AspNetEmployees.Where(x => x.UserId == UserId).FirstOrDefault().Id;
+
+            var AllLessons = (from Quiz in db.AspnetQuizs.Where(x=>x.Quiz_Topic_Questions.Any(y=>y.AspnetSubjectTopic.GenericSubject.Teacher_GenericSubjects.Any(z=>z.TeacherId== id)))
                               select new
                               {
                                   QuizId = Quiz.Id,
@@ -182,18 +189,12 @@ namespace SEA_Application.Controllers
 
 
             ViewBag.LessonId = new SelectList(db.AspnetLessons, "Id", "Name");
-            return RedirectToAction("Index");
+            return RedirectToAction("ViewQuestionAndQuiz");
 
 
         }
         public ActionResult TestQuestions()
         {
-
-
-        
-
-
-
             return View();
         }
 
@@ -318,7 +319,28 @@ namespace SEA_Application.Controllers
                 string SubjectType = db.GenericSubjects.Where(x => x.Id == SubjectId).FirstOrDefault().SubjectType;
 
 
-                ViewBag.SubId = new SelectList(db.GenericSubjects.Where(x => x.SubjectType == SubjectType), "Id", "SubjectName", SubjectId);
+
+
+
+                //   ViewBag.SubId = new SelectList(db.GenericSubjects.Where(x => x.SubjectType == SubjectType), "Id", "SubjectName", SubjectId);
+
+
+
+                var UserId = User.Identity.GetUserId();
+
+
+                var SubjectofCurrentSessionTeacher = from subject in db.GenericSubjects
+                                                     join TeacherSubject in db.Teacher_GenericSubjects on subject.Id equals TeacherSubject.SubjectId
+                                                     join employee in db.AspNetEmployees on TeacherSubject.TeacherId equals employee.Id
+                                                     where employee.UserId == UserId && subject.SubjectType == SubjectType
+                                                     select new
+                                                     {
+                                                         subject.Id,
+                                                         subject.SubjectName,
+                                                     };
+
+                ViewBag.SubId = new SelectList(SubjectofCurrentSessionTeacher, "Id", "SubjectName", SubjectId);
+
                 ViewBag.TopicId = new SelectList(db.AspnetSubjectTopics.Where(x => x.SubjectId == SubjectId), "Id", "Name", TopicId);
                 ViewBag.LessonId = new SelectList(db.AspnetLessons.Where(x=>x.TopicId==TopicId), "Id", "Name", aspnetQuestion.LessonId);
                 ViewBag.CTId = SubjectType;
@@ -352,6 +374,8 @@ namespace SEA_Application.Controllers
 
             Question.Name = QuestionAnswerViewModel.QuestionName;
             Question.LessonId = QuestionAnswerViewModel.LessonId;
+            Question.Is_Quiz = QuestionAnswerViewModel.QuestionIsQuiz;
+
 
             //string IsMandatory = Request.Form["IsMandatory"];
             //if (IsMandatory == "on")
@@ -436,7 +460,7 @@ namespace SEA_Application.Controllers
             //    ViewBag.AnswerId = new SelectList(db.AspnetOptions, "Id", "Name", aspnetQuestion.AnswerId);
             //    return View(aspnetQuestion);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("ViewQuestionAndQuiz");
         }
 
         // GET: AspnetQuestions/Delete/5

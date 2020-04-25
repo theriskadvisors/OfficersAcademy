@@ -40,12 +40,11 @@
             data: {},
 
             success: function (data) {
-
                 table.fnClearTable();
              
                 $.each(data, function (index) {
 
-                    table.fnAddData([data[index].LessonName, data[index].LessonVidoeUrl, data[index].LessonDescription, data[index].LessonDuration, data[index].LessonSubjectTopicName]);
+                    table.fnAddData([data[index].LessonId,data[index].LessonName, data[index].LessonVidoeUrl, data[index].LessonDescription, data[index].LessonDuration, data[index].LessonSubjectTopicName]);
 
                 })
                 table.fnDraw();
@@ -234,6 +233,7 @@
                     <table class="table1 table-striped table-bordered" id="example1">
                         <thead>
                             <tr>
+                                <th >  ID</th>
                                 <th>
                                     Name
                                 </th>

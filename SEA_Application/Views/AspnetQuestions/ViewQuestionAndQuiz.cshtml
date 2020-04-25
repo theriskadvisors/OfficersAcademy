@@ -8,6 +8,9 @@
 <script>
     $(document).ready(function () {
         $("#example").dataTable();
+
+       // $("#Tab2").click(); 
+
         var table = $("#example1").dataTable();
 
         $.ajax({
@@ -48,7 +51,7 @@
                         "/" +
                         value3.getFullYear();
 
-                    table.fnAddData([data[index].QuizName, data[index].QuizDescription, dat1, dat2, data[index].QuizCreatedBy, dat3]);
+                    table.fnAddData([data[index].QuizId,data[index].QuizName, data[index].QuizDescription, dat1, dat2, data[index].QuizCreatedBy, dat3]);
 
                 })
                 table.fnDraw();
@@ -58,17 +61,32 @@
 
 
         $('.table').on('click', 'tbody tr', function () {
-            var td = $(this).children("td");
-            var Id = parseInt($(td[0]).html());
-            Id = Id.trim();
-            window.location.href = "/AspnetQuestions/Edit?id=" + Id;
+               var td = $(this).children("td");
+
+         //   var userName = $(td[0]).children("input").val();
+
+           //alert($(td[0]).html());    
+           var Id = parseInt($(td[0]).html());
+           //alert(Id);
+
+           // alert(Id);
+            //userName = userName.trim();
+           window.location.href = "/AspnetQuestions/Edit?id=" + Id;
         });
 
         $('.table1').on('click', 'tbody tr', function () {
-            var td = $(this).children("td");
-            var Id = parseInt($(td[0]).html());
-            Id = Id.trim();
+
+
+              var td = $(this).children("td");
+           // var userName = $(td[0]).children("input").val();
+
+            //alert($(td[0]).html());
+            var Id = parseInt($(td[0]).html())
+            // alert(Id);
+            //userName = userName.trim();
             window.location.href = "/AspnetQuizs/Edit?id=" + Id;
+
+
         });
 
         DrawTable();
@@ -151,7 +169,7 @@
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#tab_1" data-toggle="tab">Question</a></li>
-        <li><a href="#tab_2" data-toggle="tab">Quiz</a></li>
+        <li ><a id="Tab2" href="#tab_2" data-toggle="tab">Quiz</a></li>
     </ul>
 </div>
 <div class="tab-content" style="  background-color: #f7f6f6; padding: 10px 0px 0px 0px; ">
@@ -266,6 +284,7 @@
                     <table class="table1 table-striped table-bordered" id="example1">
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>
                                     Name
                                 </th>
