@@ -197,16 +197,19 @@ namespace SEA_Application.Controllers
 
 
         // GET: AspNetNotes/Details/5
-        public ActionResult Details(int? id)
-        {
+        public ActionResult Details(string id)
+        { 
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AspNetNote aspNetNote = db.AspNetNotes.Find(id);
+            AspNetNote aspNetNote = db.AspNetNotes.Where(x=>x.EncryptedID == id).FirstOrDefault();
             if (aspNetNote == null)
             {
-                return HttpNotFound();
+               // return HttpNotFound();
+                var aspNetNotes = db.AspNetNotes.Include(a => a.AspNetSubject);
+                return View(aspNetNotes.ToList());
             }
             return View(aspNetNote);
         }
@@ -298,6 +301,10 @@ namespace SEA_Application.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    string EncrID = aspNetNote.Id + aspNetNote.SubjectID + aspNetNote.Price.ToString();
+                    aspNetNote.EncryptedID = Encrpt.Encrypt(EncrID, true);
+                    aspNetNote.EncryptedID.Replace('/', 's').Replace('-', 's').Replace('+', 's').Replace('%', 's').Replace('&', 's');
+              
                     db.AspNetNotes.Add(aspNetNote);
                     db.SaveChanges();
                     return RedirectToAction("Index");
@@ -314,6 +321,12 @@ namespace SEA_Application.Controllers
                 aspNetNote.GrandTotal = Convert.ToDouble(Request.Form["grandTotalHidden"]);
 
                 aspNetNote.CourseType = Request.Form["CourseType"];
+               
+                string EncrID = aspNetNote.Id + aspNetNote.SubjectID + aspNetNote.Price.ToString();
+                aspNetNote.EncryptedID = Encrpt.Encrypt(EncrID, true);
+                aspNetNote.EncryptedID.Replace('/', 's').Replace('-', 's').Replace('+', 's').Replace('%', 's').Replace('&', 's');
+              
+
 
                 aspNetNote.CreationDate = DateTime.Now;
                 if (ModelState.IsValid)
@@ -335,15 +348,15 @@ namespace SEA_Application.Controllers
             ViewBag.SubjectID = new SelectList(db.AspNetSubjects, "Id", "SubjectName", aspNetNote.SubjectID);
             return View(aspNetNote);
         }
-
+          
         // GET: AspNetNotes/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(string id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AspNetNote aspNetNote = db.AspNetNotes.Find(id);
+            AspNetNote aspNetNote = db.AspNetNotes.Where(x => x.EncryptedID == id).FirstOrDefault();
             if (aspNetNote == null)
             {
                 return HttpNotFound();

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -73,11 +74,14 @@ namespace SEA_Application.Controllers
             return View();
         }
 
-        public ActionResult StudentLessons(int id)
+        public ActionResult StudentLessons(string id)
         {
 
-            var Lesson = db.AspnetLessons.Where(x => x.Id == id).FirstOrDefault();
-
+            var Lesson = db.AspnetLessons.Where(x => x.EncryptedID == id).FirstOrDefault();
+            if (Lesson == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             int? TopicId = Lesson.TopicId;
             string Name = Lesson.Name;
 
@@ -116,7 +120,7 @@ namespace SEA_Application.Controllers
             //Tab 6 data end
 
             ViewBag.TopicId = TopicId;
-            ViewBag.LessonID = id;
+            ViewBag.LessonID = Lesson.Id;
 
             return View();
         }
@@ -403,7 +407,7 @@ namespace SEA_Application.Controllers
                     lessonobj.LessonName = lesson.Name;
                     lessonobj.LessonDuration = lesson.Duration;
                     lessonobj.LessonExistInTrackingTable = LessonExist;
-
+                    lessonobj.EncryptedID = lesson.EncryptedID;
                     LessonsList.Add(lessonobj);
                     Count++;
                     count1++;
@@ -885,6 +889,7 @@ namespace SEA_Application.Controllers
             public TimeSpan? LessonDuration { get; set; }
 
             public string LessonExistInTrackingTable { get; set; }
+            public string EncryptedID { get; set; }
 
             public int LessonCount { get; set; }
         }

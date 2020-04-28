@@ -78,6 +78,14 @@ namespace SEA_Application.Controllers
             Lesson.CreationDate = LessonViewModel.CreationDate;
             Lesson.Description = LessonViewModel.LessonDescription;
             Lesson.CreationDate = DateTime.Now;
+
+            string EncrID = Lesson.Name +Lesson.Description+Lesson.Id;
+              
+            Lesson.EncryptedID = Encrpt.Encrypt(EncrID, true);
+            Lesson.EncryptedID.Replace('/', 's').Replace('-','s').Replace('+','s').Replace('%','s').Replace('&','s');
+              
+            
+
             db.AspnetLessons.Add(Lesson);
             db.SaveChanges();
 
