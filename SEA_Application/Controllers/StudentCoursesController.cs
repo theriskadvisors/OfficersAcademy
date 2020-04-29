@@ -710,7 +710,11 @@ namespace SEA_Application.Controllers
 
 
             var newString = Regex.Replace(commentHead.EncryptedID, @"[^0-9a-zA-Z]+", "s");
-            commentHead.EncryptedID = newString;
+
+            string str = newString.Substring(0, 32);
+
+
+            commentHead.EncryptedID = str;
 
             //Comment_Head commentHead = new Comment_Head();
             commentHead.Comment_Head = Title;
@@ -816,7 +820,12 @@ namespace SEA_Application.Controllers
         {
             ViewBag.CommentHeadId = db.AspnetComment_Head.Where(x => x.EncryptedID == id).FirstOrDefault().Id;
             ViewBag.EncryptedID= id;
-            ViewBag.LessonId = db.AspnetComment_Head.Where(x => x.EncryptedID == id).FirstOrDefault().LessonId;
+            int? LessonId = db.AspnetComment_Head.Where(x => x.EncryptedID == id).FirstOrDefault().LessonId;
+            ViewBag.LessonId = LessonId;
+            ViewBag.LessonEncryptedId =db.AspnetLessons.Where(x => x.Id == LessonId).FirstOrDefault().EncryptedID;
+
+
+
 
             return View("Comments");
         }
