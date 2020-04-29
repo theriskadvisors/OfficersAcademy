@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -703,12 +704,22 @@ namespace SEA_Application.Controllers
 
             var id = User.Identity.GetUserId();
             AspnetComment_Head commentHead = new AspnetComment_Head();
+            string EncrID = LessonID + Title+ Body+ id;
+
+            commentHead.EncryptedID = Encrpt.Encrypt(EncrID, true);
+
+
+            var newString = Regex.Replace(commentHead.EncryptedID, @"[^0-9a-zA-Z]+", "s");
+            commentHead.EncryptedID = newString;
 
             //Comment_Head commentHead = new Comment_Head();
             commentHead.Comment_Head = Title;
             commentHead.CommentBody = Body;
             commentHead.LessonId = LessonID;
             commentHead.CreatedBy = id;
+
+
+
             commentHead.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
             db.AspnetComment_Head.Add(commentHead);
             db.SaveChanges();
@@ -787,6 +798,7 @@ namespace SEA_Application.Controllers
                                      LessonId = commentHead.LessonId,
                                      UserName = user.Name,
                                      Date = commentHead.CreationDate,
+                                     EncryptedID  = commentHead.EncryptedID
                                  };
 
             return Json(AllCommentHead, JsonRequestBehavior.AllowGet);
@@ -800,11 +812,11 @@ namespace SEA_Application.Controllers
 
         }
 
-        public ActionResult CommentsPage1(int id)
+        public ActionResult CommentsPage1(string id)
         {
-            ViewBag.CommentHeadId = id;
-
-            ViewBag.LessonId = db.AspnetComment_Head.Where(x => x.Id == id).FirstOrDefault().LessonId;
+            ViewBag.CommentHeadId = db.AspnetComment_Head.Where(x => x.EncryptedID == id).FirstOrDefault().Id;
+            ViewBag.EncryptedID= id;
+            ViewBag.LessonId = db.AspnetComment_Head.Where(x => x.EncryptedID == id).FirstOrDefault().LessonId;
 
             return View("Comments");
         }
