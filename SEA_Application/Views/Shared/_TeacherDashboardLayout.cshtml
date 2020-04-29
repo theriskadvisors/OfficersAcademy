@@ -3,8 +3,13 @@
 }
 <style>
 
-
-
+    .row {
+        margin-left: 24px;
+    }
+    .h3, h3 {
+    margin-left: 29px;
+    font-size: 24px;
+}
     @@media (min-width: 992px) {
 
         .page-content-wrapper .page-content {
@@ -32,8 +37,9 @@
     }
 
     .box.box-primary {
-        border-top-color: #5170a3;
-    }
+    border-top-color: #5170a3;
+    margin-left: 14px;
+}
 
     .page-container-bg-solid .page-content {
         background: #d0cfcf2e;
@@ -119,11 +125,11 @@
         <li class="nav-item  " id="MyCoursesTeachers">
             <a href="@(Url.Action("Index", "TeacherCommentsOnCourses"))">
                 <i class="fa fa-list-ol"></i>
-                <span class="title">Courses</span>
+                <span class="title">Courses Details/Information</span>
             </a>
         </li>
 
-        <li class="nav-item" id="StudentAssignment">
+        @*<li class="nav-item" id="StudentAssignment">
             <a href="@Url.Action("StudentAssignments", "StudentAssignmentSubmitted")" class="nav-link nav-toggle">
                 <i class="fa fa-list-ul"></i>
                 <span class="title">Student Assignments</span>
@@ -149,7 +155,7 @@
                 <i class="fa fa-list-ul"></i>
                 <span class="title">Student Lessons Tracking</span>
             </a>
-        </li>
+        </li>*@
 
 
         @*<li class="nav-item" id="studenttopic">
