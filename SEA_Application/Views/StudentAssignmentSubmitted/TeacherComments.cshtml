@@ -39,7 +39,8 @@
 
                     <div class="form-group">
                         <div class="col-md-offset-2 col-md-6">
-                            <input id="SubmitBtn" type="submit" value="Submit" class="btn btn-default" />
+                            <input id="SubmitBtn" type="submit" value="Submit" class="btn btn-primary" />
+                            <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
                         </div>
                     </div>
 
@@ -57,28 +58,32 @@
     $(document).ready(function () {
 
 
+        $("#btnCancel").click(function () {
+
+            window.location.href = "/StudentAssignmentSubmitted/StudentAssignments";
+        })
         $("#SubmitBtn").click(function () {
 
             var Id = $("#id").val();
 
             var TeacherComments = $("#TeacherComments").val();
-          //  alert(TeacherComments);
+            //  alert(TeacherComments);
             if (TeacherComments != "") {
 
 
-            $.ajax({
+                $.ajax({
 
 
-                type: "POST",
-                url: "/StudentAssignmentSubmitted/TeacherCommentsMethod",
-                data: { "id": Id, "TeacherComments": TeacherComments },
-                success: function (data) {
+                    type: "POST",
+                    url: "/StudentAssignmentSubmitted/TeacherCommentsMethod",
+                    data: { "id": Id, "TeacherComments": TeacherComments },
+                    success: function (data) {
 
 
-                    window.location.href = '/StudentAssignmentSubmitted/StudentAssignments/';
-                }
+                        window.location.href = '/StudentAssignmentSubmitted/StudentAssignments/';
+                    }
 
-            })
+                })
             }
 
         })

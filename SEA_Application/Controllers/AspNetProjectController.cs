@@ -27,28 +27,17 @@ namespace SEA_Application.Controllers
         }
         public ActionResult GetSubjectsByClass(string CT)
         {
-            var UserId = User.Identity.GetUserId();
+            var SubjectsByClass = db.GenericSubjects.Where(x => x.SubjectType == CT).ToList().Select(x => new { x.Id, x.SubjectName });
 
-            var SubjectofCurrentSessionTeacher = from subject in db.GenericSubjects
-                                                 join TeacherSubject in db.Teacher_GenericSubjects on subject.Id equals TeacherSubject.SubjectId
-                                                 join employee in db.AspNetEmployees on TeacherSubject.TeacherId equals employee.Id
-                                                 where employee.UserId == UserId &&  subject.SubjectType == CT
-                                                 select new
-                                                 {
-                                                     subject.Id,
-                                                     subject.SubjectName,
-                                                 };
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(SubjectsByClass);
 
-           //   var SubjectsByClass = db.GenericSubjects.Where(x =>x.SubjectType== CT).ToList().Select(x => new { x.Id,x.SubjectName});
-
-            string status = Newtonsoft.Json.JsonConvert.SerializeObject(SubjectofCurrentSessionTeacher);
-    
             // return Json(SubjectsByClass, JsonRequestBehavior.AllowGet);
-               return Content(status);
+            return Content(status);
+
 
         }
-      
-             public ActionResult GetLession(int TopID)
+
+        public ActionResult GetLession(int TopID)
         {
             var TopicList = db.AspnetLessons.Where(x => x.TopicId == TopID ).ToList().Select(x => new { x.Id, x.Name });
 

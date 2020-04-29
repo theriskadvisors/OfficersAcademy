@@ -1446,23 +1446,28 @@ namespace SEA_Application.Controllers
         public ViewResult StudentsIndex()
         {
 
-            //List<GenericSubject> GenericSubjectsList = new List<GenericSubject>();
+          List<GenericSubject> generic =   db.GenericSubjects.ToList();
 
-            //var AllSubject = db.AspNetSubjects.Where(x => x.ClassID == 1).ToList();
+            if(generic.Count==0)
+            {
 
-            //foreach (var Subject in AllSubject)
-            //{
+            List<GenericSubject> GenericSubjectsList = new List<GenericSubject>();
 
-            //    GenericSubject genericSubject = new GenericSubject();
-            //    genericSubject.SubjectName = Subject.SubjectName;
-            //    genericSubject.SubjectType = Subject.CourseType;
+            var AllSubject = db.AspNetSubjects.Where(x => x.ClassID == 1).ToList();
 
-            //    db.GenericSubjects.Add(genericSubject);
-            //    db.SaveChanges();
+            foreach (var Subject in AllSubject)
+            {
 
-            //}
+                GenericSubject genericSubject = new GenericSubject();
+                genericSubject.SubjectName = Subject.SubjectName;
+                genericSubject.SubjectType = Subject.CourseType;
 
+                db.GenericSubjects.Add(genericSubject);
+                db.SaveChanges();
 
+            }
+
+            }
 
             //var students = db.AspNetStudents.ToList();
             //foreach (var st in students)

@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
@@ -324,7 +325,16 @@ namespace SEA_Application.Controllers
                
                 string EncrID = aspNetNote.Id + aspNetNote.SubjectID + aspNetNote.Price.ToString();
                 aspNetNote.EncryptedID = Encrpt.Encrypt(EncrID, true);
-                aspNetNote.EncryptedID.Replace('/', 's').Replace('-', 's').Replace('+', 's').Replace('%', 's').Replace('&', 's');
+
+             
+                var newString = Regex.Replace(aspNetNote.EncryptedID, @"[^0-9a-zA-Z]+", "s");
+
+                // Lesson.EncryptedID.Replace('/', 's').Replace('-','s').Replace('+','s').Replace('%','s').Replace('&','s');
+                aspNetNote.EncryptedID = newString;
+
+
+
+             //   aspNetNote.EncryptedID.Replace('/', 's').Replace('-', 's').Replace('+', 's').Replace('%', 's').Replace('&', 's');
               
 
 

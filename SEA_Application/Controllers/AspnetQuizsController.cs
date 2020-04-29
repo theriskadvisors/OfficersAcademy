@@ -148,16 +148,8 @@ namespace SEA_Application.Controllers
 
                                }).ToList();
 
-
-
-
-
             return Json(AllQuestion, JsonRequestBehavior.AllowGet);
         }
-
-
-      
-
 
 
         public ActionResult GetSubjectTopics(int SubjectId)
@@ -221,22 +213,8 @@ namespace SEA_Application.Controllers
             GenericSubject SubjectObj = db.GenericSubjects.Where(x => x.Id == SubjectId).FirstOrDefault();
             string CourseType = SubjectObj.SubjectType;
 
-            //    ViewBag.SubjectId = new SelectList(db.GenericSubjects.Where(x => x.SubjectType == CourseType), "Id", "SubjectName", SubjectId);
-            var UserId = User.Identity.GetUserId();
-
-            var SubjectofCurrentSessionTeacher = from subject in db.GenericSubjects
-                                                 join TeacherSubject in db.Teacher_GenericSubjects on subject.Id equals TeacherSubject.SubjectId
-                                                 join employee in db.AspNetEmployees on TeacherSubject.TeacherId equals employee.Id
-                                                 where employee.UserId == UserId && subject.SubjectType == CourseType
-                                                 select new
-                                                 {
-                                                     subject.Id,
-                                                     subject.SubjectName,
-                                                 };
-
-
-             ViewBag.SubjectId = new SelectList(SubjectofCurrentSessionTeacher, "Id", "SubjectName", SubjectId);
-
+             ViewBag.SubjectId = new SelectList(db.GenericSubjects.Where(x => x.SubjectType == CourseType), "Id", "SubjectName", SubjectId);
+        //    var UserId = User.Identity.GetUserId();
 
             ViewBag.CTId = CourseType;
 

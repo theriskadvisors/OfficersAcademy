@@ -1,15 +1,23 @@
 ﻿@model IEnumerable<SEA_Application.Models.AspnetQuestion>
 @{
     ViewBag.Title = "ViewQuestionAndQuiz";
-    Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
+<style>
+
+    table.dataTable.hover tbody tr:hover,
+    table.dataTable.display tbody tr:hover {
+        background-color: #DEEBF7;
+        cursor:pointer;
+    }
+</style>
 
 
 <script>
     $(document).ready(function () {
         $("#example").dataTable();
 
-       // $("#Tab2").click(); 
+        // $("#Tab2").click();
 
         var table = $("#example1").dataTable();
 
@@ -32,7 +40,7 @@
                         "/" +
                         value1.getDate() +
                         "/" +
-                    value1.getFullYear();
+                        value1.getFullYear();
 
 
                     var value2 = new Date(parseInt(data[index].QuizDueDate.replace(/(^.*\()|([+-].*$)/g, '')));
@@ -41,7 +49,7 @@
                         "/" +
                         value2.getDate() +
                         "/" +
-                    value2.getFullYear();
+                        value2.getFullYear();
 
                     var value3 = new Date(parseInt(data[index].QuizCreationDate.replace(/(^.*\()|([+-].*$)/g, '')));
                     var dat3 = value3.getMonth() +
@@ -51,7 +59,7 @@
                         "/" +
                         value3.getFullYear();
 
-                    table.fnAddData([data[index].QuizId,data[index].QuizName, data[index].QuizDescription, dat1, dat2, data[index].QuizCreatedBy, dat3]);
+                    table.fnAddData([data[index].QuizId, data[index].QuizName, data[index].QuizDescription, dat1, dat2, data[index].QuizCreatedBy, dat3]);
 
                 })
                 table.fnDraw();
@@ -61,24 +69,24 @@
 
 
         $('.table').on('click', 'tbody tr', function () {
-               var td = $(this).children("td");
+            var td = $(this).children("td");
 
-         //   var userName = $(td[0]).children("input").val();
+            //   var userName = $(td[0]).children("input").val();
 
-           //alert($(td[0]).html());    
-           var Id = parseInt($(td[0]).html());
-           //alert(Id);
+            //alert($(td[0]).html());
+            var Id = parseInt($(td[0]).html());
+            //alert(Id);
 
-           // alert(Id);
+            // alert(Id);
             //userName = userName.trim();
-           window.location.href = "/AspnetQuestions/Edit?id=" + Id;
+            window.location.href = "/AspnetQuestions/Edit?id=" + Id;
         });
 
         $('.table1').on('click', 'tbody tr', function () {
 
 
-              var td = $(this).children("td");
-           // var userName = $(td[0]).children("input").val();
+            var td = $(this).children("td");
+            // var userName = $(td[0]).children("input").val();
 
             //alert($(td[0]).html());
             var Id = parseInt($(td[0]).html())
@@ -169,10 +177,11 @@
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#tab_1" data-toggle="tab">Question</a></li>
-        <li ><a id="Tab2" href="#tab_2" data-toggle="tab">Quiz</a></li>
+        <li><a id="Tab2" href="#tab_2" data-toggle="tab">Quiz</a></li>
     </ul>
 </div>
-<div class="tab-content" style="  background-color: #f7f6f6; padding: 10px 0px 0px 0px; ">
+<div class="tab-content" style="        background-color: #f7f6f6;
+        padding: 10px 0px 0px 0px;">
 
     <div class="tab-pane active" id="tab_1">
         <div class="box box-primary">
@@ -185,10 +194,10 @@
                         <tr>
                             <th style="display:none">  11</th>
                             <th>
-                               @Html.DisplayNameFor(model => model.Name)
+                                @Html.DisplayNameFor(model => model.Name)
                             </th>
                             <th>
-                             Quiz Question?
+                                Quiz Question?
                             </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.Type)
@@ -211,53 +220,53 @@
 
                         @foreach (var item in Model)
                         {
-                        <tr>
-                            <td style="display:none">
+                            <tr>
+                                <td style="display:none">
 
-                                @item.Id
-                            </td>
-
-
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Name)
-                            </td>
-                            <td>
-                                @if (item.Is_Quiz == true)
-                                {
-                                    <span>Yes</span>
-                                }
-                                else if (item.Is_Quiz == false)
-                                {
-                                    <span>No</span>
-                                }
-                                else
-                                {
-                                    <span>Not Set</span>
-
-                                }
+                                    @item.Id
+                                </td>
 
 
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @if (item.Is_Quiz == true)
+                                    {
+                                        <span>Yes</span>
+                                    }
+                                    else if (item.Is_Quiz == false)
+                                    {
+                                        <span>No</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Not Set</span>
 
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Type)
-                            </td>
+                                    }
 
-                            <td>
-                                @Html.DisplayFor(modelItem => item.AspnetLesson.Name)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.AspnetOption.Name)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CreationDate)
-                            </td>
-                            @*<td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-        </td>*@
-                        </tr>
+
+
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Type)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AspnetLesson.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AspnetOption.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CreationDate)
+                                </td>
+                                @*<td>
+                                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                                        @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                                    </td>*@
+                            </tr>
 
 
                         }
@@ -281,7 +290,7 @@
                 <div class="col-md-12">
 
 
-                    <table class="table1 table-striped table-bordered" id="example1">
+                    <table class="table1 hover table-striped table-bordered" id="example1">
                         <thead>
                             <tr>
                                 <th>ID</th>

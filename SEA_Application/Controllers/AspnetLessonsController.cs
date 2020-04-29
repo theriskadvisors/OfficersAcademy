@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using System.Collections;
 using SEA_Application.Models;
 using Microsoft.AspNet.Identity;
+using System.Text.RegularExpressions;
 
 namespace SEA_Application.Controllers
 {
@@ -82,8 +83,12 @@ namespace SEA_Application.Controllers
             string EncrID = Lesson.Name +Lesson.Description+Lesson.Id;
               
             Lesson.EncryptedID = Encrpt.Encrypt(EncrID, true);
-            Lesson.EncryptedID.Replace('/', 's').Replace('-','s').Replace('+','s').Replace('%','s').Replace('&','s');
-              
+
+
+            var newString =  Regex.Replace(Lesson.EncryptedID, @"[^0-9a-zA-Z]+", "s");
+
+            // Lesson.EncryptedID.Replace('/', 's').Replace('-','s').Replace('+','s').Replace('%','s').Replace('&','s');
+            Lesson.EncryptedID = newString; 
             
 
             db.AspnetLessons.Add(Lesson);
@@ -348,22 +353,11 @@ namespace SEA_Application.Controllers
             // ViewBag.SubId = new SelectList(db.GenericSubjects.Where(x => x.SubjectType == Subject.SubjectType), "Id", "SubjectName", SubjectId);
 
 
-            var UserId = User.Identity.GetUserId();
 
 
-            var SubjectofCurrentSessionTeacher = from subject in db.GenericSubjects
-                                                 join TeacherSubject in db.Teacher_GenericSubjects on subject.Id equals TeacherSubject.SubjectId
-                                                 join employee in db.AspNetEmployees on TeacherSubject.TeacherId equals employee.Id
-                                                 where employee.UserId == UserId && subject.SubjectType == Subject.SubjectType
-                                                 select new
-                                                 {
-                                                     subject.Id,
-                                                     subject.SubjectName,
-                                                 };
-
-             ViewBag.SubId = new SelectList(SubjectofCurrentSessionTeacher, "Id", "SubjectName", SubjectId);
-
+            ViewBag.SubId = new SelectList(db.GenericSubjects.Where(x => x.SubjectType == Subject.SubjectType), "Id", "SubjectName", SubjectId);
             ViewBag.TopicId = new SelectList(db.AspnetSubjectTopics.Where(x => x.SubjectId == SubjectId), "Id", "Name", aspnetLesson.TopicId);
+         
             ViewBag.CTId = Subject.SubjectType;
 
 

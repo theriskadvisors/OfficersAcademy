@@ -1,50 +1,44 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<style>
+    <style>
 
-    .row {
-        margin-left: 24px;
-    }
-    .h3, h3 {
-    margin-left: 29px;
-    font-size: 24px;
-}
-    @@media (min-width: 992px) {
 
-        .page-content-wrapper .page-content {
-            margin-left: 180px;
-            margin-top: 0;
-            min-height: 600px;
-            padding: 25px 20px 10px;
+
+        @@media (min-width: 992px) {
+
+            .page-content-wrapper .page-content {
+                margin-left: 200px;
+                margin-top: 0;
+                min-height: 600px;
+                padding: 25px 20px 10px;
+            }
         }
-    }   
 
-    li.nav-item.start.active.open {
-        border-bottom: 0px solid white !important;
-    }
+        li.nav-item.start.active.open {
+            border-bottom: 0px solid white !important;
+        }
 
-    .page-sidebar-menu.page-sidebar-menu-hover-submenu > li:hover > .sub-menu {
-        margin-left: 190px;
-        margin-top: -77px;
-    }
+        .page-sidebar-menu.page-sidebar-menu-hover-submenu > li:hover > .sub-menu {
+            margin-left: 190px;
+            margin-top: -77px;
+        }
 
-    .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        height: 1500px !important;
-    }
+        .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            height: 1500px !important;
+        }
 
-    .box.box-primary {
-    border-top-color: #5170a3;
-    margin-left: 14px;
-}
+        .box.box-primary {
+            border-top-color: #5170a3;
+        }
 
-    .page-container-bg-solid .page-content {
-        background: #d0cfcf2e;
-    }
-</style>
+        .page-container-bg-solid .page-content {
+            background: #d0cfcf2e;
+        }
+    </style>
 <div class="page-sidebar navbar-collapse collapse">
     <!-- BEGIN SIDEBAR MENU -->
     <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
@@ -129,14 +123,7 @@
             </a>
         </li>
 
-        @*<li class="nav-item" id="StudentAssignment">
-            <a href="@Url.Action("StudentAssignments", "StudentAssignmentSubmitted")" class="nav-link nav-toggle">
-                <i class="fa fa-list-ul"></i>
-                <span class="title">Student Assignments</span>
-            </a>
-        </li>
-
-        <li class="nav-item" id="TopicAndLessonss">
+        @*<li class="nav-item" id="TopicAndLessonss">
             <a href="@Url.Action("ViewTopicsAndLessons", "AspnetSubjectTopics")" class="nav-link nav-toggle">
                 <i class="fa fa-leaf"></i>
                 <span class="title">Topic & Lessons</span>
@@ -148,7 +135,15 @@
                 <i class="fa fa-leaf"></i>
                 <span class="title">Questions & Quiz</span>
             </a>
+        </li>*@
+
+        @*<li class="nav-item" id="StudentAssignment">
+            <a href="@Url.Action("StudentAssignments", "StudentAssignmentSubmitted")" class="nav-link nav-toggle">
+                <i class="fa fa-list-ul"></i>
+                <span class="title">Student Assignments</span>
+            </a>
         </li>
+
 
         <li class="nav-item" id="StudentLessonTracking">
             <a href="@Url.Action("StudentLessonTracking", "StudentAssignmentSubmitted")" class="nav-link nav-toggle">
@@ -199,10 +194,6 @@
         </li>*@
 
 
-
-        
-
-
         @*<li class="nav-item  ">
             <a href="@(Url.Action("Teacher_Announcement", "Teacher_Dashboard"))">
                 <i class="fa fa-bullhorn"></i>
@@ -249,7 +240,7 @@
         </li>*@
 
         <li class="nav-item  " id="mailboxitem">
-            <a href="@(Url.Action("Inbox", "AspNetMessages"))">
+            <a href="@(Url.Action("Inbox", "AspNetMessages"))"  >
                 <i class="fa fa-envelope"></i>
                 <span class="title">MailBox</span>
             </a>

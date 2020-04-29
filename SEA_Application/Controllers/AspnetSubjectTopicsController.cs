@@ -41,23 +41,14 @@ namespace SEA_Application.Controllers
         {
             //var aspnetSubjectTopics = db.AspnetSubjectTopics.Include(a => a.GenericSubject);
             //return View(aspnetSubjectTopics.ToList());
-                
-            var UserId = User.Identity.GetUserId();
-            int id  =  db.AspNetEmployees.Where(x => x.UserId == UserId).FirstOrDefault().Id;
-
-            var aspnetSubjectTopics = db.AspnetSubjectTopics.Include(a=>a.GenericSubject).Where(x=>x.GenericSubject.Teacher_GenericSubjects.Any(y=>y.TeacherId== id));
-
+            var aspnetSubjectTopics = db.AspnetSubjectTopics.Include(a => a.GenericSubject);
             return View(aspnetSubjectTopics.ToList());
-
 
         }
         public ActionResult AllLessonsList()
         {
-            var UserId = User.Identity.GetUserId();
-            int id = db.AspNetEmployees.Where(x => x.UserId == UserId).FirstOrDefault().Id;
 
-
-            var AllLessons = (from lesson in db.AspnetLessons.Where(x=>x.AspnetSubjectTopic.GenericSubject.Teacher_GenericSubjects.Any(y => y.TeacherId == id))
+            var AllLessons = (from lesson in db.AspnetLessons
                               select new
                               {
                                   LessonId = lesson.Id,
@@ -185,22 +176,10 @@ namespace SEA_Application.Controllers
             GenericSubject Subject = db.GenericSubjects.Where(x => x.Id == SubjectId).FirstOrDefault();
 
 
-            var UserId = User.Identity.GetUserId();
-
-
-            var SubjectofCurrentSessionTeacher = from subject in db.GenericSubjects
-                                                 join TeacherSubject in db.Teacher_GenericSubjects on subject.Id equals TeacherSubject.SubjectId
-                                                 join employee in db.AspNetEmployees on TeacherSubject.TeacherId equals employee.Id
-                                                 where employee.UserId == UserId && subject.SubjectType == Subject.SubjectType
-                                                 select new
-                                                 {
-                                                     subject.Id,
-                                                     subject.SubjectName,
-                                                 };
-
+         
             //    ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "ClassName", Subject.ClassID);
             //     ViewBag.SubjectId = new SelectList(db.GenericSubjects.Where(x=>x.SubjectType == Subject.SubjectType), "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
-                ViewBag.SubjectId = new SelectList(SubjectofCurrentSessionTeacher, "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
+                ViewBag.SubjectId = new SelectList(db.GenericSubjects.Where(x => x.SubjectType == Subject.SubjectType), "Id", "SubjectName", aspnetSubjectTopic.SubjectId);
 
             
             ViewBag.CTId = Subject.SubjectType;

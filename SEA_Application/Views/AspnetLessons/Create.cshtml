@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Create";
-    Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
 <script>
@@ -178,7 +178,7 @@
             if (document.getElementById("Assignment").files.length == 0) {
                 console.log("no files selected");
 
-            
+
 
 
             }
@@ -188,7 +188,7 @@
 
                 if (AssignmentName.val() != "" && AssignmentDueDate.val() != "") {
 
-                 
+
                 }
                 else {
 
@@ -204,13 +204,13 @@
 
             }
 
-           
+
 
             if (document.getElementById("Attachment1").files.length == 0) {
                 console.log("no files selected");
 
-             
-               
+
+
 
             }
             else {
@@ -219,7 +219,7 @@
 
                 if (AttachmentName1.val() != "") {
 
-                
+
 
                 }
                 else {
@@ -239,7 +239,7 @@
             if (document.getElementById("Attachment2").files.length == 0) {
                 console.log("no files selected");
 
-             
+
 
 
             }
@@ -263,37 +263,47 @@
 
             }
 
-            
-           
-
-                if (document.getElementById("Attachment3").files.length == 0) {
-                    console.log("no files selected");
 
 
+
+            if (document.getElementById("Attachment3").files.length == 0) {
+                console.log("no files selected");
+
+
+
+            }
+            else {
+                var AttachmentName3 = $("#AttachmentName3");
+
+
+                if (AttachmentName3.val() != "") {
 
                 }
                 else {
-                    var AttachmentName3 = $("#AttachmentName3");
-
-
-                    if (AttachmentName3.val() != "") {
-
-                    }
-                    else {
 
 
 
-                        $("#AttachmentName3").prop('required', true);
+                    $("#AttachmentName3").prop('required', true);
 
-                        return false;
-                    }
-
-
+                    return false;
                 }
-            
+
+
+            }
+
 
 
         });
+
+
+        
+
+    $("#btnCancel").click(function () {
+
+            window.location.href = "/AspnetSubjectTopics/ViewTopicsAndLessons";
+        })
+
+
 
 
 
@@ -338,7 +348,7 @@
         list-style: none;
         margin: 0;
         padding: 0;
-        height: 2000px !important;
+        height: 2500px !important;
     }
 
     textarea {
@@ -607,9 +617,7 @@
                                 @Html.ValidationMessageFor(model => model.LinkUrl1, "", new { @class = "text-danger" })
                             </div>
                         </div>
-
-
-
+                        
                         <div class="form-group">
                             @Html.LabelFor(model => model.LinkUrl2, htmlAttributes: new { @class = "control-label col-md-2" })
                             <div class="col-md-6">
@@ -617,9 +625,6 @@
                                 @Html.ValidationMessageFor(model => model.LinkUrl2, "", new { @class = "text-danger" })
                             </div>
                         </div>
-
-
-
 
                         <div class="form-group">
                             @Html.LabelFor(model => model.LinkUrl3, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -629,16 +634,59 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        @*<div class="form-group">
                             <div class="col-md-offset-2 col-md-6">
                                 <input type="submit" value="Create" id="CreateBtn" class="btn btn-primary" />
                             </div>
-                        </div>
+                        </div>*@
                     </div>
 
                 </div>
-            </div>
 
+
+                <div class="box box-primary">
+                    <div class="box-header with-border"><h3 class="orange"> Lesson Time </h3></div>
+                    <div class="box-body row">
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.StartTime, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.StartTime, new { htmlAttributes = new { @placeholder = "", @class = "form-control",  @type="datetime-local" } })
+                                @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.EndTime, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.EndTime, new { htmlAttributes = new { @placeholder = "", @class = "form-control", @type="datetime-local" } })
+                                @Html.ValidationMessageFor(model => model.EndTime, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.AddLink, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.AddLink, new { htmlAttributes = new { @placeholder = "", @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.AddLink, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-6">
+                            
+                                <input type="submit" value="Create" id="CreateBtn" class="btn btn-primary" />
+                                <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                            
+                            
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div><!--form horizontal-->
         }
 
 
