@@ -36,6 +36,14 @@ namespace SEA_Application.Controllers
 
 
         }
+        public ActionResult GetSessions()
+        {
+
+         var AllSessions =   db.AspNetSessions.ToList().Select( x=>new { x.Id,x.SessionName});
+
+            string Sessions = Newtonsoft.Json.JsonConvert.SerializeObject(AllSessions);
+            return Content(Sessions);
+        }  
 
         public ActionResult GetLession(int TopID)
         {

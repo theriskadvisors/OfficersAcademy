@@ -44,7 +44,7 @@ namespace SEA_Application.Controllers
 
         public ActionResult LoadSectionIdDDL()
         {
-            var ClassList = db.AspNetClasses.ToList().Select(x => new { x.Id, x.ClassName });
+            var ClassList = db.AspNetSessions.ToList().Select(x => new { x.Id, x.SessionName });
 
             string status = Newtonsoft.Json.JsonConvert.SerializeObject(ClassList);
 
@@ -70,12 +70,12 @@ namespace SEA_Application.Controllers
         {
             
             AspnetLesson Lesson = new AspnetLesson();
-
+             
             Lesson.Name = LessonViewModel.LessonName;
             Lesson.Video_Url = LessonViewModel.LessonVideoURL;
             Lesson.TopicId = LessonViewModel.TopicId;
             Lesson.DurationMinutes = LessonViewModel.LessonDuration;
-
+            Lesson.IsActive = LessonViewModel.IsActive;
             Lesson.CreationDate = LessonViewModel.CreationDate;
             Lesson.Description = LessonViewModel.LessonDescription;
             Lesson.CreationDate = DateTime.Now;
@@ -88,11 +88,21 @@ namespace SEA_Application.Controllers
             var newString =  Regex.Replace(Lesson.EncryptedID, @"[^0-9a-zA-Z]+", "s");
 
             // Lesson.EncryptedID.Replace('/', 's').Replace('-','s').Replace('+','s').Replace('%','s').Replace('&','s');
+          
             Lesson.EncryptedID = newString; 
-            
-
             db.AspnetLessons.Add(Lesson);
             db.SaveChanges();
+
+
+            Lesson_Session lessonSession = new Lesson_Session();
+            lessonSession.LessonId = Lesson.Id;
+            lessonSession.SessionId = LessonViewModel.SessionId;
+            lessonSession.StartDate = LessonViewModel.StartDate;
+            lessonSession.DueDate = LessonViewModel.DueDate;
+
+            db.Lesson_Session.Add(lessonSession);
+            db.SaveChanges();
+
 
 
             HttpPostedFileBase Assignment = Request.Files["Assignment"];
@@ -252,6 +262,26 @@ namespace SEA_Application.Controllers
             lessonViewModel.LessonVideoURL = aspnetLesson.Video_Url;
             lessonViewModel.LessonName = aspnetLesson.Name;
             lessonViewModel.LessonDuration = aspnetLesson.DurationMinutes;
+
+            Lesson_Session LessonSession = db.Lesson_Session.Where(x => x.LessonId == id).FirstOrDefault();
+
+            lessonViewModel.IsActive = Convert.ToBoolean( aspnetLesson.IsActive);
+
+            var StartDate = Convert.ToDateTime(LessonSession.StartDate);
+
+            var StartDateInString = StartDate.ToString("yyyy-MM-dd");
+
+            ViewBag.LessonStartDate = StartDateInString;
+
+            ////Due Date
+            var DueDate = Convert.ToDateTime(LessonSession.DueDate);
+
+            var DueDateInString = DueDate.ToString("yyyy-MM-dd");
+
+
+            ViewBag.LessonDueDate = DueDateInString;
+
+
             int? TopicId = aspnetLesson.TopicId;
 
             ViewBag.LessonDuration = aspnetLesson.DurationMinutes;
@@ -352,12 +382,10 @@ namespace SEA_Application.Controllers
             //  ViewBag.SecId = new SelectList(db.AspNetClasses, "Id", "ClassName", ClassId);
             // ViewBag.SubId = new SelectList(db.GenericSubjects.Where(x => x.SubjectType == Subject.SubjectType), "Id", "SubjectName", SubjectId);
 
-
-
-
             ViewBag.SubId = new SelectList(db.GenericSubjects.Where(x => x.SubjectType == Subject.SubjectType), "Id", "SubjectName", SubjectId);
             ViewBag.TopicId = new SelectList(db.AspnetSubjectTopics.Where(x => x.SubjectId == SubjectId), "Id", "Name", aspnetLesson.TopicId);
-         
+            ViewBag.SessionId = new SelectList(db.AspNetSessions, "Id", "SessionName", LessonSession.SessionId);
+
             ViewBag.CTId = Subject.SubjectType;
 
 
@@ -380,6 +408,16 @@ namespace SEA_Application.Controllers
             Lesson.TopicId = LessonViewModel.TopicId;
             Lesson.DurationMinutes = LessonViewModel.LessonDuration;
             Lesson.Description = LessonViewModel.LessonDescription;
+            Lesson.IsActive = LessonViewModel.IsActive;
+
+            db.SaveChanges();
+
+           Lesson_Session lessonSession =  db.Lesson_Session.Where(x => x.LessonId == Lesson.Id).FirstOrDefault();
+
+            lessonSession.SessionId = LessonViewModel.SessionId;
+            lessonSession.StartDate = LessonViewModel.StartDate;
+            lessonSession.DueDate = LessonViewModel.DueDate;
+
             db.SaveChanges();
 
 

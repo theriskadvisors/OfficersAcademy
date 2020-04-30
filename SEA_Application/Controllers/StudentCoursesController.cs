@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using SEA_Application.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -350,6 +351,16 @@ namespace SEA_Application.Controllers
 
         public ActionResult GetSubjectTopicsAndLessons(int SubjectId)
         {
+
+            try
+            {
+
+            var UserId = User.Identity.GetUserId();
+
+            var userSessionId = db.AspNetUsers_Session.Where(x => x.UserID == UserId).FirstOrDefault().SessionID;
+
+
+
             //  var SubjectTopics = db.AspnetSubjectTopics.Where(x => x.SubjectId == SubjectId).ToList();
 
 
@@ -369,7 +380,6 @@ namespace SEA_Application.Controllers
 
             var SubjectsTopics = db.AspnetSubjectTopics.Where(x => x.SubjectId == SubjectId).ToList();
 
-            var UserId = User.Identity.GetUserId();
 
 
             List<Topic> TopicListObj = new List<Topic>();
@@ -380,8 +390,18 @@ namespace SEA_Application.Controllers
                 int count1 = 0;
                 Topic TopicObj = new Topic();
 
-                var list = db.AspnetLessons.Where(x => x.TopicId == a.Id).ToList();
+                //  var list = db.AspnetLessons.Where(x => x.TopicId == a.Id).Where(x=>x.IsActive== true).ToList();
 
+
+             
+             
+                var today = DateTime.Today;
+                var LessonList = (from Lesson in db.AspnetLessons
+                                  join LessonSession in db.Lesson_Session on Lesson.Id equals LessonSession.LessonId
+                                  where Lesson.TopicId == a.Id && Lesson.IsActive == true && LessonSession.SessionId == userSessionId  && LessonSession.StartDate <= today &&  today<=LessonSession.DueDate
+                                  select Lesson).ToList();
+
+              
                 TopicObj.TopicId = a.Id;
                 TopicObj.TopicName = a.Name;
 
@@ -390,7 +410,7 @@ namespace SEA_Application.Controllers
                 List<Lesson> LessonsList = new List<Lesson>();
 
 
-                foreach (var lesson in list)
+                foreach (var lesson in LessonList)
                 {
                     var LessonExist = "";
                     StudentLessonTracking LessonTracking = db.StudentLessonTrackings.Where(x => x.LessonId == lesson.Id & x.StudentId == UserId).FirstOrDefault();
@@ -423,8 +443,17 @@ namespace SEA_Application.Controllers
 
                 TopicListObj.Add(TopicObj);
             }
-                
-            return Json(TopicListObj.OrderBy(x=>x.TopicName).ToList(), JsonRequestBehavior.AllowGet);
+                return Json(TopicListObj.OrderBy(x=>x.TopicName).ToList(), JsonRequestBehavior.AllowGet);
+
+            }
+
+            catch (Exception ex)
+            {
+               var a =  ex.Message;
+            }
+
+
+            return Json("", JsonRequestBehavior.AllowGet);
 
         }
         public ActionResult UpdateStudentLessonTracking(int LessonId)
@@ -474,14 +503,27 @@ namespace SEA_Application.Controllers
                 int count1 = 0;
                 Topic TopicObj = new Topic();
 
-                var list = db.AspnetLessons.Where(x => x.TopicId == a.Id).ToList();
+                //var list = db.AspnetLessons.Where(x => x.TopicId == a.Id).ToList();
+           
+                var UserId1 = User.Identity.GetUserId();
 
+                var userSessionId = db.AspNetUsers_Session.Where(x => x.UserID == UserId1).FirstOrDefault().SessionID;
+
+               
                 TopicObj.TopicId = a.Id;
                 TopicObj.TopicName = a.Name;
 
+
+                var today = DateTime.Today;
+
+                var LessonList = (from Lesson in db.AspnetLessons
+                                  join LessonSession in db.Lesson_Session on Lesson.Id equals LessonSession.LessonId
+                                  where Lesson.TopicId == a.Id && Lesson.IsActive == true && LessonSession.SessionId == userSessionId && LessonSession.StartDate <= today && today <= LessonSession.DueDate
+                                  select Lesson).ToList();
+
                 List<Lesson> LessonsList = new List<Lesson>();
 
-                foreach (var lesson in list)
+                foreach (var lesson in LessonList)
                 {
                     var LessonExist = "";
                     StudentLessonTracking LessonTracking = db.StudentLessonTrackings.Where(x => x.LessonId == lesson.Id && x.StudentId == UserId).FirstOrDefault();
@@ -722,8 +764,6 @@ namespace SEA_Application.Controllers
             commentHead.LessonId = LessonID;
             commentHead.CreatedBy = id;
 
-
-
             commentHead.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
             db.AspnetComment_Head.Add(commentHead);
             db.SaveChanges();
@@ -823,7 +863,6 @@ namespace SEA_Application.Controllers
             int? LessonId = db.AspnetComment_Head.Where(x => x.EncryptedID == id).FirstOrDefault().LessonId;
             ViewBag.LessonId = LessonId;
             ViewBag.LessonEncryptedId =db.AspnetLessons.Where(x => x.Id == LessonId).FirstOrDefault().EncryptedID;
-
 
 
 

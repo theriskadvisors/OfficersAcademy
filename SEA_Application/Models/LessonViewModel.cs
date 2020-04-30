@@ -75,5 +75,35 @@ namespace SEA_Application.Models
 
         public string LinkUrl3 { get; set; }
 
+        [Display(Name = "Start Time")]
+
+        public DateTime? StartTime { get; set; }
+
+        [Display(Name = "End Time")]
+        public DateTime? EndTime { get; set; }
+
+        [Display(Name = "Add Link")]
+
+        public string AddLink { get; set; }
+
+
+        [Display(Name = "Is Active")]
+
+        public bool IsActive { get; set; }
+
+
+
+        [Display(Name = "Start Date")]
+
+        public DateTime StartDate  { get; set; }
+
+        [Display(Name = "Due Date")]
+
+        public DateTime DueDate { get; set; }
+
+        [Display(Name = "Select Session")]
+
+        public int SessionId { get; set; }
+
     }
 }
