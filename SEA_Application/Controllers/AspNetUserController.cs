@@ -747,7 +747,11 @@ namespace SEA_Application.Controllers
                 Roll_Number = 1000;
             }
 
-            return Content(Roll_Number.ToString());
+            var RollNoInString = Roll_Number.ToString();
+
+            RollNoInString = RollNoInString + "OA2020";
+
+            return Content(RollNoInString);
         }
 
         public JsonResult GetUserName(string userName)
