@@ -16,6 +16,8 @@
 
 <script>
     $(document).ready(function () {
+
+
         $.ajax({
             type: "POST",
             cache: false,
@@ -23,23 +25,17 @@
             processData: false,
             contentType: false,
             success: function (data) {
-                var sch = JSON.parse(data);
+                 var sch = JSON.parse(data);
+                $('#Sessions').html("");
+                debugger
+                      //  $('#Sessions').append('<option value= "">Select </option>');
 
-                var $el = $(".SecIdDDL");
-                $el.empty();
+                $.each(sch, function (i, item) {
 
-                if (sch.length > 0) {
-                    $el.append($("<option></option>")
-                        .attr("value", "").text('Select Section'));
-                    for (i = 0; i < sch.length; i++) {
-                        $el.append($("<option></option>")
-                            .attr("value", sch[i].Id).text(sch[i].SessionName));
-                    }
-                }
-                else {
-                    $el.append($("<option></option>")
-                        .attr("value", '').text('Select Session'));
-                }
+                    debugger
+                        $('#Sessions').append('<option value=' + item.Id + '>' + item.SessionName + '</option>');
+                    });
+
             }
         });
 
@@ -178,6 +174,10 @@
         //        $(this).val(min);
         //    }
         //});
+
+
+
+
 
 
 
@@ -410,14 +410,27 @@
 
 
 
-            <div class="form-group">
-                <div class="col-md-2">
-                    <label>Select Section <span class="text-danger">*</span></label>
-                </div>
-                <div class="col-md-6">
-                    <select class="form-control SecIdDDL" id="SessionId" name="SessionId" required></select>
-                </div>
+            @*<div class="form-group">
+            <div class="col-md-2">
+                <label>Select Section <span class="text-danger">*</span></label>
             </div>
+            <div class="col-md-6">
+                <select class="form-control SecIdDDL" id="SessionId" name="SessionId" required></select>
+            </div>
+        </div>*@
+
+
+        <div class="form-group">
+            <div class="col-md-2">
+                <label>Select Sessions<span class="text-danger">*</span></label>
+            </div>
+            <div class="col-md-6">
+                <select multiple class="form-control" id="Sessions" name="Sessions" required></select>
+            </div>
+        </div>
+
+
+
 
 
             <div class="form-group">
@@ -473,28 +486,28 @@
 
 
             <div class="form-group">
-                @Html.LabelFor(model => model.IsActive, htmlAttributes: new {@class = "control-label col-md-2 " })
+                @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2 " })
                 <div class="col-md-6">
-                 
-                        @Html.CheckBoxFor(model => model.IsActive, new { htmlAttributes = new { @class = "form-control isactivestyle" } })
-                        @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+
+                    @Html.CheckBoxFor(model => model.IsActive, new { htmlAttributes = new { @class = "form-control isactivestyle" } })
+                    @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
 
                 </div>
-                </div>
+            </div>
 
 
             <div class="form-group">
                 @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-6">
 
-                    <input type="date" name="StartDate" id="StartDate" value="" class="form-control"  required />
-                    @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger"})
+                    <input type="date" name="StartDate" id="StartDate" value="" class="form-control" required />
+                    @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
                 </div>
             </div>
 
 
             <div class="form-group">
-                @Html.LabelFor(model => model.DueDate, htmlAttributes: new { @class = "control-label col-md-2",@required = true, })
+                @Html.LabelFor(model => model.DueDate, htmlAttributes: new { @class = "control-label col-md-2", @required = true, })
                 <div class="col-md-6">
 
                     <input type="date" name="DueDate" id="DueDate" value="" class="form-control" required />
