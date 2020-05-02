@@ -1307,7 +1307,7 @@ namespace SEA_Application.Controllers
             {
                 MailMessage msg = new MailMessage();
                 //msg.To.Add(new MailAddress(toemail));
-                msg.From = new MailAddress("talhaghaffar98@gmail.com", "SEA | Smarter Education Analytics");
+                msg.From = new MailAddress("talhaghaffar98@gmail.com", "Officers Academy");
                 msg.Subject = subject;
                 msg.Body = body;
                 msg.IsBodyHtml = true;
@@ -1319,7 +1319,7 @@ namespace SEA_Application.Controllers
                 msg.Bcc.Add(bccMail);
                 SmtpClient client = new SmtpClient();
                 client.UseDefaultCredentials = false;
-                client.Credentials = new System.Net.NetworkCredential("talhaghaffar98@gmail.com", "Orion@123");
+                client.Credentials = new System.Net.NetworkCredential("talhaghaffar98@gmail.com", "oooo");
                 client.Port = 25; // You can use Port 25 if 587 is blocked (mine is!)
                 client.Host = "smtp.gmail.com";
                 client.DeliveryMethod = SmtpDeliveryMethod.Network;
@@ -1373,7 +1373,7 @@ namespace SEA_Application.Controllers
                 //  string ConfirmLink = "<a href/Security/EmailConfirmation/?ConfirmAccount={0}</a>";
 
                 string ConfirmLink = "<a href='" + String.Format(DomainName + "/Parent_Dashboard/ConfirmAccount/?id={0}", u.Id.ToString() + "' target='_blank'>Click Here To Confirm Your Email </a>'");
-                SendMail(u.Email, "Account confirmation", "" + EmailDesign.SignupEmailTemplate(ConfirmLink, u.UserName));
+               // SendMail(u.Email, "Admission Confirmed", "" + EmailDesign.SignupEmailTemplate(ConfirmLink, u.UserName));
                 status = "Success";
             }
             catch (Exception ex)
@@ -1384,7 +1384,7 @@ namespace SEA_Application.Controllers
         }
         public ActionResult test()
         {
-            SendConformationEmail("3e6f6b9b-e45b-4ee3-85bc-9848ba666fac");
+            SendConformationEmail("015e6b3e-55d4-4efe-bbc7-4585272b44db");
             return View();
         }
         [HttpPost]
@@ -1400,7 +1400,7 @@ namespace SEA_Application.Controllers
                     ApplicationDbContext context = new ApplicationDbContext();
                     IEnumerable<string> selectedstudents = Request.Form["StudentID"].Split(',');
                     var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Name = model.Name, PhoneNumber = Request.Form["fatherCell"] };
-                    //                    SendConformationEmail(user);
+                                //     SendConformationEmail(user);
 
                     var result = await UserManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
@@ -2190,6 +2190,8 @@ namespace SEA_Application.Controllers
                     var result = await UserManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
                     {
+
+                        SendMail(model.Email, "Admission Confirmed", "" + EmailDesign.SignupEmailTemplate(model.Name, model.UserName,model.Password));
                         ruffdata rd = new ruffdata();
                         rd.SessionID = SessionIdOfSelectedStudent;
                         rd.StudentName = model.Name;
